@@ -31,7 +31,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({ total, originalPrice, discoun
       </div>
       <hr className='mt-6'/>
       <button
-        className="mt-4 bg-red-500 text-white py-2 px-14 rounded transition hover:bg-black hover:text-white block mx-auto"
+        className="mt-4 bg-red-500 text-black py-2 px-14 bg-[#d97706] rounded transition hover:bg-black hover:text-white block mx-auto"
         onClick={() => navigate('/checkout')}
       >
         Check Out Now

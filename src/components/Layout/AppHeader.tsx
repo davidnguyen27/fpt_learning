@@ -33,6 +33,12 @@ const AppHeader: React.FC = () => {
     }
   };
 
+  const handleCart = () => {
+    if (user?.role === "student") {
+      navigate("/cart");
+    }
+  };
+
   const items: MenuProps["items"] = [
     {
       label: <a onClick={handleView}>Profile</a>,
@@ -77,14 +83,14 @@ const AppHeader: React.FC = () => {
         </div>
       </div>
       <div className="styles-x-axis w-1/2 justify-end">
-        <div className="cart-styles">
+        <div className="cart-styles" onClick={handleCart}>
           <i className="fa-solid fa-cart-shopping"></i>
         </div>
         {user ? (
           <Dropdown menu={{ items }}>
             <a className="mr-9 flex" onClick={(e) => e.preventDefault()}>
               <Space>
-                <img src={user.image} className="h-12 w-12 rounded-full" />
+                <img src={user.image} className="h-12 w-12 rounded-full" alt=""/>
               </Space>
             </a>
           </Dropdown>

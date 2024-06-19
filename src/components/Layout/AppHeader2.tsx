@@ -48,17 +48,18 @@ const AppHeader2: React.FC = () => {
   );
 
   return (
-    <Header className={`header-2 ${nightMode ? "night-mode" : ""}`}>
-      <Button
-        className={`btn-header2 ${nightMode ? "night-mode" : ""}`}
+    <Header className={`header-2`}>
+      <button
+        className="block flex h-12 items-center justify-center rounded bg-[#d97706] transition hover:bg-black hover:text-white"
         onClick={() => navigate("/")}
       >
-        Back To Homepage
-      </Button>
+        Back to homepage
+      </button>
+
       <img
         className="logo-header2"
-        src="/logo/Fstudy123.png"
-        alt="F-Study"
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/FPT_Education_logo.svg/2560px-FPT_Education_logo.svg.png"
+        alt="F-Edu"
         onClick={() => navigate("/")}
       />
       <Dropdown overlay={userMenu} trigger={["click"]}>

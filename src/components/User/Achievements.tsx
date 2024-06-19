@@ -15,7 +15,7 @@ const Achievements: React.FC = () => {
         </article>
         <article className="rounded-md bg-slate-200 p-4 drop-shadow-sm">
           <div className="mb-7 text-center text-2xl">
-            <i className="fa-solid fa-clock-rotate-left rounded-md bg-amber-500 p-6"></i>
+            <i className="fa-solid fa-clock-rotate-left rounded-md bg-[#fcd34d] p-6"></i>
           </div>
           <h3 className="text-center text-xl font-semibold">
             Go at your own pace
