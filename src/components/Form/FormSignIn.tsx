@@ -3,8 +3,9 @@ import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../app/context/AuthContext";
 
-const FormSignIn: React.FC = () => {
+const FormSignIn = () => {
   const navigate = useNavigate();
+
   const authContext = useContext(AuthContext);
 
   if (!authContext) {
@@ -22,14 +23,14 @@ const FormSignIn: React.FC = () => {
         sessionStorage.setItem("userRole", user.role);
         switch (user.role) {
           case "admin":
-            navigate("/admin-page");
+            navigate("/admin-dashboard");
             break;
 
           case "instructor":
-            navigate("/instructor-page");
+            navigate("/instructor-dashboard");
             break;
 
-          case "user":
+          case "student":
             navigate("/");
             break;
 
@@ -38,7 +39,7 @@ const FormSignIn: React.FC = () => {
             break;
         }
       } else {
-        console.log("Login failed");
+        return alert("Email or password is wrong!");
       }
     } catch (error) {
       console.error("Unknown error: ", error);
