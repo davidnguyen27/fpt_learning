@@ -1,0 +1,27 @@
+.user-menu-container {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .user-icon-container {
+    position: relative;
+    cursor: pointer;
+  }
+  
+  .user-menu-wrapper {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out; /* Adjust the transition duration as needed */
+  }
+  
+  .user-menu-wrapper.show {
+    opacity: 1;
+  }
+  
