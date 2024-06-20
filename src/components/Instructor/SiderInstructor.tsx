@@ -13,7 +13,7 @@ const SiderInstructor: React.FC<{ className?: string }> = () => {
         className="bg-slate-200"
       >
         <Menu.Item
-          className="hover:rounded-none hover:bg-amber-500 hover:text-black"
+          className="hover:rounded-none hover:bg-red-500 hover:text-black"
           key="1"
           icon={<i className="fa-solid fa-chart-line"></i>}
           onClick={() => navigate("/instructor-dashboard")}
@@ -21,7 +21,7 @@ const SiderInstructor: React.FC<{ className?: string }> = () => {
           Dashboard
         </Menu.Item>
         <Menu.Item
-          className="hover:rounded-none hover:bg-amber-500 hover:text-black"
+          className="hover:rounded-none hover:bg-red-500 hover:text-black"
           key="2"
           icon={<i className="fa-solid fa-book-open"></i>}
           onClick={() => navigate("/courses-management")}
@@ -29,15 +29,22 @@ const SiderInstructor: React.FC<{ className?: string }> = () => {
           Courses
         </Menu.Item>
         <Menu.Item
-          className="hover:rounded-none hover:bg-amber-500 hover:text-black"
+          className="hover:rounded-none hover:bg-red-500 hover:text-black"
           key="3"
+          icon={<i className="fa-solid fa-star"></i>}
+        >
+          Lesson
+        </Menu.Item>
+        <Menu.Item
+          className="hover:rounded-none hover:bg-red-500 hover:text-black"
+          key="4"
           icon={<i className="fa-solid fa-star"></i>}
         >
           Reviews
         </Menu.Item>
         <Menu.Item
-          className="hover:rounded-none hover:bg-amber-500 hover:text-black"
-          key="4"
+          className="hover:rounded-none hover:bg-red-500 hover:text-black"
+          key="5"
           icon={<i className="fa-solid fa-dollar-sign"></i>}
           onClick={() => navigate("/user-management")}
         >
@@ -45,7 +52,7 @@ const SiderInstructor: React.FC<{ className?: string }> = () => {
         </Menu.Item>
         <Menu.Item
           className="hover:rounded-none hover:bg-amber-500 hover:text-black"
-          key="5"
+          key="6"
           icon={<i className="fa-solid fa-wallet"></i>}
         >
           Payout

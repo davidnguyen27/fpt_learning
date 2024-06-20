@@ -4,7 +4,7 @@ import Sider from "antd/es/layout/Sider";
 import { Header, Content, Footer } from "antd/es/layout/layout";
 import { AppHeader, AppFooter } from "../../components";
 import SiderInstructor from "../../components/Instructor/SiderInstructor";
-import Overview from "../../components/Admin/Overview";
+import Overview from "../../components/Instructor/Overview";
 
 const InstructorPage: React.FC = () => {
   const { collapsed } = useSider();
@@ -34,10 +34,11 @@ const InstructorPage: React.FC = () => {
                 <Overview />
               </section>
             </div>
-            <Footer className="footer">
+
+          </Content>
+          <Footer className="footer">
               <AppFooter />
             </Footer>
-          </Content>
         </Layout>
       </Layout>
     </Layout>

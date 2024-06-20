@@ -110,7 +110,7 @@ const FormSignUp = () => {
       <Form.Item>
         <button
           type="submit"
-          className="mb-3 flex w-full items-center justify-center rounded border border-black bg-[#d97706] px-7 py-3 text-center text-sm font-medium uppercase leading-normal text-black hover:text-white shadow-md transition duration-150 hover:bg-[#333]"
+          className="mb-3 flex w-full items-center justify-center rounded border border-black bg-[#ef4444] px-7 py-3 text-center text-sm font-medium uppercase leading-normal text-white hover:text-white shadow-md transition duration-150 hover:bg-[#333]"
           >
           Sign Up
         </button>

@@ -30,7 +30,7 @@ body {
   }
 
   .menu-bar {
-    @apply mr-4 flex h-16 w-16 cursor-pointer items-center text-white justify-center bg-[#c2410c] text-2xl;
+    @apply mr-4 flex h-16 w-16 cursor-pointer items-center text-white justify-center bg-[#ef4444] text-2xl;
   }
 
   .logo-box {

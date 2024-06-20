@@ -32,7 +32,7 @@ const SignUpPage = () => {
         <Divider />
         <p className="text-center text-sm">
           Already have an account?{" "}
-          <a href="/sign-in" className="text-amber-500 hover:underline">
+          <a href="/sign-in" className="text-red-500 hover:underline">
             Login
           </a>
         </p>
