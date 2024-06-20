@@ -1,4 +1,4 @@
-import { Avatar, Menu, Switch, Layout, Button, Dropdown } from "antd";
+import { Avatar, Menu, Switch, Layout, Dropdown } from "antd";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserOutlined } from "@ant-design/icons";
