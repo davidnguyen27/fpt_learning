@@ -75,7 +75,7 @@ const CoursesManagePage = () => {
                 </div>
                 <div>
                   <button
-                    className="rounded-lg bg-amber-500 px-5 py-2 text-sm font-medium hover:bg-amber-600"
+                    className="rounded-lg bg-red-500 px-5 py-2 text-white text-sm font-medium hover:bg-red-200 hover:text-black"
                     onClick={() => navigate("/create-course")}
                   >
                     Create Your Courses

@@ -63,7 +63,7 @@ const AppHeader: React.FC = () => {
     },
     {
       key: "2",
-      label: <a href="/memberships">Paid Memberships</a>,
+      label: <a href="/paid-memberships">Paid Memberships</a>,
     },
     {
       key: "3",

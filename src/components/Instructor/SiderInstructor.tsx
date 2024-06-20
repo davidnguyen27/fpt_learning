@@ -1,3 +1,4 @@
+import { AppstoreOutlined, BarChartOutlined, DollarOutlined, ExceptionOutlined, ReadOutlined, StarOutlined, WalletOutlined } from "@ant-design/icons";
 import { Menu } from "antd";
 import { useNavigate } from "react-router-dom";
 
@@ -13,47 +14,56 @@ const SiderInstructor: React.FC<{ className?: string }> = () => {
         className="bg-slate-200"
       >
         <Menu.Item
-          className="hover:rounded-none hover:bg-red-500 hover:text-black"
+          className="hover:bg-red-500 hover:text-white"
           key="1"
-          icon={<i className="fa-solid fa-chart-line"></i>}
+          icon={<AppstoreOutlined />}
           onClick={() => navigate("/instructor-dashboard")}
         >
           Dashboard
         </Menu.Item>
         <Menu.Item
-          className="hover:rounded-none hover:bg-red-500 hover:text-black"
+          className="hover:bg-red-500 hover:text-white"
           key="2"
-          icon={<i className="fa-solid fa-book-open"></i>}
+          icon={<ReadOutlined />}
           onClick={() => navigate("/courses-management")}
         >
           Courses
         </Menu.Item>
         <Menu.Item
-          className="hover:rounded-none hover:bg-red-500 hover:text-black"
+          className="hover:bg-red-500 hover:text-white"
           key="3"
-          icon={<i className="fa-solid fa-star"></i>}
+          icon={<BarChartOutlined />}
+          onClick={() => navigate("/lessons-management")}
         >
           Lesson
         </Menu.Item>
         <Menu.Item
-          className="hover:rounded-none hover:bg-red-500 hover:text-black"
+          className="hover:bg-red-500 hover:text-white"
           key="4"
-          icon={<i className="fa-solid fa-star"></i>}
+          icon={<ExceptionOutlined />}
+          onClick={() => navigate("/sessions-management")}
+        >
+          Session
+        </Menu.Item>
+        <Menu.Item
+          className="hover:bg-red-500 hover:text-white"
+          key="5"
+          icon={<StarOutlined />}
         >
           Reviews
         </Menu.Item>
         <Menu.Item
-          className="hover:rounded-none hover:bg-red-500 hover:text-black"
-          key="5"
-          icon={<i className="fa-solid fa-dollar-sign"></i>}
+          className="hover:bg-red-500 hover:text-white"
+          key="6"
+          icon={<DollarOutlined />}
           onClick={() => navigate("/user-management")}
         >
           Earning
         </Menu.Item>
         <Menu.Item
-          className="hover:rounded-none hover:bg-amber-500 hover:text-black"
-          key="6"
-          icon={<i className="fa-solid fa-wallet"></i>}
+          className="hover:bg-amber-500 hover:text-white"
+          key="7"
+          icon={<WalletOutlined />}
         >
           Payout
         </Menu.Item>
