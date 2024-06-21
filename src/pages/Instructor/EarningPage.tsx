@@ -12,19 +12,19 @@ const columns = [
     title: 'Date',
     dataIndex: 'date',
     key: 'date',
-    className: 'bg-gray-700 text-white', // Tailwind classes for table header
+    className: 'bg-gray-700 text-white text-center', // Tailwind classes for table header
   },
   {
     title: 'Item Sales Count',
     dataIndex: 'itemSalesCount',
     key: 'itemSalesCount',
-    className: 'bg-gray-700 text-white',
+    className: 'bg-gray-700 text-white text-center',
   },
   {
     title: 'Earning',
     dataIndex: 'earning',
     key: 'earning',
-    className: 'bg-gray-600 text-white',
+    className: 'bg-gray-600 text-white text-center',
   },
 ];
 
@@ -77,8 +77,8 @@ const EarningPage: React.FC = () => {
           <Content className="flex-1 overflow-y-auto bg-gray-100">
             <div className="p-8 flex">
               <section className="w-1/4 pr-4">
-                <h2 className="text-lg font-bold mb-4">Your Top Countries</h2>
-                <ul className="list-none p-0">
+                <h2 className="text-lg font-bold mb-4 text-center">Your Top Countries</h2>
+                <ul className="list-none p-0 ">
                   {topCountries.map((country, index) => (
                     <li key={index} className="flex justify-between py-1 border-b border-gray-200">
                       <span>{country.country}</span>
@@ -91,20 +91,20 @@ const EarningPage: React.FC = () => {
                 <Row gutter={16}>
                   <Col span={8}>
                     <Card
-                      title={<span className="text-white">Sales earnings this month (April), after edututs+ fees, & before taxes:</span>}
+                      title={<span className="text-white">Sales earnings this month (April)</span>}
                       bordered={false}
-                      className="bg-red-600 text-white"
+                      className="bg-red-600 text-white text-center"
                     >
                       <p className="text-2xl font-bold text-center">$1146.78</p>
                     </Card>
                   </Col>
                   <Col span={8}>
-                    <Card title={<span className="text-white">Your balance:</span>} bordered={false} className="bg-red-600 text-white">
+                    <Card title={<span className="text-white ">Your balance:</span>} bordered={false} className="bg-red-600 text-white text-center">
                       <p className="text-2xl font-bold text-center">$1146.78</p>
                     </Card>
                   </Col>
                   <Col span={8}>
-                    <Card title={<span className="text-white">Total value of your sales, before taxes:</span>} bordered={false} className="bg-red-600 text-white">
+                    <Card title={<span className="text-white">Total value of your sales, before taxes:</span>} bordered={false} className="bg-red-600 text-white text-center">
                       <p className="text-2xl font-bold text-center">$95895.54</p>
                     </Card>
                   </Col>
@@ -115,7 +115,7 @@ const EarningPage: React.FC = () => {
                     dataSource={data}
                     pagination={false}
                     footer={() => <div className="text-white bg-red-700 p-2 text-center">Total: $1146.78</div>}
-                    className="custom-table bg-white"
+                    className="custom-table bg-white text-center"
                   />
                 </div>
               </section>
