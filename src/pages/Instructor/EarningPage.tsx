@@ -58,7 +58,7 @@ const EarningPage: React.FC = () => {
 
   return (
     <Layout className="flex h-screen w-screen flex-col">
-      <Header className="header bg-gray-800 text-white">
+      <Header className="header">
         <AppHeader />
       </Header>
       <Layout className="flex flex-1 overflow-y-auto">
