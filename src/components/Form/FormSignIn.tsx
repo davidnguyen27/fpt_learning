@@ -99,7 +99,7 @@ const FormSignIn = () => {
               href="sign-up"
               className="text-red-500"
             >
-              Register
+              Sign Up
             </a>
           </p>
         </Form.Item>

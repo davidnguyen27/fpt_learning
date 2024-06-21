@@ -20,11 +20,11 @@ const SignUpPage = () => {
         <FormSignUp />
         <p className="text-center text-sm">
           By signing up, you agree to our{" "}
-          <a className="text-black underline hover:text-amber-500" href="#">
+          <a className="text-black underline hover:text-red-500" href="#">
             Terms of Use
           </a>{" "}
           and{" "}
-          <a className="text-black underline hover:text-amber-500" href="#">
+          <a className="text-black underline hover:text-red-500" href="#">
             Privacy Policy
           </a>
           .
@@ -33,7 +33,7 @@ const SignUpPage = () => {
         <p className="text-center text-sm">
           Already have an account?{" "}
           <a href="/sign-in" className="text-red-500 hover:underline">
-            Login
+            Sign in
           </a>
         </p>
       </div>
