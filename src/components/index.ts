@@ -29,4 +29,4 @@ export { default as StudentCourseListContent } from "./Student/StudentCourseList
 export { default as PersonalInfo } from "./Student/PersonalInfo";
 export { default as SideBar } from "./Student/Sidebar";
 export { default as EditForm } from "./Student/EditForm";
-export { default as EarningContent } from "./Instructor/EarningContent"
+

@@ -16,24 +16,15 @@ interface UserProfile {
   id: string;
 }
 
-interface EditFormProps {
-  field: string;
-  initialValue: string | boolean;
-  onCancel: () => void;
-  onSubmit: (updatedField: any) => void;
-}
-
 const PersonalInfo: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentEditField, setCurrentEditField] = useState<string | null>(null);
-  const [userProfiles, setUserProfiles] = useState<UserProfile[]>([]);
   const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
 
   useEffect(() => {
     // Fetch data from MockAPI by role
     axios.get('https://665fc1c95425580055b0bf26.mockapi.io/users?role=student')
       .then(response => {
-        setUserProfiles(response.data);
         // Set the first user as the selected user
         if (response.data.length > 0) {
           setSelectedUser(response.data[0]);
@@ -62,10 +53,10 @@ const PersonalInfo: React.FC = () => {
   const handleFormSubmit = (updatedField: any) => {
     // Update the selected user object with the new field value
     if (selectedUser) {
-      setSelectedUser({
+      const updatedUser = {
         ...selectedUser,
         [currentEditField as keyof UserProfile]: updatedField,
-      });
+      };
 
       // Update data in the MockAPI
       axios.put(`https://665fc1c95425580055b0bf26.mockapi.io/users/${selectedUser.id}`, {
@@ -73,6 +64,7 @@ const PersonalInfo: React.FC = () => {
       })
       .then(response => {
         console.log('Successfully updated:', response.data);
+        setSelectedUser(updatedUser);
       })
       .catch(error => {
         console.error('Error updating:', error);
@@ -85,7 +77,7 @@ const PersonalInfo: React.FC = () => {
 
   return (
     <div className="personal-info p-4">
-      <h2 className="text-lg font-semibold mb-4">Thông tin cá nhân</h2>
+      <h2 className="text-lg font-semibold mb-4">Personal Information</h2>
       <div className="info-section bg-gray-100 p-4 rounded-lg">
         <div className="info-item flex justify-between mb-3 cursor-pointer" onClick={() => handleEditClick('fullName')}>
           <span>Full Name</span>
