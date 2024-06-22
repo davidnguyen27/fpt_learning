@@ -11,11 +11,12 @@ const StudentProfileContent = () => {
       <StudentProfileBox
         StudentProfileData={{
           title: "Tran Khanh Vinh",
-          description: "I'm a developer",
+          description: " I'm a dev",
           dateOfBirth: "24/08/2023",
           address: "vn",
           socialMedias: {
-            facebook: "https://www.facebook.com/profile.php?id=100012301156428"
+            facebook: "https://www.facebook.com/profile.php?id=100012301156428",
+            github: "https://github.com/TK-Vinh"
           }
         }}
       />

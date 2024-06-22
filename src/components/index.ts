@@ -26,7 +26,7 @@ export { default as DetailCheckOut } from "./MembershipCheckout/DetailCheckOut";
 export { default as PaymentMembership } from "./MembershipCheckout/PaymentMembership";
 export { default as TotalOrder } from "./MembershipCheckout/TotalOrder";
 export { default as StudentCourseListContent } from "./Student/StudentCourseListContent";
-export { default as SocialInfo } from "./Student/SocialInfo";
 export { default as PersonalInfo } from "./Student/PersonalInfo";
 export { default as SideBar } from "./Student/Sidebar";
 export { default as EditForm } from "./Student/EditForm";
+export { default as EarningContent } from "./Instructor/EarningContent"

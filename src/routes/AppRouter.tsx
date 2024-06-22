@@ -25,6 +25,9 @@ import SettingsPage from "../pages/User/SettingPage";
 import CoursesCheckPage from "../pages/Admin/CoursesCheckPage";
 import CoursesManagePage from "../pages/Instructor/CoursesManagePage";
 import CreateCoursePage from "../pages/Instructor/CreateCoursePage";
+import StudentSettingPage from "../pages/Student/StudentSettingPage";
+import StudentCourseListPage from "../pages/Student/StudentCourseListPage";
+import EarningPage from "../pages/Instructor/EarningPage";
 
 interface ProtectedRouteProps {
   element: JSX.Element;
@@ -104,6 +107,24 @@ const AppRouter = () => {
             element={
               <ProtectedRoute
                 element={<StudentProfilePage />}
+                allowedRoles={["student"]}
+              />
+            }
+          />
+          <Route
+            path="/student-course-list-page"
+            element={
+              <ProtectedRoute
+                element={<StudentCourseListPage />}
+                allowedRoles={["student"]}
+              />
+            }
+          />
+          <Route
+            path="/student-setting-page"
+            element={
+              <ProtectedRoute
+                element={<StudentSettingPage />}
                 allowedRoles={["student"]}
               />
             }
@@ -191,6 +212,15 @@ const AppRouter = () => {
             element={
               <ProtectedRoute
                 element={<InstructorPage />}
+                allowedRoles={["instructor"]}
+              />
+            }
+          />
+          <Route
+            path="/instructor-earning"
+            element={
+              <ProtectedRoute
+                element={<EarningPage />}
                 allowedRoles={["instructor"]}
               />
             }

@@ -1,0 +1,70 @@
+.earning-content {
+    padding: 20px;
+  }
+  
+  .earnings-summary {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .summary-item {
+    background: #333;
+    color: white;
+    padding: 20px;
+    flex: 1;
+    margin: 0 10px;
+    text-align: center;
+  }
+  
+  .top-countries {
+    margin-bottom: 20px;
+  }
+  
+  .top-countries table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  
+  .top-countries th, .top-countries td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .sales-table {
+    margin-bottom: 20px;
+  }
+  
+  .table-controls {
+    margin-bottom: 10px;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  thead {
+    background: #f8d7da;
+  }
+  
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  tfoot {
+    background: #333;
+    color: white;
+    font-weight: semibold;
+  }
+  
+  .total-row td {
+    background: #000;
+    color: white;
+    font-weight: 600; /* Semi-bold */
+  }
+  
