@@ -23,11 +23,11 @@ const FormSignIn = () => {
         sessionStorage.setItem("userRole", user.role);
         switch (user.role) {
           case "admin":
-            navigate("/admin-dashboard");
+            navigate("/admin/dashboard");
             break;
 
           case "instructor":
-            navigate("/instructor-dashboard");
+            navigate("/instructor/dashboard");
             break;
 
           case "student":

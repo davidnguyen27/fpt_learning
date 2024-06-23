@@ -118,30 +118,34 @@ const AppHeader: React.FC = () => {
             Create new Course
           </Button>
         ) : null}
-        <Badge count={1}>
-          <ShoppingCartOutlined
-            style={{ fontSize: "1.5em" }}
-            onClick={handleShoppingCart}
-          />
-        </Badge>
-        <Badge count={1}>
-          <MailOutlined style={{ fontSize: "1.5em", cursor: "pointer" }} />
-        </Badge>
-        <Badge count={1}>
-          <BellOutlined style={{ fontSize: "1.5em", cursor: "pointer" }} />
-        </Badge>
         {user ? (
-          <Dropdown menu={{ items }}>
-            <a className="mr-9 flex" onClick={(e) => e.preventDefault()}>
-              <Space>
-                <img
-                  src={user.image}
-                  className="h-12 w-12 rounded-full"
-                  alt=""
+          <>
+            {user.role === "student" && (
+              <Badge count={1}>
+                <ShoppingCartOutlined
+                  style={{ fontSize: "1.5em" }}
+                  onClick={handleShoppingCart}
                 />
-              </Space>
-            </a>
-          </Dropdown>
+              </Badge>
+            )}
+            <Badge count={1}>
+              <MailOutlined style={{ fontSize: "1.5em", cursor: "pointer" }} />
+            </Badge>
+            <Badge count={1}>
+              <BellOutlined style={{ fontSize: "1.5em", cursor: "pointer" }} />
+            </Badge>
+            <Dropdown menu={{ items }}>
+              <a className="mr-9 flex" onClick={(e) => e.preventDefault()}>
+                <Space>
+                  <img
+                    src={user.image}
+                    className="h-12 w-12 rounded-full"
+                    alt=""
+                  />
+                </Space>
+              </a>
+            </Dropdown>
+          </>
         ) : (
           <>
             <Button
