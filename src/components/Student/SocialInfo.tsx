@@ -30,7 +30,9 @@ const SocialInfo: React.FC = () => {
         </div>
       </div>
       <Modal title="Edit Information" visible={isModalVisible} onCancel={handleCancel} footer={null}>
-        {currentEditField && <EditForm field={currentEditField} onCancel={handleCancel} />}
+        {currentEditField && <EditForm field={currentEditField} onCancel={handleCancel} initialValue={''} onSubmit={function (): void {
+          throw new Error('Function not implemented.');
+        } } />}
       </Modal>
     </div>
   );

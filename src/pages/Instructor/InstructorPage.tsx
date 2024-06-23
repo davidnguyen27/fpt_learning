@@ -1,12 +1,10 @@
 import React from 'react';
 import { useSider } from '../../app/context/SiderContext';
-import { Button, Card, Layout } from 'antd';
-import { LeftOutlined, RightOutlined } from '@ant-design/icons';
+import { Layout } from 'antd';
 import { AppHeader, AppFooter } from '../../components';
 import SiderInstructor from '../../components/Instructor/SiderInstructor';
 import Overview from '../../components/Admin/Overview';
 import InstructorChart from '../../components/Charts/InstructorChart';
-import PythonImg from '../../assets/Image/python.jpg';
 
 const { Header, Content, Footer, Sider } = Layout;
 
