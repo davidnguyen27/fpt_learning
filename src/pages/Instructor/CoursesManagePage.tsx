@@ -51,7 +51,7 @@ const CoursesManagePage = () => {
           />
         </Sider>
         <Layout className="flex flex-1 flex-col">
-          <Content className="flex-1 overflow-y-auto p-8">
+          <Content className="flex-1 overflow-y-auto">
             <div className="p-8">
               <section>
                 <h1 className="text-xl font-bold">Courses</h1>
@@ -78,10 +78,10 @@ const CoursesManagePage = () => {
               </div>
               <Tabs defaultActiveKey="1" items={items} className="mt-10" />
             </div>
-            <Footer className="footer">
-              <AppFooter />
-            </Footer>
           </Content>
+          <Footer className="footer">
+            <AppFooter />
+          </Footer>
         </Layout>
       </Layout>
     </Layout>

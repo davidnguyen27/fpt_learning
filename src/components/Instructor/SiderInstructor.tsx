@@ -50,6 +50,7 @@ const SiderInstructor: React.FC<{ className?: string }> = () => {
           className="hover:rounded-none hover:bg-amber-500 hover:text-black"
           key="5"
           icon={<i className="fa-solid fa-star"></i>}
+          onClick={() => navigate("/instructor/reviews-management")}
         >
           Reviews
         </Menu.Item>
@@ -65,6 +66,7 @@ const SiderInstructor: React.FC<{ className?: string }> = () => {
           className="hover:rounded-none hover:bg-amber-500 hover:text-black"
           key="7"
           icon={<i className="fa-solid fa-wallet"></i>}
+          onClick={() => navigate("/instructor/payout")}
         >
           Payout
         </Menu.Item>
