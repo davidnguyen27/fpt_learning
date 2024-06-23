@@ -5,7 +5,6 @@ import Sider from "antd/es/layout/Sider";
 import { useSider } from "../../app/context/SiderContext";
 import SiderInstructor from "../../components/Instructor/SiderInstructor";
 import TableCourses from "../../components/Tables/TableCourses";
-import TablePurchases from "../../components/Tables/TablePurchases";
 import { useNavigate } from "react-router-dom";
 import "../../styles/tabCustom.css";
 
@@ -21,15 +20,6 @@ const items: TabsProps["items"] = [
   },
   {
     key: "2",
-    label: (
-      <span className="text-sm font-medium">
-        <i className="fa-solid fa-receipt"></i> My Courses
-      </span>
-    ),
-    children: <TablePurchases />,
-  },
-  {
-    key: "3",
     label: (
       <span className="text-sm font-medium">
         <i className="fa-solid fa-up-long"></i> Upcoming Courses
@@ -61,7 +51,7 @@ const CoursesManagePage = () => {
           />
         </Sider>
         <Layout className="flex flex-1 flex-col">
-          <Content className="flex-1 overflow-y-auto">
+          <Content className="flex-1 overflow-y-auto p-8">
             <div className="p-8">
               <section>
                 <h1 className="text-xl font-bold">Courses</h1>
@@ -76,7 +66,11 @@ const CoursesManagePage = () => {
                 <div>
                   <button
                     className="rounded-lg bg-amber-500 px-5 py-2 text-sm font-medium hover:bg-amber-600"
-                    onClick={() => navigate("/create-course")}
+                    onClick={() =>
+                      navigate(
+                        "/instructor/courses-management/create-course-step",
+                      )
+                    }
                   >
                     Create Your Courses
                   </button>

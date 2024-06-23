@@ -16,7 +16,7 @@ const SiderAdmin: React.FC<{ className?: string }> = () => {
           className="hover:rounded-none hover:bg-amber-500 hover:text-black"
           key="1"
           icon={<i className="fa-solid fa-chart-line"></i>}
-          onClick={() => navigate("/admin-dashboard")}
+          onClick={() => navigate("/admin/dashboard")}
         >
           Dashboard
         </Menu.Item>
@@ -24,7 +24,7 @@ const SiderAdmin: React.FC<{ className?: string }> = () => {
           className="hover:rounded-none hover:bg-amber-500 hover:text-black"
           key="2"
           icon={<i className="fa-solid fa-list"></i>}
-          onClick={() => navigate("/categories-management")}
+          onClick={() => navigate("/admin/categories-management")}
         >
           Categories
         </Menu.Item>
@@ -32,7 +32,7 @@ const SiderAdmin: React.FC<{ className?: string }> = () => {
           className="hover:rounded-none hover:bg-amber-500 hover:text-black"
           key="3"
           icon={<i className="fa-solid fa-comment-dots"></i>}
-          onClick={() => navigate("/feedbacks-management")}
+          onClick={() => navigate("/admin/feedbacks-management")}
         >
           Feedback
         </Menu.Item>
@@ -40,7 +40,7 @@ const SiderAdmin: React.FC<{ className?: string }> = () => {
           className="hover:rounded-none hover:bg-amber-500 hover:text-black"
           key="4"
           icon={<i className="fa-solid fa-flag"></i>}
-          onClick={() => navigate("/reports-management")}
+          onClick={() => navigate("/admin/reports-management")}
         >
           Report
         </Menu.Item>
@@ -48,7 +48,7 @@ const SiderAdmin: React.FC<{ className?: string }> = () => {
           className="hover:rounded-none hover:bg-amber-500 hover:text-black"
           key="5"
           icon={<i className="fa-solid fa-users"></i>}
-          onClick={() => navigate("/users-management")}
+          onClick={() => navigate("/admin/users-management")}
         >
           Users
         </Menu.Item>
@@ -56,7 +56,7 @@ const SiderAdmin: React.FC<{ className?: string }> = () => {
           className="hover:rounded-none hover:bg-amber-500 hover:text-black"
           key="6"
           icon={<i className="fa-solid fa-flag"></i>}
-          onClick={() => navigate("/blogs-management")}
+          onClick={() => navigate("/admin/blogs-management")}
         >
           Blogs
         </Menu.Item>
@@ -64,7 +64,7 @@ const SiderAdmin: React.FC<{ className?: string }> = () => {
           className="hover:rounded-none hover:bg-amber-500 hover:text-black"
           key="7"
           icon={<i className="fa-solid fa-check"></i>}
-          onClick={() => navigate("/courses-check")}
+          onClick={() => navigate("/admin/courses-check")}
         >
           Courses
         </Menu.Item>
@@ -72,7 +72,7 @@ const SiderAdmin: React.FC<{ className?: string }> = () => {
           className="hover:rounded-none hover:bg-amber-500 hover:text-black"
           key="8"
           icon={<i className="fa-solid fa-wrench"></i>}
-          onClick={() => navigate("/admin-setting")}
+          onClick={() => navigate("/setting")}
         >
           Setting
         </Menu.Item>

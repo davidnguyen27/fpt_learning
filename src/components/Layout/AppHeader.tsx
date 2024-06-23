@@ -1,6 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { useSider } from "../../app/context/SiderContext";
-import { Dropdown, MenuProps, Space } from "antd";
+import { Badge, Button, Dropdown, MenuProps, Space } from "antd";
+import {
+  ShoppingCartOutlined,
+  MailOutlined,
+  BellOutlined,
+} from "@ant-design/icons";
 import { useAuth } from "../../app/context/AuthContext";
 
 const AppHeader: React.FC = () => {
@@ -11,6 +16,10 @@ const AppHeader: React.FC = () => {
   const handleLogout = () => {
     logout();
     navigate("/");
+  };
+
+  const handleCreateCourseClick = () => {
+    navigate("/create-course");
   };
 
   const handleView = () => {
@@ -33,22 +42,44 @@ const AppHeader: React.FC = () => {
     }
   };
 
+  const handleShoppingCart = () => {
+    if (user?.role === "student") {
+      navigate("/cart");
+    }
+  };
+
   const items: MenuProps["items"] = [
     {
-      label: <a onClick={handleView}>Profile</a>,
       key: "0",
+      label: <a onClick={handleView}>Profile</a>,
     },
     {
+      key: "1",
       label: (
         <a onClick={handleManagement}>
           {user?.role === "admin" ? "Dashboard" : "My Course"}
         </a>
       ),
-      key: "1",
+    },
+    {
+      key: "2",
+      label: <a href="/paid-memberships">Paid Memberships</a>,
+    },
+    {
+      key: "3",
+      label: <a href="/settings">Setting</a>,
+    },
+    {
+      key: "4",
+      label: <a href="/help">Help</a>,
+    },
+    {
+      key: "5",
+      label: <a href="/feedback">Send Feedback</a>,
     },
     {
       label: <a onClick={handleLogout}>Logout</a>,
-      key: "2",
+      key: "6",
     },
   ];
 
@@ -76,32 +107,59 @@ const AppHeader: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="styles-x-axis w-1/2 justify-end">
-        <div className="cart-styles">
-          <i className="fa-solid fa-cart-shopping"></i>
-        </div>
+      <div className="styles-x-axis w-1/2 justify-end gap-5">
+        {user?.role === "instructor" ? (
+          <Button
+            type="primary"
+            danger
+            className="my-custom-button"
+            onClick={handleCreateCourseClick}
+          >
+            Create new Course
+          </Button>
+        ) : null}
+        <Badge count={1}>
+          <ShoppingCartOutlined
+            style={{ fontSize: "1.5em" }}
+            onClick={handleShoppingCart}
+          />
+        </Badge>
+        <Badge count={1}>
+          <MailOutlined style={{ fontSize: "1.5em", cursor: "pointer" }} />
+        </Badge>
+        <Badge count={1}>
+          <BellOutlined style={{ fontSize: "1.5em", cursor: "pointer" }} />
+        </Badge>
         {user ? (
           <Dropdown menu={{ items }}>
             <a className="mr-9 flex" onClick={(e) => e.preventDefault()}>
               <Space>
-                <img src={user.image} className="h-12 w-12 rounded-full" />
+                <img
+                  src={user.image}
+                  className="h-12 w-12 rounded-full"
+                  alt=""
+                />
               </Space>
             </a>
           </Dropdown>
         ) : (
           <>
-            <button
-              className="sign-in-button"
+            <Button
+              type="primary"
+              className="bg-amber-500"
+              danger
               onClick={() => navigate("/sign-in")}
             >
-              Sign in
-            </button>
-            <button
-              className="sign-up-button"
+              Sign In
+            </Button>
+            <Button
+              className="mr-4 bg-amber-500"
+              type="primary"
+              danger
               onClick={() => navigate("/sign-up")}
             >
-              Sign up
-            </button>
+              Sign Up
+            </Button>
           </>
         )}
       </div>

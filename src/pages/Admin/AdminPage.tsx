@@ -6,7 +6,7 @@ import { useSider } from "../../app/context/SiderContext";
 import AppFooter from "../../components/Layout/AppFooter";
 import SiderAdmin from "../../components/Admin/SiderAdmin";
 import Overview from "../../components/Admin/Overview";
-import Chart from "../../components/Admin/Chart";
+import AdminChart from "../../components/Charts/AdminChart";
 
 const AdminPage = () => {
   const { collapsed } = useSider();
@@ -34,7 +34,16 @@ const AdminPage = () => {
               <section>
                 <h1 className="text-xl font-bold">Admin Dashboard</h1>
                 <Overview />
-                <Chart />
+                <div className="mt-10 grid grid-cols-2 gap-2">
+                  <div className="text-center">
+                    <AdminChart />
+                    <p>Example 1</p>
+                  </div>
+                  <div className="text-center">
+                    <AdminChart />
+                    <p>Example 2</p>
+                  </div>
+                </div>
               </section>
             </div>
             <Footer className="footer">

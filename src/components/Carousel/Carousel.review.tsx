@@ -1,7 +1,7 @@
 import { Carousel } from "antd";
 import "../../styles/customCarousel.css";
 import StudentReview from "../User/StudentReview";
-import { responsiveItem } from "../../const/Responsive.carouselitem";
+import { responsiveItem } from "../../const/responsiveCarousel";
 
 const CarouselReview: React.FC = () => {
   return (

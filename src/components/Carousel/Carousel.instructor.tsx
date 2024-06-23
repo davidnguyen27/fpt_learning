@@ -1,6 +1,6 @@
 import { Carousel } from "antd";
 import InstructorCard from "../Instructor/InstructorCard";
-import { responsiveItem } from "../../const/Responsive.carouselitem";
+import { responsiveItem } from "../../const/responsiveCarousel";
 
 const CarouselInstructor: React.FC = () => {
   return (

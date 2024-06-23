@@ -30,3 +30,4 @@ export { default as SocialInfo } from "./Student/SocialInfo";
 export { default as PersonalInfo } from "./Student/PersonalInfo";
 export { default as SideBar } from "./Student/Sidebar";
 export { default as EditForm } from "./Student/EditForm";
+export { default as ListCourse } from "./Course/ListCourse";

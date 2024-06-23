@@ -1,4 +1,5 @@
 import React from "react";
+import StudentCourseCard from "./StudentCourseCard";
 
 interface StudentProfileSubTabProps {
   activeTab: string;
@@ -86,11 +87,26 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
           ultricies elit porttitor, ultrices enim a, commodo dolor...
         </li>
-        <li>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-          ultricies elit porttitor, ultrices enim a, commodo dolor...
-        </li>
       </ul>
+    </div>
+  );
+
+  const MyCourseSubTabContent = () => (
+    <div>
+      <div className="mb-2 mt-3 flex w-full justify-between">
+        <h1 className="text-l font-semibold">Newest Courses</h1>
+        <a
+          href="/student-course-list-page"
+          className="font-light hover:text-amber-600"
+        >
+          See all
+        </a>
+      </div>
+      <div className="grid grid-cols-4 gap-3 rounded-md max-md:grid-cols-1 max-md:gap-2">
+        {Array.from({ length: 4 }).map((_, index) => (
+          <StudentCourseCard key={index} />
+        ))}
+      </div>
     </div>
   );
 
@@ -104,8 +120,18 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
         >
           About
         </button>
+        <button
+          type="button"
+          className={`px-4 py-2 ${activeTab === "myCourse" ? "bg-gray-200" : ""}`}
+          onClick={() => setActiveTab("myCourse")}
+        >
+          My Courses
+        </button>
       </div>
-      <div>{activeTab === "about" && <AboutTabContent />}</div>
+      <div>
+        {activeTab === "about" && <AboutTabContent />}
+        {activeTab === "myCourse" && <MyCourseSubTabContent />}
+      </div>
     </div>
   );
 };

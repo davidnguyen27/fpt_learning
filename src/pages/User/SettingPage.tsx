@@ -14,7 +14,7 @@ const { Header, Content } = Layout;
 
 const SettingsPage: React.FC = () => {
   const { collapsed } = useSider();
-  const [activeTab, setActiveTab] = useState<string>("account");
+  const [activeTab, setActiveTab] = useState<string>("privacy");
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
@@ -54,13 +54,6 @@ const SettingsPage: React.FC = () => {
                 style={{ padding: 24, minHeight: 360 }}
               >
                 <div className="flex justify-center border-b-2 border-gray-200 font-semibold">
-                  <button
-                    type="button"
-                    className={`px-4 py-2 ${activeTab === "account" ? "bg-gray-200" : ""}`}
-                    onClick={() => handleTabChange("account")}
-                  >
-                    Account Settings
-                  </button>
                   <button
                     type="button"
                     className={`px-4 py-2 ${activeTab === "privacy" ? "bg-gray-200" : ""}`}

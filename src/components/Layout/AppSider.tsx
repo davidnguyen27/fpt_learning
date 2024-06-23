@@ -7,12 +7,12 @@ const AppSider: React.FC<{ className?: string }> = () => {
   const navigate = useNavigate();
 
   return (
-    <>
+    <div className="flex h-full flex-col">
       <Menu
         mode="inline"
         defaultSelectedKeys={["1"]}
         defaultOpenKeys={["sub1"]}
-        className="bg-slate-200 text-sm"
+        className="flex-grow bg-slate-200 text-sm"
       >
         <Menu.Item
           className="hover:rounded-none hover:bg-amber-500 hover:text-black"
@@ -98,12 +98,12 @@ const AppSider: React.FC<{ className?: string }> = () => {
         </Menu.Item>
       </Menu>
       <Divider />
-      <Footer className="bg-slate-200 px-8 py-0 text-center">
+      <Footer className="bg-slate-200 px-8 py-3 text-center">
         <span className="text-xs font-light">
           Copyright by FPT Education @2024
         </span>
       </Footer>
-    </>
+    </div>
   );
 };
 

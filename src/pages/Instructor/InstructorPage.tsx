@@ -5,6 +5,7 @@ import { Header, Content, Footer } from "antd/es/layout/layout";
 import { AppHeader, AppFooter } from "../../components";
 import SiderInstructor from "../../components/Instructor/SiderInstructor";
 import Overview from "../../components/Admin/Overview";
+import InstructorChart from "../../components/Charts/InstructorChart";
 
 const InstructorPage: React.FC = () => {
   const { collapsed } = useSider();
@@ -32,6 +33,16 @@ const InstructorPage: React.FC = () => {
               <section>
                 <h1 className="text-xl font-bold">Instructor Dashboard</h1>
                 <Overview />
+                <div className="mt-10 grid grid-cols-2 gap-2">
+                  <div className="text-center">
+                    <InstructorChart />
+                    <p>Example 1</p>
+                  </div>
+                  <div className="text-center">
+                    <InstructorChart />
+                    <p>Example 2</p>
+                  </div>
+                </div>
               </section>
             </div>
             <Footer className="footer">

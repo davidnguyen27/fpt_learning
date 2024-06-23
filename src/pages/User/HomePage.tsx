@@ -11,6 +11,7 @@ import {
   CarouselInstructor,
   CarouselReview,
   CarouselSeller,
+  ListCourse,
 } from "../../components";
 
 const HomePage: React.FC = () => {
@@ -55,6 +56,15 @@ const HomePage: React.FC = () => {
                   </a>
                 </div>
                 <CarouselSeller />
+              </section>
+              <section className="mt-10">
+                <div className="mb-5 flex w-full justify-between">
+                  <h1 className="text-xl font-bold">Information Technology</h1>
+                  <a href="#" className="font-light hover:text-amber-600">
+                    See all
+                  </a>
+                </div>
+                <ListCourse />
               </section>
               <Achievements />
               <section>

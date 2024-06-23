@@ -7,7 +7,6 @@ import SignInPage from "../pages/User/SignInPage";
 import SignUpPage from "../pages/User/SignUpPage";
 import { AuthContext, AuthProvider } from "../app/context/AuthContext";
 import { useContext } from "react";
-import StudentPage from "../pages/User/StudentPage";
 import CategoriesManagePage from "../pages/Admin/CategoriesManagePage";
 import StudentProfilePage from "../pages/Student/StudentProfilePage";
 import StudentCourseDetailPage from "../pages/Student/StudentCourseDetailPage";
@@ -25,6 +24,11 @@ import SettingsPage from "../pages/User/SettingPage";
 import CoursesCheckPage from "../pages/Admin/CoursesCheckPage";
 import CoursesManagePage from "../pages/Instructor/CoursesManagePage";
 import CreateCoursePage from "../pages/Instructor/CreateCoursePage";
+import LessonManagePage from "../pages/Instructor/LessonManagePage";
+import SessionManagePage from "../pages/Instructor/SessionManagePage";
+import EarningPage from "../pages/Instructor/EarningPage";
+import StudentCourseListPage from "../pages/Student/StudentCourseListPage";
+import StudentSettingPage from "../pages/Student/StudentSettingPage";
 
 interface ProtectedRouteProps {
   element: JSX.Element;
@@ -65,7 +69,7 @@ const AppRouter = () => {
           <Route path="/settings-page" element={<SettingsPage />} />
 
           {/* Student */}
-          <Route path="/student-management" element={<StudentPage />} />
+          {/* <Route path="student/student-management" element={<StudentPage />} /> */}
           <Route
             path="/view-detail"
             element={
@@ -108,11 +112,30 @@ const AppRouter = () => {
               />
             }
           />
+          <Route
+            path="/student-course-list-page"
+            element={
+              <ProtectedRoute
+                element={<StudentCourseListPage />}
+                allowedRoles={["student"]}
+              />
+            }
+          />
+          <Route
+            path="/student-setting-page"
+            element={
+              <ProtectedRoute
+                element={<StudentSettingPage />}
+                allowedRoles={["student"]}
+              />
+            }
+          />
+
           {/* --- */}
 
           {/* Admin  */}
           <Route
-            path="/admin-dashboard"
+            path="/admin/dashboard"
             element={
               <ProtectedRoute
                 element={<AdminPage />}
@@ -130,7 +153,7 @@ const AppRouter = () => {
             }
           />
           <Route
-            path="/users-management"
+            path="/admin/users-management"
             element={
               <ProtectedRoute
                 element={<UserManagePage />}
@@ -139,7 +162,7 @@ const AppRouter = () => {
             }
           />
           <Route
-            path="/categories-management"
+            path="/admin/categories-management"
             element={
               <ProtectedRoute
                 element={<CategoriesManagePage />}
@@ -148,7 +171,7 @@ const AppRouter = () => {
             }
           />
           <Route
-            path="/feedbacks-management"
+            path="/admin/feedbacks-management"
             element={
               <ProtectedRoute
                 element={<FeedBackManagePage />}
@@ -157,7 +180,7 @@ const AppRouter = () => {
             }
           />
           <Route
-            path="/reports-management"
+            path="/admin/reports-management"
             element={
               <ProtectedRoute
                 element={<ReportManagePage />}
@@ -166,7 +189,7 @@ const AppRouter = () => {
             }
           />
           <Route
-            path="/blogs-management"
+            path="/admin/blogs-management"
             element={
               <ProtectedRoute
                 element={<BlogManagePage />}
@@ -175,7 +198,7 @@ const AppRouter = () => {
             }
           />
           <Route
-            path="/courses-check"
+            path="/admin/courses-check"
             element={
               <ProtectedRoute
                 element={<CoursesCheckPage />}
@@ -187,7 +210,7 @@ const AppRouter = () => {
 
           {/* Instructor */}
           <Route
-            path="/instructor-dashboard"
+            path="/instructor/dashboard"
             element={
               <ProtectedRoute
                 element={<InstructorPage />}
@@ -196,7 +219,7 @@ const AppRouter = () => {
             }
           />
           <Route
-            path="/courses-management"
+            path="/instructor/courses-management"
             element={
               <ProtectedRoute
                 element={<CoursesManagePage />}
@@ -205,10 +228,37 @@ const AppRouter = () => {
             }
           />
           <Route
-            path="/create-course"
+            path="/instructor/lessons-management"
+            element={
+              <ProtectedRoute
+                element={<LessonManagePage />}
+                allowedRoles={["instructor"]}
+              />
+            }
+          />
+          <Route
+            path="/instructor/sessions-management"
+            element={
+              <ProtectedRoute
+                element={<SessionManagePage />}
+                allowedRoles={["instructor"]}
+              />
+            }
+          />
+          <Route
+            path="/instructor/courses-management/create-course-step"
             element={
               <ProtectedRoute
                 element={<CreateCoursePage />}
+                allowedRoles={["instructor"]}
+              />
+            }
+          />
+          <Route
+            path="/instructor/earning-management"
+            element={
+              <ProtectedRoute
+                element={<EarningPage />}
                 allowedRoles={["instructor"]}
               />
             }

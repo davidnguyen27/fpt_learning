@@ -29,7 +29,9 @@ const CreateCoursePage = () => {
         <Layout className="flex flex-1 flex-col">
           <Content className="flex-1 overflow-y-auto">
             <section className="p-8">
-              <h1 className="text-xl font-bold">Create New Course</h1>
+              <h1 className="text-xl font-bold">
+                <i className="fa-solid fa-arrow-trend-up"></i> Create New Course
+              </h1>
               <StepsCreateCourse />
             </section>
             <Footer className="footer">
