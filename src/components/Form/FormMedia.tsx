@@ -25,7 +25,7 @@ const FormMedia: React.FC<FormMediaProps> = (props) => {
       key: "1",
       label: (
         <button
-          className={`rounded-sm ${activeKey === "1" ? "bg-amber-500" : "bg-slate-200"} px-5 py-3`}
+          className={`rounded-sm ${activeKey === "1" ? "bg-red-500 text-white" : "bg-slate-200"} px-5 py-3`}
         >
           HTML5(mp4)
         </button>
@@ -36,7 +36,7 @@ const FormMedia: React.FC<FormMediaProps> = (props) => {
       key: "2",
       label: (
         <button
-          className={`mx-4 rounded-sm ${activeKey === "2" ? "bg-amber-500" : "bg-slate-200"} px-5 py-3`}
+          className={`mx-4 rounded-sm ${activeKey === "2" ? "bg-red-500 text-white" : "bg-slate-200"} px-5 py-3`}
         >
           External URL
         </button>
@@ -47,7 +47,7 @@ const FormMedia: React.FC<FormMediaProps> = (props) => {
       key: "3",
       label: (
         <button
-          className={`mx-4 rounded-sm ${activeKey === "3" ? "bg-amber-500" : "bg-slate-200"} px-5 py-3`}
+          className={`mx-4 rounded-sm ${activeKey === "3" ? "bg-red-500 text-white" : "bg-slate-200"} px-5 py-3`}
         >
           YouTube
         </button>
@@ -58,7 +58,7 @@ const FormMedia: React.FC<FormMediaProps> = (props) => {
       key: "4",
       label: (
         <button
-          className={`mx-4 rounded-sm ${activeKey === "4" ? "bg-amber-500" : "bg-slate-200"} px-5 py-3`}
+          className={`mx-4 rounded-sm ${activeKey === "4" ? "bg-red-500 text-white" : "bg-slate-200"} px-5 py-3`}
         >
           Vimeo
         </button>
@@ -69,7 +69,7 @@ const FormMedia: React.FC<FormMediaProps> = (props) => {
       key: "5",
       label: (
         <button
-          className={`mx-4 rounded-sm ${activeKey === "5" ? "bg-amber-500" : "bg-slate-200"} px-5 py-3`}
+          className={`mx-4 rounded-sm ${activeKey === "5" ? "bg-red-500 text-white" : "bg-slate-200"} px-5 py-3`}
         >
           Embedded
         </button>
@@ -96,13 +96,13 @@ const FormMedia: React.FC<FormMediaProps> = (props) => {
       />
       <div className="flex justify-between">
         <button
-          className="mt-6 bg-amber-500 px-10 py-3 hover:bg-amber-600"
+          className="mt-6 text-white bg-red-500 px-10 py-3 hover:bg-red-600"
           onClick={prevStep}
         >
           Previous
         </button>
         <button
-          className="mt-6 bg-amber-500 px-10 py-3 hover:bg-amber-600"
+          className="mt-6 text-white bg-red-500 px-10 py-3 hover:bg-red-600"
           onClick={goToNextStep}
         >
           Next

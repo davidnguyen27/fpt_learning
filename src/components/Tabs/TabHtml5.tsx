@@ -2,7 +2,7 @@ const TabHtml5 = () => {
   return (
     <>
       <div className="my-5 flex h-28 w-2/5 flex-col items-center justify-center border-2 border-dashed px-6 py-4">
-        <label className="inline-block cursor-pointer border-2 border-solid border-amber-500 px-4 py-2 text-amber-400">
+        <label className="inline-block cursor-pointer border-2 border-solid border-red-500 px-4 py-2 text-black">
           UPLOAD VIDEO
           <input type="file" accept="video/*" className="hidden" />
         </label>
@@ -18,7 +18,7 @@ const TabHtml5 = () => {
           <i className="fa-regular fa-image text-3xl"></i>
         </div>
         <div className="mt-6 flex flex-col items-center justify-center">
-          <label className="inline-block cursor-pointer border-2 border-solid border-amber-500 px-4 py-2 text-amber-400">
+          <label className="inline-block cursor-pointer border-2 border-solid border-red-500 px-4 py-2 text-black">
             CHOOSE THUMBNAIL
             <input type="file" accept=".jpg, .jpeg, .png" className="hidden" />
           </label>

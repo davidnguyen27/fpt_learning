@@ -17,7 +17,7 @@ const TabVimeo = () => {
           <i className="fa-regular fa-image text-3xl"></i>
         </div>
         <div className="mt-6 flex flex-col items-center justify-center">
-          <label className="inline-block cursor-pointer border-2 border-solid border-amber-500 px-4 py-2">
+          <label className="inline-block cursor-pointer border-2 border-solid border-red-500 px-4 py-2">
             CHOOSE THUMBNAIL
             <input type="file" accept=".jpg, .jpeg, .png" className="hidden" />
           </label>

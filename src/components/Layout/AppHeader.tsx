@@ -19,7 +19,7 @@ const AppHeader: React.FC = () => {
   };
 
   const handleCreateCourseClick = () => {
-    navigate("/create-course");
+    navigate("/instructor/courses-management/create-course-step");
   };
 
   const handleView = () => {
@@ -147,24 +147,25 @@ const AppHeader: React.FC = () => {
             </Dropdown>
           </>
         ) : (
-          <>
+          <div className="mr-4">
             <Button
               type="primary"
-              className="bg-amber-500"
+              className="mr-4 bg-red-500"
               danger
               onClick={() => navigate("/sign-in")}
             >
               Sign In
             </Button>
             <Button
-              className="mr-4 bg-amber-500"
+              className="mr-4"
+              style={{ backgroundColor: "#f3f4f6", color: "black", borderColor: "black" }}
               type="primary"
               danger
               onClick={() => navigate("/sign-up")}
             >
               Sign Up
             </Button>
-          </>
+          </div>
         )}
       </div>
     </>

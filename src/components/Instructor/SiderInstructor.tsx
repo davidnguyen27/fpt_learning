@@ -1,31 +1,30 @@
-import { BarChartOutlined, ExceptionOutlined } from "@ant-design/icons";
-import { Divider, Menu } from "antd";
-import { Footer } from "antd/es/layout/layout";
+import { AppstoreOutlined, BarChartOutlined, DollarOutlined, ExceptionOutlined, ReadOutlined, StarOutlined, WalletOutlined } from "@ant-design/icons";
+import { Menu } from "antd";
 import { useNavigate } from "react-router-dom";
 
 const SiderInstructor: React.FC<{ className?: string }> = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex h-full flex-col">
+    <>
       <Menu
         mode="inline"
         // defaultSelectedKeys={["1"]}
         // defaultOpenKeys={["sub1"]}
-        className="flex-grow bg-slate-200"
+        className="bg-slate-200"
       >
         <Menu.Item
-          className="hover:rounded-none hover:bg-amber-500 hover:text-black"
+          className="hover:bg-red-500 hover:text-white"
           key="1"
-          icon={<i className="fa-solid fa-chart-line"></i>}
+          icon={<AppstoreOutlined />}
           onClick={() => navigate("/instructor/dashboard")}
         >
           Dashboard
         </Menu.Item>
         <Menu.Item
-          className="hover:rounded-none hover:bg-amber-500 hover:text-black"
+          className="hover:bg-red-500 hover:text-white"
           key="2"
-          icon={<i className="fa-solid fa-book-open"></i>}
+          icon={<ReadOutlined />}
           onClick={() => navigate("/instructor/courses-management")}
         >
           Courses
@@ -47,35 +46,29 @@ const SiderInstructor: React.FC<{ className?: string }> = () => {
           Session
         </Menu.Item>
         <Menu.Item
-          className="hover:rounded-none hover:bg-amber-500 hover:text-black"
+          className="hover:bg-red-500 hover:text-white"
           key="5"
-          icon={<i className="fa-solid fa-star"></i>}
+          icon={<StarOutlined />}
         >
           Reviews
         </Menu.Item>
         <Menu.Item
-          className="hover:rounded-none hover:bg-amber-500 hover:text-black"
+          className="hover:bg-red-500 hover:text-white"
           key="6"
-          icon={<i className="fa-solid fa-dollar-sign"></i>}
           onClick={() => navigate("/instructor/earning-management")}
+          icon={<DollarOutlined />}
         >
           Earning
         </Menu.Item>
         <Menu.Item
-          className="hover:rounded-none hover:bg-amber-500 hover:text-black"
+          className="hover:bg-amber-500 hover:text-white"
           key="7"
-          icon={<i className="fa-solid fa-wallet"></i>}
+          icon={<WalletOutlined />}
         >
           Payout
         </Menu.Item>
       </Menu>
-      <Divider />
-      <Footer className="bg-slate-200 px-8 py-3 text-center">
-        <span className="text-xs font-light">
-          Copyright by FPT Education @2024
-        </span>
-      </Footer>
-    </div>
+    </>
   );
 };
 

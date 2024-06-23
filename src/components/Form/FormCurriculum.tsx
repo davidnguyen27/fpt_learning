@@ -28,7 +28,7 @@ const FormCurriculum: React.FC<FormCurriculumProps> = (props) => {
           <i className="fa-solid fa-list"></i>
           <span className="ml-2 text-base font-medium">Curriculum</span>
         </div>
-        <button className="bg-amber-500 px-6 py-3 font-medium hover:bg-amber-600">
+        <button className="bg-red-500 text-white px-6 py-3 font-medium hover:bg-red-600">
           New Section
         </button>
       </div>
@@ -77,13 +77,13 @@ const FormCurriculum: React.FC<FormCurriculumProps> = (props) => {
       </div>
       <div className="flex justify-between">
         <button
-          className="mt-6 bg-amber-500 px-10 py-3 hover:bg-amber-600"
+          className="mt-6 text-white bg-red-500 px-10 py-3 hover:bg-red-600"
           onClick={prevStep}
         >
           Previous
         </button>
         <button
-          className="mt-6 bg-amber-500 px-10 py-3 hover:bg-amber-600"
+          className="mt-6 text-white bg-red-500 px-10 py-3 hover:bg-red-600"
           onClick={goToNextStep}
         >
           Next
