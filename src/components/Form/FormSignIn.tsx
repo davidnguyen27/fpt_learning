@@ -5,7 +5,6 @@ import { AuthContext } from "../../app/context/AuthContext";
 
 const FormSignIn = () => {
   const navigate = useNavigate();
-
   const authContext = useContext(AuthContext);
 
   if (!authContext) {
@@ -21,25 +20,23 @@ const FormSignIn = () => {
       const user = storedUser ? JSON.parse(storedUser) : null;
       if (user) {
         sessionStorage.setItem("userRole", user.role);
+        sessionStorage.setItem("userId", user.id); // Store the user ID
         switch (user.role) {
           case "admin":
             navigate("/admin-dashboard");
             break;
-
           case "instructor":
             navigate("/instructor-dashboard");
             break;
-
           case "student":
             navigate("/");
             break;
-
           default:
             console.log("Unknown role!");
             break;
         }
       } else {
-        return alert("Email or password is wrong!");
+        alert("Email or password is wrong!");
       }
     } catch (error) {
       console.error("Unknown error: ", error);

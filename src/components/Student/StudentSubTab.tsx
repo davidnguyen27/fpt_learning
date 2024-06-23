@@ -100,9 +100,9 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
         </a>
       </div>
       <div className="rounded-md grid grid-cols-4 gap-3 max-md:grid-cols-1 max-md:gap-2">
-        {Array.from({ length: 4 }).map((_, index) => (
-          <StudentCourseCard key={index} />
-        ))}
+        {/* {Array.from({ length: 4 }).map((_, index) => (
+          // <StudentCourseCard key={index} />
+        ))} */}
       </div>
     </div>
   );

@@ -67,3 +67,16 @@ export type InstructorChannelProps = {
   dislikes: number;
   shares: number;
 };
+
+export type StudentProfileData = {
+  title: string;
+  description: string;
+  avatarUrl?: string; // Optional URL for the avatar image
+  dateOfBirth: string;
+  socialMedias?: { // Make socialMedias optional
+    facebook?: string;
+    linkedin?: string;
+    github?: string;
+  };
+  address: string;
+}

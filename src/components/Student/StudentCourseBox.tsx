@@ -16,13 +16,17 @@ const StudentCourseBox: React.FC<CourseBoxProps> = ({ courseData }) => {
 
   return (
     <div className="p-5 text-black">
-      <div className="flex flex-col md:flex-row items-center md:items-start bg-gray-800 p-6 md:p-12">
-        <img
-          className="cursor-pointer w-32 h-32 md:w-48 md:h-48 lg:w-64 lg:h-64 rounded-lg border-4 border-gray-500 mb-4 md:mb-0"
-          src={coursethumbnail}
-          alt="Course Thumbnail"
+      <div className="flex flex-col md:flex-row items-center md:items-start bg-gray-800 p-6 md:p-12 rounded-lg">
+        <div
+          className="cursor-pointer aspect-w-16 aspect-h-9 w-full max-w-xs md:max-w-md lg:max-w-lg rounded-lg border-4 border-gray-500 mb-4 md:mb-0"
           onClick={showModal}
-        />
+        >
+          <img
+            className="object-cover rounded-lg w-full h-full"
+            src={coursethumbnail}
+            alt="Course Thumbnail"
+          />
+        </div>
         <div className="md:ml-4 text-center md:text-left flex flex-col items-center md:items-start">
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4">
             {courseData.title}
@@ -33,7 +37,7 @@ const StudentCourseBox: React.FC<CourseBoxProps> = ({ courseData }) => {
               type="button"
               className="flex-1 py-2 md:py-3 px-3 md:px-4 bg-red-500 text-white rounded hover:bg-red-700"
             >
-              Cancel Subscription
+              Report
             </button>
             <button
               type="button"
