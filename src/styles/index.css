@@ -30,7 +30,7 @@ body {
   }
 
   .menu-bar {
-    @apply mr-4 flex h-16 w-16 cursor-pointer items-center justify-center bg-amber-500 text-2xl hover:bg-amber-600;
+    @apply mr-4 flex h-16 w-16 cursor-pointer text-white items-center justify-center bg-[#ef4444] text-2xl bg-[#ef4444];
   }
 
   .logo-box {
@@ -54,11 +54,11 @@ body {
   }
 
   .sign-in-button {
-    @apply h-12 w-24 rounded-xl bg-amber-500 leading-10 hover:bg-amber-600;
+    @apply h-12 w-24 rounded-xl bg-red-500 leading-10 hover:bg-red-200;
   }
 
   .sign-up-button {
-    @apply mx-3 h-12 w-24 rounded-xl border-slate-400 bg-gray-300 leading-10 hover:bg-gray-400;
+    @apply mx-3 h-12 w-24 rounded-xl border-slate-400 bg-red-500 leading-10 hover:bg-red-200;
   }
 
   .sider {
