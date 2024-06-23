@@ -3,15 +3,14 @@ import FormSignUp from "../../components/Form/FormSignUp";
 
 const SignUpPage = () => {
   return (
-    <div
-      className="flex h-screen w-screen items-center justify-center bg-slate-300"
-      style={{
-        backgroundImage: "url(/public/image/background.png)",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
+    <div className="flex h-screen w-screen items-center justify-center bg-slate-300"
+    style={{ 
+      backgroundImage: "url(/public/image/background.png)", 
+      backgroundSize: "cover", 
+      backgroundPosition: "center"
+    }}
     >
-      <div className="max-w-sl max-h-dvh rounded-lg bg-white p-4">
+      <div className="max-h-dvh max-w-sl rounded-lg bg-white p-4">
         <h2 className="mb-5 text-center text-2xl font-bold">
           Welcome to FPT Education
         </h2>
@@ -21,11 +20,11 @@ const SignUpPage = () => {
         <FormSignUp />
         <p className="text-center text-sm">
           By signing up, you agree to our{" "}
-          <a className="text-black underline hover:text-amber-500" href="#">
+          <a className="text-black underline hover:text-red-500" href="#">
             Terms of Use
           </a>{" "}
           and{" "}
-          <a className="text-black underline hover:text-amber-500" href="#">
+          <a className="text-black underline hover:text-red-500" href="#">
             Privacy Policy
           </a>
           .
@@ -33,7 +32,7 @@ const SignUpPage = () => {
         <Divider />
         <p className="text-center text-sm">
           Already have an account?{" "}
-          <a href="/sign-in" className="text-amber-500 hover:underline">
+          <a href="/sign-in" className="text-red-500 hover:underline">
             Sign in
           </a>
         </p>
