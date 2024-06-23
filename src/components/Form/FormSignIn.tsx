@@ -23,11 +23,11 @@ const FormSignIn = () => {
         sessionStorage.setItem("userRole", user.role);
         switch (user.role) {
           case "admin":
-            navigate("/admin/dashboard");
+            navigate("/admin-dashboard");
             break;
 
           case "instructor":
-            navigate("/instructor/dashboard");
+            navigate("/instructor-dashboard");
             break;
 
           case "student":
@@ -48,9 +48,7 @@ const FormSignIn = () => {
 
   return (
     <div className="relative">
-      <h2 className="mb-12 text-xl font-bold text-black">
-        Welcome to FPT Education...
-      </h2>
+      <h2 className="text-xl font-bold text-black mb-12">Welcome to FPT Education...</h2>
       <Form onFinish={handleLogin}>
         <Form.Item
           name="email"
@@ -91,13 +89,16 @@ const FormSignIn = () => {
         <Form.Item>
           <button
             type="submit"
-            className="mb-3 flex w-full items-center justify-center rounded border border-black bg-amber-500 px-7 py-3 text-center text-sm font-medium uppercase leading-normal text-white shadow-md transition duration-150 hover:bg-[#333] hover:text-white"
+            className="mb-3 flex w-full items-center justify-center rounded border border-black bg-[#ef4444] px-7 py-3 text-center text-sm font-medium uppercase leading-normal text-white hover:text-white shadow-md transition duration-150 hover:bg-[#333]"
           >
             Sign In
           </button>
           <p className="mb-0 text-sm font-semibold">
             Don't have an account?{" "}
-            <a href="sign-up" className="text-amber-500">
+            <a
+              href="sign-up"
+              className="text-red-500"
+            >
               Sign Up
             </a>
           </p>
@@ -111,7 +112,7 @@ const FormSignIn = () => {
         {/* <!-- Social login buttons --> */}
         <div className="w-full">
           <a
-            className="mb-3 flex w-full items-center justify-center rounded border border-black bg-[#FFFFFF] px-7 py-3 text-center text-sm font-medium uppercase leading-normal text-black shadow-md transition duration-150 hover:text-black"
+            className="mb-3 flex w-full items-center justify-center rounded border border-black bg-[#FFFFFF] px-7 py-3 text-center text-sm font-medium uppercase leading-normal text-black hover:text-black shadow-md transition duration-150"
             href="#!"
             role="button"
           >
