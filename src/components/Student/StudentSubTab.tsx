@@ -1,15 +1,45 @@
-import React from "react";
-import StudentCourseCard from "./StudentCourseCard";
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { Course } from '../../models/Types';
 
 interface StudentProfileSubTabProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
+  userId: string | null; // Add userId prop
 }
 
 const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
   activeTab,
   setActiveTab,
+  userId,
 }) => {
+  const [studentCourses, setStudentCourses] = useState<Course[]>([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchStudentCourses = async () => {
+      try {
+        if (!userId) {
+          console.log('No userId available');
+          return; // Exit early if userId is not available
+        }
+
+        const response = await axios.get<Course[]>(`https://6678548d0bd45250561e50ca.mockapi.io/courses?studentId=${userId}`);
+        const userCourses = response.data;
+        console.log('Fetched courses:', userCourses); // Log fetched courses
+        setStudentCourses(userCourses);
+      } catch (error) {
+        console.error('Error fetching student courses:', error);
+      }
+    };
+
+    // Check if userId is available to fetch courses
+    if (userId) {
+      fetchStudentCourses();
+    }
+  }, [userId]);
+
   const AboutTabContent = () => (
     <div>
       <h3 className="rounded font-semibold">Requirements</h3>
@@ -39,54 +69,7 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
           ultricies elit porttitor, ultrices enim a, commodo dolor...
         </li>
-        <li>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-          ultricies elit porttitor, ultrices enim a, commodo dolor...
-        </li>
-        <li>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-          ultricies elit porttitor, ultrices enim a, commodo dolor...
-        </li>
-        <li>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-          ultricies elit porttitor, ultrices enim a, commodo dolor...
-        </li>
-        <li>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-          ultricies elit porttitor, ultrices enim a, commodo dolor...
-        </li>
-        <li>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-          ultricies elit porttitor, ultrices enim a, commodo dolor...
-        </li>
-        <li>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-          ultricies elit porttitor, ultrices enim a, commodo dolor...
-        </li>
-        <li>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-          ultricies elit porttitor, ultrices enim a, commodo dolor...
-        </li>
-        <li>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-          ultricies elit porttitor, ultrices enim a, commodo dolor...
-        </li>
-        <li>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-          ultricies elit porttitor, ultrices enim a, commodo dolor...
-        </li>
-        <li>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-          ultricies elit porttitor, ultrices enim a, commodo dolor...
-        </li>
-        <li>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-          ultricies elit porttitor, ultrices enim a, commodo dolor...
-        </li>
-        <li>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-          ultricies elit porttitor, ultrices enim a, commodo dolor...
-        </li>
+        {/* Add more learning points as needed */}
       </ul>
     </div>
   );
@@ -94,15 +77,30 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
   const MyCourseSubTabContent = () => (
     <div>
       <div className=" mt-3 mb-2 flex w-full justify-between">
-        <h1 className="text-l font-semibold">Newest Courses</h1>
+        <h1 className="text-l font-semibold">My Courses</h1>
         <a href="/student-course-list-page" className="font-light hover:text-amber-600">
           See all
         </a>
       </div>
       <div className="rounded-md grid grid-cols-4 gap-3 max-md:grid-cols-1 max-md:gap-2">
-        {/* {Array.from({ length: 4 }).map((_, index) => (
-          // <StudentCourseCard key={index} />
-        ))} */}
+        {studentCourses.length > 0 ? (
+          studentCourses.map(course => (
+            <div key={course.id} className="bg-white rounded-lg shadow-md p-4">
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">{course.title}</h3>
+              <p className="text-sm text-gray-600 mb-4">{course.description}</p>
+              <div className="flex justify-between">
+                <button
+                  className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-700 text-xs"
+                  onClick={() => navigate(`/course/${course.id}`)}
+                >
+                  View
+                </button>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p>No courses found.</p>
+        )}
       </div>
     </div>
   );

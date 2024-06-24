@@ -1,6 +1,12 @@
 import { createContext, useState, ReactNode, useContext } from "react";
 import axios from "axios";
-import { AuthContextType, User } from "../../models/Types";
+import { User } from "../../models/Types";
+
+interface AuthContextType {
+  user: User | null;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => void;
+}
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -16,11 +22,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         "https://665fc1c95425580055b0bf26.mockapi.io/users",
       );
       const users = response.data;
-      console.log(users);
       const userData = users.find(
         (user) => user.email === email && user.password === password,
       );
-      console.log(userData);
 
       if (userData) {
         setUser(userData);
@@ -36,7 +40,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = () => {
     setUser(null);
     sessionStorage.removeItem("user");
-    sessionStorage.removeItem("userRole");
   };
 
   return (

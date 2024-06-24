@@ -1,10 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from 'axios';
 import coursethumbnail from "../../assets/coursethumbnail.jpg";
 import coursevideo from "../../assets/coursevideo.mp4";
-import { CourseBoxProps } from "../../models/Types";
+import { Course, Category } from "../../models/Types";
 
-const StudentCourseBox: React.FC<CourseBoxProps> = ({ courseData }) => {
+interface StudentCourseBoxProps {
+  courseData: Course;
+}
+
+const StudentCourseBox: React.FC<StudentCourseBoxProps> = ({ courseData }) => {
   const [visible, setVisible] = useState(false);
+  const [categoryName, setCategoryName] = useState<string>('');
+
+  useEffect(() => {
+    const fetchCategoryName = async () => {
+      try {
+        const response = await axios.get<Category>(`https://6678548d0bd45250561e50ca.mockapi.io/categories/${courseData.categoryId}`);
+        setCategoryName(response.data.name);
+      } catch (error) {
+        console.error('Error fetching category:', error);
+        setCategoryName('Unknown Category');
+      }
+    };
+
+    fetchCategoryName();
+  }, [courseData.categoryId]);
 
   const showModal = () => {
     setVisible(true);
@@ -23,7 +43,7 @@ const StudentCourseBox: React.FC<CourseBoxProps> = ({ courseData }) => {
         >
           <img
             className="object-cover rounded-lg w-full h-full"
-            src={coursethumbnail}
+            src={courseData.thumbnail || coursethumbnail}
             alt="Course Thumbnail"
           />
         </div>
@@ -32,6 +52,9 @@ const StudentCourseBox: React.FC<CourseBoxProps> = ({ courseData }) => {
             {courseData.title}
           </h2>
           <p className="text-white mb-4">{courseData.description}</p>
+          <p className="text-white mb-2">By: <span className="font-semibold">{courseData.instructor}</span></p>
+          <p className="text-white mb-2">Category: <span className="font-semibold">{categoryName}</span></p>
+          <p className="text-white mb-4">Number of Students: <span className="font-semibold">{courseData.students.length}</span></p>
           <div className="flex space-x-4 w-full">
             <button
               type="button"

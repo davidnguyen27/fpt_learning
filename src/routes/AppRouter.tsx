@@ -69,11 +69,11 @@ const AppRouter = () => {
           {/* Student */}
           <Route path="/student-management" element={<StudentPage />} />
           <Route
-            path="/view-detail"
+            path="/student-course-detail/:courseId"
             element={
               <ProtectedRoute
                 element={<StudentCourseDetailPage />}
-                allowedRoles={["student"]}
+                allowedRoles={['student']}
               />
             }
           />

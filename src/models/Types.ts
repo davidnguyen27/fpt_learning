@@ -6,6 +6,7 @@ export type SiderContextType = {
 };
 
 export type User = {
+  id: string;
   email: string;
   password: string;
   role: string;
@@ -35,8 +36,15 @@ export type HelpSubTabProps = {
 
 export type CourseBoxProps = {
   courseData: {
-    title: String;
-    description: String;
+    id: string;
+  title: string;
+  description: string;
+  thumbnail: string;
+  video: string;
+  categoryId: string;
+  price: string;
+  students: string[];
+  instructor: string;
   };
 };
 
@@ -68,15 +76,34 @@ export type InstructorChannelProps = {
   shares: number;
 };
 
+export type SocialMedias = {
+  github: string;
+  facebook: string;
+};
+
 export type StudentProfileData = {
   title: string;
   description: string;
-  avatarUrl?: string; // Optional URL for the avatar image
+  avatarUrl: string;
   dateOfBirth: string;
-  socialMedias?: { // Make socialMedias optional
-    facebook?: string;
-    linkedin?: string;
-    github?: string;
-  };
   address: string;
+  socialMedias: SocialMedias;
+};
+
+export interface Category {
+  categoryId: string;
+  name: string;
+  description: string;
+}
+
+export interface Course {
+  id: string;
+  title: string;
+  description: string;
+  thumbnail: string;
+  video: string;
+  categoryId: string;
+  price: string;
+  students: string[];
+  instructor: string;
 }

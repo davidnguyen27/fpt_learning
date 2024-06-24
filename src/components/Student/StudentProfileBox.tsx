@@ -22,7 +22,7 @@ const StudentProfileBox: React.FC = () => {
             dateOfBirth: userData.dateOfBirth,
             address: userData.address,
             socialMedias: {
-              linkedin: userData.linkedin,
+              facebook: userData.facebook,
               github: userData.github,
               // Add facebook here if available in the data
             }
@@ -60,11 +60,6 @@ const StudentProfileBox: React.FC = () => {
             {studentProfileData.socialMedias?.facebook && (
               <a href={studentProfileData.socialMedias.facebook} target="_blank" rel="noopener noreferrer">
                 <i className="fab fa-facebook text-white text-2xl"></i>
-              </a>
-            )}
-            {studentProfileData.socialMedias?.linkedin && (
-              <a href={studentProfileData.socialMedias.linkedin} target="_blank" rel="noopener noreferrer">
-                <i className="fab fa-linkedin text-white text-2xl"></i>
               </a>
             )}
             {studentProfileData.socialMedias?.github && (
