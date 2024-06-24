@@ -2,6 +2,8 @@ import { Form, Input, Radio } from "antd";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../app/context/AuthContext";
+import { auth, provider } from "../../../firebaseConfig";
+import { signInWithPopup } from "firebase/auth";
 
 const FormSignIn = () => {
   const navigate = useNavigate();
@@ -43,6 +45,19 @@ const FormSignIn = () => {
       }
     } catch (error) {
       console.error("Unknown error: ", error);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      // Lưu thông tin người dùng vào sessionStorage hoặc thực hiện hành động khác
+      sessionStorage.setItem("user", JSON.stringify(user));
+      sessionStorage.setItem("userRole", "student"); // Giả sử người dùng Google là student
+      navigate("/");
+    } catch (error) {
+      console.error("Google login error: ", error);
     }
   };
 
@@ -91,13 +106,13 @@ const FormSignIn = () => {
         <Form.Item>
           <button
             type="submit"
-            className="mb-3 flex w-full items-center justify-center rounded border border-black bg-amber-500 px-7 py-3 text-center text-sm font-medium uppercase leading-normal text-white shadow-md transition duration-150 hover:bg-[#333] hover:text-white"
+            className="mb-3 flex w-full items-center justify-center rounded border border-black bg-[#ef4444] px-7 py-3 text-center text-sm font-medium uppercase leading-normal text-white shadow-md transition duration-150 hover:bg-[#333] hover:text-white"
           >
             Sign In
           </button>
           <p className="mb-0 text-sm font-semibold">
             Don't have an account?{" "}
-            <a href="sign-up" className="text-amber-500">
+            <a href="sign-up" className="text-red-500">
               Sign Up
             </a>
           </p>
@@ -114,6 +129,7 @@ const FormSignIn = () => {
             className="mb-3 flex w-full items-center justify-center rounded border border-black bg-[#FFFFFF] px-7 py-3 text-center text-sm font-medium uppercase leading-normal text-black shadow-md transition duration-150 hover:text-black"
             href="#!"
             role="button"
+            onClick={handleGoogleLogin}
           >
             {/* <!-- Google --> */}
             <svg

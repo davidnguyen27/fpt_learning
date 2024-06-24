@@ -15,10 +15,6 @@ const CarouselCourse = () => {
       responsive={responsiveItem}
     >
       <CourseCard />
-      <CourseCard />
-      <CourseCard />
-      <CourseCard />
-      <CourseCard />
     </Carousel>
   );
 };

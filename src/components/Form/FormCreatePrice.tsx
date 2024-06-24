@@ -22,7 +22,7 @@ const FormCreatePrice: React.FC<FormCreatePriceProps> = (props) => {
       key: "1",
       label: (
         <div
-          className={`mx-4 rounded-sm ${activeKey === "1" ? "bg-amber-500" : "bg-slate-200"} px-5 py-3`}
+          className={`mx-4 rounded-sm ${activeKey === "1" ? "bg-red-500 text-white" : "bg-slate-200"} px-5 py-3`}
         >
           <i className="fa-solid fa-tag"></i> Free
         </div>
@@ -33,7 +33,7 @@ const FormCreatePrice: React.FC<FormCreatePriceProps> = (props) => {
       key: "2",
       label: (
         <div
-          className={`mx-4 rounded-sm ${activeKey === "2" ? "bg-amber-500" : "bg-slate-200"} px-5 py-3`}
+          className={`mx-4 rounded-sm ${activeKey === "2" ? "bg-red-500 text-white" : "bg-slate-200"} px-5 py-3`}
         >
           <i className="fa-solid fa-cart-arrow-down"></i> Paid
         </div>
@@ -59,13 +59,13 @@ const FormCreatePrice: React.FC<FormCreatePriceProps> = (props) => {
       </div>
       <div className="flex justify-between">
         <button
-          className="mt-6 bg-amber-500 px-10 py-3 hover:bg-amber-600"
+          className="mt-6 bg-red-500 px-10 py-3 hover:bg-red-600 text-white"
           onClick={prevStep}
         >
           Previous
         </button>
         <button
-          className="mt-6 bg-amber-500 px-10 py-3 hover:bg-amber-600"
+          className="mt-6 bg-red-500 px-10 py-3 hover:bg-red-600 text-white"
           onClick={goToNextStep}
         >
           Next

@@ -31,6 +31,7 @@ import StudentCourseListPage from "../pages/Student/StudentCourseListPage";
 import StudentSettingPage from "../pages/Student/StudentSettingPage";
 import ReviewManagePage from "../pages/Instructor/ReviewManagePage";
 import PayoutManagePage from "../pages/Instructor/PayoutManagePage";
+import AboutPage from "../pages/User/AboutPage";
 
 interface ProtectedRouteProps {
   element: JSX.Element;
@@ -63,6 +64,7 @@ const AppRouter = () => {
       <AuthProvider>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/about" element={<AboutPage />} />
           <Route path="sign-in" element={<SignInPage />} />
           <Route path="sign-up" element={<SignUpPage />} />
           <Route path="/detail" element={<DetailCoursePage />} />
@@ -71,7 +73,6 @@ const AppRouter = () => {
           <Route path="/settings-page" element={<SettingsPage />} />
 
           {/* Student */}
-          {/* <Route path="student/student-management" element={<StudentPage />} /> */}
           <Route
             path="/view-detail"
             element={

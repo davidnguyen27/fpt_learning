@@ -47,7 +47,7 @@ const TablePayout = () => {
             </p>
           </div>
           <Divider />
-          <button className="rounded-md bg-amber-500 px-4 py-3">
+          <button className="rounded-md bg-[#ff4d4f] px-4 py-3">
             Add Account
           </button>
         </div>

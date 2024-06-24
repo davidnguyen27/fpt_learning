@@ -67,3 +67,12 @@ export type InstructorChannelProps = {
   dislikes: number;
   shares: number;
 };
+
+export type Course = {
+  id: string;
+  courseName: string;
+  categoryName: string;
+  instructorName: string;
+  image: string;
+  price: number;
+};

@@ -1,11 +1,16 @@
 .ant-steps-item-icon {
-  background-color: #f59e0b !important;
-  border-color: #f59e0b !important;
+  background-color: #ef4444 !important;
   height: 42px !important;
   width: 42px !important;
   border-radius: 42px !important;
   line-height: 42px !important;
+  color: white !important; 
 }
+
+.ant-steps-item-icon > * {
+  color: white !important;
+}
+
 
 .ant-steps-item-title {
   line-height: 42px !important;

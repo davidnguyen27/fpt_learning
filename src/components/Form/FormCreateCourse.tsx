@@ -104,12 +104,14 @@ const FormCreateCourse: React.FC<FormCreateCourseProp> = ({ goToNextStep }) => {
             </Form.Item>
           </div>
         </div>
-        <button
-          className="mt-6 bg-amber-500 px-10 py-3 hover:bg-amber-600"
-          onClick={goToNextStep}
-        >
-          Next
-        </button>
+        <div className="flex justify-end mt-6"> {/* Updated to justify-end */}
+          <button
+            className="text-white bg-red-500 px-10 py-3 hover:bg-red-600"
+            onClick={goToNextStep}
+          >
+            Next
+          </button>
+        </div>
       </Form>
     </>
   );

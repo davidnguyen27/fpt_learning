@@ -51,8 +51,8 @@ const CoursesManagePage = () => {
           />
         </Sider>
         <Layout className="flex flex-1 flex-col">
-          <Content className="flex-1 overflow-y-auto">
-            <div className="p-8">
+          <Content>
+            <div className="flex-1 overflow-y-auto p-8">
               <section>
                 <h1 className="text-xl font-bold">Courses</h1>
               </section>
@@ -65,7 +65,7 @@ const CoursesManagePage = () => {
                 </div>
                 <div>
                   <button
-                    className="rounded-lg bg-amber-500 px-5 py-2 text-sm font-medium hover:bg-amber-600"
+                    className="rounded-lg bg-red-500 px-5 py-2 text-sm font-medium text-white hover:bg-red-600"
                     onClick={() =>
                       navigate(
                         "/instructor/courses-management/create-course-step",

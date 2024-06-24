@@ -36,10 +36,10 @@ const PayoutManagePage = () => {
                 <TablePayout />
               </section>
             </div>
+            <Footer className="footer">
+              <AppFooter />
+            </Footer>
           </Content>
-          <Footer className="footer">
-            <AppFooter />
-          </Footer>
         </Layout>
       </Layout>
     </Layout>

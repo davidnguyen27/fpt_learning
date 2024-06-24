@@ -25,12 +25,12 @@ const FormSubmit: React.FC<FormSubmitProps> = (props) => {
       </div>
       <div className="flex justify-between">
         <button
-          className="mt-6 bg-amber-500 px-10 py-3 hover:bg-amber-600"
+          className="mt-6 bg-red-500 px-10 py-3 hover:bg-red-600 text-white"
           onClick={prevStep}
         >
           Previous
         </button>
-        <button className="mt-6 bg-amber-500 px-10 py-3 hover:bg-amber-600">
+        <button className="mt-6 bg-red-500 px-10 py-3 hover:bg-red-600 text-white">
           Submit for Reviews
         </button>
       </div>

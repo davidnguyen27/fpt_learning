@@ -66,6 +66,33 @@ const HomePage: React.FC = () => {
                 </div>
                 <ListCourse />
               </section>
+              <section className="mt-10">
+                <div className="mb-5 flex w-full justify-between">
+                  <h1 className="text-xl font-bold">Business</h1>
+                  <a href="#" className="font-light hover:text-amber-600">
+                    See all
+                  </a>
+                </div>
+                <ListCourse />
+              </section>
+              <section className="mt-10">
+                <div className="mb-5 flex w-full justify-between">
+                  <h1 className="text-xl font-bold">Marketing</h1>
+                  <a href="#" className="font-light hover:text-amber-600">
+                    See all
+                  </a>
+                </div>
+                <ListCourse />
+              </section>
+              <section className="mt-10">
+                <div className="mb-5 flex w-full justify-between">
+                  <h1 className="text-xl font-bold">Data & Analytics</h1>
+                  <a href="#" className="font-light hover:text-amber-600">
+                    See all
+                  </a>
+                </div>
+                <ListCourse />
+              </section>
               <Achievements />
               <section>
                 <div className="mb-5 flex w-full justify-between">

@@ -14,7 +14,7 @@ const SignInPage: React.FC = () => {
         </div>
 
         {/* <!-- Right column container with form --> */}
-        <div className="flex h-full flex-1 items-center justify-center bg-slate-200">
+        <div className="md:w-8/12 lg:ml-6 lg:w-5/12 mr-4">
           <FormSignIn />
         </div>
       </div>
