@@ -59,10 +59,10 @@ const LessonManagePage = () => {
               </section>
               <Tabs defaultActiveKey="1" items={items} className="mt-10" />
             </div>
-          </Content>
-          <Footer className="footer">
+            <Footer className="footer">
             <AppFooter />
           </Footer>
+          </Content>
         </Layout>
       </Layout>
     </Layout>
