@@ -36,7 +36,7 @@ const AppHeader: React.FC = () => {
     if (user?.role === "admin") {
       navigate("/admin-dashboard");
     } else if (user?.role === "instructor") {
-      navigate("/instructor-course-list-page");
+      navigate("/instructor/dashboard");
     } else {
       navigate("/student-course-list-page");
     }
@@ -58,6 +58,14 @@ const AppHeader: React.FC = () => {
       label: (
         <a onClick={handleManagement}>
           {user?.role === "admin" ? "Dashboard" : "My Course"}
+        </a>
+      ),
+    },
+    {
+      key: "1",
+      label: (
+        <a onClick={handleManagement}>
+          {user?.role === "instructor" ? "Instructor Dashboard" : null}
         </a>
       ),
     },
@@ -121,6 +129,14 @@ const AppHeader: React.FC = () => {
         {user ? (
           <>
             {user.role === "student" && (
+              <Badge count={1}>
+                <ShoppingCartOutlined
+                  style={{ fontSize: "1.5em" }}
+                  onClick={handleShoppingCart}
+                />
+              </Badge>
+            )}
+            {user.role === "instructor" && (
               <Badge count={1}>
                 <ShoppingCartOutlined
                   style={{ fontSize: "1.5em" }}

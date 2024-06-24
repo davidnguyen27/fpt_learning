@@ -12,7 +12,7 @@ const columns = [
     title: "Date",
     dataIndex: "date",
     key: "date",
-    className: "bg-gray-700 text-white text-center", // Tailwind classes for table header
+    className: "bg-gray-700 text-white text-center", 
   },
   {
     title: "Item Sales Count",
@@ -75,22 +75,9 @@ const EarningPage: React.FC = () => {
         </Sider>
         <Layout className="flex flex-1 flex-col">
           <Content className="flex-1 overflow-y-auto bg-gray-100">
-            <div className="flex p-8">
-              <section className="w-1/4 pr-4">
-                <h2 className="mb-4 text-center text-lg font-bold">
-                  Your Top Countries
-                </h2>
-                <ul className="list-none p-0">
-                  {topCountries.map((country, index) => (
-                    <li
-                      key={index}
-                      className="flex justify-between border-b border-gray-200 py-1"
-                    >
-                      <span>{country.country}</span>
-                      <span>{country.amount}</span>
-                    </li>
-                  ))}
-                </ul>
+            <div className="p-8">
+            <section>
+                <h1 className="text-xl font-bold">Earning</h1>
               </section>
               <section className="flex-1">
                 <Row gutter={16}>
@@ -102,7 +89,7 @@ const EarningPage: React.FC = () => {
                         </span>
                       }
                       bordered={false}
-                      className="bg-red-600 text-center text-white"
+                      className="bg-gray-700 text-center text-white"
                     >
                       <p className="text-center text-2xl font-bold">$1146.78</p>
                     </Card>
@@ -111,7 +98,7 @@ const EarningPage: React.FC = () => {
                     <Card
                       title={<span className="text-white">Your balance:</span>}
                       bordered={false}
-                      className="bg-red-600 text-center text-white"
+                      className="bg-gray-700 text-center text-white"
                     >
                       <p className="text-center text-2xl font-bold">$1146.78</p>
                     </Card>
@@ -124,7 +111,7 @@ const EarningPage: React.FC = () => {
                         </span>
                       }
                       bordered={false}
-                      className="bg-red-600 text-center text-white"
+                      className="bg-gray-700 text-center text-white"
                     >
                       <p className="text-center text-2xl font-bold">
                         $95895.54
@@ -132,17 +119,35 @@ const EarningPage: React.FC = () => {
                     </Card>
                   </Col>
                 </Row>
-                <div className="mt-8">
+                <div className="mt-8 flex justify-between gap-4">
+                  <section className="h-80 w-full max-w-md bg-white p-6 shadow">
+                    <h2 className="mb-4 text-center text-lg font-bold">
+                      Your Top Countries
+                    </h2>
+                    <ul className="list-none p-2">
+                      {topCountries.map((country, index) => (
+                        <li
+                          key={index}
+                          className="flex justify-between border-b border-gray-200 py-1"
+                        >
+                          <span>{country.country}</span>
+                          <span>{country.amount}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+
                   <Table
                     columns={columns}
                     dataSource={data}
                     pagination={false}
+                    style={{ width: "800px"}}
                     footer={() => (
-                      <div className="bg-red-700 p-2 text-center text-white">
+                      <div className="bg-gray-700 p-2 text-center text-white ">
                         Total: $1146.78
                       </div>
                     )}
-                    className="custom-table bg-white text-center"
+                    className="custom-table text-center"
                   />
                 </div>
               </section>
