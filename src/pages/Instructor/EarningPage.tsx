@@ -4,6 +4,7 @@ import { Layout, Table, Card, Row, Col } from "antd";
 import { AppHeader, AppFooter } from "../../components";
 import SiderInstructor from "../../components/Instructor/SiderInstructor";
 import Sider from "antd/es/layout/Sider";
+import "../../styles/instructorEarning.css";
 
 const { Header, Content, Footer } = Layout;
 
@@ -12,7 +13,7 @@ const columns = [
     title: "Date",
     dataIndex: "date",
     key: "date",
-    className: "bg-gray-700 text-white text-center", 
+    className: "bg-gray-700 text-white text-center",
   },
   {
     title: "Item Sales Count",
@@ -76,7 +77,7 @@ const EarningPage: React.FC = () => {
         <Layout className="flex flex-1 flex-col">
           <Content className="flex-1 overflow-y-auto bg-gray-100">
             <div className="p-8">
-            <section>
+              <section>
                 <h1 className="text-xl font-bold">Earning</h1>
               </section>
               <section className="flex-1">
@@ -138,16 +139,16 @@ const EarningPage: React.FC = () => {
                   </section>
 
                   <Table
+                    className="custom-table no-hover text-center"
                     columns={columns}
                     dataSource={data}
                     pagination={false}
-                    style={{ width: "800px"}}
+                    style={{ width: "800px" }}
                     footer={() => (
-                      <div className="bg-gray-700 p-2 text-center text-white ">
+                      <div className="bg-gray-700 p-2 text-center text-white">
                         Total: $1146.78
                       </div>
                     )}
-                    className="custom-table text-center"
                   />
                 </div>
               </section>

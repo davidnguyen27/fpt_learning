@@ -46,6 +46,9 @@ table {
   width: 100%;
   border-collapse: collapse;
 }
+.custom-table:hover {
+  background: none;
+}
 
 thead {
   background: #f8d7da;
@@ -58,14 +61,15 @@ td {
   text-align: left;
 }
 
-tfoot {
-  background: #333;
-  color: white;
-  font-weight: semibold;
-}
 
 .total-row td {
   background: #000;
   color: white;
   font-weight: 600; /* Semi-bold */
 }
+/* Ensure high specificity */
+.no-hover .ant-table-tbody > tr:hover > td {
+  background-color: inherit !important;
+}
+
+
