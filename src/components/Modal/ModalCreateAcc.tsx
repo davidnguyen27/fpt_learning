@@ -54,7 +54,7 @@ const ModalCreateAcc = (props: ModalCreateProps) => {
           <Input className="text-sm" size="large" placeholder="Phone Number" />
         </Form.Item>
         <Form.Item name="role">
-          <select className="rounded-md bg-slate-100 p-4">
+          <select className="rounded-md bg-slate-100 p-4" aria-label="Choose Role">
             <option className="mb-2 p-2" value="admin">
               Admin
             </option>

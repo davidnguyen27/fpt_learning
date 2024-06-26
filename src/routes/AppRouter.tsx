@@ -27,6 +27,7 @@ import CoursesManagePage from "../pages/Instructor/CoursesManagePage";
 import CreateCoursePage from "../pages/Instructor/CreateCoursePage";
 import LessonManagePage from "../pages/Instructor/LessonManagePage";
 import SessionManagePage from "../pages/Instructor/SessionManagePage";
+import ForgotPassword from "../pages/User/ForgotPassword";
 
 interface ProtectedRouteProps {
   element: JSX.Element;
@@ -66,6 +67,7 @@ const AppRouter = () => {
           <Route path="/help-page" element={<HelpPage />} />
           <Route path="/settings-page" element={<SettingsPage />} />
           <Route path="/paid-memberships" element={<PaidMembershipPage />}/>
+          <Route path="/forgot-password" element={<ForgotPassword />}/>
 
           {/* Student */}
           <Route path="/student-management" element={<StudentPage />} />

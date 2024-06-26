@@ -61,7 +61,7 @@ const UserManagePage = () => {
                   <i className="fa-solid fa-filter"></i>
                   <div className="mx-4">
                     Role:
-                    <select className="ml-2" onChange={handleRoleChange}>
+                    <select className="ml-2" aria-label="Choose Role" onChange={handleRoleChange}>
                       <option value="">All</option>
                       <option value="instructor">Instructor</option>
                       <option value="student">Student</option>
@@ -69,7 +69,7 @@ const UserManagePage = () => {
                   </div>
                   <div>
                     Status:
-                    <select className="ml-2" onChange={handleStatusChange}>
+                    <select className="ml-2" aria-label="Choose Status" onChange={handleStatusChange}>
                       <option value="">All</option>
                       <option value="true">True</option>
                       <option value="false">False</option>

@@ -79,7 +79,7 @@ const FormSignIn = () => {
         <div className="flex items-center justify-between">
           <Radio>Remember me</Radio>
           <a
-            href="#!"
+            href="/forgot-password"
             className="text-primary hover:text-primary-600 focus:text-primary-600 active:text-primary-700 transition duration-150 ease-in-out"
           >
             Forgot password?
