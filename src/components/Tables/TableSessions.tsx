@@ -36,7 +36,7 @@ const TableSessions = () => {
         startTime: "2024-06-24 09:30 AM",
         lastActivityTime: "2024-06-24 10:40 AM",
         location: "London, UK",
-        status: "Idle",
+        status: "Active",
       },
       {
         key: "3",
