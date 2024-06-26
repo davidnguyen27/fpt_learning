@@ -64,6 +64,7 @@ const AppHeader2: React.FC = () => {
       <Dropdown overlay={userMenu} trigger={["click"]}>
         <UserOutlined className="user-logo" />
       </Dropdown>
+      
     </Header>
   );
 };

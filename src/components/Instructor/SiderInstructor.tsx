@@ -46,6 +46,14 @@ const SiderInstructor: React.FC<{ className?: string }> = () => {
         <Menu.Item
           className="hover:rounded-none hover:bg-amber-500 hover:text-black"
           key="5"
+          icon={<i className="fa-solid fa-bell"></i>}
+          onClick={() => navigate("/notification")}
+        >
+          Notifications
+        </Menu.Item>
+        <Menu.Item
+          className="hover:rounded-none hover:bg-amber-500 hover:text-black"
+          key="6"
           icon={<i className="fa-solid fa-wallet"></i>}
         >
           Payout
