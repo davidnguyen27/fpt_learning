@@ -1,56 +1,34 @@
-import { Table, TableProps, Button, Tag, Input, Row, Col, Select, Space } from "antd";
+import { Button, Col, Row, Space, Table, Input, Select, Tag } from "antd";
 import { useState } from "react";
-
-const { Search } = Input;
 const { Option } = Select;
+const { Search } = Input;
 
 interface DataType {
   key: string;
-  qA_id: string;
-  description: string;
-  lesson: string | string[]; //Single String or Array
-  deadline: string;
+  courseId: string;
+  courseName: string;
+  categoryName: string | string[];
+  createdAt: string;
   status: string;
 }
 
-const TableQuizAssignment = () => {
+const TableUpcomingCourses = () => {
   const [data, setData] = useState<DataType[]>([
     {
       key: "1",
-      qA_id: "1",
-      description: "What is Course?",
-      lesson: [
-        "Introduction to Course",
-        "Getting Started with Python",
-        "Get start with .Net",
-      ],
-      deadline: "2024-01-01",
+      courseId: "1",
+      courseName: "How to design UI by Figma ?",
+      categoryName: ["CT123", "CT0", "CT9"],
+      createdAt: "12/06/2024",
       status: "Active",
     },
     {
       key: "2",
-      qA_id: "2",
-      description:
-        "What is the importance of course with the beginner of Python?",
-      lesson: [
-        "Introduction to Course",
-        "Getting Started with Python",
-        "Get start with .Net",
-      ],
-      deadline: "2024-01-01",
+      courseId: "2",
+      courseName: "Getting Started with .Net",
+      categoryName: "CT777",
+      createdAt: "13/06/2024",
       status: "Inactive",
-    },
-    {
-      key: "3",
-      qA_id: "3",
-      description: "How to create API?",
-      lesson: [
-        "Introduction to Course",
-        "Getting Started with Python",
-        "Get start with OJT",
-      ],
-      deadline: "2024-01-01",
-      status: "Active",
     },
   ]);
 
@@ -79,27 +57,21 @@ const TableQuizAssignment = () => {
     backgroundColor: status === "Active" ? "#16a34a" : "gray",
     color: "white",
     border: "none",
-    width: "80px", // Set fixed width for consistency
-    height: "32px", // Set fixed height for consistency
-    borderRadius: "6px", // Optional: add border radius for rounded corners
+    width: "80px",
+    height: "32px",
+    borderRadius: "6px",
   });
 
   const filteredData = data.filter((item) => {
     const matchesSearchText =
-      item.qA_id.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchText.toLowerCase()) ||
-      (Array.isArray(item.lesson)
-        ? item.lesson.some((lesson) =>
-            lesson.toLowerCase().includes(searchText.toLowerCase()),
-          )
-        : item.lesson.toLowerCase().includes(searchText.toLowerCase()));
-
+      item.courseName.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.categoryName.includes(searchText.toLowerCase());
     const matchesStatus = !selectedStatus || item.status === selectedStatus;
 
     return matchesSearchText && matchesStatus;
   });
 
-  const columns: TableProps<DataType>["columns"] = [
+  const columns = [
     {
       title: "No.",
       key: "index",
@@ -107,36 +79,35 @@ const TableQuizAssignment = () => {
       width: 50,
     },
     {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
+      title: "Course Name",
+      dataIndex: "courseName",
+      key: "courseName",
     },
     {
-      title: "Lesson",
-      dataIndex: "lesson",
-      key: "lesson",
-      render: (lesson: string | string[]) =>
-        Array.isArray(lesson) ? (
-          lesson.map((lesson, index) => (
+      title: "Category Name",
+      dataIndex: "categoryName",
+      key: "categoryName",
+      width: 400,
+      render: (categoryName: string | string[]) =>
+        Array.isArray(categoryName) ? (
+          categoryName.map((categoryName, index) => (
             <Tag key={index} style={{ marginBottom: 5 }}>
-              {lesson}
+              {categoryName}
             </Tag>
           ))
         ) : (
-          <Tag style={{ marginBottom: 5 }}>{lesson}</Tag>
+          <Tag style={{ marginBottom: 5 }}>{categoryName}</Tag>
         ),
     },
     {
-      title: "Deadline",
-      dataIndex: "deadline",
-      key: "deadline",
-      width: 150,
+      title: "Created At",
+      dataIndex: "createdAt",
+      key: "createdAt",
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      width: 150,
       render: (status: string, record: DataType) => (
         <Button
           type="default"
@@ -150,7 +121,7 @@ const TableQuizAssignment = () => {
     {
       title: "Actions",
       key: "actions",
-      render: (_: DataType) => (
+      render: (_: any) => (
         <Space size="middle">
           <Button type="link" style={{ fontSize: "14px", padding: "0px 8px" }}>
             Edit
@@ -176,7 +147,7 @@ const TableQuizAssignment = () => {
       <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
         <Col>
           <Search
-            placeholder="Search Description or Lesson"
+            placeholder="Search by Course Name or Category Name"
             onChange={handleSearchChange}
             onSearch={handleSearch}
             enterButton
@@ -205,4 +176,4 @@ const TableQuizAssignment = () => {
   );
 };
 
-export default TableQuizAssignment;
+export default TableUpcomingCourses;

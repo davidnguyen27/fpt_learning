@@ -6,12 +6,9 @@ const { Search } = Input;
 
 interface DataType {
     key: string;
-    instructorId: string;
     sessionId: string;
-    course: string;
-    startTime: string;
-    lastActivityTime: string;
-    location: string;
+    sessionName: string;
+    courseName: string | string[];
     status: string;
   }
   
@@ -20,43 +17,45 @@ const TableSessions = () => {
   const [data, setData] = useState<DataType[]>([
     {
         key: "1",
-        instructorId: "instructor123",
-        sessionId: "ABC123",
-        course: "Learn React",
-        startTime: "2024-06-24 10:15 AM",
-        lastActivityTime: "2024-06-24 10:45 AM",
-        location: "New York, USA",
+        sessionId: "ss123",
+        sessionName: "Introduction of course",
+        courseName: ["Learn React", "Learn .Net", "Learn Typescript"],
         status: "Active",
       },
       {
         key: "2",
-        instructorId: "instructor456",
         sessionId: "DEF456",
-        course: "Learn .Net",
-        startTime: "2024-06-24 09:30 AM",
-        lastActivityTime: "2024-06-24 10:40 AM",
-        location: "London, UK",
-        status: "Active",
+        sessionName: "Environment, People in IT",
+        courseName: "Learn .Net",
+        status: "Inactive",
       },
       {
         key: "3",
-        instructorId: "instructor789",
         sessionId: "GHI789",
-        course: "Learn Typescript",
-        startTime: "2024-06-24 08:50 AM",
-        lastActivityTime: "2024-06-24 10:20 AM",
-        location: "Tokyo, Japan",
-        status: "Active",
+        sessionName: "Methods and directions",
+        courseName: "Learn Typescript",
+        status: "Inactive",
       },
       {
         key: "4",
-        instructorId: "instructor101",
-        sessionId: "JKL101",
-        course: "Learn Java",
-        startTime: "2024-06-24 10:00 AM",
-        lastActivityTime: "2024-06-24 10:30 AM",
-        location: "Berlin, Germany",
-        status: "Inactive",
+        sessionId: "KSI789",
+        sessionName: "Complete Course",
+        courseName: "Learn Typescript",
+        status: "Active",
+      },
+      {
+        key: "5",
+        sessionId: "KSI789",
+        sessionName: "Complete Course",
+        courseName: "Learn Typescript",
+        status: "Active",
+      },
+      {
+        key: "6",
+        sessionId: "KSI789",
+        sessionName: "Complete Course",
+        courseName: "Learn Typescript",
+        status: "Active",
       },
   ]);
 
@@ -92,8 +91,8 @@ const TableSessions = () => {
 
   const filteredData = data.filter((item) => {
     const matchesSearchText =
-      item.sessionId.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.instructorId.toLowerCase().includes(searchText.toLowerCase());
+      item.sessionName.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.courseName.includes(searchText.toLowerCase());
     const matchesStatus = !selectedStatus || item.status === selectedStatus;
 
     return matchesSearchText && matchesStatus;
@@ -101,39 +100,31 @@ const TableSessions = () => {
 
   const columns = [
     {
-        title: "Instructor ID",
-        dataIndex: "instructorId",
-        key: "instructorId",
-        width: 150,
+      title: "No.",
+      key: "index",
+      render: (_: any, __: any, index: number) => index + 1,
+      width: 50,
+    },
+      {
+        title: "Session Name",
+        dataIndex: "sessionName",
+        key: "sessionName",
       },
       {
-        title: "Course",
-        dataIndex: "course",
-        key: "course",
-      },
-      {
-        title: "Session ID",
-        dataIndex: "sessionId",
-        key: "sessionId",
-        width: 120,
-      },
-      {
-        title: "Start Time",
-        dataIndex: "startTime",
-        key: "startTime",
-        width: 200,
-      },
-      {
-        title: "Last Activity Time",
-        dataIndex: "lastActivityTime",
-        key: "lastActivityTime",
-        width: 200,
-      },
-      {
-        title: "Location",
-        dataIndex: "location",
-        key: "location",
-        width: 150,
+        title: "Course Name",
+        dataIndex: "courseName",
+        key: "courseName",
+        width: 400,
+        render: (courseName: string | string[]) =>
+          Array.isArray(courseName) ? (
+            courseName.map((courseName, index) => (
+              <Tag key={index} style={{ marginBottom: 5 }}>
+                {courseName}
+              </Tag>
+            ))
+          ) : (
+            <Tag style={{ marginBottom: 5 }}>{courseName}</Tag>
+          ),
       },
       {
         title: "Status",
@@ -179,7 +170,7 @@ const TableSessions = () => {
       <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
         <Col>
           <Search
-            placeholder="Search by Lesson Id or Title"
+            placeholder="Search by Session Name Or Course Name"
             onChange={handleSearchChange}
             onSearch={handleSearch}
             enterButton

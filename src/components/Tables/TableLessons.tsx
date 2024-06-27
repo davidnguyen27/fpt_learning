@@ -8,7 +8,7 @@ interface DataType {
   key: string;
   lesson_id: string;
   lessonTitle: string;
-  course: string | string[];
+  sessionName: string | string[];
   duration: string;
   createdAt: string;
   status: string;
@@ -21,11 +21,11 @@ const TableLessons = () => {
     {
       key: "1",
       lesson_id: "1",
-      lessonTitle: "Introduction to Course",
-      course: ["Course 1", "Course 2", "Course 3"],
+      lessonTitle: "Design UI with Figma",
+      sessionName: ["Introduction of course", "Environment, People in IT", "Methods and directions", "Complete Course"],
       duration: "10 mins",
       createdAt: "2024-01-01",
-      status: "Doing",
+      status: "Active",
       preview: true,
       quizAssignment: false,
     },
@@ -33,10 +33,10 @@ const TableLessons = () => {
       key: "2",
       lesson_id: "2",
       lessonTitle: "Getting Started with Python",
-      course: "Course 2",
+      sessionName: "Introduction of course",
       duration: "20 mins",
       createdAt: "2024-01-02",
-      status: "Done",
+      status: "Inactive",
       preview: false,
       quizAssignment: true,
     },
@@ -44,10 +44,10 @@ const TableLessons = () => {
       key: "3",
       lesson_id: "3",
       lessonTitle: "Get start with .Net",
-      course: "Course 3",
+      sessionName: "Introduction of course",
       duration: "20 mins",
       createdAt: "2024-01-02",
-      status: "Doing",
+      status: "Active",
       preview: false,
       quizAssignment: true,
     },
@@ -55,10 +55,10 @@ const TableLessons = () => {
       key: "4",
       lesson_id: "4",
       lessonTitle: "Getting Started with Python",
-      course: "Course 1",
+      sessionName: "Introduction of course",
       duration: "20 mins",
       createdAt: "2024-01-02",
-      status: "Done",
+      status: "Inactive",
       preview: false,
       quizAssignment: true,
     },
@@ -66,10 +66,10 @@ const TableLessons = () => {
       key: "5",
       lesson_id: "5",
       lessonTitle: "Getting Started with Python",
-      course: "Course 1",
+      sessionName: "Introduction of course",
       duration: "20 mins",
       createdAt: "2024-01-02",
-      status: "Doing",
+      status: "Active",
       preview: false,
       quizAssignment: true,
     },
@@ -77,10 +77,10 @@ const TableLessons = () => {
       key: "6",
       lesson_id: "6",
       lessonTitle: "Advanced Python",
-      course: "Course 3",
+      sessionName: "Introduction of course",
       duration: "30 mins",
       createdAt: "2024-01-03",
-      status: "Doing",
+      status: "Active",
       preview: false,
       quizAssignment: true,
     },
@@ -88,10 +88,10 @@ const TableLessons = () => {
       key: "7",
       lesson_id: "7",
       lessonTitle: "Machine Learning Basics",
-      course: "Course 2",
+      sessionName: "Introduction of course",
       duration: "40 mins",
       createdAt: "2024-01-04",
-      status: "Done",
+      status: "Inactive",
       preview: true,
       quizAssignment: false,
     },
@@ -111,7 +111,7 @@ const TableLessons = () => {
   const handleStatusChange = (key: string) => {
     const updatedData = data.map((item) => {
       if (item.key === key) {
-        item.status = item.status === "Doing" ? "Done" : "Doing";
+        item.status = item.status === "Active" ? "Inactive" : "Active";
       }
       return item;
     });
@@ -119,7 +119,7 @@ const TableLessons = () => {
   };
 
   const getStatusButtonStyle = (status: string) => ({
-    backgroundColor: status === "Doing" ? "#16a34a" : "gray",
+    backgroundColor: status === "Active" ? "#16a34a" : "gray",
     color: "white",
     border: "none",
     width: "80px",
@@ -129,7 +129,7 @@ const TableLessons = () => {
 
   const filteredData = data.filter((item) => {
     const matchesSearchText =
-      item.lesson_id.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.sessionName.includes(searchText.toLowerCase()) ||
       item.lessonTitle.toLowerCase().includes(searchText.toLowerCase());
     const matchesStatus = !selectedStatus || item.status === selectedStatus;
 
@@ -138,10 +138,10 @@ const TableLessons = () => {
 
   const columns = [
     {
-      title: "Lesson Id",
-      dataIndex: "lesson_id",
-      key: "lesson_id",
-      width: 200,
+      title: "No.",
+      key: "index",
+      render: (_: any, __: any, index: number) => index + 1,
+      width: 50,
     },
     {
       title: "Lesson Title",
@@ -150,19 +150,19 @@ const TableLessons = () => {
       width: 400,
     },
     {
-      title: "Course",
-      dataIndex: "course",
-      key: "course",
+      title: "Session Name",
+      dataIndex: "sessionName",
+      key: "sessionName",
       width: 400,
-      render: (courses: string | string[]) =>
-        Array.isArray(courses) ? (
-          courses.map((course, index) => (
+      render: (sessionName: string | string[]) =>
+        Array.isArray(sessionName) ? (
+          sessionName.map((sessionName, index) => (
             <Tag key={index} style={{ marginBottom: 5 }}>
-              {course}
+              {sessionName}
             </Tag>
           ))
         ) : (
-          <Tag style={{ marginBottom: 5 }}>{courses}</Tag>
+          <Tag style={{ marginBottom: 5 }}>{sessionName}</Tag>
         ),
     },
     {
@@ -210,7 +210,7 @@ const TableLessons = () => {
     {
       title: "Actions",
       key: "actions",
-      render: (_: any) => (
+      render: (_: DataType) => (
         <Space size="middle">
           <Button type="link" style={{ fontSize: "14px", padding: "0px 8px" }}>
             Edit
@@ -236,7 +236,7 @@ const TableLessons = () => {
       <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
         <Col>
           <Search
-            placeholder="Search by Lesson Id or Title"
+            placeholder="Search by Lesson Title or Session Name"
             onChange={handleSearchChange}
             onSearch={handleSearch}
             enterButton
@@ -250,8 +250,8 @@ const TableLessons = () => {
             allowClear
             style={{ width: 200 }}
           >
-            <Option value="Doing">Doing</Option>
-            <Option value="Done">Done</Option>
+            <Option value="Active">Active</Option>
+            <Option value="Inactive">Inactive</Option>
           </Select>
         </Col>
       </Row>
