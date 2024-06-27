@@ -4,10 +4,21 @@ import {
   EyeInvisibleOutlined,
   MinusCircleOutlined,
 } from "@ant-design/icons";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../app/redux/store";
+import { SignUpFormValues } from "../../models/Types";
+import { signUp } from "../../app/redux/user/userSlice";
 
 const FormSignUp = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { loading, error } = useSelector((state: RootState) => state.user);
+
+  const handleSubmit = async (values: SignUpFormValues) => {
+    await dispatch(signUp(values));
+  };
+
   return (
-    <Form>
+    <Form onFinish={handleSubmit}>
       <Form.Item
         name="fullName"
         rules={[{ required: true, message: "Please enter your full name!" }]}
@@ -28,9 +39,10 @@ const FormSignUp = () => {
         rules={[
           { required: true, message: "Please enter the password!" },
           { min: 10, message: "Password must be at least 10 characters!" },
+          { max: 31, message: "Maximum length is 31 characters!" },
           {
             pattern:
-              /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+              /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.])[A-Za-z\d@$!%*?&.]{8,}$/,
             message:
               "Password must contain at least one uppercase letter, one digit, and one special character.",
           },
@@ -110,11 +122,13 @@ const FormSignUp = () => {
       <Form.Item>
         <button
           type="submit"
-          className="mb-3 flex w-full items-center justify-center rounded border border-black bg-[#ef4444] px-7 py-3 text-center text-sm font-medium uppercase leading-normal text-white hover:text-white shadow-md transition duration-150 hover:bg-[#333]"
-          >
-          Sign Up
+          className="mb-3 flex w-full items-center justify-center rounded border border-black bg-[#ef4444] px-7 py-3 text-center text-sm font-medium uppercase leading-normal text-white shadow-md transition duration-150 hover:bg-[#333] hover:text-white"
+          disabled={loading}
+        >
+          {loading ? "Signing Up..." : "Sign Up"}
         </button>
       </Form.Item>
+      {error && <div className="error">{error}</div>}
     </Form>
   );
 };

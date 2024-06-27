@@ -3,6 +3,14 @@ import { Divider, Menu } from "antd";
 import { Footer } from "antd/es/layout/layout";
 import SubMenu from "antd/es/menu/SubMenu";
 import { useNavigate } from "react-router-dom";
+import {
+  AuditOutlined,
+  BarsOutlined,
+  FlagOutlined,
+  HomeOutlined,
+  QuestionCircleOutlined,
+  SettingOutlined,
+} from "@ant-design/icons";
 
 const AppSider: React.FC<{ className?: string }> = () => {
   const navigate = useNavigate();
@@ -53,22 +61,18 @@ const AppSider: React.FC<{ className?: string }> = () => {
         <Menu.Item
           className="hover:rounded-none hover:bg-[#c2410c] hover:text-white"
           key="1"
-          icon={<i className="fa-solid fa-house"></i>}
+          icon={<HomeOutlined />}
         >
           Home
         </Menu.Item>
         <Menu.Item
           className="hover:rounded-none hover:bg-[#c2410c] hover:text-white"
           key="2"
-          icon={<i className="fa-solid fa-address-card"></i>}
+          icon={<AuditOutlined />}
         >
           About
         </Menu.Item>
-        <SubMenu
-          key="sub1"
-          icon={<i className="fa-solid fa-layer-group"></i>}
-          title="Categories"
-        >
+        <SubMenu key="sub1" icon={<BarsOutlined />} title="Categories">
           <Menu.Item
             className="hover:rounded-none hover:bg-[#ef4444] hover:text-white"
             key="3"
@@ -109,28 +113,28 @@ const AppSider: React.FC<{ className?: string }> = () => {
         <Menu.Item
           className="hover:rounded-none hover:bg-[#ef4444] hover:text-white"
           key="9"
-          icon={<i className="fa-solid fa-gear"></i>}
+          icon={<SettingOutlined />}
         >
           Setting
         </Menu.Item>
         <Menu.Item
           className="hover:rounded-none hover:bg-[#ef4444] hover:text-white"
           key="10"
-          icon={<i className="fa-solid fa-circle-question"></i>}
+          icon={<QuestionCircleOutlined />}
         >
           Help
         </Menu.Item>
         <Menu.Item
           className="hover:rounded-none hover:bg-[#ef4444] hover:text-white"
           key="11"
-          icon={<i className="fa-solid fa-flag"></i>}
+          icon={<FlagOutlined />}
         >
           Report
         </Menu.Item>
       </Menu>
       <Divider />
       <Footer className="bg-slate-200 px-8 pb-4 pt-0 text-center">
-        <span className="text-xs font-light">
+        <span className="text-xs font-normal">
           Copyright by FPT Education @2024
         </span>
       </Footer>

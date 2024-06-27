@@ -76,3 +76,19 @@ export type Course = {
   image: string;
   price: number;
 };
+
+export type SignUpPayload = {
+  fullName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  role: string;
+};
+
+export type SignUpFormValues = {
+  fullName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  role: string;
+};

@@ -34,7 +34,7 @@ const AppHeader: React.FC = () => {
 
   const handleManagement = () => {
     if (user?.role === "admin") {
-      navigate("/admin-dashboard");
+      navigate("/admin/dashboard");
     } else if (user?.role === "instructor") {
       navigate("/instructor/dashboard");
     } else {
@@ -57,15 +57,7 @@ const AppHeader: React.FC = () => {
       key: "1",
       label: (
         <a onClick={handleManagement}>
-          {user?.role === "admin" ? "Dashboard" : "My Course"}
-        </a>
-      ),
-    },
-    {
-      key: "1",
-      label: (
-        <a onClick={handleManagement}>
-          {user?.role === "instructor" ? "Instructor Dashboard" : null}
+          {user?.role === "admin" || "instructor" ? "Dashboard" : "My Course"}
         </a>
       ),
     },
@@ -86,8 +78,8 @@ const AppHeader: React.FC = () => {
       label: <a href="/feedback">Send Feedback</a>,
     },
     {
-      label: <a onClick={handleLogout}>Logout</a>,
       key: "6",
+      label: <a onClick={handleLogout}>Logout</a>,
     },
   ];
 
@@ -174,7 +166,11 @@ const AppHeader: React.FC = () => {
             </Button>
             <Button
               className="mr-4"
-              style={{ backgroundColor: "#f3f4f6", color: "black", borderColor: "black" }}
+              style={{
+                backgroundColor: "#f3f4f6",
+                color: "black",
+                borderColor: "black",
+              }}
               type="primary"
               danger
               onClick={() => navigate("/sign-up")}

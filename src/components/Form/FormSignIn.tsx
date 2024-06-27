@@ -2,8 +2,11 @@ import { Form, Input, Radio } from "antd";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../app/context/AuthContext";
-import { auth, provider } from "../../../firebaseConfig";
-import { signInWithPopup } from "firebase/auth";
+import GoogleLogin, {
+  GoogleLoginResponse,
+  GoogleLoginResponseOffline,
+} from "react-google-login";
+import { jwtDecode } from "jwt-decode";
 
 const FormSignIn = () => {
   const navigate = useNavigate();
@@ -48,17 +51,19 @@ const FormSignIn = () => {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      // Lưu thông tin người dùng vào sessionStorage hoặc thực hiện hành động khác
-      sessionStorage.setItem("user", JSON.stringify(user));
-      sessionStorage.setItem("userRole", "student"); // Giả sử người dùng Google là student
-      navigate("/");
-    } catch (error) {
-      console.error("Google login error: ", error);
+  const onGoogleSuccess = (
+    response: GoogleLoginResponse | GoogleLoginResponseOffline,
+  ) => {
+    if ("tokenId" in response) {
+      console.log("Login Success! Current User: ", jwtDecode(response.tokenId));
+      sessionStorage.setItem("token", response.tokenId);
+      alert("Logged in successfully.");
     }
+  };
+
+  const onGoogleFailure = (response: any) => {
+    console.log("Login Failed! Response: ", response);
+    alert("Failed to log in.");
   };
 
   return (
@@ -125,38 +130,13 @@ const FormSignIn = () => {
 
         {/* <!-- Social login buttons --> */}
         <div className="w-full">
-          <a
-            className="mb-3 flex w-full items-center justify-center rounded border border-black bg-[#FFFFFF] px-7 py-3 text-center text-sm font-medium uppercase leading-normal text-black shadow-md transition duration-150 hover:text-black"
-            href="#!"
-            role="button"
-            onClick={handleGoogleLogin}
-          >
-            {/* <!-- Google --> */}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="mr-2 h-4 w-4"
-              viewBox="0 0 48 48"
-            >
-              <path
-                fill="#4285F4"
-                d="M24 9.5c3.8 0 6.8 1.5 8.9 3.9l6.6-6.6C35.3 3.1 30 1 24 1 14.6 1 6.6 6.7 3.1 14.4l7.6 5.9C12.5 15 17.7 9.5 24 9.5z"
-              />
-              <path
-                fill="#34A853"
-                d="M46.2 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.5 2.7-2 5.1-4.3 6.6l7 5.5C43.4 36.6 46.2 31 46.2 24.5z"
-              />
-              <path
-                fill="#FBBC05"
-                d="M10.7 28.7c-1-2.7-1.5-5.6-1.5-8.7s.5-6 1.5-8.7l-7.6-5.9C1.3 10.6 0 17.1 0 24s1.3 13.4 3.6 19.6l7.1-5.5z"
-              />
-              <path
-                fill="#EA4335"
-                d="M24 48c6.5 0 12-2.1 16.1-5.6l-7-5.5c-2.2 1.5-4.9 2.4-7.9 2.4-6.3 0-11.5-4.3-13.4-10.2l-7.1 5.5C6.6 43.3 14.8 48 24 48z"
-              />
-              <path fill="none" d="M0 0h48v48H0z" />
-            </svg>
-            Continue with Google
-          </a>
+          <GoogleLogin
+            clientId=""
+            buttonText="Continue with Google"
+            onSuccess={onGoogleSuccess}
+            onFailure={onGoogleFailure}
+            cookiePolicy="single_host_origin"
+          />
         </div>
       </Form>
     </div>

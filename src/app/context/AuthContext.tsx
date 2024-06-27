@@ -1,38 +1,16 @@
-import {
-  createContext,
-  useState,
-  ReactNode,
-  useContext,
-  useEffect,
-} from "react";
+import { createContext, useState, ReactNode, useContext } from "react";
 import axios from "axios";
 import { AuthContextType, User } from "../../models/Types";
-import { auth } from "../../../firebaseConfig";
-import { onAuthStateChanged } from "firebase/auth";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
-  // const [user, setUser] = useState<User | null>(() => {
-  //   const storedUser = sessionStorage.getItem("user");
-  //   return storedUser ? JSON.parse(storedUser) : null;
-  // });
+  const [user, setUser] = useState<User | null>(() => {
+    const storedUser = sessionStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
 
-  const [user, setUser] = useState<any>(null);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
-        sessionStorage.setItem("user", JSON.stringify(user));
-      } else {
-        setUser(null);
-        sessionStorage.removeItem("user");
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
+  // const [user, setUser] = useState<any>(null);
 
   const login = async (email: string, password: string) => {
     try {

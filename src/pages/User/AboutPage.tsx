@@ -1,8 +1,13 @@
 import React from "react";
 import { Layout, Row, Col, Card } from "antd";
-
 import { useSider } from "../../app/context/SiderContext";
 import { AppFooter, AppHeader, AppSider } from "../../components";
+import {
+  ContactsOutlined,
+  GlobalOutlined,
+  MobileOutlined,
+  TeamOutlined,
+} from "@ant-design/icons";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -26,13 +31,13 @@ const AboutPage: React.FC = () => {
             className={`transition-all duration-75 ${collapsed ? "w-0" : "w-64"}`}
           />
         </Sider>
-        <Layout>
-          <Content className="flex-1 overflow-y-auto p-4">
-            <div className="bg-gray-100 py-16 text-center">
-              <h1 className="mb-4 text-4xl font-bold">
+        <Layout className="flex flex-1 flex-col">
+          <Content className="flex-1 overflow-y-auto">
+            <div className="bg-[#1f2937] py-10 text-center text-white">
+              <h1 className="mb-4 text-2xl font-bold">
                 Improving Lives Through Learning
               </h1>
-              <p className="text-lg">On Course, you have access to:</p>
+              <p className="text-base">On Course, you have access to:</p>
             </div>
             <div className="bg-white py-16">
               <div className="container mx-auto">
@@ -42,29 +47,25 @@ const AboutPage: React.FC = () => {
                 <Row gutter={16} justify="center">
                   {[
                     {
-                      imgSrc:
-                        "https://m.yodycdn.com/blog/anh-dai-dien-hai-yodyvn.jpg",
+                      icon: <MobileOutlined />,
                       title: "Mobile learning",
                       description:
                         "Quisque nec volutpat sem. Interdum et malesuada fames ac ante ipsum primis in faucibus.",
                     },
                     {
-                      imgSrc:
-                        "https://m.yodycdn.com/blog/anh-dai-dien-hai-yodyvn.jpg",
+                      icon: <TeamOutlined />,
                       title: "Academic & Technical Support",
                       description:
                         "Quisque nec volutpat sem. Interdum et malesuada fames ac ante ipsum primis in faucibus.",
                     },
                     {
-                      imgSrc:
-                        "https://m.yodycdn.com/blog/anh-dai-dien-hai-yodyvn.jpg",
+                      icon: <ContactsOutlined />,
                       title: "Shareable Certificates",
                       description:
                         "Quisque nec volutpat sem. Interdum et malesuada fames ac ante ipsum primis in faucibus.",
                     },
                     {
-                      imgSrc:
-                        "https://m.yodycdn.com/blog/anh-dai-dien-hai-yodyvn.jpg",
+                      icon: <GlobalOutlined />,
                       title: "An Inclusive Experience",
                       description:
                         "Quisque nec volutpat sem. Interdum et malesuada fames ac ante ipsum primis in faucibus.",
@@ -72,11 +73,9 @@ const AboutPage: React.FC = () => {
                   ].map((feature, index) => (
                     <Col key={index} xs={24} md={12} lg={6} className="mb-8">
                       <Card className="border-0 text-center shadow-none">
-                        <img
-                          src={feature.imgSrc}
-                          alt={feature.title}
-                          className="mx-auto mb-4"
-                        />
+                        <div className="mx-auto mb-4 text-3xl">
+                          {feature.icon}
+                        </div>
                         <h3 className="text-xl font-semibold">
                           {feature.title}
                         </h3>
@@ -95,7 +94,7 @@ const AboutPage: React.FC = () => {
                 <Row gutter={16}>
                   <Col xs={24} md={12} lg={8} className="mb-8">
                     <img
-                      src="https://photo2.tinhte.vn/data/attachment-files/2020/02/4901996_cover.jpg"
+                      src="/public/image/drawing-tablet.png"
                       alt="Our Story"
                       className="w-full"
                     />

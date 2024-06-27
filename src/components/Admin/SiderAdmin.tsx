@@ -1,3 +1,13 @@
+import {
+  BarsOutlined,
+  CalendarOutlined,
+  CommentOutlined,
+  FlagOutlined,
+  LineChartOutlined,
+  ReadOutlined,
+  SettingOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import { Divider, Menu } from "antd";
 import { Footer } from "antd/es/layout/layout";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +25,7 @@ const SiderAdmin: React.FC<{ className?: string }> = () => {
         <Menu.Item
           className="hover:rounded-none hover:bg-amber-500 hover:text-black"
           key="1"
-          icon={<i className="fa-solid fa-chart-line"></i>}
+          icon={<LineChartOutlined />}
           onClick={() => navigate("/admin/dashboard")}
         >
           Dashboard
@@ -23,7 +33,7 @@ const SiderAdmin: React.FC<{ className?: string }> = () => {
         <Menu.Item
           className="hover:rounded-none hover:bg-amber-500 hover:text-black"
           key="2"
-          icon={<i className="fa-solid fa-list"></i>}
+          icon={<BarsOutlined />}
           onClick={() => navigate("/admin/categories-management")}
         >
           Categories
@@ -31,7 +41,7 @@ const SiderAdmin: React.FC<{ className?: string }> = () => {
         <Menu.Item
           className="hover:rounded-none hover:bg-amber-500 hover:text-black"
           key="3"
-          icon={<i className="fa-solid fa-comment-dots"></i>}
+          icon={<CommentOutlined />}
           onClick={() => navigate("/admin/feedbacks-management")}
         >
           Feedback
@@ -39,7 +49,7 @@ const SiderAdmin: React.FC<{ className?: string }> = () => {
         <Menu.Item
           className="hover:rounded-none hover:bg-amber-500 hover:text-black"
           key="4"
-          icon={<i className="fa-solid fa-flag"></i>}
+          icon={<FlagOutlined />}
           onClick={() => navigate("/admin/reports-management")}
         >
           Report
@@ -47,7 +57,7 @@ const SiderAdmin: React.FC<{ className?: string }> = () => {
         <Menu.Item
           className="hover:rounded-none hover:bg-amber-500 hover:text-black"
           key="5"
-          icon={<i className="fa-solid fa-users"></i>}
+          icon={<UserOutlined />}
           onClick={() => navigate("/admin/users-management")}
         >
           Users
@@ -55,7 +65,7 @@ const SiderAdmin: React.FC<{ className?: string }> = () => {
         <Menu.Item
           className="hover:rounded-none hover:bg-amber-500 hover:text-black"
           key="6"
-          icon={<i className="fa-solid fa-flag"></i>}
+          icon={<CalendarOutlined />}
           onClick={() => navigate("/admin/blogs-management")}
         >
           Blogs
@@ -63,7 +73,7 @@ const SiderAdmin: React.FC<{ className?: string }> = () => {
         <Menu.Item
           className="hover:rounded-none hover:bg-amber-500 hover:text-black"
           key="7"
-          icon={<i className="fa-solid fa-check"></i>}
+          icon={<ReadOutlined />}
           onClick={() => navigate("/admin/courses-check")}
         >
           Courses
@@ -71,7 +81,7 @@ const SiderAdmin: React.FC<{ className?: string }> = () => {
         <Menu.Item
           className="hover:rounded-none hover:bg-amber-500 hover:text-black"
           key="8"
-          icon={<i className="fa-solid fa-wrench"></i>}
+          icon={<SettingOutlined />}
           onClick={() => navigate("/setting")}
         >
           Setting

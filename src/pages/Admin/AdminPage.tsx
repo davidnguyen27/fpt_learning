@@ -16,7 +16,7 @@ const AdminPage = () => {
       <Header className="header">
         <AppHeader />
       </Header>
-      <Layout className="flex flex-1 overflow-y-auto">
+      <Layout className="flex flex-1">
         <Sider
           className="sider"
           collapsed={collapsed}
@@ -46,7 +46,7 @@ const AdminPage = () => {
                 </div>
               </section>
             </div>
-            <Footer className="footer">
+            <Footer className="footer mt-10">
               <AppFooter />
             </Footer>
           </Content>
