@@ -8,9 +8,6 @@ interface FormCreateCourseProp {
 const FormCreateCourse: React.FC<FormCreateCourseProp> = ({ goToNextStep }) => {
   return (
     <>
-      <h1 className="text-base font-medium">
-        <i className="fa-solid fa-circle-info"></i> Basic Information
-      </h1>
       <Form layout="vertical">
         <div className="bg-slate-200 p-6">
           <Form.Item
@@ -109,7 +106,7 @@ const FormCreateCourse: React.FC<FormCreateCourseProp> = ({ goToNextStep }) => {
             className="text-white bg-red-500 px-10 py-3 hover:bg-red-600"
             onClick={goToNextStep}
           >
-            Next
+            Submit
           </button>
         </div>
       </Form>
