@@ -1,7 +1,7 @@
-import TrophyIcon from '../../assets/icons/trophy.png';
-import ChalkBoardIcon from '../../assets/icons/chalkboard.png';
-import StudentIcon from '../../assets/icons/student.png';
-import CourseIcon from '../../assets/icons/course.png';
+import InstructorIcon from "../../../public/image/teacher.png";
+import StudentIcon from "../../../public/image/university.png";
+import CourseIcon from "../../../public/image/book.png";
+import ReportIcon from "../../../public/image/mute.png";
 
 const Overview: React.FC = () => {
   return (
@@ -9,34 +9,37 @@ const Overview: React.FC = () => {
       <div className="bg-slate-200">
         <div className="flex items-center justify-between p-4">
           <div>
-            <h2 className="text-xl font-semibold">Total Sales</h2>
-
+            <h2 className="text-xl font-semibold">Total Users</h2>
             <h2 className="my-4 text-xl font-semibold">0</h2>
           </div>
           <div>
-          <img src={TrophyIcon} alt="Trophy Icon" className="w-16 h-16" />
+            <img src={StudentIcon} alt="Trophy Icon" className="h-16 w-16" />
           </div>
         </div>
       </div>
       <div className="bg-slate-200">
         <div className="flex items-center justify-between p-4">
           <div>
-            <h2 className="text-xl font-semibold">Total Enroll</h2>
+            <h2 className="text-xl font-semibold">Total Instructors</h2>
             <h2 className="my-4 text-xl font-semibold">0</h2>
           </div>
           <div>
-          <img src={ChalkBoardIcon} alt="Chalkboard Icon" className="w-16 h-16" />
+            <img
+              src={InstructorIcon}
+              alt="Chalkboard Icon"
+              className="h-16 w-16"
+            />
           </div>
         </div>
       </div>
       <div className="bg-slate-200">
         <div className="flex items-center justify-between p-4">
           <div>
-            <h2 className="text-xl font-semibold">Total Students</h2>
+            <h2 className="text-xl font-semibold">Total Categories</h2>
             <h2 className="my-4 text-xl font-semibold">0</h2>
           </div>
           <div>
-          <img src={StudentIcon} alt="Student Icon" className="w-16 h-16" />
+            <img src={CourseIcon} alt="Student Icon" className="h-16 w-16" />
           </div>
         </div>
       </div>
@@ -47,7 +50,7 @@ const Overview: React.FC = () => {
             <h2 className="my-4 text-xl font-semibold">0</h2>
           </div>
           <div>
-          <img src={CourseIcon} alt="Course Icon" className="w-16 h-16" />
+            <img src={CourseIcon} alt="Course Icon" className="h-16 w-16" />
           </div>
         </div>
       </div>

@@ -32,6 +32,7 @@ import StudentSettingPage from "../pages/Student/StudentSettingPage";
 import ReviewManagePage from "../pages/Instructor/ReviewManagePage";
 import PayoutManagePage from "../pages/Instructor/PayoutManagePage";
 import AboutPage from "../pages/User/AboutPage";
+import PasswordReset from "../pages/User/ForgotPassword";
 
 interface ProtectedRouteProps {
   element: JSX.Element;
@@ -71,6 +72,7 @@ const AppRouter = () => {
           <Route path="/report-page" element={<ReportPage />} />
           <Route path="/help-page" element={<HelpPage />} />
           <Route path="/settings-page" element={<SettingsPage />} />
+          <Route path="/forgot-password" element={<PasswordReset />} />
 
           {/* Student */}
           <Route
@@ -173,7 +175,7 @@ const AppRouter = () => {
               />
             }
           />
-          <Route
+          {/* <Route
             path="/admin/feedbacks-management"
             element={
               <ProtectedRoute
@@ -181,8 +183,8 @@ const AppRouter = () => {
                 allowedRoles={["admin"]}
               />
             }
-          />
-          <Route
+          /> */}
+          {/* <Route
             path="/admin/reports-management"
             element={
               <ProtectedRoute
@@ -190,8 +192,8 @@ const AppRouter = () => {
                 allowedRoles={["admin"]}
               />
             }
-          />
-          <Route
+          /> */}
+          {/* <Route
             path="/admin/blogs-management"
             element={
               <ProtectedRoute
@@ -199,7 +201,7 @@ const AppRouter = () => {
                 allowedRoles={["admin"]}
               />
             }
-          />
+          /> */}
           <Route
             path="/admin/courses-check"
             element={

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Divider, Menu } from "antd";
 import { Footer } from "antd/es/layout/layout";
-import SubMenu from "antd/es/menu/SubMenu";
 import { useNavigate } from "react-router-dom";
 import {
   AuditOutlined,
@@ -48,6 +47,65 @@ const AppSider: React.FC<{ className?: string }> = () => {
     }
   };
 
+  const items = [
+    {
+      key: "1",
+      icon: <HomeOutlined />,
+      label: "Home",
+    },
+    {
+      key: "2",
+      icon: <AuditOutlined />,
+      label: "About",
+    },
+    {
+      key: "sub1",
+      icon: <BarsOutlined />,
+      label: "Categories",
+      children: [
+        {
+          key: "3",
+          label: "Web Development",
+        },
+        {
+          key: "4",
+          label: "Data & Analytics",
+        },
+        {
+          key: "5",
+          label: "Information Technology",
+        },
+        {
+          key: "6",
+          label: "Marketing",
+        },
+        {
+          key: "7",
+          label: "Office Productivity",
+        },
+        {
+          key: "8",
+          label: "Business",
+        },
+      ],
+    },
+    {
+      key: "9",
+      icon: <SettingOutlined />,
+      label: "Setting",
+    },
+    {
+      key: "10",
+      icon: <QuestionCircleOutlined />,
+      label: "Help",
+    },
+    {
+      key: "11",
+      icon: <FlagOutlined />,
+      label: "Report",
+    },
+  ];
+
   return (
     <div className="flex h-full flex-col">
       <Menu
@@ -57,81 +115,8 @@ const AppSider: React.FC<{ className?: string }> = () => {
         onOpenChange={onOpenChange}
         onSelect={onSelect}
         className="flex-grow bg-slate-200 text-sm"
-      >
-        <Menu.Item
-          className="hover:rounded-none hover:bg-[#c2410c] hover:text-white"
-          key="1"
-          icon={<HomeOutlined />}
-        >
-          Home
-        </Menu.Item>
-        <Menu.Item
-          className="hover:rounded-none hover:bg-[#c2410c] hover:text-white"
-          key="2"
-          icon={<AuditOutlined />}
-        >
-          About
-        </Menu.Item>
-        <SubMenu key="sub1" icon={<BarsOutlined />} title="Categories">
-          <Menu.Item
-            className="hover:rounded-none hover:bg-[#ef4444] hover:text-white"
-            key="3"
-          >
-            Web Development
-          </Menu.Item>
-          <Menu.Item
-            className="hover:rounded-none hover:bg-[#ef4444] hover:text-white"
-            key="4"
-          >
-            Data & Analytics
-          </Menu.Item>
-          <Menu.Item
-            className="hover:rounded-none hover:bg-[#ef4444] hover:text-white"
-            key="5"
-          >
-            Information Technology
-          </Menu.Item>
-          <Menu.Item
-            className="hover:rounded-none hover:bg-[#ef4444] hover:text-white"
-            key="6"
-          >
-            Marketing
-          </Menu.Item>
-          <Menu.Item
-            className="hover:rounded-none hover:bg-[#ef4444] hover:text-white"
-            key="7"
-          >
-            Office Productivity
-          </Menu.Item>
-          <Menu.Item
-            className="hover:rounded-none hover:bg-[#ef4444] hover:text-white"
-            key="8"
-          >
-            Business
-          </Menu.Item>
-        </SubMenu>
-        <Menu.Item
-          className="hover:rounded-none hover:bg-[#ef4444] hover:text-white"
-          key="9"
-          icon={<SettingOutlined />}
-        >
-          Setting
-        </Menu.Item>
-        <Menu.Item
-          className="hover:rounded-none hover:bg-[#ef4444] hover:text-white"
-          key="10"
-          icon={<QuestionCircleOutlined />}
-        >
-          Help
-        </Menu.Item>
-        <Menu.Item
-          className="hover:rounded-none hover:bg-[#ef4444] hover:text-white"
-          key="11"
-          icon={<FlagOutlined />}
-        >
-          Report
-        </Menu.Item>
-      </Menu>
+        items={items}
+      />
       <Divider />
       <Footer className="bg-slate-200 px-8 pb-4 pt-0 text-center">
         <span className="text-xs font-normal">

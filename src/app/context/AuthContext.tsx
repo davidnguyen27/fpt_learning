@@ -10,19 +10,15 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
-  // const [user, setUser] = useState<any>(null);
-
   const login = async (email: string, password: string) => {
     try {
       const response = await axios.get<User[]>(
         "https://665fc1c95425580055b0bf26.mockapi.io/users",
       );
       const users = response.data;
-      console.log(users);
       const userData = users.find(
         (user) => user.email === email && user.password === password,
       );
-      console.log(userData);
 
       if (userData) {
         setUser(userData);
@@ -38,11 +34,12 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = () => {
     setUser(null);
     sessionStorage.removeItem("user");
+    sessionStorage.removeItem("token");
     sessionStorage.removeItem("userRole");
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, setUser }}>
       {children}
     </AuthContext.Provider>
   );

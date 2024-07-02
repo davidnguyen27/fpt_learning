@@ -2,22 +2,25 @@ import { Form, Input, Radio } from "antd";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../app/context/AuthContext";
-import GoogleLogin, {
-  GoogleLoginResponse,
-  GoogleLoginResponseOffline,
-} from "react-google-login";
 import { jwtDecode } from "jwt-decode";
+import { GoogleLogin } from "@react-oauth/google";
+
+// Define the expected structure of the decoded JWT payload
+interface ExtendedJwtPayload {
+  email: string;
+  name: string;
+  picture: string;
+}
 
 const FormSignIn = () => {
   const navigate = useNavigate();
-
   const authContext = useContext(AuthContext);
 
   if (!authContext) {
     throw new Error("AuthContext must be used within an AuthProvider");
   }
 
-  const { login } = authContext;
+  const { login, setUser } = authContext;
 
   const handleLogin = async (values: { email: string; password: string }) => {
     try {
@@ -30,15 +33,12 @@ const FormSignIn = () => {
           case "admin":
             navigate("/admin/dashboard");
             break;
-
           case "instructor":
             navigate("/instructor/dashboard");
             break;
-
           case "student":
             navigate("/");
             break;
-
           default:
             console.log("Unknown role!");
             break;
@@ -51,19 +51,35 @@ const FormSignIn = () => {
     }
   };
 
-  const onGoogleSuccess = (
-    response: GoogleLoginResponse | GoogleLoginResponseOffline,
-  ) => {
-    if ("tokenId" in response) {
-      console.log("Login Success! Current User: ", jwtDecode(response.tokenId));
-      sessionStorage.setItem("token", response.tokenId);
-      alert("Logged in successfully.");
+  const onSuccess = (credentialResponse: any) => {
+    if (credentialResponse?.credential) {
+      const decoded = jwtDecode<ExtendedJwtPayload>(
+        credentialResponse.credential,
+      );
+      sessionStorage.setItem("token", credentialResponse.credential);
+
+      // Extract user information from decoded token
+      const user: any = {
+        email: decoded.email,
+        name: decoded.name,
+        image: decoded.picture,
+        role: "student", // You might want to handle the role more dynamically
+      };
+
+      // Save user information in session storage
+      sessionStorage.setItem("user", JSON.stringify(user));
+
+      // Update context
+      setUser(user);
+
+      console.log("Google login successful. Decoded token: ", decoded);
+      navigate("/");
     }
   };
 
-  const onGoogleFailure = (response: any) => {
-    console.log("Login Failed! Response: ", response);
-    alert("Failed to log in.");
+  const onError = () => {
+    console.log("Google login failed");
+    alert("Failed to log in with Google.");
   };
 
   return (
@@ -101,7 +117,7 @@ const FormSignIn = () => {
         <div className="flex items-center justify-between">
           <Radio>Remember me</Radio>
           <a
-            href="#!"
+            href="/forgot-password"
             className="text-primary hover:text-primary-600 focus:text-primary-600 active:text-primary-700 transition duration-150 ease-in-out"
           >
             Forgot password?
@@ -130,13 +146,7 @@ const FormSignIn = () => {
 
         {/* <!-- Social login buttons --> */}
         <div className="w-full">
-          <GoogleLogin
-            clientId=""
-            buttonText="Continue with Google"
-            onSuccess={onGoogleSuccess}
-            onFailure={onGoogleFailure}
-            cookiePolicy="single_host_origin"
-          />
+          <GoogleLogin onSuccess={onSuccess} onError={onError} />
         </div>
       </Form>
     </div>

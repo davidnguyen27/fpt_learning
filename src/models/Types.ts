@@ -22,6 +22,7 @@ export type AuthContextType = {
   user: User | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
+  setUser: (user: User) => void;
 };
 
 export type SiderProviderProps = {

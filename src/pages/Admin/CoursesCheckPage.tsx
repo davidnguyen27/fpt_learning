@@ -20,7 +20,7 @@ const CoursesCheckPage = () => {
           collapsed={collapsed}
           collapsedWidth={0}
           trigger={null}
-          width={256}
+          width={230}
         >
           <SiderAdmin
             className={`transition-all duration-75 ${collapsed ? "w-0" : "w-64"}`}
@@ -30,16 +30,8 @@ const CoursesCheckPage = () => {
           <Content className="flex-1 overflow-y-auto">
             <div className="p-8">
               <section>
-                <h1 className="text-xl font-bold">Course Check Management</h1>
+                <h1 className="text-xl font-bold">Course Management</h1>
               </section>
-              <div className="mt-4 bg-slate-200 p-4">
-                <input
-                  style={{ width: "100%" }}
-                  type="text"
-                  placeholder="Search by phone..."
-                  className="h-8 rounded-md pl-8 text-xs"
-                />
-              </div>
               <div className="my-3 flex items-center justify-between">
                 <div className="flex items-center">
                   <i className="fa-solid fa-filter"></i>

@@ -9,7 +9,7 @@ const ModalCreateAcc = (props: ModalCreateProps) => {
   const { isOpen, setIsOpen } = props;
   return (
     <Modal
-      title="CREATE ACCOUNT"
+      title="EDIT ACCOUNT"
       open={isOpen}
       width={700}
       footer={[
@@ -19,8 +19,11 @@ const ModalCreateAcc = (props: ModalCreateProps) => {
         >
           Cancel
         </button>,
-        <button type="submit" className="rounded-md bg-amber-500 px-4 py-1">
-          Create
+        <button
+          type="submit"
+          className="rounded-md bg-red-500 px-4 py-1 hover:bg-red-600"
+        >
+          Edit
         </button>,
       ]}
     >
@@ -86,7 +89,7 @@ const ModalCreateAcc = (props: ModalCreateProps) => {
           name="phone"
           rules={[
             { required: true, message: "Phone is require!" },
-            { type: "number", message: "Phone is a number!" },
+            // { type: "number", message: "Phone is a number!" },
           ]}
         >
           <Input className="text-sm" size="large" placeholder="Phone Number" />

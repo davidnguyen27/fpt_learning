@@ -46,7 +46,7 @@ const UserManagePage = () => {
           <Content className="flex-1 overflow-y-auto">
             <div className="p-8">
               <section>
-                <h1 className="text-xl font-bold">Student Management</h1>
+                <h1 className="text-xl font-bold">User Management</h1>
               </section>
               <div className="mt-4 bg-slate-200 p-4">
                 <input
@@ -78,7 +78,7 @@ const UserManagePage = () => {
                 </div>
                 <div>
                   <button
-                    className="rounded-lg bg-amber-500 px-5 py-2 text-sm font-medium hover:bg-amber-600"
+                    className="rounded-lg bg-red-500 px-5 py-2 text-sm font-medium hover:bg-red-600"
                     onClick={() => setIsOpen(true)}
                   >
                     Create account

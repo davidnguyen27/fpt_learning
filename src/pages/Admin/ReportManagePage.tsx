@@ -20,7 +20,7 @@ const ReportManagePage = () => {
           collapsed={collapsed}
           collapsedWidth={0}
           trigger={null}
-          width={256}
+          width={230}
         >
           <SiderAdmin
             className={`transition-all duration-75 ${collapsed ? "w-0" : "w-64"}`}

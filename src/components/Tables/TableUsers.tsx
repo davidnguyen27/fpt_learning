@@ -1,10 +1,10 @@
-import { Space, Switch, Table } from "antd";
-import { useEffect } from "react";
+import { Modal, Space, Switch, Table } from "antd";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers } from "../../app/redux/user/userSlice";
 import { AppDispatch, RootState } from "../../app/redux/store";
 
-const columns = [
+const columns = (handleDelete: () => void) => [
   {
     title: "Name",
     dataIndex: "fullName",
@@ -46,7 +46,7 @@ const columns = [
         <a>
           <i className="fa-solid fa-file-pen"></i>
         </a>
-        <a>
+        <a onClick={handleDelete}>
           <i className="fa-solid fa-trash"></i>
         </a>
       </Space>
@@ -60,6 +60,8 @@ const TableUsers = () => {
     (state: RootState) => state.user,
   );
 
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);
@@ -71,15 +73,31 @@ const TableUsers = () => {
     );
   });
 
+  const handleDelete = () => {
+    setIsModalVisible(true);
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <Table
-      className="my-5 rounded-none"
-      columns={columns}
-      dataSource={filteredUsers}
-    />
+    <>
+      <Table
+        className="my-5 rounded-none"
+        columns={columns(handleDelete)}
+        dataSource={filteredUsers}
+      />
+      <Modal
+        title="Confirm Delete"
+        visible={isModalVisible}
+        onOk={() => setIsModalVisible(false)}
+        onCancel={() => setIsModalVisible(false)}
+        okText="Delete"
+        cancelText="Cancel"
+      >
+        <p>Are you sure you want to delete this user?</p>
+      </Modal>
+    </>
   );
 };
 

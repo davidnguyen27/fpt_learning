@@ -6,13 +6,17 @@ import App from "./App.tsx";
 import "antd/dist/reset.css";
 import "./styles/index.css";
 import { SiderProvider } from "./app/context/SiderContext.tsx";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { CLIENT_ID } from "./const/clientID.ts";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Provider store={store}>
-        <SiderProvider>
+      <SiderProvider>
+        <GoogleOAuthProvider clientId={CLIENT_ID}>
           <App />
-        </SiderProvider>
+        </GoogleOAuthProvider>
+      </SiderProvider>
     </Provider>
   </React.StrictMode>,
 );
