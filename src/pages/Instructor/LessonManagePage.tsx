@@ -63,7 +63,6 @@ const LessonManagePage = () => {
             <AppFooter />
           </Footer>
           </Content>
-
         </Layout>
       </Layout>
     </Layout>

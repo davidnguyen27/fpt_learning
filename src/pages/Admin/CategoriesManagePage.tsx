@@ -41,7 +41,7 @@ const CategoriesManagePage = () => {
                   <i className="fa-solid fa-filter"></i>
                   <div className="mx-4">
                     Category name:
-                    <select className="ml-2">
+                    <select className="ml-2" title="Category">
                       <option value="">Web Development</option>
                       <option value="instructor">Business</option>
                       <option value="student">Data & Analytics</option>
