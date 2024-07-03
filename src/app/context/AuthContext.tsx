@@ -12,22 +12,41 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await axios.get<User[]>(
-        "https://665fc1c95425580055b0bf26.mockapi.io/users",
-      );
-      const users = response.data;
-      const userData = users.find(
-        (user) => user.email === email && user.password === password,
+      console.log("Bắt đầu đăng nhập với:", { email, password });
+
+      const response = await axios.post(
+        "https://api-ojt-hcm24-react06-group02.vercel.app/api/auth",
+        { email, password },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
       );
 
+      console.log("Header: ", response.headers);
+      console.log("Phản hồi từ API:", response.data);
+
+      const userData = response.data;
+
       if (userData) {
+        console.log("Đăng nhập thành công:", userData);
         setUser(userData);
         sessionStorage.setItem("user", JSON.stringify(userData));
       } else {
+        console.log("Thông tin đăng nhập không hợp lệ.");
         throw new Error("Invalid credentials");
       }
-    } catch (error) {
-      console.error("Login failed", error);
+    } catch (error: any) {
+      if (error.response) {
+        console.error("Đăng nhập thất bại", error.response.data);
+        console.error("Trạng thái", error.response.status);
+        console.error("Headers", error.response.headers);
+      } else if (error.request) {
+        console.error("Không nhận được phản hồi", error.request);
+      } else {
+        console.error("Lỗi", error.message);
+      }
     }
   };
 
@@ -48,7 +67,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error("useAuth phải được sử dụng trong AuthProvider");
   }
   return context;
 };

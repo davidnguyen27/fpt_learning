@@ -9,6 +9,7 @@ import { GoogleLogin } from "@react-oauth/google";
 interface ExtendedJwtPayload {
   email: string;
   name: string;
+  role: string;
   picture: string;
 }
 
@@ -26,8 +27,17 @@ const FormSignIn = () => {
     try {
       await login(values.email, values.password);
       const storedUser = sessionStorage.getItem("user");
-      const user = storedUser ? JSON.parse(storedUser) : null;
+      if (!storedUser) {
+        throw new Error("No user found in sessionStorage");
+      }
+      console.log("Stored User:", storedUser); // Log thông tin người dùng lưu trữ
+
+      const user = jwtDecode<ExtendedJwtPayload>(storedUser);
+      console.log("Decoded User:", user); // Log thông tin người dùng đã phân tích cú pháp
+
       if (user) {
+        console.log("User Role:", user.role); // Log vai trò người dùng
+
         sessionStorage.setItem("userRole", user.role);
         switch (user.role) {
           case "admin":
@@ -44,7 +54,7 @@ const FormSignIn = () => {
             break;
         }
       } else {
-        return alert("Email or password is wrong!");
+        alert("Email or password is wrong!");
       }
     } catch (error) {
       console.error("Unknown error: ", error);
