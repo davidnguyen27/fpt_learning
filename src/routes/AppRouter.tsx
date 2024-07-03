@@ -17,9 +17,6 @@ import PaidMembershipPage from "../pages/User/PaidMembership";
 import ProfilePage from "../pages/Admin/ProfilePage";
 import InstructorPage from "../pages/Instructor/InstructorPage";
 import UserManagePage from "../pages/Admin/UserManagePage";
-import FeedBackManagePage from "../pages/Admin/FeedBackManagePage";
-import ReportManagePage from "../pages/Admin/ReportManagePage";
-import BlogManagePage from "../pages/Admin/BlogManagePage";
 import SettingsPage from "../pages/User/SettingPage";
 import CoursesCheckPage from "../pages/Admin/CoursesCheckPage";
 import CoursesManagePage from "../pages/Instructor/CoursesManagePage";
@@ -46,13 +43,17 @@ const ProtectedRoute = ({ element, allowedRoles }: ProtectedRouteProps) => {
     throw new Error("AuthContext must be used within an AuthProvider");
   }
 
-  const { user } = authContext;
+  const storedUser: any = sessionStorage.getItem("user");
+  if (!storedUser) {
+    throw new Error("Không tìm thấy người dùng trong sessionStorage");
+  }
+  const user = JSON.parse(storedUser);
 
   if (!user) {
     return <Navigate to="/sign-in" replace />;
   }
 
-  if (allowedRoles && !allowedRoles.includes(user.role)) {
+  if (allowedRoles && !allowedRoles.includes(user.data.role)) {
     return <Navigate to="/" replace />;
   }
 

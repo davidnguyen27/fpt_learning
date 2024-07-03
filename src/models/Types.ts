@@ -93,3 +93,10 @@ export type SignUpFormValues = {
   confirmPassword: string;
   role: string;
 };
+
+export type ExtendedJwtPayload = {
+  email: string;
+  name: string;
+  role: string;
+  picture: string;
+};

@@ -1,6 +1,7 @@
 import { createContext, useState, ReactNode, useContext } from "react";
 import axios from "axios";
 import { AuthContextType, User } from "../../models/Types";
+import { APILink } from "../../const/linkAPI";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -15,7 +16,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.log("Bắt đầu đăng nhập với:", { email, password });
 
       const response = await axios.post(
-        "https://api-ojt-hcm24-react06-group02.vercel.app/api/auth",
+        `${APILink}/api/auth`,
         { email, password },
         {
           headers: {
@@ -24,18 +25,41 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         },
       );
 
-      console.log("Header: ", response.headers);
       console.log("Phản hồi từ API:", response.data);
 
-      const userData = response.data;
+      // Kiểm tra cấu trúc phản hồi của API
+      const token =
+        response.data.token ||
+        response.data.accessToken ||
+        response.data.data?.token;
+      console.log("Token từ phản hồi API:", token);
 
-      if (userData) {
-        console.log("Đăng nhập thành công:", userData);
-        setUser(userData);
-        sessionStorage.setItem("user", JSON.stringify(userData));
+      if (token) {
+        console.log("Đăng nhập thành công, token nhận được:", token);
+        sessionStorage.setItem("token", token);
+
+        // Gọi API GetCurrentLoginUser sử dụng token
+        const userResponse = await axios.get(`${APILink}/api/auth`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const userData = userResponse.data;
+        console.log("userData: ", userData);
+
+        if (userData) {
+          console.log("Dữ liệu người dùng nhận được thành công:", userData);
+          setUser(userData);
+          sessionStorage.setItem("user", JSON.stringify(userData));
+          console.log("Dữ liệu người dùng lưu vào sessionStorage:", userData);
+        } else {
+          console.log("Không thể lấy dữ liệu người dùng.");
+          throw new Error("Không thể lấy dữ liệu người dùng");
+        }
       } else {
         console.log("Thông tin đăng nhập không hợp lệ.");
-        throw new Error("Invalid credentials");
+        throw new Error("Thông tin đăng nhập không hợp lệ");
       }
     } catch (error: any) {
       if (error.response) {
@@ -47,6 +71,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       } else {
         console.error("Lỗi", error.message);
       }
+      throw error; // Ném lỗi để xử lý ở hàm gọi
     }
   };
 
@@ -67,7 +92,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuth phải được sử dụng trong AuthProvider");
+    throw new Error("useAuth must be used within AuthProvider");
   }
   return context;
 };

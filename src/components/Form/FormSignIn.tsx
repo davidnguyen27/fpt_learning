@@ -2,44 +2,36 @@ import { Form, Input, Radio } from "antd";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../app/context/AuthContext";
-import { jwtDecode } from "jwt-decode";
 import { GoogleLogin } from "@react-oauth/google";
-
-// Define the expected structure of the decoded JWT payload
-interface ExtendedJwtPayload {
-  email: string;
-  name: string;
-  role: string;
-  picture: string;
-}
 
 const FormSignIn = () => {
   const navigate = useNavigate();
   const authContext = useContext(AuthContext);
 
   if (!authContext) {
-    throw new Error("AuthContext must be used within an AuthProvider");
+    throw new Error("AuthContext phải được sử dụng trong AuthProvider");
   }
 
-  const { login, setUser } = authContext;
+  const { login } = authContext;
 
   const handleLogin = async (values: { email: string; password: string }) => {
     try {
+      console.log("Đang xử lý đăng nhập...");
       await login(values.email, values.password);
+      console.log("Đăng nhập thành công, kiểm tra dữ liệu người dùng...");
+
       const storedUser = sessionStorage.getItem("user");
       if (!storedUser) {
-        throw new Error("No user found in sessionStorage");
+        throw new Error("Không tìm thấy người dùng trong sessionStorage");
       }
-      console.log("Stored User:", storedUser); // Log thông tin người dùng lưu trữ
+      const user = JSON.parse(storedUser);
+      console.log("Người dùng đã lưu:", user); // Log thông tin người dùng
 
-      const user = jwtDecode<ExtendedJwtPayload>(storedUser);
-      console.log("Decoded User:", user); // Log thông tin người dùng đã phân tích cú pháp
+      if (user && user.data) {
+        console.log("Vai trò người dùng:", user.data.role); // Log vai trò người dùng
 
-      if (user) {
-        console.log("User Role:", user.role); // Log vai trò người dùng
-
-        sessionStorage.setItem("userRole", user.role);
-        switch (user.role) {
+        sessionStorage.setItem("userRole", user.data.role);
+        switch (user.data.role) {
           case "admin":
             navigate("/admin/dashboard");
             break;
@@ -50,46 +42,33 @@ const FormSignIn = () => {
             navigate("/");
             break;
           default:
-            console.log("Unknown role!");
+            console.log("Vai trò không xác định!");
             break;
         }
       } else {
-        alert("Email or password is wrong!");
+        alert("Email hoặc mật khẩu không đúng!");
       }
     } catch (error) {
-      console.error("Unknown error: ", error);
+      console.error("Lỗi không xác định: ", error);
+      alert("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.");
     }
   };
 
   const onSuccess = (credentialResponse: any) => {
     if (credentialResponse?.credential) {
-      const decoded = jwtDecode<ExtendedJwtPayload>(
+      sessionStorage.setItem("token", credentialResponse.credential);
+      // Xử lý đăng nhập Google tương tự nếu cần
+      console.log(
+        "Đăng nhập Google thành công. Credential: ",
         credentialResponse.credential,
       );
-      sessionStorage.setItem("token", credentialResponse.credential);
-
-      // Extract user information from decoded token
-      const user: any = {
-        email: decoded.email,
-        name: decoded.name,
-        image: decoded.picture,
-        role: "student", // You might want to handle the role more dynamically
-      };
-
-      // Save user information in session storage
-      sessionStorage.setItem("user", JSON.stringify(user));
-
-      // Update context
-      setUser(user);
-
-      console.log("Google login successful. Decoded token: ", decoded);
       navigate("/");
     }
   };
 
   const onError = () => {
-    console.log("Google login failed");
-    alert("Failed to log in with Google.");
+    console.log("Đăng nhập Google thất bại");
+    alert("Không thể đăng nhập bằng Google.");
   };
 
   return (
@@ -101,8 +80,8 @@ const FormSignIn = () => {
         <Form.Item
           name="email"
           rules={[
-            { required: true, message: "Email is required!" },
-            { type: "email", message: "Please enter a valid email address!" },
+            { required: true, message: "Email là bắt buộc!" },
+            { type: "email", message: "Vui lòng nhập đúng địa chỉ email!" },
           ]}
         >
           <Input
@@ -114,7 +93,7 @@ const FormSignIn = () => {
         </Form.Item>
         <Form.Item
           name="password"
-          rules={[{ required: true, message: "Password is required!" }]}
+          rules={[{ required: true, message: "Mật khẩu là bắt buộc!" }]}
         >
           <Input
             className="text-sm"
@@ -148,13 +127,13 @@ const FormSignIn = () => {
             </a>
           </p>
         </Form.Item>
-        <div className="my-4 flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-neutral-300 after:mt-0.5 after:flex-1 after:border-t after:border-neutral-300">
+        <div className="sau:border-neutral-300 my-4 flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-neutral-300 after:mt-0.5 after:flex-1 after:border-t">
           <p className="mx-4 mb-0 text-center font-semibold dark:text-neutral-200">
             OR
           </p>
         </div>
 
-        {/* <!-- Social login buttons --> */}
+        {/* <!-- Nút đăng nhập bằng mạng xã hội --> */}
         <div className="w-full">
           <GoogleLogin onSuccess={onSuccess} onError={onError} />
         </div>
