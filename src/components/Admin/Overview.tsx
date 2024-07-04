@@ -1,7 +1,6 @@
 import InstructorIcon from "../../../public/image/teacher.png";
 import StudentIcon from "../../../public/image/university.png";
 import CourseIcon from "../../../public/image/book.png";
-import ReportIcon from "../../../public/image/mute.png";
 
 const Overview: React.FC = () => {
   return (

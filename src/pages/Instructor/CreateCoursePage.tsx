@@ -4,7 +4,6 @@ import { AppFooter, AppHeader } from "../../components";
 import Sider from "antd/es/layout/Sider";
 import { useSider } from "../../app/context/SiderContext";
 import SiderInstructor from "../../components/Instructor/SiderInstructor";
-import StepsCreateCourse from "../../components/Instructor/StepsCreateCourse";
 import FormCreateCourse from "../../components/Form/FormCreateCourse";
 
 const CreateCoursePage = () => {

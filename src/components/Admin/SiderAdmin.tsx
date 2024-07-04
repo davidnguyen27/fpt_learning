@@ -1,8 +1,6 @@
 import {
   BarsOutlined,
-  CalendarOutlined,
-  CommentOutlined,
-  FlagOutlined,
+
   LineChartOutlined,
   ReadOutlined,
   UserOutlined,
