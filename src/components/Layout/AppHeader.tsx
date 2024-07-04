@@ -11,7 +11,11 @@ import { useAuth } from "../../app/context/AuthContext";
 const AppHeader: React.FC = () => {
   const { toggleSider } = useSider();
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
+
+  const storedUser: any = sessionStorage.getItem("user");
+
+  const user = JSON.parse(storedUser);
 
   console.log(user?.role);
   const handleLogout = () => {
@@ -24,9 +28,9 @@ const AppHeader: React.FC = () => {
   };
 
   const handleView = () => {
-    if (user?.role === "admin") {
+    if (user.data.role === "admin") {
       navigate("/admin-profile-page");
-    } else if (user?.role === "instructor") {
+    } else if (user.data.role === "instructor") {
       navigate("/instructor-profile-page");
     } else {
       navigate("/student-profile-page");
@@ -34,7 +38,7 @@ const AppHeader: React.FC = () => {
   };
 
   const handleManagement = () => {
-    if (user?.role === "admin") {
+    if (user.data.role === "admin") {
       navigate("/admin/dashboard");
     } else if (user?.role === "instructor") {
       navigate("/instructor/dashboard");
@@ -44,7 +48,7 @@ const AppHeader: React.FC = () => {
   };
 
   const handleShoppingCart = () => {
-    if (user?.role === "student") {
+    if (user.data.role === "student") {
       navigate("/cart");
     }
   };
