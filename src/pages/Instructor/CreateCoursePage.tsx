@@ -4,7 +4,6 @@ import { AppFooter, AppHeader } from "../../components";
 import Sider from "antd/es/layout/Sider";
 import { useSider } from "../../app/context/SiderContext";
 import SiderInstructor from "../../components/Instructor/SiderInstructor";
-import StepsCreateCourse from "../../components/Instructor/StepsCreateCourse";
 import FormCreateCourse from "../../components/Form/FormCreateCourse";
 
 const CreateCoursePage = () => {
@@ -33,9 +32,11 @@ const CreateCoursePage = () => {
               <h1 className="text-xl font-bold">
                 <i className="fa-solid fa-arrow-trend-up"></i> Create New Course
               </h1>
-              <FormCreateCourse goToNextStep={function (): void {
-                throw new Error("Function not implemented.");
-              } } />
+              <FormCreateCourse
+                goToNextStep={function (): void {
+                  throw new Error("Function not implemented.");
+                }}
+              />
             </section>
             <Footer className="footer">
               <AppFooter />
