@@ -25,14 +25,10 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         },
       );
 
-      console.log("Phản hồi từ API:", response.data);
-
-      // Kiểm tra cấu trúc phản hồi của API
       const token =
         response.data.token ||
         response.data.accessToken ||
         response.data.data?.token;
-      console.log("Token từ phản hồi API:", token);
 
       if (token) {
         console.log("Đăng nhập thành công, token nhận được:", token);
@@ -49,12 +45,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.log("userData: ", userData);
 
         if (userData) {
-          console.log("Dữ liệu người dùng nhận được thành công:", userData);
           setUser(userData);
           sessionStorage.setItem("user", JSON.stringify(userData));
-          console.log("Dữ liệu người dùng lưu vào sessionStorage:", userData);
         } else {
-          console.log("Không thể lấy dữ liệu người dùng.");
           throw new Error("Không thể lấy dữ liệu người dùng");
         }
       } else {
@@ -71,7 +64,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       } else {
         console.error("Lỗi", error.message);
       }
-      throw error; // Ném lỗi để xử lý ở hàm gọi
+      throw error;
     }
   };
 

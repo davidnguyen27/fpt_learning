@@ -13,6 +13,7 @@ const AppHeader: React.FC = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
 
+  console.log(user?.role);
   const handleLogout = () => {
     logout();
     navigate("/");
@@ -146,7 +147,7 @@ const AppHeader: React.FC = () => {
               <a className="mr-9 flex" onClick={(e) => e.preventDefault()}>
                 <Space>
                   <img
-                    src={user.image}
+                    src={user.avatar}
                     className="h-12 w-12 rounded-full"
                     alt=""
                   />

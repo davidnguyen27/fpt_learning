@@ -16,9 +16,7 @@ const FormSignIn = () => {
 
   const handleLogin = async (values: { email: string; password: string }) => {
     try {
-      console.log("Đang xử lý đăng nhập...");
       await login(values.email, values.password);
-      console.log("Đăng nhập thành công, kiểm tra dữ liệu người dùng...");
 
       const storedUser = sessionStorage.getItem("user");
       if (!storedUser) {
@@ -28,9 +26,6 @@ const FormSignIn = () => {
       console.log("Người dùng đã lưu:", user); // Log thông tin người dùng
 
       if (user && user.data) {
-        console.log("Vai trò người dùng:", user.data.role); // Log vai trò người dùng
-
-        sessionStorage.setItem("userRole", user.data.role);
         switch (user.data.role) {
           case "admin":
             navigate("/admin/dashboard");
