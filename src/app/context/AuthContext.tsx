@@ -11,9 +11,10 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
+  // Sign In
   const login = async (email: string, password: string) => {
     try {
-      console.log("Bắt đầu đăng nhập với:", { email, password });
+      console.log("Sign in with:", { email, password });
 
       const response = await axios.post(
         `${APILink}/api/auth`,
@@ -25,20 +26,20 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         },
       );
 
-      console.log("Phản hồi từ API:", response.data);
+      console.log("Response from API:", response.data);
 
-      // Kiểm tra cấu trúc phản hồi của API
+      // Check API response
       const token =
         response.data.token ||
         response.data.accessToken ||
         response.data.data?.token;
-      console.log("Token từ phản hồi API:", token);
+      console.log("Token from API response:", token);
 
       if (token) {
-        console.log("Đăng nhập thành công, token nhận được:", token);
+        console.log("Login successfully, token:", token);
         sessionStorage.setItem("token", token);
 
-        // Gọi API GetCurrentLoginUser sử dụng token
+        // Call API GetCurrentLoginUser use token
         const userResponse = await axios.get(`${APILink}/api/auth`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -49,38 +50,40 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.log("userData: ", userData);
 
         if (userData) {
-          console.log("Dữ liệu người dùng nhận được thành công:", userData);
+          console.log("User data received successfully:", userData);
           setUser(userData);
           sessionStorage.setItem("user", JSON.stringify(userData));
-          console.log("Dữ liệu người dùng lưu vào sessionStorage:", userData);
+          console.log("User data saved to sessionStorage:", userData);
         } else {
-          console.log("Không thể lấy dữ liệu người dùng.");
-          throw new Error("Không thể lấy dữ liệu người dùng");
+          console.log("Could not get user data.");
+          throw new Error("Could not get user data");
         }
       } else {
-        console.log("Thông tin đăng nhập không hợp lệ.");
-        throw new Error("Thông tin đăng nhập không hợp lệ");
+        console.log("Invalid login information.");
+        throw new Error("Invalid login information");
       }
     } catch (error: any) {
       if (error.response) {
-        console.error("Đăng nhập thất bại", error.response.data);
-        console.error("Trạng thái", error.response.status);
+        console.error("Loin failed", error.response.data);
+        console.error("Status", error.response.status);
         console.error("Headers", error.response.headers);
       } else if (error.request) {
-        console.error("Không nhận được phản hồi", error.request);
+        console.error("No response received", error.request);
       } else {
-        console.error("Lỗi", error.message);
+        console.error("Fail", error.message);
       }
-      throw error; // Ném lỗi để xử lý ở hàm gọi
+      throw error; // Throws an error to handle in the calling function
     }
   };
 
+  // Log out
   const logout = () => {
     setUser(null);
     sessionStorage.removeItem("user");
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("userRole");
   };
+
 
   return (
     <AuthContext.Provider value={{ user, login, logout, setUser }}>
