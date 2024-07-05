@@ -2,6 +2,7 @@ import React from "react";
 import { Form, Input, Button, Typography } from "antd";
 import { MailOutlined } from "@ant-design/icons";
 import "../../styles/PasswordReset.css";
+import forgotPassword from "../../assets/Image/background.png";
 
 const { Title, Link } = Typography;
 
@@ -15,7 +16,7 @@ const PasswordReset: React.FC = () => {
     <div
       className="password-reset-page"
       style={{
-        backgroundImage: "url(/image/background.png)",
+        backgroundImage: `url(${forgotPassword})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         height: "100vh",

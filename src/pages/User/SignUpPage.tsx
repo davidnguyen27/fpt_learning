@@ -1,16 +1,18 @@
 import { Divider } from "antd";
 import FormSignUp from "../../components/Form/FormSignUp";
+import signUp from "../../assets/Image/background.png";
 
 const SignUpPage = () => {
   return (
-    <div className="flex h-screen w-screen items-center justify-center bg-slate-300"
-    style={{ 
-      backgroundImage: "url(/public/image/background.png)", 
-      backgroundSize: "cover", 
-      backgroundPosition: "center"
-    }}
+    <div
+      className="flex h-screen w-screen items-center justify-center bg-slate-300"
+      style={{
+        backgroundImage: `url(${signUp})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
     >
-      <div className="max-h-dvh max-w-sl rounded-lg bg-white p-4">
+      <div className="max-w-sl max-h-dvh rounded-lg bg-white p-4">
         <h2 className="mb-5 text-center text-2xl font-bold">
           Welcome to FPT Education
         </h2>
