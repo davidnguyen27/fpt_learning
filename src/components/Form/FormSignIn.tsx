@@ -1,8 +1,11 @@
 import { Form, Input, Radio } from "antd";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../app/context/AuthContext";
 import { GoogleLogin } from "@react-oauth/google";
+import axios from "axios";
+import { APILink } from "../../const/linkAPI";
+import { User } from "../../models/Types";
 
 const FormSignIn = () => {
   const navigate = useNavigate();
@@ -12,52 +15,64 @@ const FormSignIn = () => {
     throw new Error("AuthContext phải được sử dụng trong AuthProvider");
   }
 
-  const { login } = authContext;
+  const { user, login } = authContext;
+
+  useEffect(() => {
+    if (user?.data) {
+      switch (user.data.role) {
+        case "admin":
+          navigate("/admin/dashboard");
+          break;
+        case "instructor":
+          navigate("/instructor/dashboard");
+          break;
+        case "student":
+          navigate("/");
+          break;
+        default:
+          console.log("Vai trò không xác định!");
+          break;
+      }
+    }
+  }, [user, navigate]);
 
   const handleLogin = async (values: { email: string; password: string }) => {
     try {
       await login(values.email, values.password);
-
-      const storedUser = sessionStorage.getItem("user");
-      if (!storedUser) {
-        throw new Error("Không tìm thấy người dùng trong sessionStorage");
-      }
-      const user = JSON.parse(storedUser);
-      console.log("Người dùng đã lưu:", user); // Log thông tin người dùng
-
-      if (user && user.data) {
-        switch (user.data.role) {
-          case "admin":
-            navigate("/admin/dashboard");
-            break;
-          case "instructor":
-            navigate("/instructor/dashboard");
-            break;
-          case "student":
-            navigate("/");
-            break;
-          default:
-            console.log("Vai trò không xác định!");
-            break;
-        }
-      } else {
-        alert("Email hoặc mật khẩu không đúng!");
-      }
     } catch (error) {
-      console.error("Lỗi không xác định: ", error);
+      console.error("Unknown error: ", error);
       alert("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.");
     }
   };
 
+  const handleGoogleLogin = async (tokenGoogle: string) => {
+    try {
+      const res = await axios.post(`${APILink}/api/users/google`, {
+        google_id: tokenGoogle,
+      });
+      const user: User = res.data;
+
+      // console.log(user);
+
+      sessionStorage.setItem("user", JSON.stringify(user));
+      sessionStorage.setItem("token", tokenGoogle);
+
+      if (user?.data) {
+        navigate("/");
+      }
+    } catch (error) {
+      alert("Dang ki khong thanh cong");
+    }
+  };
+
   const onSuccess = (credentialResponse: any) => {
+    console.log(credentialResponse);
     if (credentialResponse?.credential) {
-      sessionStorage.setItem("token", credentialResponse.credential);
-      // Xử lý đăng nhập Google tương tự nếu cần
       console.log(
         "Đăng nhập Google thành công. Credential: ",
         credentialResponse.credential,
       );
-      navigate("/");
+      handleGoogleLogin(credentialResponse.credential);
     }
   };
 

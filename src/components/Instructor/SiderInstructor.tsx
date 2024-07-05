@@ -9,77 +9,58 @@ import {
 } from "@ant-design/icons";
 import { Menu } from "antd";
 import { useNavigate } from "react-router-dom";
+import type { MenuProps } from "antd";
 
 const SiderInstructor: React.FC<{ className?: string }> = () => {
   const navigate = useNavigate();
 
-  return (
-    <>
-      <Menu
-        mode="inline"
-        // defaultSelectedKeys={["1"]}
-        // defaultOpenKeys={["sub1"]}
-        className="bg-slate-200"
-      >
-        <Menu.Item
-          className="hover:bg-red-500 hover:text-white"
-          key="1"
-          icon={<AppstoreOutlined />}
-          onClick={() => navigate("/instructor/dashboard")}
-        >
-          Dashboard
-        </Menu.Item>
-        <Menu.Item
-          className="hover:bg-red-500 hover:text-white"
-          key="2"
-          icon={<ReadOutlined />}
-          onClick={() => navigate("/instructor/courses-management")}
-        >
-          Courses
-        </Menu.Item>
-        <Menu.Item
-          className="hover:bg-red-500 hover:text-white"
-          key="3"
-          icon={<BarChartOutlined />}
-          onClick={() => navigate("/instructor/lessons-management")}
-        >
-          Lesson
-        </Menu.Item>
-        <Menu.Item
-          className="hover:bg-red-500 hover:text-white"
-          key="4"
-          icon={<ExceptionOutlined />}
-          onClick={() => navigate("/instructor/sessions-management")}
-        >
-          Session
-        </Menu.Item>
-        <Menu.Item
-          className="hover:bg-red-500 hover:text-white"
-          key="5"
-          onClick={() => navigate("/instructor/reviews-management")}
-          icon={<StarOutlined />}
-        >
-          Reviews
-        </Menu.Item>
-        <Menu.Item
-          className="hover:bg-red-500 hover:text-white"
-          key="6"
-          onClick={() => navigate("/instructor/earning-management")}
-          icon={<DollarOutlined />}
-        >
-          Earning
-        </Menu.Item>
-        <Menu.Item
-          className="hover:bg-amber-500 hover:text-white"
-          key="7"
-          onClick={() => navigate("/instructor/payout")}
-          icon={<WalletOutlined />}
-        >
-          Payout
-        </Menu.Item>
-      </Menu>
-    </>
-  );
+  const menuItems: MenuProps["items"] = [
+    {
+      key: "1",
+      icon: <AppstoreOutlined />,
+      label: "Dashboard",
+      onClick: () => navigate("/instructor/dashboard"),
+    },
+    {
+      key: "2",
+      icon: <ReadOutlined />,
+      label: "Courses",
+      onClick: () => navigate("/instructor/courses-management"),
+    },
+    {
+      key: "3",
+      icon: <BarChartOutlined />,
+      label: "Lesson",
+      onClick: () => navigate("/instructor/lessons-management"),
+    },
+    {
+      key: "4",
+      icon: <ExceptionOutlined />,
+      label: "Session",
+      onClick: () => navigate("/instructor/sessions-management"),
+    },
+    {
+      key: "5",
+      icon: <StarOutlined />,
+      label: "Reviews",
+      onClick: () => navigate("/instructor/reviews-management"),
+    },
+    {
+      key: "6",
+      icon: <DollarOutlined />,
+      label: "Earning",
+      onClick: () => navigate("/instructor/earning-management"),
+    },
+    {
+      key: "7",
+      icon: <WalletOutlined />,
+      label: "Payout",
+      onClick: () => navigate("/instructor/payout"),
+      className: "hover:bg-amber-500 hover:text-white",
+    },
+  ];
+
+  return <Menu mode="inline" items={menuItems} className="bg-slate-200" />;
 };
 
 export default SiderInstructor;

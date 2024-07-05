@@ -1,7 +1,9 @@
 import { createContext, useState, ReactNode, useContext } from "react";
-import axios from "axios";
 import { AuthContextType, User } from "../../models/Types";
-import { APILink } from "../../const/linkAPI";
+import {
+  login as authServiceLogin,
+  getCurrentLogin,
+} from "../../services/authService";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -12,60 +14,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   });
 
   const login = async (email: string, password: string) => {
-    try {
-      console.log("Bắt đầu đăng nhập với:", { email, password });
-
-      const response = await axios.post(
-        `${APILink}/api/auth`,
-        { email, password },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        },
-      );
-
-      const token =
-        response.data.token ||
-        response.data.accessToken ||
-        response.data.data?.token;
-
-      if (token) {
-        console.log("Đăng nhập thành công, token nhận được:", token);
-        sessionStorage.setItem("token", token);
-
-        // Gọi API GetCurrentLoginUser sử dụng token
-        const userResponse = await axios.get(`${APILink}/api/auth`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const userData = userResponse.data;
-        console.log("userData: ", userData);
-
-        if (userData) {
-          setUser(userData);
-          sessionStorage.setItem("user", JSON.stringify(userData));
-        } else {
-          throw new Error("Không thể lấy dữ liệu người dùng");
-        }
-      } else {
-        console.log("Thông tin đăng nhập không hợp lệ.");
-        throw new Error("Thông tin đăng nhập không hợp lệ");
-      }
-    } catch (error: any) {
-      if (error.response) {
-        console.error("Đăng nhập thất bại", error.response.data);
-        console.error("Trạng thái", error.response.status);
-        console.error("Headers", error.response.headers);
-      } else if (error.request) {
-        console.error("Không nhận được phản hồi", error.request);
-      } else {
-        console.error("Lỗi", error.message);
-      }
-      throw error;
-    }
+    const token = await authServiceLogin(email, password);
+    const user = await getCurrentLogin(token);
+    setUser(user);
   };
 
   const logout = () => {
