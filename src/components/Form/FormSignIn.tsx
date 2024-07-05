@@ -38,6 +38,7 @@ const FormSignIn = () => {
 
   const handleLogin = async (values: { email: string; password: string }) => {
     try {
+      console.log("Đang xử lý đăng nhập...");
       await login(values.email, values.password);
     } catch (error) {
       console.error("Unknown error: ", error);

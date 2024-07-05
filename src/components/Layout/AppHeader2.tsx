@@ -72,7 +72,7 @@ const AppHeader2: React.FC = () => {
   return (
     <Header className={`header-2`}>
       <button
-        className="flex h-8 w-40 items-center justify-center rounded bg-[#ef4444] text-white transition hover:bg-black hover:text-white"
+        className="block flex h-8 w-40 items-center justify-center rounded bg-[#ef4444] text-white transition hover:bg-black hover:text-white"
         onClick={() => navigate("/")}
       >
         Back to homepage
@@ -88,11 +88,7 @@ const AppHeader2: React.FC = () => {
         <Dropdown menu={{ items }}>
           <a className="mr-9 flex" onClick={(e) => e.preventDefault()}>
             <Space>
-              <img
-                src={user.avatar}
-                className="h-12 w-12 rounded-full"
-                alt=""
-              />
+              <img src={user.image} className="h-12 w-12 rounded-full" alt="" />
             </Space>
           </a>
         </Dropdown>

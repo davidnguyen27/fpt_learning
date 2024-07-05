@@ -24,12 +24,12 @@ const CourseCard: React.FC = () => {
       {course.map((item) => (
         <article
           key={item.id}
-          className="h-auto w-auto cursor-pointer rounded-md bg-slate-200"
+          className="h-auto w-auto cursor-pointer rounded-md bg-slate-200 transition-transform duration-300 hover:scale-105 hover:bg-slate-300"
           onClick={() => navigate("/detail")}
         >
           <div className="p-4">
             <div>
-              <img src={item.image} alt={item.courseName} />
+              <img src={item.image} alt={item.courseName} className="rounded-md" />
             </div>
             <div className="my-3 flex justify-between">
               <div>

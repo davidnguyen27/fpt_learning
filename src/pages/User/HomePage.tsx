@@ -39,14 +39,14 @@ const HomePage: React.FC = () => {
         <Layout className="flex flex-1 flex-col">
           <Content className="flex-1 overflow-auto">
             <div className="p-8">
-              <section>
+            <section className="mt-10">
                 <div className="mb-5 flex w-full justify-between">
                   <h1 className="text-xl font-bold">Newest Courses</h1>
                   <a href="#" className="font-light hover:text-amber-600">
                     See all
                   </a>
                 </div>
-                <CarouselCourse />
+                <ListCourse />
               </section>
               <section className="mt-10">
                 <div className="mb-5 flex w-full justify-between">
@@ -55,7 +55,7 @@ const HomePage: React.FC = () => {
                     See all
                   </a>
                 </div>
-                <CarouselSeller />
+                <ListCourse />
               </section>
               <section className="mt-10">
                 <div className="mb-5 flex w-full justify-between">

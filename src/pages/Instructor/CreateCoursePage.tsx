@@ -32,11 +32,9 @@ const CreateCoursePage = () => {
               <h1 className="text-xl font-bold">
                 <i className="fa-solid fa-arrow-trend-up"></i> Create New Course
               </h1>
-              <FormCreateCourse
-                goToNextStep={function (): void {
-                  throw new Error("Function not implemented.");
-                }}
-              />
+              <FormCreateCourse goToNextStep={function (): void {
+                throw new Error("Function not implemented.");
+              } } />
             </section>
             <Footer className="footer">
               <AppFooter />

@@ -13,12 +13,14 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
+  // Sign In
   const login = async (email: string, password: string) => {
     const token = await authServiceLogin(email, password);
     const user = await getCurrentLogin(token);
     setUser(user);
   };
 
+  // Log out
   const logout = () => {
     setUser(null);
     sessionStorage.removeItem("user");
