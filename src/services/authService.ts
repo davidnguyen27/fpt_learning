@@ -55,6 +55,7 @@ export const getCurrentLogin = async (token: string): Promise<User> => {
     });
 
     const user = res.data;
+    console.log(user);
     if (user) {
       sessionStorage.setItem("user", JSON.stringify(user));
       return user;

@@ -1,5 +1,6 @@
 import axios from "axios";
-import { SignUpPayload, User } from "../models/Types";
+import { User } from "../models/Types";
+import { APILink } from "../const/linkAPI";
 
 export const getUsers = async () => {
   const response = await axios.get<User[]>(
@@ -8,12 +9,13 @@ export const getUsers = async () => {
   return response.data;
 };
 
-export const registerAccount = {
-  signUp: async (userData: SignUpPayload): Promise<User> => {
-    const response = await axios.post(
-      "https://665fc1c95425580055b0bf26.mockapi.io/students",
-      userData,
-    );
-    return response.data;
-  },
+export const registerUser = async (
+  userData: Partial<User["data"]>,
+): Promise<User> => {
+  try {
+    const res = await axios.post<User>(`${APILink}/api/users`, userData);
+    return res.data;
+  } catch (error: any) {
+    throw new Error(error.response.data);
+  }
 };

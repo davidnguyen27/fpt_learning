@@ -4,23 +4,28 @@ import {
   EyeInvisibleOutlined,
   MinusCircleOutlined,
 } from "@ant-design/icons";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../app/redux/store";
-import { SignUpFormValues } from "../../models/Types";
-import { signUp } from "../../app/redux/user/userSlice";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../app/redux/store";
+import { createAccount } from "../../app/redux/user/userSlice";
+import { User } from "../../models/Types";
 
 const FormSignUp = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { loading, error } = useSelector((state: RootState) => state.user);
 
-  const handleSubmit = async (values: SignUpFormValues) => {
-    await dispatch(signUp(values));
+  const handleSubmit = (values: Partial<User["data"]>) => {
+    const { name, email, password } = values;
+    const userData: Partial<User["data"]> = {
+      name,
+      email,
+      password,
+    };
+    dispatch(createAccount(userData));
   };
 
   return (
     <Form onFinish={handleSubmit}>
       <Form.Item
-        name="fullName"
+        name="name"
         rules={[{ required: true, message: "Please enter your full name!" }]}
       >
         <Input className="text-sm" size="large" placeholder="Full Name" />
@@ -38,7 +43,7 @@ const FormSignUp = () => {
         name="password"
         rules={[
           { required: true, message: "Please enter the password!" },
-          { min: 10, message: "Password must be at least 10 characters!" },
+          { min: 6, message: "Password must be at least 6 characters!" },
           { max: 31, message: "Maximum length is 31 characters!" },
           {
             pattern:
@@ -63,7 +68,7 @@ const FormSignUp = () => {
             <List
               size="small"
               dataSource={[
-                "Use 8 or more characters",
+                "Use 6 or more characters",
                 "Use an upper and lower case letter (e.g. Aa)",
               ]}
               renderItem={(item) => (
@@ -123,12 +128,10 @@ const FormSignUp = () => {
         <button
           type="submit"
           className="mb-3 flex w-full items-center justify-center rounded border border-black bg-[#ef4444] px-7 py-3 text-center text-sm font-medium uppercase leading-normal text-white shadow-md transition duration-150 hover:bg-[#333] hover:text-white"
-          disabled={loading}
         >
-          {loading ? "Signing Up..." : "Sign Up"}
+          Sign Up
         </button>
       </Form.Item>
-      {error && <div className="error">{error}</div>}
     </Form>
   );
 };

@@ -6,6 +6,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import { APILink } from "../../const/linkAPI";
 import { User } from "../../models/Types";
+import { getCurrentLogin } from "../../services/authService";
 
 const FormSignIn = () => {
   const navigate = useNavigate();
@@ -48,15 +49,25 @@ const FormSignIn = () => {
 
   const handleGoogleLogin = async (tokenGoogle: string) => {
     try {
-      const res = await axios.post(`${APILink}/api/users/google`, {
-        google_id: tokenGoogle,
-      });
-      const user: User = res.data;
+      const checkExists = await getCurrentLogin(tokenGoogle);
+      if (checkExists) {
+        const res = await axios.post(`${APILink}/api/auth/google`, {
+          google_id: tokenGoogle,
+        });
+        const user: User = res.data;
 
-      // console.log(user);
+        sessionStorage.setItem("user", JSON.stringify(user));
+        sessionStorage.setItem("token", tokenGoogle);
+      } else {
+        const res = await axios.post(`${APILink}/api/users/google`, {
+          google_id: tokenGoogle,
+        });
+        const user: User = res.data;
+        console.log(user);
 
-      sessionStorage.setItem("user", JSON.stringify(user));
-      sessionStorage.setItem("token", tokenGoogle);
+        sessionStorage.setItem("user", JSON.stringify(user));
+        sessionStorage.setItem("token", tokenGoogle);
+      }
 
       if (user?.data) {
         navigate("/");

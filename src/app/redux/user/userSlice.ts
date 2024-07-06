@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { SignUpPayload, User } from "../../../models/Types";
-import { getUsers, registerAccount } from "../../../services/usersService";
+import { User } from "../../../models/Types";
+import { getUsers, registerUser } from "../../../services/usersService";
 
 interface UserState {
   users: User[];
@@ -20,23 +20,35 @@ const initialState: UserState = {
   error: null,
 };
 
+export const fetchUsers = createAsyncThunk("user/fetchUsers", async () =>
+  getUsers(),
+);
+
+export const createAccount = createAsyncThunk(
+  "user/registerUser",
+  async (userData: Partial<User["data"]>, { rejectWithValue }) => {
+    try {
+      const data = await registerUser(userData);
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
 const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    filterRole(state, action) {
+    filterRole(state, action: PayloadAction<string>) {
       state.roleFilter = action.payload;
     },
-    filterStatus(state, action) {
+    filterStatus(state, action: PayloadAction<string>) {
       state.statusFilter = action.payload;
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchUsers.pending, (state: UserState) => {
-        state.loading = true;
-        state.error = null;
-      })
       .addCase(
         fetchUsers.fulfilled,
         (state: UserState, action: PayloadAction<User[]>) => {
@@ -44,42 +56,14 @@ const userSlice = createSlice({
           state.users = action.payload;
         },
       )
-      .addCase(fetchUsers.rejected, (state: UserState, action) => {
-        state.loading = false;
-        state.error = action.error.message || "Failed to fetch users";
-      })
-      .addCase(signUp.pending, (state: UserState) => {
-        state.loading = true;
-        state.error = null;
-      })
       .addCase(
-        signUp.fulfilled,
+        createAccount.fulfilled,
         (state: UserState, action: PayloadAction<User>) => {
-          state.loading = false;
           state.users.push(action.payload);
         },
-      )
-      .addCase(signUp.rejected, (state: UserState, action) => {
-        state.loading = false;
-        state.error = action.error.message || "Failed to sign up";
-      });
+      );
   },
 });
-
-export const fetchUsers = createAsyncThunk("user/fetchUsers", async () =>
-  getUsers(),
-);
-
-export const signUp = createAsyncThunk(
-  "user/signUp",
-  async (userData: SignUpPayload, { rejectWithValue }) => {
-    try {
-      return await registerAccount.signUp(userData);
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data || "Failed to sign up");
-    }
-  },
-);
 
 export const { filterRole, filterStatus } = userSlice.actions;
 
