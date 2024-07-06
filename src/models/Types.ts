@@ -4,7 +4,15 @@ export type SiderContextType = {
   collapsed: boolean;
   toggleSider: () => void;
 };
+// Auth
+export type AuthContextType = {
+  user: User | null;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => void;
+  setUser: (user: User) => void;
+};
 
+// User
 export type User = {
   data: {
     _id: string;
@@ -24,12 +32,6 @@ export type User = {
   };
 };
 
-export type AuthContextType = {
-  user: User | null;
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
-  setUser: (user: User) => void;
-};
 export type SearchCondition = {
   keyword?: string;
   role: string;
@@ -94,7 +96,43 @@ export type ApiResponse = {
       };
   };
 }
+// Category
+export type CategorySearchRequest = {
+  searchCondition: {
+    keyword?: string;
+    is_parent?: boolean;
+    is_delete?: boolean;
+  };
+  pageInfo?: {
+    pageNum?: number;
+    pageSize?: number;
+  };
+};
 
+export type Category = {
+  _id: string;
+  name: string;
+  parent_category_id?: string | null;
+  description: string;
+  created_at: Date;
+  updated_at: Date;
+  is_deleted: boolean;
+};
+
+export type CategorySearchResponse = {
+  success: boolean;
+  data: {
+    pageData: Category[];
+    pageInfo: {
+      pageNum: number;
+      pageSize: number;
+      totalItems: number;
+      totalPages: number;
+    };
+  };
+};
+
+// Course
 export type SiderProviderProps = {
   children: ReactNode;
 };
