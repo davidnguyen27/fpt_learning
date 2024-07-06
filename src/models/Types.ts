@@ -6,16 +6,20 @@ export type SiderContextType = {
 };
 
 export type User = {
+  _id: string;
+  name: string;
   email: string;
-  password: string;
+  google_id: string;
   role: string;
-  fullName: string;
-  dateOfBirth: string;
-  phoneNumber: string;
-  address: string;
-  registrationDate: string;
-  image: string;
   status: boolean;
+  description: string;
+  phone_number: string;
+  avatar: string;
+  video: string;
+  dob: Date;
+  created_at: Date;
+  updated_at: Date;
+  is_deleted: boolean;
 };
 
 export type AuthContextType = {
@@ -24,6 +28,47 @@ export type AuthContextType = {
   logout: () => void;
   setUser: (user: User) => void;
 };
+export type SearchCondition = {
+  keyword?: string;
+  role: string;
+  status: boolean;
+  is_delete: boolean;
+}
+
+export type PageInfo = {
+  pageNum: number;
+  pageSize: number;
+}
+
+export type UserData = {
+  _id: string;
+  name: string;
+  email: string;
+  google_id: string;
+  role: string;
+  status: boolean;
+  description: string;
+  phone_number: string;
+  avatar: string;
+  video: string;
+  dob: Date;
+  created_at: Date;
+  updated_at: Date;
+  is_deleted: boolean;
+}
+
+export type ApiResponse = {
+  success: boolean;
+  data: {
+      pageData: UserData[];
+      pageInfo: {
+          pageNum: number;
+          pageSize: number;
+          totalItems: number;
+          totalPages: number;
+      };
+  };
+}
 
 export type SiderProviderProps = {
   children: ReactNode;

@@ -78,7 +78,7 @@ const UserManagePage = () => {
                 </div>
                 <div>
                   <button
-                    className="rounded-lg bg-red-500 px-5 py-2 text-sm font-medium hover:bg-red-600"
+                    className="rounded-lg bg-red-500 px-5 py-2 text-sm text-white font-medium hover:bg-red-600"
                     onClick={() => setIsOpen(true)}
                   >
                     Create account

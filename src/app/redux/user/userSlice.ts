@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { SignUpPayload, User } from "../../../models/Types";
-import { getUsers, registerAccount } from "../../../services/usersService";
+import { registerAccount } from "../../../services/usersService";
 
 interface UserState {
   users: User[];

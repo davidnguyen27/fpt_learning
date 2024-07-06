@@ -1,14 +1,14 @@
 import { Modal, Space, Switch, Table } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers } from "../../app/redux/user/userSlice";
+import { getUsers } from "../../services/usersService"; // Đổi fetchUsers thành getUsers
 import { AppDispatch, RootState } from "../../app/redux/store";
 
 const columns = (handleDelete: () => void) => [
   {
     title: "Name",
-    dataIndex: "fullName",
-    key: "fullName",
+    dataIndex: "name",
+    key: "name",
     render: (text: string) => <a>{text}</a>,
   },
   {
@@ -17,14 +17,9 @@ const columns = (handleDelete: () => void) => [
     key: "email",
   },
   {
-    title: "Address",
-    dataIndex: "address",
-    key: "address",
-  },
-  {
     title: "Phone",
-    key: "phoneNumber",
-    dataIndex: "phoneNumber",
+    key: "phone_number",
+    dataIndex: "phone_number",
   },
   {
     title: "Status",
@@ -63,7 +58,26 @@ const TableUsers = () => {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
   useEffect(() => {
-    dispatch(fetchUsers());
+    // Thay vì dispatch(fetchUsers()), gọi getUsers từ service
+    const fetchData = async () => {
+      try {
+        const response = await getUsers({
+          keyword: "", // Các tham số tìm kiếm tùy thuộc vào yêu cầu của bạn
+          role: "all",
+          status: true,
+          is_delete: false,
+        }, {
+          pageNum: 1,
+          pageSize: 10,
+        });
+        // Dispatch action để cập nhật state trong redux
+        dispatch({ type: 'user/fetchUsersSuccess', payload: response.data });
+      } catch (error) {
+        dispatch({ type: 'user/fetchUsersError', payload: error.message });
+      }
+    };
+
+    fetchData();
   }, [dispatch]);
 
   const filteredUsers = users.filter((user) => {
