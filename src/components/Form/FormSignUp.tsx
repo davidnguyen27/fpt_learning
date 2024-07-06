@@ -1,4 +1,4 @@
-import { Form, Input, List } from "antd";
+import { Form, Input, List, notification } from "antd";
 import {
   EyeTwoTone,
   EyeInvisibleOutlined,
@@ -12,14 +12,26 @@ import { User } from "../../models/Types";
 const FormSignUp = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const handleSubmit = (values: Partial<User["data"]>) => {
+  const handleSubmit = async (values: Partial<User["data"]>) => {
     const { name, email, password } = values;
     const userData: Partial<User["data"]> = {
       name,
       email,
       password,
     };
-    dispatch(createAccount(userData));
+    // dispatch(createAccount(userData));
+    try {
+      await dispatch(createAccount(userData)).unwrap();
+      notification.success({
+        message: "Registration Successful",
+        description: "You have registered successfully!",
+      });
+    } catch (error: any) {
+      notification.error({
+        message: "Registration Failed",
+        description: error,
+      });
+    }
   };
 
   return (
