@@ -1,32 +1,119 @@
 import axios from "axios";
-import { SearchCondition, PageInfo, ApiResponse } from "../models/Types";
-import { User } from "../models/Types";
-import { APILink } from "../const/linkAPI";
+import {
+  User,
+  UserData,
+  UserSearchRequest,
+  UserSearchResponse,
+} from "../models/Types"; // Import types and interfaces from models/Types
+import { APILink } from "../const/linkAPI"; // Import API endpoint from const/linkAPI
 
-// Function to fetch users from API
+//--------------------------------- Get Users (Admin) -------------------------------------------
 export const getUsers = async (
-  searchCondition: SearchCondition,
-  pageInfo: PageInfo
-): Promise<ApiResponse> => {
+  requestData: UserSearchRequest,
+): Promise<UserSearchResponse> => {
   try {
-      const response = await axios.post(`${APILink}/api/users/search`, {
-          searchCondition,
-          pageInfo
-      });
-      return response.data;
-  } catch (error) {
-      console.error('Error fetching users:', error);
-      throw error; // Handle or throw the error as needed
+    console.log("Loading users with:", requestData);
+
+    const token = sessionStorage.getItem("token"); // Retrieve token from sessionStorage
+
+    const response = await axios.post(
+      // Send a POST request to fetch users from the API
+      `${APILink}/api/users/search`, // API endpoint
+      requestData, // Data to send
+      {
+        headers: {
+          "Content-Type": "application/json", // Set content-type header to JSON
+          Authorization: `Bearer ${token}`, // Add token to Authorization header
+        },
+      },
+    );
+
+    const data: UserSearchResponse = response.data; // Get data from response
+
+    console.log("Loading users successfully, users:", data);
+
+    return data; // Return user data from the API
+  } catch (error: any) {
+    if (error.response) {
+      console.error("Loading users fail.", error.response.data); // Handle error if response fails
+      console.error("Status", error.response.status);
+      console.error("Headers", error.response.headers);
+    } else if (error.request) {
+      console.error("Not response", error.request); // Handle error if no response
+    } else {
+      console.error("Fail", error.message); // Handle other errors
+    }
+    throw error; // Throw error for handling in the component
   }
 };
+//-----------------------------------------------------------------------------------------------
 
+//------------------------------ Get User Detail (Admin) ----------------------------------------
+export const getUserDetail = async (
+  userId: string,
+  token: string,
+): Promise<UserData> => {
+  try {
+    const response = await axios.get(`${APILink}/api/users/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const userData: UserData = response.data.data; // Assuming response structure matches UserData
+    console.log(userData);
+
+    if (userData) {
+      return userData; // Return user data if successful
+    } else {
+      throw new Error("Failed to fetch user detail");
+    }
+  } catch (error: any) {
+    console.error("Error fetching user detail:", error);
+    throw error; // Throw error for handling in the component
+  }
+};
+//-----------------------------------------------------------------------------------------------
+
+//--------------------------------- Delete User (Admin) -----------------------------------------
+export const deleteUser = async (userId: string): Promise<void> => {
+  try {
+    console.log("Deleting user with id:", userId);
+
+    const token = sessionStorage.getItem("token"); // Retrieve token from sessionStorage
+
+    await axios.delete(`${APILink}/api/users/${userId}`, {
+      headers: {
+        "Content-Type": "application/json", // Set content-type header to JSON
+        Authorization: `Bearer ${token}`, // Add token to Authorization header
+      },
+    });
+
+    console.log("Delete user successfully");
+  } catch (error: any) {
+    if (error.response) {
+      console.error("Delete user failed", error.response.data); // Handle error if delete fails
+      console.error("Status", error.response.status);
+      console.error("Headers", error.response.headers);
+    } else if (error.request) {
+      console.error("Not response", error.request); // Handle error if no response
+    } else {
+      console.error("Fail", error.message); // Handle other errors
+    }
+    throw error; // Throw error for handling in the component
+  }
+};
+//-----------------------------------------------------------------------------------------------
+
+//-------------------------------- Register User (Public) ---------------------------------------
 export const registerUser = async (
   userData: Partial<User["data"]>,
 ): Promise<User> => {
   try {
     const res = await axios.post<User>(`${APILink}/api/users`, userData);
-    return res.data;
+    return res.data; // Return registered user data if successful
   } catch (error: any) {
-    throw new Error(error.response.data);
+    throw new Error(error.response.data); // Throw error for handling in the component
   }
 };
+//-----------------------------------------------------------------------------------------------

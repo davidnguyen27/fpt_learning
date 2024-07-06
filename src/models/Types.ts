@@ -7,6 +7,7 @@ export type SiderContextType = {
 
 export type User = {
   data: {
+    _id: string;
     email: string;
     google_id: string;
     password: string;
@@ -56,6 +57,29 @@ export type UserData = {
   created_at: Date;
   updated_at: Date;
   is_deleted: boolean;
+}
+
+export type UserDetailProp = {
+  _id: string;
+}
+
+export type UserSearchResponse = {
+  success: boolean;
+  data: {
+      totalCount: any;
+      pageData: UserData[];
+      pageInfo: {
+          pageNum: number;
+          pageSize: number;
+          totalItems: number;
+          totalPages: number;
+      };
+  };
+}
+
+export type UserSearchRequest = {
+  searchCondition: SearchCondition;
+  pageInfo: PageInfo;
 }
 
 export type ApiResponse = {
@@ -146,3 +170,5 @@ export type ExtendedJwtPayload = {
   role: string;
   picture: string;
 };
+
+

@@ -5,25 +5,10 @@ import { AppFooter, AppHeader } from "../../components";
 import { useSider } from "../../app/context/SiderContext";
 import SiderAdmin from "../../components/Admin/SiderAdmin";
 import TableUsers from "../../components/Tables/TableUsers";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../app/redux/store";
-import { filterRole, filterStatus } from "../../app/redux/user/userSlice";
-import { useState } from "react";
-import ModalCreateAcc from "../../components/Modal/ModalCreateAcc";
+
 
 const UserManagePage = () => {
   const { collapsed } = useSider();
-  const dispatch = useDispatch<AppDispatch>();
-
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-
-  const handleRoleChange = (e: any) => {
-    dispatch(filterRole(e.target.value));
-  };
-
-  const handleStatusChange = (e: any) => {
-    dispatch(filterStatus(e.target.value));
-  };
 
   return (
     <Layout className="flex h-screen w-screen flex-col">
@@ -48,43 +33,7 @@ const UserManagePage = () => {
               <section>
                 <h1 className="text-xl font-bold">User Management</h1>
               </section>
-              <div className="mt-4 bg-slate-200 p-4">
-                <input
-                  style={{ width: "100%" }}
-                  type="text"
-                  placeholder="Search by phone..."
-                  className="h-8 rounded-md pl-8 text-xs"
-                />
-              </div>
               <div className="my-3 flex items-center justify-between">
-                <div className="flex items-center">
-                  <i className="fa-solid fa-filter"></i>
-                  <div className="mx-4">
-                    Role:
-                    <select className="ml-2" onChange={handleRoleChange} title="Role">
-                      <option value="">All</option>
-                      <option value="instructor">Instructor</option>
-                      <option value="student">Student</option>
-                    </select>
-                  </div>
-                  <div>
-                    Status:
-                    <select className="ml-2" onChange={handleStatusChange} title="Status">
-                      <option value="">All</option>
-                      <option value="true">True</option>
-                      <option value="false">False</option>
-                    </select>
-                  </div>
-                </div>
-                <div>
-                  <button
-                    className="rounded-lg bg-red-500 px-5 py-2 text-sm text-white font-medium hover:bg-red-600"
-                    onClick={() => setIsOpen(true)}
-                  >
-                    Create account
-                  </button>
-                  <ModalCreateAcc isOpen={isOpen} setIsOpen={setIsOpen} />
-                </div>
               </div>
               <TableUsers />
             </div>
