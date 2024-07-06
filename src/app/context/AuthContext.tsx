@@ -3,6 +3,7 @@ import { AuthContextType, User } from "../../models/Types";
 import {
   login as authServiceLogin,
   getCurrentLogin,
+  logout as authServiceLogout,
 } from "../../services/authService";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -21,11 +22,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   // Log out
-  const logout = () => {
+  const logout = async () => {
+    await authServiceLogout();
     setUser(null);
-    sessionStorage.removeItem("user");
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("userRole");
   };
 
   return (

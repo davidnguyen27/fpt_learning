@@ -67,3 +67,22 @@ export const getCurrentLogin = async (token: string): Promise<User> => {
     throw error;
   }
 };
+
+export const logout = async () => {
+  try {
+    const token = sessionStorage.getItem("token");
+    if (!token) throw new Error("Token notfound!");
+
+    await axios.get(`${APILink}/api/auth/logout`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    sessionStorage.removeItem("user");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("userRole");
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
