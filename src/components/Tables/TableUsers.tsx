@@ -143,7 +143,7 @@ const TableUsers: React.FC = () => {
       dataIndex: "name",
       key: "name",
       render: (text: string, record: UserData) => (
-        <Link to={`/admin/user-detail/${record._id}`}>{text}</Link> // Render user name as link to user detail page
+        <Link to={`/admin/user-detail/${record._id}`}>{text}</Link>
       ),
     },
     {
@@ -157,8 +157,7 @@ const TableUsers: React.FC = () => {
       key: "status",
       render: (status: boolean) => (
         <Tag color={status ? "green" : "volcano"}>
-          {status ? "Active" : "Inactive"} // Render status as tag with color
-          based on active/inactive
+          {status ? "Active" : "Inactive"}
         </Tag>
       ),
     },
@@ -167,7 +166,7 @@ const TableUsers: React.FC = () => {
       dataIndex: "role",
       key: "role",
       render: (role: string) => (
-        <Tag color="geekblue">{role.toUpperCase()}</Tag> // Render role as tag with color
+        <Tag color="geekblue">{role.toUpperCase()}</Tag>
       ),
     },
     {
