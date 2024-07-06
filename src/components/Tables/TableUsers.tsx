@@ -241,7 +241,6 @@ const TableUsers: React.FC = () => {
           >
             <Option value={true}>Active</Option>
             <Option value={false}>Inactive</Option>
-            <Option value={undefined}>All Statuses</Option>
           </Select>
         </div>
         {/* Button to open create account modal */}
