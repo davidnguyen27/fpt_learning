@@ -8,74 +8,49 @@ import {
 import { Divider, Menu } from "antd";
 import { Footer } from "antd/es/layout/layout";
 import { useNavigate } from "react-router-dom";
+import type { MenuProps } from "antd";
 
 const SiderAdmin: React.FC<{ className?: string }> = () => {
   const navigate = useNavigate();
+
+  const menuItems: MenuProps["items"] = [
+    {
+      key: "1",
+      icon: <LineChartOutlined />,
+      label: "Dashboard",
+      onClick: () => navigate("/admin/dashboard"),
+      className: "hover:rounded-none hover:bg-red-500 hover:text-black",
+    },
+    {
+      key: "2",
+      icon: <BarsOutlined />,
+      label: "Categories",
+      onClick: () => navigate("/admin/categories-management"),
+      className: "hover:rounded-none hover:bg-red-500 hover:text-white",
+    },
+    {
+      key: "3",
+      icon: <UserOutlined />,
+      label: "Users",
+      onClick: () => navigate("/admin/users-management"),
+      className: "hover:rounded-none hover:bg-red-500 hover:text-white",
+    },
+    {
+      key: "7",
+      icon: <ReadOutlined />,
+      label: "Courses",
+      onClick: () => navigate("/admin/courses-check"),
+      className: "hover:rounded-none hover:bg-red-500 hover:text-white",
+    },
+  ];
 
   return (
     <div className="flex h-full flex-col">
       <Menu
         mode="inline"
-        // defaultSelectedKeys={["1"]}
+        items={menuItems}
         className="flex-grow bg-slate-200 text-sm"
-      >
-        <Menu.Item
-          className="hover:rounded-none hover:bg-red-500 hover:text-black"
-          key="1"
-          icon={<LineChartOutlined />}
-          onClick={() => navigate("/admin/dashboard")}
-        >
-          Dashboard
-        </Menu.Item>
-        <Menu.Item
-          className="hover:rounded-none hover:bg-red-500 hover:text-white"
-          key="2"
-          icon={<BarsOutlined />}
-          onClick={() => navigate("/admin/categories-management")}
-        >
-          Categories
-        </Menu.Item>
-        {/* <Menu.Item
-          className="hover:rounded-none hover:bg-red-500 hover:text-white"
-          key="3"
-          icon={<CommentOutlined />}
-          onClick={() => navigate("/admin/feedbacks-management")}
-        >
-          Feedback
-        </Menu.Item> */}
-        {/* <Menu.Item
-          className="hover:rounded-none hover:bg-red-500 hover:text-white"
-          key="4"
-          icon={<FlagOutlined />}
-          onClick={() => navigate("/admin/reports-management")}
-        >
-          Report
-        </Menu.Item> */}
-        <Menu.Item
-          className="hover:rounded-none hover:bg-red-500 hover:text-white"
-          key="3"
-          icon={<UserOutlined />}
-          onClick={() => navigate("/admin/users-management")}
-        >
-          Users
-        </Menu.Item>
-        {/* <Menu.Item
-          className="hover:rounded-none hover:bg-red-500 hover:text-white"
-          key="6"
-          icon={<CalendarOutlined />}
-          onClick={() => navigate("/admin/blogs-management")}
-        >
-          Blogs
-        </Menu.Item> */}
-        <Menu.Item
-          className="hover:rounded-none hover:bg-red-500 hover:text-white"
-          key="7"
-          icon={<ReadOutlined />}
-          onClick={() => navigate("/admin/courses-check")}
-        >
-          Courses
-        </Menu.Item>
-      </Menu>
+      />
       <Divider />
       <Footer className="bg-slate-200 px-8 pb-4 pt-0 text-center">
         <span className="text-xs font-normal">

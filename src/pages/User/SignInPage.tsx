@@ -1,4 +1,5 @@
 import { FormSignIn } from "../../components";
+import signIn from "../../assets/Image/Image4.png";
 
 const SignInPage: React.FC = () => {
   return (
@@ -7,7 +8,7 @@ const SignInPage: React.FC = () => {
         {/* <!-- Left column container with background--> */}
         <div className="h-full flex-1">
           <img
-            src="/public/image/image4.png"
+            src={signIn}
             className="h-full w-full object-cover"
             alt="Phone image"
           />

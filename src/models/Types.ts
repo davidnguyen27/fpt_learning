@@ -6,20 +6,21 @@ export type SiderContextType = {
 };
 
 export type User = {
-  _id: string;
-  name: string;
-  email: string;
-  google_id: string;
-  role: string;
-  status: boolean;
-  description: string;
-  phone_number: string;
-  avatar: string;
-  video: string;
-  dob: Date;
-  created_at: Date;
-  updated_at: Date;
-  is_deleted: boolean;
+  data: {
+    email: string;
+    google_id: string;
+    password: string;
+    role: string;
+    name: string;
+    dob: string;
+    phone_number: string;
+    address: string;
+    avatar: string;
+    video: string;
+    status: boolean;
+    created_at: string;
+    updated_at: string;
+  };
 };
 
 export type AuthContextType = {

@@ -15,9 +15,9 @@ const AppHeader2: React.FC = () => {
   };
 
   const handleView = () => {
-    if (user?.role === "admin") {
+    if (user?.data.role === "admin") {
       navigate("/admin-profile-page");
-    } else if (user?.role === "instructor") {
+    } else if (user?.data.role === "instructor") {
       navigate("/instructor-profile-page");
     } else {
       navigate("/student-profile-page");
@@ -25,9 +25,9 @@ const AppHeader2: React.FC = () => {
   };
 
   const handleManagement = () => {
-    if (user?.role === "admin") {
+    if (user?.data.role === "admin") {
       navigate("/admin-dashboard");
-    } else if (user?.role === "instructor") {
+    } else if (user?.data.role === "instructor") {
       navigate("/instructor-course-list-page");
     } else {
       navigate("/student-course-list-page");
@@ -43,7 +43,7 @@ const AppHeader2: React.FC = () => {
       key: "1",
       label: (
         <a onClick={handleManagement}>
-          {user?.role === "admin" ? "Dashboard" : "My Course"}
+          {user?.data.role === "admin" ? "Dashboard" : "My Course"}
         </a>
       ),
     },
@@ -72,7 +72,7 @@ const AppHeader2: React.FC = () => {
   return (
     <Header className={`header-2`}>
       <button
-        className="block flex h-8 w-40 items-center justify-center rounded bg-[#ef4444] text-white transition hover:bg-black hover:text-white"
+        className="flex h-8 w-40 items-center justify-center rounded bg-[#ef4444] text-white transition hover:bg-black hover:text-white"
         onClick={() => navigate("/")}
       >
         Back to homepage
@@ -88,7 +88,11 @@ const AppHeader2: React.FC = () => {
         <Dropdown menu={{ items }}>
           <a className="mr-9 flex" onClick={(e) => e.preventDefault()}>
             <Space>
-              <img src={user.image} className="h-12 w-12 rounded-full" alt="" />
+              <img
+                src={user?.data.avatar}
+                className="h-12 w-12 rounded-full"
+                alt=""
+              />
             </Space>
           </a>
         </Dropdown>

@@ -82,8 +82,8 @@ const TableUsers = () => {
 
   const filteredUsers = users.filter((user) => {
     return (
-      (roleFilter ? user.role === roleFilter : true) &&
-      (statusFilter ? user.status === (statusFilter === "true") : true)
+      (roleFilter ? user.data.role === roleFilter : true) &&
+      (statusFilter ? user.data.status === (statusFilter === "true") : true)
     );
   });
 
