@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Table, Tooltip, Input } from "antd";
+import { Table, Tooltip, Input, Modal } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../app/redux/store";
 import { Category } from "../../models/Types";
 import ModalAddCategory from "../Modal/ModalAddCategory";
-import { getCategories } from "../../app/redux/categories/categorySlice";
+import {
+  deleteCategory,
+  getCategories,
+} from "../../app/redux/categories/categorySlice";
 
 const { Search } = Input;
 
@@ -18,15 +21,23 @@ const TableCategories: React.FC = () => {
   const [searchKeyword, setSearchKeyword] = useState<string>("");
 
   useEffect(() => {
-    dispatch(getCategories());
+    dispatch(getCategories(searchKeyword));
   }, [dispatch, searchKeyword]);
 
-  const handleUpdate = (category: Category["pageData"][number]) => {
-    console.log("Update Category:", category);
-  };
-
-  const handleDelete = async (category: Category["pageData"][number]) => {
-    console.log("Delete Category:", category);
+  const handleDelete = (categoryId: string) => {
+    Modal.confirm({
+      title: "Are you sure you want to delete this category?",
+      onOk: () => {
+        dispatch(deleteCategory(categoryId))
+          .unwrap()
+          .then(() => {
+            console.log("Category deleted successfully");
+          })
+          .catch((error) => {
+            console.error("Failed to delete category:", error);
+          });
+      },
+    });
   };
 
   const columns = [
@@ -47,13 +58,12 @@ const TableCategories: React.FC = () => {
         <div>
           <Tooltip title="Edit">
             <EditOutlined
-              onClick={() => handleUpdate(record)}
               style={{ fontSize: "16px", marginRight: 16, cursor: "pointer" }}
             />
           </Tooltip>
           <Tooltip title="Delete">
             <DeleteOutlined
-              onClick={() => handleDelete(record)}
+              onClick={() => handleDelete(record._id)}
               style={{ fontSize: "16px", color: "red", cursor: "pointer" }}
             />
           </Tooltip>

@@ -2,34 +2,22 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { Category } from "../../../models/Types";
 import {
   createCategoryAPI,
+  deleteCategoryAPI,
   getCategoriesAPI,
 } from "../../../services/categoryService";
 
-// Định nghĩa loại dữ liệu cho trạng thái
 interface CategoryState {
   categories: Category["pageData"];
   loading: boolean;
   error: string | null;
 }
 
-// Khởi tạo trạng thái ban đầu
 const initialState: CategoryState = {
-  categories: [
-    {
-      _id: "",
-      name: "",
-      parent_category_id: null,
-      description: "",
-      created_at: new Date(),
-      updated_at: new Date(),
-      is_deleted: false,
-    },
-  ],
+  categories: [],
   loading: false,
   error: null,
 };
 
-// Tạo async thunk để xử lý việc thêm Category
 export const createCategory = createAsyncThunk(
   "category/createCategory",
   async (
@@ -47,10 +35,22 @@ export const createCategory = createAsyncThunk(
 
 export const getCategories = createAsyncThunk(
   "category/getCategories",
-  async (_, { rejectWithValue }) => {
+  async (searchKeyword: string, { rejectWithValue }) => {
     try {
-      const res: Category = await getCategoriesAPI();
+      const res: Category = await getCategoriesAPI(searchKeyword);
       return res.pageData;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+export const deleteCategory = createAsyncThunk(
+  "category/deleteCategory",
+  async (categoryId: string, { rejectWithValue }) => {
+    try {
+      await deleteCategoryAPI(categoryId);
+      return categoryId;
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -64,6 +64,13 @@ const categorySlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(
+        getCategories.fulfilled,
+        (state, action: PayloadAction<Category["pageData"]>) => {
+          state.loading = false;
+          state.categories = action.payload;
+        },
+      )
+      .addCase(
         createCategory.fulfilled,
         (state, action: PayloadAction<Category["pageData"][number]>) => {
           state.loading = false;
@@ -71,9 +78,12 @@ const categorySlice = createSlice({
         },
       )
       .addCase(
-        getCategories.fulfilled,
-        (state, action: PayloadAction<Category["pageData"]>) => {
-          state.categories = action.payload;
+        deleteCategory.fulfilled,
+        (state, action: PayloadAction<string>) => {
+          state.loading = false;
+          state.categories = state.categories.filter(
+            (category) => category._id !== action.payload,
+          );
         },
       );
   },

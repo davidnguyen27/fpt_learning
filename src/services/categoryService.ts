@@ -13,18 +13,29 @@ export const createCategoryAPI = async (
         Authorization: `Bearer ${token}`,
       },
     });
-    return res.data;
+    return res.data.data;
   } catch (error: any) {
     throw new Error(error.message);
   }
 };
 
-export const getCategoriesAPI = async (): Promise<Category> => {
+export const getCategoriesAPI = async (
+  searchKeyword: string,
+): Promise<Category> => {
   try {
     const token = sessionStorage.getItem("token");
     const res = await axios.post(
       `${APILink}/api/category/search`,
-      {},
+      {
+        searchCondition: {
+          keyword: searchKeyword,
+          is_delete: false,
+        },
+        pageInfo: {
+          pageNum: 1,
+          pageSize: 10,
+        },
+      },
       {
         headers: {
           "Content-Type": "application/json",
@@ -32,7 +43,21 @@ export const getCategoriesAPI = async (): Promise<Category> => {
         },
       },
     );
-    return res.data;
+    return res.data.data;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};
+
+export const deleteCategoryAPI = async (categoryId: string): Promise<void> => {
+  try {
+    const token = sessionStorage.getItem("token");
+    await axios.delete(`${APILink}/api/category/${categoryId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log("API delete response: Category deleted successfully");
   } catch (error: any) {
     throw new Error(error.message);
   }

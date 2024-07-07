@@ -111,17 +111,15 @@ export type CategorySearchRequest = {
 };
 
 export type Category = {
-  pageData: [
-    {
-      _id: string;
-      name: string;
-      parent_category_id?: string | null;
-      description: string;
-      created_at: Date;
-      updated_at: Date;
-      is_deleted: boolean;
-    },
-  ];
+  pageData: {
+    _id: string;
+    name: string;
+    parent_category_id?: string | null;
+    description: string;
+    created_at: string;
+    updated_at: string;
+    is_deleted: boolean;
+  }[];
   pageInfo: {
     pageNum: number;
     pageSize: number;
