@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { User } from "../../../models/Types";
-import { getUsers, registerUser } from "../../../services/usersService";
+import { registerUser } from "../../../services/usersService";
 
 interface UserState {
   users: User[];
@@ -19,10 +19,6 @@ const initialState: UserState = {
   loading: false,
   error: null,
 };
-
-export const fetchUsers = createAsyncThunk("user/fetchUsers", async () =>
-  getUsers(),
-);
 
 export const createAccount = createAsyncThunk(
   "user/registerUser",
@@ -48,20 +44,12 @@ const userSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(
-        fetchUsers.fulfilled,
-        (state: UserState, action: PayloadAction<User[]>) => {
-          state.loading = false;
-          state.users = action.payload;
-        },
-      )
-      .addCase(
-        createAccount.fulfilled,
-        (state: UserState, action: PayloadAction<User>) => {
-          state.users.push(action.payload);
-        },
-      );
+    builder.addCase(
+      createAccount.fulfilled,
+      (state: UserState, action: PayloadAction<User>) => {
+        state.users.push(action.payload);
+      },
+    );
   },
 });
 
