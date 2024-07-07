@@ -1,85 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { Table, Tooltip, Input } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import {
-  Category,
-  CategorySearchRequest,
-  CategorySearchResponse,
-} from "../../models/Types";
-import { APILink } from "../../const/linkAPI";
-import axios from "axios";
-import ModalAddCategory from "../Modal/ModalAddCategory"; // Import modal for adding category
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../app/redux/store";
+import { Category } from "../../models/Types";
+import ModalAddCategory from "../Modal/ModalAddCategory";
+import { getCategories } from "../../app/redux/categories/categorySlice";
 
 const { Search } = Input;
 
 const TableCategories: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { categories, loading, error } = useSelector(
+    (state: RootState) => state.category,
+  );
   const [open, setOpen] = useState<boolean>(false);
-  const [category, setCategory] = useState<Category[]>([]);
   const [searchKeyword, setSearchKeyword] = useState<string>("");
 
-  const handleUpdate = (category: Category) => {
+  useEffect(() => {
+    dispatch(getCategories());
+  }, [dispatch, searchKeyword]);
+
+  const handleUpdate = (category: Category["pageData"][number]) => {
     console.log("Update Category:", category);
   };
 
-  const handleDelete = async (category: Category) => {
+  const handleDelete = async (category: Category["pageData"][number]) => {
     console.log("Delete Category:", category);
-  };
-
-  useEffect(() => {
-    fetchCategories();
-  }, [searchKeyword]);
-
-  const fetchCategories = async () => {
-    const requestData: CategorySearchRequest = {
-      searchCondition: {
-        keyword: searchKeyword.trim(),
-        is_delete: false,
-      },
-      pageInfo: {
-        pageNum: 1,
-        pageSize: 10,
-      },
-    };
-    const response = await fetchCategory(requestData);
-    setCategory(response.data.pageData);
-  };
-
-  const fetchCategory = async (
-    requestData: CategorySearchRequest,
-  ): Promise<CategorySearchResponse> => {
-    try {
-      console.log("Loading categories with:", requestData);
-
-      const token = sessionStorage.getItem("token");
-
-      const response = await axios.post(
-        `${APILink}/api/category/search`,
-        requestData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-
-      const data: CategorySearchResponse = response.data;
-
-      console.log("Loading categories successfully, categories:", data);
-
-      return data;
-    } catch (error: any) {
-      if (error.response) {
-        console.error("Loading categories fail.", error.response.data);
-        console.error("Status", error.response.status);
-        console.error("Headers", error.response.headers);
-      } else if (error.request) {
-        console.error("No response", error.request);
-      } else {
-        console.error("Fail", error.message);
-      }
-      throw error;
-    }
   };
 
   const columns = [
@@ -93,15 +40,10 @@ const TableCategories: React.FC = () => {
       dataIndex: "description",
       key: "description",
     },
-    // {
-    //   title: "Parent Category",
-    //   dataIndex: "parent_category_id",
-    //   key: "parent_category_id",
-    // },
     {
       title: "Action",
       key: "action",
-      render: (_: any, record: Category) => (
+      render: (_: any, record: Category["pageData"][number]) => (
         <div>
           <Tooltip title="Edit">
             <EditOutlined
@@ -141,9 +83,11 @@ const TableCategories: React.FC = () => {
       <Table
         className="my-5 rounded-none"
         columns={columns}
-        dataSource={category}
+        dataSource={categories}
         rowKey={(record) => record._id}
+        loading={loading}
       />
+      {error && <div style={{ color: "red" }}>{error}</div>}
     </>
   );
 };

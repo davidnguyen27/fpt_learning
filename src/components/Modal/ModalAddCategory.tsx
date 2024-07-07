@@ -32,18 +32,18 @@ const ModalAddCategory = (props: ModalAddCategoryProps) => {
     >
       <Form layout="vertical" className="mt-4">
         <Form.Item
-          name="course_id"
-          label="Course ID"
-          rules={[{ required: true, message: "Email is require!" }]}
-        >
-          <Input className="text-sm" size="large" placeholder="Course ID" />
-        </Form.Item>
-        <Form.Item
           label="Category Name"
           name="categoryName"
           rules={[{ required: true, message: "Category Name is require!" }]}
         >
           <Input className="text-sm" size="large" placeholder="Category Name" />
+        </Form.Item>
+        <Form.Item
+          label="Description"
+          name="description"
+          rules={[{ required: true, message: "Description is require!" }]}
+        >
+          <Input className="text-sm" size="large" placeholder="Description" />
         </Form.Item>
       </Form>
     </Modal>
