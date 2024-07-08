@@ -4,7 +4,7 @@ import { AppFooter, AppHeader } from "../../components";
 import Sider from "antd/es/layout/Sider";
 import SiderAdmin from "../../components/Admin/SiderAdmin";
 import { useSider } from "../../app/context/SiderContext";
-import InforAdmin from "../../components/Info/InforAdmin";
+
 
 const ProfilePage = () => {
   const { collapsed } = useSider();
@@ -31,7 +31,7 @@ const ProfilePage = () => {
             <div className="p-8">
               <section>
                 <h1 className="text-xl font-bold">Admin profile</h1>
-                <InforAdmin />
+
               </section>
             </div>
             <Footer className="footer">

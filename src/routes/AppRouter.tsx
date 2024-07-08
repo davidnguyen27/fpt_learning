@@ -150,7 +150,7 @@ const AppRouter = () => {
             }
           />
           <Route
-            path="/admin-profile-page"
+            path="/admin-profile-page/"
             element={
               <ProtectedRoute
                 element={<ProfilePage />}

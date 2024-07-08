@@ -8,14 +8,14 @@ import TableUsers from "../../components/Tables/TableUsers";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../app/redux/store";
 import { filterRole, filterStatus } from "../../app/redux/user/userSlice";
-import { useState } from "react";
-import ModalCreateAcc from "../../components/Modal/ModalCreateAcc";
+
+
 
 const UserManagePage = () => {
   const { collapsed } = useSider();
   const dispatch = useDispatch<AppDispatch>();
 
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+
 
   const handleRoleChange = (e: any) => {
     dispatch(filterRole(e.target.value));
@@ -76,15 +76,7 @@ const UserManagePage = () => {
                     </select>
                   </div>
                 </div>
-                <div>
-                  <button
-                    className="rounded-lg bg-red-500 px-5 py-2 text-sm font-medium hover:bg-red-600"
-                    onClick={() => setIsOpen(true)}
-                  >
-                    Create account
-                  </button>
-                  <ModalCreateAcc isOpen={isOpen} setIsOpen={setIsOpen} />
-                </div>
+                
               </div>
               <TableUsers />
             </div>
