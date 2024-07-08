@@ -20,15 +20,14 @@ const TableUsers: React.FC = () => {
   const [roleFilter, setRoleFilter] = useState<string>("all"); // State to manage role filter
   const [statusFilter, setStatusFilter] = useState<boolean>(true); // State to manage status filter
   const [isOpen, setIsOpen] = useState<boolean>(false); // State to manage modal for creating accounts
+  const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false); // State to manage edit modal visibility
+  const [editedUser, setEditedUser] = useState<UserData | null>(null); // State to hold edited user data
   const [pagination, setPagination] = useState({
     // State to manage table pagination
     current: 1,
     pageSize: 10,
     total: 0,
   });
-
-  const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false); // State to manage edit modal visibility
-  const [editedUser, setEditedUser] = useState<UserData | null>(null); // State to hold edited user data
 
   // Effect hook to fetch users when dependencies change
   useEffect(() => {

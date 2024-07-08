@@ -1,36 +1,45 @@
+import React, { Suspense } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import HomePage from "../pages/User/HomePage";
-import DetailCoursePage from "../pages/User/detailCoursePage";
-import HelpPage from "../pages/User/HelpPage";
-import AdminPage from "../pages/Admin/AdminPage";
-import SignInPage from "../pages/User/SignInPage";
-import SignUpPage from "../pages/User/SignUpPage";
 import { AuthContext, AuthProvider } from "../app/context/AuthContext";
 import { useContext } from "react";
-import CategoriesManagePage from "../pages/Admin/CategoriesManagePage";
-import StudentProfilePage from "../pages/Student/StudentProfilePage";
-import StudentCourseDetailPage from "../pages/Student/StudentCourseDetailPage";
-import ReportPage from "../pages/User/ReportPage";
-import Cart from "../pages/User/Cart";
-import CheckOut from "../pages/User/CheckOut";
-import PaidMembershipPage from "../pages/User/PaidMembership";
-import ProfilePage from "../pages/Admin/ProfilePage";
-import InstructorPage from "../pages/Instructor/InstructorPage";
-import UserManagePage from "../pages/Admin/UserManagePage";
-import SettingsPage from "../pages/User/SettingPage";
-import CoursesCheckPage from "../pages/Admin/CoursesCheckPage";
-import CoursesManagePage from "../pages/Instructor/CoursesManagePage";
-import CreateCoursePage from "../pages/Instructor/CreateCoursePage";
-import LessonManagePage from "../pages/Instructor/LessonManagePage";
-import SessionManagePage from "../pages/Instructor/SessionManagePage";
-import EarningPage from "../pages/Instructor/EarningPage";
-import StudentCourseListPage from "../pages/Student/StudentCourseListPage";
-import StudentSettingPage from "../pages/Student/StudentSettingPage";
-import ReviewManagePage from "../pages/Instructor/ReviewManagePage";
-import PayoutManagePage from "../pages/Instructor/PayoutManagePage";
-import AboutPage from "../pages/User/AboutPage";
-import PasswordReset from "../pages/User/ForgotPassword";
-import UserDetail from "../pages/User/UserDetail";
+
+//-------------------------------------------------USER------------------------------------------------
+const HomePage = React.lazy(() => import('../pages/User/HomePage'));
+const DetailCoursePage = React.lazy(() => import('../pages/User/detailCoursePage'));
+const HelpPage = React.lazy(() => import('../pages/User/HelpPage'));
+const SignInPage = React.lazy(() => import('../pages/User/SignInPage'));
+const SignUpPage = React.lazy(() => import('../pages/User/SignUpPage'));
+const ReportPage = React.lazy(() => import('../pages/User/ReportPage'));
+const Cart = React.lazy(() => import('../pages/User/Cart'));
+const CheckOut = React.lazy(() => import('../pages/User/CheckOut'));
+const PaidMembershipPage = React.lazy(() => import('../pages/User/PaidMembership'));
+const SettingsPage = React.lazy(() => import('../pages/User/SettingPage'));
+const AboutPage = React.lazy(() => import('../pages/User/AboutPage'));
+const PasswordReset = React.lazy(() => import('../pages/User/ForgotPassword'));
+const UserDetail = React.lazy(() => import('../pages/User/UserDetail'));
+
+//-----------------------------------------------ADMIN-------------------------------------------------
+const AdminPage = React.lazy(() => import('../pages/Admin/AdminPage'));
+const CategoriesManagePage = React.lazy(() => import('../pages/Admin/CategoriesManagePage'));
+const ProfilePage = React.lazy(() => import('../pages/Admin/ProfilePage'));
+const UserManagePage = React.lazy(() => import('../pages/Admin/UserManagePage'));
+const CoursesCheckPage = React.lazy(() => import('../pages/Admin/CoursesCheckPage'));
+
+//---------------------------------------------INSTRUCTOR----------------------------------------------
+const InstructorPage = React.lazy(() => import('../pages/Instructor/InstructorPage'));
+const CoursesManagePage = React.lazy(() => import('../pages/Instructor/CoursesManagePage'));
+const CreateCoursePage = React.lazy(() => import('../pages/Instructor/CreateCoursePage'));
+const LessonManagePage = React.lazy(() => import('../pages/Instructor/LessonManagePage'));
+const SessionManagePage = React.lazy(() => import('../pages/Instructor/SessionManagePage'));
+const ReviewManagePage = React.lazy(() => import('../pages/Instructor/ReviewManagePage'));
+const PayoutManagePage = React.lazy(() => import('../pages/Instructor/PayoutManagePage'));
+const EarningPage = React.lazy(() => import('../pages/Instructor/EarningPage'));
+
+//-----------------------------------------------STUDENT-----------------------------------------------
+const StudentProfilePage = React.lazy(() => import('../pages/Student/StudentProfilePage'));
+const StudentCourseDetailPage = React.lazy(() => import('../pages/Student/StudentCourseDetailPage'));
+const StudentCourseListPage = React.lazy(() => import('../pages/Student/StudentCourseListPage'));
+const StudentSettingPage = React.lazy(() => import('../pages/Student/StudentSettingPage'));
 
 interface ProtectedRouteProps {
   element: JSX.Element;
@@ -46,7 +55,7 @@ const ProtectedRoute = ({ element, allowedRoles }: ProtectedRouteProps) => {
 
   const storedUser: any = sessionStorage.getItem("user");
   if (!storedUser) {
-    throw new Error("Không tìm thấy người dùng trong sessionStorage");
+    throw new Error("Could not find user in sessionStorage");
   }
   const user = JSON.parse(storedUser);
 
@@ -65,6 +74,7 @@ const AppRouter = () => {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <Suspense fallback={<div>Loading...</div>}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
@@ -75,72 +85,8 @@ const AppRouter = () => {
           <Route path="/help-page" element={<HelpPage />} />
           <Route path="/settings-page" element={<SettingsPage />} />
           <Route path="/forgot-password" element={<PasswordReset />} />
-
-          {/* Student */}
-          <Route
-            path="/view-detail"
-            element={
-              <ProtectedRoute
-                element={<StudentCourseDetailPage />}
-                allowedRoles={["student"]}
-              />
-            }
-          />
-          <Route
-            path="/cart"
-            element={
-              <ProtectedRoute element={<Cart />} allowedRoles={["student"]} />
-            }
-          />
-          <Route
-            path="/checkout"
-            element={
-              <ProtectedRoute
-                element={<CheckOut />}
-                allowedRoles={["student"]}
-              />
-            }
-          />
-          <Route
-            path="/paid-membership"
-            element={
-              <ProtectedRoute
-                element={<PaidMembershipPage />}
-                allowedRoles={["student"]}
-              />
-            }
-          />
-          <Route
-            path="/student-profile-page"
-            element={
-              <ProtectedRoute
-                element={<StudentProfilePage />}
-                allowedRoles={["student"]}
-              />
-            }
-          />
-          <Route
-            path="/student-course-list-page"
-            element={
-              <ProtectedRoute
-                element={<StudentCourseListPage />}
-                allowedRoles={["student"]}
-              />
-            }
-          />
-          <Route
-            path="/student-setting-page"
-            element={
-              <ProtectedRoute
-                element={<StudentSettingPage />}
-                allowedRoles={["student"]}
-              />
-            }
-          />
-
-          {/* --- */}
-
-          {/* Admin  */}
+          
+          {/*----------------------------ADMIN---------------------------------*/}
           <Route
             path="/admin/dashboard"
             element={
@@ -222,9 +168,72 @@ const AppRouter = () => {
               />
             }
           />
-          {/* --- */}
+          {/*------------------------------------------------------------------*/}
 
-          {/* Instructor */}
+          {/*----------------------------STUDENT-------------------------------*/}
+          <Route
+            path="/view-detail"
+            element={
+              <ProtectedRoute
+                element={<StudentCourseDetailPage />}
+                allowedRoles={["student"]}
+              />
+            }
+          />
+          <Route
+            path="/cart"
+            element={
+              <ProtectedRoute element={<Cart />} allowedRoles={["student"]} />
+            }
+          />
+          <Route
+            path="/checkout"
+            element={
+              <ProtectedRoute
+                element={<CheckOut />}
+                allowedRoles={["student"]}
+              />
+            }
+          />
+          <Route
+            path="/paid-membership"
+            element={
+              <ProtectedRoute
+                element={<PaidMembershipPage />}
+                allowedRoles={["student"]}
+              />
+            }
+          />
+          <Route
+            path="/student-profile-page"
+            element={
+              <ProtectedRoute
+                element={<StudentProfilePage />}
+                allowedRoles={["student"]}
+              />
+            }
+          />
+          <Route
+            path="/student-course-list-page"
+            element={
+              <ProtectedRoute
+                element={<StudentCourseListPage />}
+                allowedRoles={["student"]}
+              />
+            }
+          />
+          <Route
+            path="/student-setting-page"
+            element={
+              <ProtectedRoute
+                element={<StudentSettingPage />}
+                allowedRoles={["student"]}
+              />
+            }
+          />
+          {/*------------------------------------------------------------------*/}
+
+          {/*---------------------------INSTRUCTOR-----------------------------*/}
           <Route
             path="/instructor/dashboard"
             element={
@@ -298,6 +307,8 @@ const AppRouter = () => {
             }
           />
         </Routes>
+        {/*------------------------------------------------------------------*/}
+        </Suspense>
       </AuthProvider>
     </BrowserRouter>
   );
