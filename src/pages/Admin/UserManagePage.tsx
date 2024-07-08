@@ -48,14 +48,6 @@ const UserManagePage = () => {
               <section>
                 <h1 className="text-xl font-bold">User Management</h1>
               </section>
-              <div className="mt-4 bg-slate-200 p-4">
-                <input
-                  style={{ width: "100%" }}
-                  type="text"
-                  placeholder="Search by phone..."
-                  className="h-8 rounded-md pl-8 text-xs"
-                />
-              </div>
               <div className="my-3 flex items-center justify-between">
                 <div className="flex items-center">
                   <i className="fa-solid fa-filter"></i>

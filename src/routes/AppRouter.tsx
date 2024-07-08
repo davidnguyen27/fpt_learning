@@ -30,6 +30,7 @@ import ReviewManagePage from "../pages/Instructor/ReviewManagePage";
 import PayoutManagePage from "../pages/Instructor/PayoutManagePage";
 import AboutPage from "../pages/User/AboutPage";
 import PasswordReset from "../pages/User/ForgotPassword";
+import UserDetail from "../pages/User/UserDetail";
 
 interface ProtectedRouteProps {
   element: JSX.Element;
@@ -172,6 +173,15 @@ const AppRouter = () => {
             element={
               <ProtectedRoute
                 element={<CategoriesManagePage />}
+                allowedRoles={["admin"]}
+              />
+            }
+          />
+          <Route
+            path="/admin/user-detail/id"
+            element={
+              <ProtectedRoute
+                element={<UserDetail _id={""} token={""} />}
                 allowedRoles={["admin"]}
               />
             }

@@ -13,7 +13,6 @@ const AppHeader: React.FC = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
 
-  console.log(user?.data.role);
   const handleLogout = () => {
     logout();
     navigate("/");

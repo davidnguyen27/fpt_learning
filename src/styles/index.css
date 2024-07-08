@@ -71,7 +71,7 @@ body {
   }
 
   .footer {
-    @apply w-full bg-stone-800;
+    @apply w-full bg-[#212121];
   }
 
   .hover-red:hover {

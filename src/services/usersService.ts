@@ -154,9 +154,13 @@ export const updateUser = async (userId: string, updatedUserData: Partial<UserDa
 
 //-----------------------------------------------------------------------------------------------
 
-//-------------------------------- Update Status User (Admin) ---------------------------------------
+//-------------------------------- Update  User (Admin) ---------------------------------------
+
 
 export const toggleUserStatus = async (userId: string, status: boolean): Promise<UserData> => {
-  const response = await axios.put(`/api/users/${userId}/status`, { status });
+  const response = await axios.put(`${APILink}/api/users/change-status`, {
+    userId,
+    status,
+  });
   return response.data;
 };

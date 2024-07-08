@@ -37,6 +37,7 @@ export type SearchCondition = {
   role: string;
   status: boolean;
   is_delete: boolean;
+
 }
 
 export type PageInfo = {
@@ -96,6 +97,7 @@ export type ApiResponse = {
       };
   };
 }
+
 // Category
 export type CategorySearchRequest = {
   searchCondition: {
@@ -110,13 +112,21 @@ export type CategorySearchRequest = {
 };
 
 export type Category = {
-  _id: string;
-  name: string;
-  parent_category_id?: string | null;
-  description: string;
-  created_at: Date;
-  updated_at: Date;
-  is_deleted: boolean;
+  pageData: {
+    _id: string;
+    name: string;
+    parent_category_id?: string | null;
+    description: string;
+    created_at: string;
+    updated_at: string;
+    is_deleted: boolean;
+  }[];
+  pageInfo: {
+    pageNum: number;
+    pageSize: number;
+    totalItems: number;
+    totalPages: number;
+  };
 };
 
 export type CategorySearchResponse = {

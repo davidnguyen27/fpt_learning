@@ -17,7 +17,7 @@ const initialState: UpdateState = {
 };
 
 export const updateUser = createAsyncThunk(
-  "update/updateUser",
+  "user/updateUser",
   async ({ userId, updatedUserData }: { userId: string, updatedUserData: Partial<UserData> }) => {
     try {
       const token = sessionStorage.getItem("token");
