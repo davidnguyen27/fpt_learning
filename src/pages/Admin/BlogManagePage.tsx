@@ -1,13 +1,13 @@
 import TableBlogs from "../../components/Tables/TableBlogs";
 import ModalCreateBlog from "../../components/Modal/ModalCreateBlog";
 import { useState } from "react";
-import MainLayout from "../../components/Layout/MainLayout";
+import AdminLayout from "../../components/Layout/AdminLayout";
 
 const BlogManagePage = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   return (
-    <MainLayout>
+    <AdminLayout>
       <section>
         <h1 className="text-xl font-bold">Blog Management</h1>
       </section>
@@ -42,7 +42,7 @@ const BlogManagePage = () => {
         </div>
       </div>
       <TableBlogs />
-    </MainLayout>
+    </AdminLayout>
   );
 };
 

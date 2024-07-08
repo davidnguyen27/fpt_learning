@@ -3,7 +3,7 @@ import TableLessons from "../../components/Tables/TableLessons";
 import { BarChartOutlined, ContainerOutlined } from "@ant-design/icons";
 import TableQuizAssignment from "../../components/Tables/TableQuizAssignment";
 import "../../styles/tabCustom.css";
-import MainLayout from "../../components/Layout/MainLayout";
+import InstructorLayout from "../../components/Layout/InstructorLayout";
 
 const items: TabsProps["items"] = [
   {
@@ -28,12 +28,12 @@ const items: TabsProps["items"] = [
 
 const LessonManagePage = () => {
   return (
-    <MainLayout>
+    <InstructorLayout>
       <section>
         <h1 className="text-xl font-bold">Lesson Management</h1>
       </section>
       <Tabs defaultActiveKey="1" items={items} className="mt-10" />
-    </MainLayout>
+    </InstructorLayout>
   );
 };
 

@@ -1,14 +1,14 @@
 import TableReviews from "../../components/Tables/TableReviews";
-import MainLayout from "../../components/Layout/MainLayout";
+import InstructorLayout from "../../components/Layout/InstructorLayout";
 
 const ReviewManagePage = () => {
   return (
-    <MainLayout>
+    <InstructorLayout>
       <section>
         <h1 className="text-xl font-bold">Review Management</h1>
       </section>
       <TableReviews />
-    </MainLayout>
+    </InstructorLayout>
   );
 };
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { Table, Card, Row, Col } from "antd";
 import "../../styles/instructorEarning.css";
-import MainLayout from "../../components/Layout/MainLayout";
+import InstructorLayout from "../../components/Layout/InstructorLayout";
 
 const columns = [
   {
@@ -51,7 +51,7 @@ const topCountries = [
 
 const EarningPage: React.FC = () => {
   return (
-    <MainLayout>
+    <InstructorLayout>
       <section>
         <h1 className="text-xl font-bold">Earning</h1>
       </section>
@@ -125,7 +125,7 @@ const EarningPage: React.FC = () => {
           />
         </div>
       </section>
-    </MainLayout>
+    </InstructorLayout>
   );
 };
 

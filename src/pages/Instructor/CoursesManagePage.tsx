@@ -3,8 +3,8 @@ import TableCourses from "../../components/Tables/TableCourses";
 import { useNavigate } from "react-router-dom";
 import TableUpcomingCourses from "../../components/Tables/TableUpComingCourses";
 import { ArrowUpOutlined, ReadOutlined } from "@ant-design/icons";
-import MainLayout from "../../components/Layout/MainLayout";
 import "../../styles/tabCustom.css";
+import InstructorLayout from "../../components/Layout/InstructorLayout";
 
 const items: TabsProps["items"] = [
   {
@@ -31,7 +31,7 @@ const CoursesManagePage = () => {
   const navigate = useNavigate();
 
   return (
-    <MainLayout>
+    <InstructorLayout>
       <section>
         <h1 className="text-xl font-bold">Courses Management</h1>
       </section>
@@ -54,7 +54,7 @@ const CoursesManagePage = () => {
         </div>
       </div>
       <Tabs defaultActiveKey="1" items={items} className="mt-10" />
-    </MainLayout>
+    </InstructorLayout>
   );
 };
 

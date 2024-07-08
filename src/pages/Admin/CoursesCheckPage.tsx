@@ -1,9 +1,9 @@
 import TableCheck from "../../components/Tables/TableCheck";
-import MainLayout from "../../components/Layout/MainLayout";
+import AdminLayout from "../../components/Layout/AdminLayout";
 
 const CoursesCheckPage = () => {
   return (
-    <MainLayout>
+    <AdminLayout>
       <section>
         <h1 className="text-xl font-bold">Course Management</h1>
       </section>
@@ -21,7 +21,7 @@ const CoursesCheckPage = () => {
         </div>
       </div>
       <TableCheck />
-    </MainLayout>
+    </AdminLayout>
   );
 };
 

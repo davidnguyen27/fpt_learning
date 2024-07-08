@@ -2,11 +2,11 @@ import Overview from "../../components/Admin/Overview";
 import TotalUserChart from "../../components/Charts/TotalUserChart";
 import TotalInstructorChart from "../../components/Charts/TotalInstructorChart";
 import FeedbackChart from "../../components/Charts/FeedbackChart";
-import MainLayout from "../../components/Layout/MainLayout";
+import AdminLayout from "../../components/Layout/AdminLayout";
 
 const AdminPage = () => {
   return (
-    <MainLayout>
+    <AdminLayout>
       <section>
         <h1 className="text-xl font-bold">Admin Dashboard</h1>
         <Overview />
@@ -31,7 +31,7 @@ const AdminPage = () => {
           </div>
         </div>
       </section>
-    </MainLayout>
+    </AdminLayout>
   );
 };
 

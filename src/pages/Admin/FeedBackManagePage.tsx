@@ -1,9 +1,9 @@
 import TableFeedbacks from "../../components/Tables/TableFeedbacks";
-import MainLayout from "../../components/Layout/MainLayout";
+import AdminLayout from "../../components/Layout/AdminLayout";
 
 const FeedBackManagePage = () => {
   return (
-    <MainLayout>
+    <AdminLayout>
       <section>
         <h1 className="text-xl font-bold">Feedback Management</h1>
       </section>
@@ -29,7 +29,7 @@ const FeedBackManagePage = () => {
         </div>
       </div>
       <TableFeedbacks />
-    </MainLayout>
+    </AdminLayout>
   );
 };
 

@@ -1,10 +1,10 @@
 import Overview from "../../components/Admin/Overview";
 import InstructorChart from "../../components/Charts/InstructorChart";
-import MainLayout from "../../components/Layout/MainLayout";
+import InstructorLayout from "../../components/Layout/InstructorLayout";
 
 const InstructorPage: React.FC = () => {
   return (
-    <MainLayout>
+    <InstructorLayout>
       <section>
         <h1 className="text-xl font-bold">Instructor Dashboard</h1>
         <Overview />
@@ -109,7 +109,7 @@ const InstructorPage: React.FC = () => {
                   </Card>
                 </div> */}
       </section>
-    </MainLayout>
+    </InstructorLayout>
   );
 };
 

@@ -1,9 +1,9 @@
 import FormCreateCourse from "../../components/Form/FormCreateCourse";
-import MainLayout from "../../components/Layout/MainLayout";
+import InstructorLayout from "../../components/Layout/InstructorLayout";
 
 const CreateCoursePage = () => {
   return (
-    <MainLayout>
+    <InstructorLayout>
       <section className="p-8">
         <h1 className="text-xl font-bold">
           <i className="fa-solid fa-arrow-trend-up"></i> Create New Course
@@ -14,7 +14,7 @@ const CreateCoursePage = () => {
           }}
         />
       </section>
-    </MainLayout>
+    </InstructorLayout>
   );
 };
 

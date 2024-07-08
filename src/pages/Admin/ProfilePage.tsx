@@ -1,13 +1,13 @@
-import MainLayout from "../../components/Layout/MainLayout";
+import AdminLayout from "../../components/Layout/AdminLayout";
 
 const ProfilePage = () => {
 
   return (
-    <MainLayout>
+    <AdminLayout>
       <section>
         <h1 className="text-xl font-bold">Admin profile</h1>
       </section>
-    </MainLayout>
+    </AdminLayout>
   );
 };
 

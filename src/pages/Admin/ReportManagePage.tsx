@@ -1,9 +1,9 @@
 import TableReport from "../../components/Tables/TableReports";
-import MainLayout from "../../components/Layout/MainLayout";
+import AdminLayout from "../../components/Layout/AdminLayout";
 
 const ReportManagePage = () => {
   return (
-    <MainLayout>
+    <AdminLayout>
       <section>
         <h1 className="text-xl font-bold">Report Management</h1>
       </section>
@@ -29,7 +29,7 @@ const ReportManagePage = () => {
         </div>
       </div>
       <TableReport />
-    </MainLayout>
+    </AdminLayout>
   );
 };
 

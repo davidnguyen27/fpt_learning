@@ -1,11 +1,11 @@
 import StudentProfileContent from "../../components/Student/StudentProfileContent";
-import MainLayout from "../../components/Layout/MainLayout";
+import StudentLayout from "../../components/Layout/StudentLayout";
 
 const StudentProfilePage: React.FC = () => {
   return (
-    <MainLayout>
+    <StudentLayout>
       <StudentProfileContent />
-    </MainLayout>
+    </StudentLayout>
   );
 };
 

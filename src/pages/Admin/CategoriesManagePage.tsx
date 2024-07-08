@@ -1,14 +1,14 @@
 import TableCategories from "../../components/Tables/TableCagories";
-import MainLayout from "../../components/Layout/MainLayout";
+import AdminLayout from "../../components/Layout/AdminLayout";
 
 const CategoriesManagePage = () => {
   return (
-    <MainLayout>
+    <AdminLayout>
       <section>
         <h1 className="text-xl font-bold">Categories Management</h1>
       </section>
       <TableCategories />
-    </MainLayout>
+    </AdminLayout>
   );
 };
 

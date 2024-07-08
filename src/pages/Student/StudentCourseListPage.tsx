@@ -1,9 +1,9 @@
 import { StudentCourseListContent } from "../../components";
-import MainLayout from "../../components/Layout/MainLayout";
+import StudentLayout from "../../components/Layout/StudentLayout";
 
 const StudentCourseListPage: React.FC = () => {
   return (
-    <MainLayout>
+    <StudentLayout>
       <section>
         <div className="mb-5 flex w-full justify-between">
           <h1 className="text-xl font-bold">Enrolled Courses</h1>
@@ -18,7 +18,7 @@ const StudentCourseListPage: React.FC = () => {
           </button>
         </div>
       </section>
-    </MainLayout>
+    </StudentLayout>
   );
 };
 

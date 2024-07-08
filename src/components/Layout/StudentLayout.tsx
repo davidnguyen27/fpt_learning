@@ -12,7 +12,7 @@ interface MainLayoutProps {
   children: React.ReactNode;
 }
 
-const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
+const StudentLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const { collapsed } = useSider();
 
   return (
@@ -47,4 +47,4 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   );
 };
 
-export default MainLayout;
+export default StudentLayout;
