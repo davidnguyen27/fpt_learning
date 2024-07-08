@@ -250,57 +250,6 @@ const TableUsers: React.FC = () => {
   // Render table with users data and filters
   return (
     <>
-      <div
-        style={{
-          marginBottom: 16,
-          display: "flex",
-          justifyContent: "space-between",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center" }}>
-          {/* Search input for filtering users */}
-          <Search
-            placeholder="Search by name or email"
-            allowClear
-            onSearch={handleSearch}
-            onChange={handleSearchChange}
-            style={{ width: 300, marginRight: 16 }}
-          />
-          {/* Role filter dropdown */}
-          <Select
-            style={{ width: 150, marginRight: 16 }}
-            placeholder="Select role"
-            onChange={handleRoleFilterChange}
-            value={roleFilter}
-          >
-            <Option value="all">All Roles</Option>
-            <Option value="admin">Admin</Option>
-            <Option value="instructor">Instructor</Option>
-            <Option value="student">Student</Option>
-          </Select>
-          {/* Status filter dropdown */}
-          <Select
-            style={{ width: 150 }}
-            placeholder="Select status"
-            onChange={handleStatusFilterChange}
-            value={statusFilter}
-          >
-            <Option value={true}>Active</Option>
-            <Option value={false}>Inactive</Option>
-          </Select>
-        </div>
-        {/* Button to open create account modal */}
-        <div>
-          <button
-            className="rounded-lg bg-red-500 px-5 py-2 text-sm font-medium text-white hover:bg-red-600"
-            onClick={() => setIsOpen(true)}
-          >
-            Create account
-          </button>
-          {/* Modal for creating account */}
-          <ModalCreateAcc isOpen={isOpen} setIsOpen={setIsOpen} />
-        </div>
-      </div>
       {/* Table component displaying users */}
       <div
         style={{
