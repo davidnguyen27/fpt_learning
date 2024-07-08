@@ -59,6 +59,7 @@ export type UserData = {
   created_at: Date;
   updated_at: Date;
   is_deleted: boolean;
+  is_verified: boolean;
 };
 
 export type UserDetailProp = {
@@ -111,7 +112,7 @@ export type CategorySearchRequest = {
 };
 
 export type Category = {
-  pageData: [
+  pageData: 
     {
       _id: string;
       name: string;
@@ -120,8 +121,8 @@ export type Category = {
       created_at: Date;
       updated_at: Date;
       is_deleted: boolean;
-    },
-  ];
+    }[],
+  
   pageInfo: {
     pageNum: number;
     pageSize: number;

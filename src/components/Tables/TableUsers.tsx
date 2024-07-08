@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { Table, Modal, Tooltip, Input, Select, Tag } from "antd";
 import { UserData, UserSearchRequest } from "../../models/Types";
 import { deleteUser, getUsers, updateUser } from "../../services/usersService";
@@ -21,6 +20,8 @@ const TableUsers: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
   const [editedUser, setEditedUser] = useState<UserData | null>(null);
+  const [selectedUserDetail, setSelectedUserDetail] = useState<UserData | null>(null);
+  const [detailModalVisible, setDetailModalVisible] = useState<boolean>(false);
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
@@ -42,8 +43,7 @@ const TableUsers: React.FC = () => {
       searchCondition: {
         keyword: searchText.trim(),
         role: roleFilter,
-        status:
-          statusFilter === "all" ? undefined : statusFilter === "active",
+        status: statusFilter === "all" ? undefined : statusFilter === "active",
         is_delete: false,
       },
       pageInfo: {
@@ -138,6 +138,16 @@ const TableUsers: React.FC = () => {
     });
   };
 
+  const handleCloseDetailModal = () => {
+    setDetailModalVisible(false);
+    setSelectedUserDetail(null);
+  };
+
+  const handleNameClick = (user: UserData) => {
+    setSelectedUserDetail(user);
+    setDetailModalVisible(true);
+  };
+
   const columns = [
     {
       title: "No",
@@ -150,8 +160,10 @@ const TableUsers: React.FC = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      render: (text: string, record: UserData) => (
-        <Link to={`/admin/user-detail/${record._id}`}>{text}</Link>
+      render: (name: string, record: UserData) => (
+        <a onClick={() => handleNameClick(record)} style={{ cursor: "pointer" }}>
+          {name}
+        </a>
       ),
     },
     {
@@ -332,6 +344,23 @@ const TableUsers: React.FC = () => {
               placeholder="Add Video Link"
               style={{ marginBottom: 16 }}
             />
+          </div>
+        )}
+      </Modal>
+      <Modal
+        title="User Details"
+        visible={detailModalVisible}
+        onOk={handleCloseDetailModal}
+        onCancel={handleCloseDetailModal}
+        footer={null}
+      >
+        {selectedUserDetail && (
+          <div>
+            <p>Name: {selectedUserDetail.name}</p>
+            <p>Email: {selectedUserDetail.email}</p>
+            <p>Role: {selectedUserDetail.role}</p>
+            <p>Status: {selectedUserDetail.status ? "Active" : "Inactive"}</p>
+            <p>Verified: {selectedUserDetail.is_verified ? "Yes" : "No"}</p>
           </div>
         )}
       </Modal>
