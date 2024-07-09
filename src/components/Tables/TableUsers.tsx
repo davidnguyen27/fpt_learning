@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { Table, Modal, Tooltip, Input, Select, Tag } from "antd";
 import { UserData, UserSearchRequest } from "../../models/Types";
-import { deleteUser, getUsers } from "../../services/usersService";
+import { deleteUser, getUsers, updateUser } from "../../services/usersService";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import ModalCreateAcc from "../../components/Modal/ModalCreateAcc";
 
@@ -10,24 +9,25 @@ const { Search } = Input;
 const { Option } = Select;
 
 const TableUsers: React.FC = () => {
-  // State hooks for managing component state
-  const [users, setUsers] = useState<UserData[]>([]); // State to hold list of users
-  const [loading, setLoading] = useState<boolean>(true); // State to manage loading state
-  const [error, setError] = useState<string | null>(null); // State to manage error state
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(false); // State for delete confirmation modal visibility
-  const [selectedUser, setSelectedUser] = useState<UserData | null>(null); // State to hold selected user for deletion
-  const [searchText, setSearchText] = useState<string>(""); // State to manage search text input
-  const [roleFilter, setRoleFilter] = useState<string>("all"); // State to manage role filter
-  const [statusFilter, setStatusFilter] = useState<boolean>(true); // State to manage status filter
-  const [isOpen, setIsOpen] = useState<boolean>(false); // State to manage modal for creating accounts
+  const [users, setUsers] = useState<UserData[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
+  const [searchText, setSearchText] = useState<string>("");
+  const [roleFilter, setRoleFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
+  const [editedUser, setEditedUser] = useState<UserData | null>(null);
+  const [selectedUserDetail, setSelectedUserDetail] = useState<UserData | null>(null);
+  const [detailModalVisible, setDetailModalVisible] = useState<boolean>(false);
   const [pagination, setPagination] = useState({
-    // State to manage table pagination
     current: 1,
     pageSize: 10,
     total: 0,
   });
 
-  // Effect hook to fetch users when dependencies change
   useEffect(() => {
     fetchUsers(pagination.current, pagination.pageSize);
   }, [
@@ -38,13 +38,12 @@ const TableUsers: React.FC = () => {
     pagination.pageSize,
   ]);
 
-  // Function to fetch users based on search and filters
   const fetchUsers = async (page: number = 1, pageSize: number = 10) => {
     const requestData: UserSearchRequest = {
       searchCondition: {
         keyword: searchText.trim(),
         role: roleFilter,
-        status: statusFilter,
+        status: statusFilter === "all" ? undefined : statusFilter === "active",
         is_delete: false,
       },
       pageInfo: {
@@ -55,7 +54,6 @@ const TableUsers: React.FC = () => {
 
     try {
       const response = await getUsers(requestData);
-      // Update state with fetched users and pagination information
       setUsers(response.data.pageData);
       setPagination({
         ...pagination,
@@ -66,61 +64,72 @@ const TableUsers: React.FC = () => {
     } catch (error) {
       setError("Failed to fetch users");
     } finally {
-      setLoading(false); // Set loading state to false after fetch completes
+      setLoading(false);
     }
   };
 
-  // Function to handle update user action (placeholder for future implementation)
   const handleUpdate = (user: UserData) => {
-    console.log("Update user:", user);
+    setEditedUser(user);
+    setIsEditModalVisible(true);
   };
 
-  // Function to handle delete user action
+  const handleUpdateConfirm = async (updatedUserData: Partial<UserData>) => {
+    if (editedUser) {
+      try {
+        const updatedUser = await updateUser(editedUser._id, updatedUserData);
+        setEditedUser(null);
+        setIsEditModalVisible(false);
+        fetchUsers(pagination.current, pagination.pageSize);
+        console.log("Updated user:", updatedUser);
+      } catch (error) {
+        console.error("Failed to update user:", error);
+      }
+    }
+  };
+
+  const handleUpdateCancel = () => {
+    setEditedUser(null);
+    setIsEditModalVisible(false);
+  };
+
   const handleDelete = (user: UserData) => {
-    setSelectedUser(user); // Set selected user for delete confirmation
-    setIsModalVisible(true); // Show delete confirmation modal
+    setSelectedUser(user);
+    setIsModalVisible(true);
   };
 
-  // Function to confirm user deletion
   const handleConfirmDelete = async () => {
     if (selectedUser) {
       try {
-        await deleteUser(selectedUser._id); // Call API to delete user
-        setIsModalVisible(false); // Hide delete confirmation modal
-        fetchUsers(pagination.current, pagination.pageSize); // Refresh user list
+        await deleteUser(selectedUser._id);
+        setIsModalVisible(false);
+        fetchUsers(pagination.current, pagination.pageSize);
       } catch (error) {
         console.error("Failed to delete user:", error);
       }
     }
   };
 
-  // Function to cancel user deletion
   const handleCancelDelete = () => {
-    setIsModalVisible(false); // Hide delete confirmation modal
-    setSelectedUser(null); // Clear selected user state
+    setIsModalVisible(false);
+    setSelectedUser(null);
   };
 
-  // Function to handle search
   const handleSearch = (value: string) => {
     setSearchText(value);
   };
 
-  // Function to handle search input change
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchText(e.target.value); // Update search text state
+    setSearchText(e.target.value);
   };
 
-  // Function to handle role filter change
   const handleRoleFilterChange = (value: string) => {
-    setRoleFilter(value); // Update role filter state
+    setRoleFilter(value);
   };
 
-  // Function to handle status filter change
-  const handleStatusFilterChange = (value: boolean) => {
-    setStatusFilter(value); // Update status filter state
+  const handleStatusFilterChange = (value: string) => {
+    setStatusFilter(value);
   };
 
-  // Function to handle table pagination and sorting changes
   const handleTableChange = (pagination: any) => {
     setPagination({
       ...pagination,
@@ -129,7 +138,16 @@ const TableUsers: React.FC = () => {
     });
   };
 
-  // Table columns configuration
+  const handleCloseDetailModal = () => {
+    setDetailModalVisible(false);
+    setSelectedUserDetail(null);
+  };
+
+  const handleNameClick = (user: UserData) => {
+    setSelectedUserDetail(user);
+    setDetailModalVisible(true);
+  };
+
   const columns = [
     {
       title: "No",
@@ -142,14 +160,26 @@ const TableUsers: React.FC = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      render: (text: string, record: UserData) => (
-        <Link to={`/admin/user-detail/${record._id}`}>{text}</Link>
+      render: (name: string, record: UserData) => (
+        <a onClick={() => handleNameClick(record)} style={{ cursor: "pointer" }}>
+          {name}
+        </a>
       ),
     },
     {
       title: "Email",
       dataIndex: "email",
       key: "email",
+    },
+    {
+      title: "Is Verified",
+      dataIndex: "is_verified",
+      key: "is_verified",
+      render: (isVerified: boolean) => (
+        <Tag color={isVerified ? "green" : "volcano"}>
+          {isVerified ? "Yes" : "No"}
+        </Tag>
+      ),
     },
     {
       title: "Status",
@@ -165,9 +195,7 @@ const TableUsers: React.FC = () => {
       title: "Role",
       dataIndex: "role",
       key: "role",
-      render: (role: string) => (
-        <Tag color="geekblue">{role.toUpperCase()}</Tag>
-      ),
+      render: (role: string) => <Tag color="geekblue">{role.toUpperCase()}</Tag>,
     },
     {
       title: "Action",
@@ -191,17 +219,14 @@ const TableUsers: React.FC = () => {
     },
   ];
 
-  // Render loading state if data is loading
   if (loading) {
     return <div>Loading...</div>;
   }
 
-  // Render error message if there's an error fetching users
   if (error) {
     return <div>{error}</div>;
   }
 
-  // Render table with users data and filters
   return (
     <>
       <div
@@ -212,7 +237,6 @@ const TableUsers: React.FC = () => {
         }}
       >
         <div style={{ display: "flex", alignItems: "center" }}>
-          {/* Search input for filtering users */}
           <Search
             placeholder="Search by name or email"
             allowClear
@@ -220,7 +244,6 @@ const TableUsers: React.FC = () => {
             onChange={handleSearchChange}
             style={{ width: 300, marginRight: 16 }}
           />
-          {/* Role filter dropdown */}
           <Select
             style={{ width: 150, marginRight: 16 }}
             placeholder="Select role"
@@ -232,18 +255,17 @@ const TableUsers: React.FC = () => {
             <Option value="instructor">Instructor</Option>
             <Option value="student">Student</Option>
           </Select>
-          {/* Status filter dropdown */}
           <Select
             style={{ width: 150 }}
             placeholder="Select status"
             onChange={handleStatusFilterChange}
             value={statusFilter}
           >
-            <Option value={true}>Active</Option>
-            <Option value={false}>Inactive</Option>
+            <Option value="all">All Statuses</Option>
+            <Option value="active">Active</Option>
+            <Option value="inactive">Inactive</Option>
           </Select>
         </div>
-        {/* Button to open create account modal */}
         <div>
           <button
             className="rounded-lg bg-red-500 px-5 py-2 text-sm font-medium text-white hover:bg-red-600"
@@ -251,11 +273,9 @@ const TableUsers: React.FC = () => {
           >
             Create account
           </button>
-          {/* Modal for creating account */}
           <ModalCreateAcc isOpen={isOpen} setIsOpen={setIsOpen} />
         </div>
       </div>
-      {/* Table component displaying users */}
       <Table
         className="my-5 rounded-none"
         columns={columns}
@@ -268,7 +288,6 @@ const TableUsers: React.FC = () => {
         }}
         onChange={handleTableChange}
       />
-      {/* Modal component for confirming user deletion */}
       <Modal
         title="Confirm Delete"
         visible={isModalVisible}
@@ -278,6 +297,72 @@ const TableUsers: React.FC = () => {
         cancelText="Cancel"
       >
         <p>Are you sure you want to delete this user?</p>
+      </Modal>
+      <Modal
+        title="Edit User"
+        visible={isEditModalVisible}
+        onOk={() => editedUser && handleUpdateConfirm(editedUser)}
+        onCancel={handleUpdateCancel}
+        okText="Update"
+        cancelText="Cancel"
+      >
+        {editedUser && (
+          <div>
+            <p>Name:</p>
+            <Input
+              value={editedUser.name}
+              onChange={(e) =>
+                setEditedUser({ ...editedUser, name: e.target.value })
+              }
+              placeholder="Enter name"
+              style={{ marginBottom: 16 }}
+            />
+            <p>Email:</p>
+            <Input
+              value={editedUser.email}
+              onChange={(e) =>
+                setEditedUser({ ...editedUser, email: e.target.value })
+              }
+              placeholder="Enter email"
+              style={{ marginBottom: 16 }}
+            />
+            <p>Avatar:</p>
+            <Input
+              value={editedUser.avatar}
+              onChange={(e) =>
+                setEditedUser({ ...editedUser, avatar: e.target.value })
+              }
+              placeholder="Add Avatar Link"
+              style={{ marginBottom: 16 }}
+            />
+            <p>Video:</p>
+            <Input
+              value={editedUser.video}
+              onChange={(e) =>
+                setEditedUser({ ...editedUser, video: e.target.value })
+              }
+              placeholder="Add Video Link"
+              style={{ marginBottom: 16 }}
+            />
+          </div>
+        )}
+      </Modal>
+      <Modal
+        title="User Details"
+        visible={detailModalVisible}
+        onOk={handleCloseDetailModal}
+        onCancel={handleCloseDetailModal}
+        footer={null}
+      >
+        {selectedUserDetail && (
+          <div>
+            <p>Name: {selectedUserDetail.name}</p>
+            <p>Email: {selectedUserDetail.email}</p>
+            <p>Role: {selectedUserDetail.role}</p>
+            <p>Status: {selectedUserDetail.status ? "Active" : "Inactive"}</p>
+            <p>Verified: {selectedUserDetail.is_verified ? "Yes" : "No"}</p>
+          </div>
+        )}
       </Modal>
     </>
   );

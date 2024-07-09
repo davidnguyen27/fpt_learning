@@ -35,7 +35,7 @@ export type User = {
 export type SearchCondition = {
   keyword?: string;
   role: string;
-  status: boolean;
+  status: boolean | undefined;
   is_delete: boolean;
 };
 
@@ -59,6 +59,7 @@ export type UserData = {
   created_at: Date;
   updated_at: Date;
   is_deleted: boolean;
+  is_verified: boolean;
 };
 
 export type UserDetailProp = {
@@ -111,15 +112,17 @@ export type CategorySearchRequest = {
 };
 
 export type Category = {
-  pageData: {
-    _id: string;
-    name: string;
-    parent_category_id?: string | null;
-    description: string;
-    created_at: string;
-    updated_at: string;
-    is_deleted: boolean;
-  }[];
+  pageData: 
+    {
+      _id: string;
+      name: string;
+      parent_category_id?: string | null;
+      description: string;
+      created_at: Date;
+      updated_at: Date;
+      is_deleted: boolean;
+    }[],
+  
   pageInfo: {
     pageNum: number;
     pageSize: number;

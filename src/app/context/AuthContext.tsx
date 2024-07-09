@@ -16,9 +16,17 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   // Sign In
   const login = async (email: string, password: string) => {
-    const token = await authServiceLogin(email, password);
-    const user = await getCurrentLogin(token);
-    setUser(user);
+    try {
+      const token = await authServiceLogin(email, password);
+      sessionStorage.setItem("token", token); // Store token in sessionStorage
+
+      const userData = await getCurrentLogin(token);
+      setUser(userData);
+      sessionStorage.setItem("user", JSON.stringify(userData)); // Store user data in sessionStorage
+    } catch (error) {
+      console.error("Error logging in:", error);
+      throw error; // Propagate the error for handling in components
+    }
   };
 
   // Log out

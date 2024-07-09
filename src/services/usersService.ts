@@ -117,3 +117,50 @@ export const registerUser = async (
   }
 };
 //-----------------------------------------------------------------------------------------------
+
+//-------------------------------- Update User (Admin) ---------------------------------------
+export const updateUser = async (userId: string, updatedUserData: Partial<UserData>) => {
+  try {
+    const token = sessionStorage.getItem("token"); // Retrieve token from sessionStorage
+
+    const response = await axios.put(
+      `${APILink}/api/users/${userId}`, // API endpoint for updating user
+      updatedUserData, // Data to send in the request body
+      {
+        headers: {
+          "Content-Type": "application/json", // Set content-type header to JSON
+          Authorization: `Bearer ${token}`, // Add token to Authorization header
+        },
+      }
+    );
+
+    const updatedUser: UserData = response.data.data; // Assuming response structure matches UserData
+    console.log("Updated user:", updatedUser);
+
+    return updatedUser; // Return updated user data if successful
+  } catch (error: any) {
+    if (error.response) {
+      console.error("Update user failed", error.response.data); // Handle error if update fails
+      console.error("Status", error.response.status);
+      console.error("Headers", error.response.headers);
+    } else if (error.request) {
+      console.error("No response", error.request); // Handle error if no response
+    } else {
+      console.error("Fail", error.message); // Handle other errors
+    }
+    throw error; // Throw error for handling in the component
+  }
+};
+
+//-----------------------------------------------------------------------------------------------
+
+//-------------------------------- Update  User (Admin) ---------------------------------------
+
+
+export const toggleUserStatus = async (userId: string, status: boolean): Promise<UserData> => {
+  const response = await axios.put(`${APILink}/api/users/change-status`, {
+    userId,
+    status,
+  });
+  return response.data;
+};

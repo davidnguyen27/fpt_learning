@@ -1,12 +1,7 @@
 import React from "react";
-import { useSider } from "../../app/context/SiderContext";
-import { Layout, Table, Card, Row, Col } from "antd";
-import { AppHeader, AppFooter } from "../../components";
-import SiderInstructor from "../../components/Instructor/SiderInstructor";
-import Sider from "antd/es/layout/Sider";
+import { Table, Card, Row, Col } from "antd";
 import "../../styles/instructorEarning.css";
-
-const { Header, Content, Footer } = Layout;
+import InstructorLayout from "../../components/Layout/InstructorLayout";
 
 const columns = [
   {
@@ -55,111 +50,82 @@ const topCountries = [
 ];
 
 const EarningPage: React.FC = () => {
-  const { collapsed } = useSider();
-
   return (
-    <Layout className="flex h-screen w-screen flex-col">
-      <Header className="header">
-        <AppHeader />
-      </Header>
-      <Layout className="flex flex-1 overflow-y-auto">
-        <Sider
-          className="sider bg-gray-800"
-          collapsed={collapsed}
-          collapsedWidth={0}
-          trigger={null}
-          width={230}
-        >
-          <SiderInstructor
-            className={`transition-all duration-75 ${collapsed ? "w-0" : "w-64"} bg-gray-800 text-white`}
-          />
-        </Sider>
-        <Layout className="flex flex-1 flex-col">
-          <Content className="flex-1 overflow-y-auto bg-gray-100">
-            <div className="p-8">
-              <section>
-                <h1 className="text-xl font-bold">Earning</h1>
-              </section>
-              <section className="flex-1">
-                <Row gutter={16}>
-                  <Col span={8}>
-                    <Card
-                      title={
-                        <span className="text-white">
-                          Sales earnings this month (April)
-                        </span>
-                      }
-                      bordered={false}
-                      className="bg-gray-700 text-center text-white"
-                    >
-                      <p className="text-center text-2xl font-bold">$1146.78</p>
-                    </Card>
-                  </Col>
-                  <Col span={8}>
-                    <Card
-                      title={<span className="text-white">Your balance:</span>}
-                      bordered={false}
-                      className="bg-gray-700 text-center text-white"
-                    >
-                      <p className="text-center text-2xl font-bold">$1146.78</p>
-                    </Card>
-                  </Col>
-                  <Col span={8}>
-                    <Card
-                      title={
-                        <span className="text-white">
-                          Total value of your sales, before taxes:
-                        </span>
-                      }
-                      bordered={false}
-                      className="bg-gray-700 text-center text-white"
-                    >
-                      <p className="text-center text-2xl font-bold">
-                        $95895.54
-                      </p>
-                    </Card>
-                  </Col>
-                </Row>
-                <div className="mt-8 flex justify-between gap-4">
-                  <section className="h-80 w-full max-w-md bg-white p-6 shadow">
-                    <h2 className="mb-4 text-center text-lg font-bold">
-                      Your Top Countries
-                    </h2>
-                    <ul className="list-none p-2">
-                      {topCountries.map((country, index) => (
-                        <li
-                          key={index}
-                          className="flex justify-between border-b border-gray-200 py-1"
-                        >
-                          <span>{country.country}</span>
-                          <span>{country.amount}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </section>
+    <InstructorLayout>
+      <section>
+        <h1 className="text-xl font-bold">Earning</h1>
+      </section>
+      <section className="flex-1">
+        <Row gutter={16}>
+          <Col span={8}>
+            <Card
+              title={
+                <span className="text-white">
+                  Sales earnings this month (April)
+                </span>
+              }
+              bordered={false}
+              className="bg-gray-700 text-center text-white"
+            >
+              <p className="text-center text-2xl font-bold">$1146.78</p>
+            </Card>
+          </Col>
+          <Col span={8}>
+            <Card
+              title={<span className="text-white">Your balance:</span>}
+              bordered={false}
+              className="bg-gray-700 text-center text-white"
+            >
+              <p className="text-center text-2xl font-bold">$1146.78</p>
+            </Card>
+          </Col>
+          <Col span={8}>
+            <Card
+              title={
+                <span className="text-white">
+                  Total value of your sales, before taxes:
+                </span>
+              }
+              bordered={false}
+              className="bg-gray-700 text-center text-white"
+            >
+              <p className="text-center text-2xl font-bold">$95895.54</p>
+            </Card>
+          </Col>
+        </Row>
+        <div className="mt-8 flex justify-between gap-4">
+          <section className="h-80 w-full max-w-md bg-white p-6 shadow">
+            <h2 className="mb-4 text-center text-lg font-bold">
+              Your Top Countries
+            </h2>
+            <ul className="list-none p-2">
+              {topCountries.map((country, index) => (
+                <li
+                  key={index}
+                  className="flex justify-between border-b border-gray-200 py-1"
+                >
+                  <span>{country.country}</span>
+                  <span>{country.amount}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
 
-                  <Table
-                    className="custom-table no-hover text-center"
-                    columns={columns}
-                    dataSource={data}
-                    pagination={false}
-                    style={{ width: "800px" }}
-                    footer={() => (
-                      <div className="bg-gray-700 p-2 text-center text-white">
-                        Total: $1146.78
-                      </div>
-                    )}
-                  />
-                </div>
-              </section>
-            </div>
-            <Footer className="footer bg-gray-800 text-white">
-              <AppFooter />
-            </Footer>
-          </Content>
-        </Layout>
-      </Layout>
-    </Layout>
+          <Table
+            className="custom-table no-hover text-center"
+            columns={columns}
+            dataSource={data}
+            pagination={false}
+            style={{ width: "800px" }}
+            footer={() => (
+              <div className="bg-gray-700 p-2 text-center text-white">
+                Total: $1146.78
+              </div>
+            )}
+          />
+        </div>
+      </section>
+    </InstructorLayout>
   );
 };
 
