@@ -107,6 +107,37 @@ export const getCurrentLogin = async (token: string): Promise<User> => {
   }
 };
 
+export const verifyEmailAPI = async (token: string): Promise<boolean> => {
+  try {
+    const res = await axios.post(`${APILink}/api/auth/verify-token`, {
+      token,
+    });
+    return res.data.success;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
+export const resendEmailAPI = async (email: string): Promise<boolean> => {
+  try {
+    const res = await axios.post(`${APILink}/api/auth/resend-token`, { email });
+    return res.data.success;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
+export const forgotPassAPI = async (email: string): Promise<boolean> => {
+  try {
+    const res = await axios.put(`${APILink}/api/auth/forgot-password`, {
+      email,
+    });
+    return res.data.success;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
 export const logout = async () => {
   try {
     const token = sessionStorage.getItem("token");

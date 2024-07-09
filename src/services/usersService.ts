@@ -111,15 +111,19 @@ export const registerUser = async (
 ): Promise<User> => {
   try {
     const res = await axios.post<User>(`${APILink}/api/users`, userData);
-    return res.data; // Return registered user data if successful
+    console.log(res.data);
+    return res.data;
   } catch (error: any) {
-    throw new Error(error.response.data); // Throw error for handling in the component
+    throw new Error(error.response.data);
   }
 };
 //-----------------------------------------------------------------------------------------------
 
 //-------------------------------- Update User (Admin) ---------------------------------------
-export const updateUser = async (userId: string, updatedUserData: Partial<UserData>) => {
+export const updateUser = async (
+  userId: string,
+  updatedUserData: Partial<UserData>,
+) => {
   try {
     const token = sessionStorage.getItem("token"); // Retrieve token from sessionStorage
 
@@ -131,7 +135,7 @@ export const updateUser = async (userId: string, updatedUserData: Partial<UserDa
           "Content-Type": "application/json", // Set content-type header to JSON
           Authorization: `Bearer ${token}`, // Add token to Authorization header
         },
-      }
+      },
     );
 
     const updatedUser: UserData = response.data.data; // Assuming response structure matches UserData
@@ -156,8 +160,10 @@ export const updateUser = async (userId: string, updatedUserData: Partial<UserDa
 
 //-------------------------------- Update  User (Admin) ---------------------------------------
 
-
-export const toggleUserStatus = async (userId: string, status: boolean): Promise<UserData> => {
+export const toggleUserStatus = async (
+  userId: string,
+  status: boolean,
+): Promise<UserData> => {
   const response = await axios.put(`${APILink}/api/users/change-status`, {
     userId,
     status,

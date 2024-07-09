@@ -1,15 +1,28 @@
 import React from "react";
-import { Form, Input, Button, Typography } from "antd";
+import { Form, Input, Button, Typography, notification } from "antd";
 import { MailOutlined } from "@ant-design/icons";
 import "../../styles/PasswordReset.css";
 import forgotPassword from "../../assets/Image/background.png";
+import { forgotPassAPI } from "../../services/authService";
 
 const { Title, Link } = Typography;
 
 const PasswordReset: React.FC = () => {
-  const onFinish = (values: { email: string }) => {
-    console.log("Received values of form: ", values);
-    // Handle password reset logic here
+  const onFinish = async (values: { email: string }) => {
+    try {
+      const res = await forgotPassAPI(values.email);
+      if (res) {
+        notification.success({
+          message: "Successful",
+          description: "Please check your email",
+        });
+      }
+    } catch (error) {
+      notification.error({
+        message: "Failed!",
+        description: "Your email isn't registered",
+      });
+    }
   };
 
   return (

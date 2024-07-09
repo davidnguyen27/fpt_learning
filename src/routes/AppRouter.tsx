@@ -4,42 +4,75 @@ import { AuthContext, AuthProvider } from "../app/context/AuthContext";
 import { useContext } from "react";
 
 //-------------------------------------------------USER------------------------------------------------
-const HomePage = React.lazy(() => import('../pages/User/HomePage'));
-const DetailCoursePage = React.lazy(() => import('../pages/User/detailCoursePage'));
-const HelpPage = React.lazy(() => import('../pages/User/HelpPage'));
-const SignInPage = React.lazy(() => import('../pages/User/SignInPage'));
-const SignUpPage = React.lazy(() => import('../pages/User/SignUpPage'));
-const ReportPage = React.lazy(() => import('../pages/User/ReportPage'));
-const Cart = React.lazy(() => import('../pages/User/Cart'));
-const CheckOut = React.lazy(() => import('../pages/User/CheckOut'));
-const PaidMembershipPage = React.lazy(() => import('../pages/User/PaidMembership'));
-const SettingsPage = React.lazy(() => import('../pages/User/SettingPage'));
-const AboutPage = React.lazy(() => import('../pages/User/AboutPage'));
-const PasswordReset = React.lazy(() => import('../pages/User/ForgotPassword'));
-const UserDetail = React.lazy(() => import('../pages/User/UserDetail'));
+const HomePage = React.lazy(() => import("../pages/User/HomePage"));
+const DetailCoursePage = React.lazy(
+  () => import("../pages/User/detailCoursePage"),
+);
+const HelpPage = React.lazy(() => import("../pages/User/HelpPage"));
+const SignInPage = React.lazy(() => import("../pages/User/SignInPage"));
+const SignUpPage = React.lazy(() => import("../pages/User/SignUpPage"));
+const ReportPage = React.lazy(() => import("../pages/User/ReportPage"));
+const Cart = React.lazy(() => import("../pages/User/Cart"));
+const CheckOut = React.lazy(() => import("../pages/User/CheckOut"));
+const PaidMembershipPage = React.lazy(
+  () => import("../pages/User/PaidMembership"),
+);
+const SettingsPage = React.lazy(() => import("../pages/User/SettingPage"));
+const AboutPage = React.lazy(() => import("../pages/User/AboutPage"));
+const PasswordReset = React.lazy(() => import("../pages/User/ForgotPassword"));
+const UserDetail = React.lazy(() => import("../pages/User/UserDetail"));
 
 //-----------------------------------------------ADMIN-------------------------------------------------
-const AdminPage = React.lazy(() => import('../pages/Admin/AdminPage'));
-const CategoriesManagePage = React.lazy(() => import('../pages/Admin/CategoriesManagePage'));
-const ProfilePage = React.lazy(() => import('../pages/Admin/ProfilePage'));
-const UserManagePage = React.lazy(() => import('../pages/Admin/UserManagePage'));
-const CoursesCheckPage = React.lazy(() => import('../pages/Admin/CoursesCheckPage'));
+const AdminPage = React.lazy(() => import("../pages/Admin/AdminPage"));
+const CategoriesManagePage = React.lazy(
+  () => import("../pages/Admin/CategoriesManagePage"),
+);
+const ProfilePage = React.lazy(() => import("../pages/Admin/ProfilePage"));
+const UserManagePage = React.lazy(
+  () => import("../pages/Admin/UserManagePage"),
+);
+const CoursesCheckPage = React.lazy(
+  () => import("../pages/Admin/CoursesCheckPage"),
+);
 
 //---------------------------------------------INSTRUCTOR----------------------------------------------
-const InstructorPage = React.lazy(() => import('../pages/Instructor/InstructorPage'));
-const CoursesManagePage = React.lazy(() => import('../pages/Instructor/CoursesManagePage'));
-const CreateCoursePage = React.lazy(() => import('../pages/Instructor/CreateCoursePage'));
-const LessonManagePage = React.lazy(() => import('../pages/Instructor/LessonManagePage'));
-const SessionManagePage = React.lazy(() => import('../pages/Instructor/SessionManagePage'));
-const ReviewManagePage = React.lazy(() => import('../pages/Instructor/ReviewManagePage'));
-const PayoutManagePage = React.lazy(() => import('../pages/Instructor/PayoutManagePage'));
-const EarningPage = React.lazy(() => import('../pages/Instructor/EarningPage'));
+const InstructorPage = React.lazy(
+  () => import("../pages/Instructor/InstructorPage"),
+);
+const CoursesManagePage = React.lazy(
+  () => import("../pages/Instructor/CoursesManagePage"),
+);
+const CreateCoursePage = React.lazy(
+  () => import("../pages/Instructor/CreateCoursePage"),
+);
+const LessonManagePage = React.lazy(
+  () => import("../pages/Instructor/LessonManagePage"),
+);
+const SessionManagePage = React.lazy(
+  () => import("../pages/Instructor/SessionManagePage"),
+);
+const ReviewManagePage = React.lazy(
+  () => import("../pages/Instructor/ReviewManagePage"),
+);
+const PayoutManagePage = React.lazy(
+  () => import("../pages/Instructor/PayoutManagePage"),
+);
+const EarningPage = React.lazy(() => import("../pages/Instructor/EarningPage"));
 
 //-----------------------------------------------STUDENT-----------------------------------------------
-const StudentProfilePage = React.lazy(() => import('../pages/Student/StudentProfilePage'));
-const StudentCourseDetailPage = React.lazy(() => import('../pages/Student/StudentCourseDetailPage'));
-const StudentCourseListPage = React.lazy(() => import('../pages/Student/StudentCourseListPage'));
-const StudentSettingPage = React.lazy(() => import('../pages/Student/StudentSettingPage'));
+const StudentVerifyPage = React.lazy(() => import("../pages/User/VerifyPage"));
+const StudentProfilePage = React.lazy(
+  () => import("../pages/Student/StudentProfilePage"),
+);
+const StudentCourseDetailPage = React.lazy(
+  () => import("../pages/Student/StudentCourseDetailPage"),
+);
+const StudentCourseListPage = React.lazy(
+  () => import("../pages/Student/StudentCourseListPage"),
+);
+const StudentSettingPage = React.lazy(
+  () => import("../pages/Student/StudentSettingPage"),
+);
 
 interface ProtectedRouteProps {
   element: JSX.Element;
@@ -75,64 +108,65 @@ const AppRouter = () => {
     <BrowserRouter>
       <AuthProvider>
         <Suspense fallback={<div>Loading...</div>}>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="sign-in" element={<SignInPage />} />
-          <Route path="sign-up" element={<SignUpPage />} />
-          <Route path="/detail" element={<DetailCoursePage />} />
-          <Route path="/report-page" element={<ReportPage />} />
-          <Route path="/help-page" element={<HelpPage />} />
-          <Route path="/settings-page" element={<SettingsPage />} />
-          <Route path="/forgot-password" element={<PasswordReset />} />
-          
-          {/*----------------------------ADMIN---------------------------------*/}
-          <Route
-            path="/admin/dashboard"
-            element={
-              <ProtectedRoute
-                element={<AdminPage />}
-                allowedRoles={["admin"]}
-              />
-            }
-          />
-          <Route
-            path="/admin-profile-page/"
-            element={
-              <ProtectedRoute
-                element={<ProfilePage />}
-                allowedRoles={["admin"]}
-              />
-            }
-          />
-          <Route
-            path="/admin/users-management"
-            element={
-              <ProtectedRoute
-                element={<UserManagePage />}
-                allowedRoles={["admin"]}
-              />
-            }
-          />
-          <Route
-            path="/admin/categories-management"
-            element={
-              <ProtectedRoute
-                element={<CategoriesManagePage />}
-                allowedRoles={["admin"]}
-              />
-            }
-          />
-          <Route
-            path="/admin/user-detail/id"
-            element={
-              <ProtectedRoute
-                element={<UserDetail _id={""} token={""} />}
-                allowedRoles={["admin"]}
-              />
-            }
-          />
-          {/* <Route
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="sign-in" element={<SignInPage />} />
+            <Route path="sign-up" element={<SignUpPage />} />
+            <Route path="/detail" element={<DetailCoursePage />} />
+            <Route path="/report-page" element={<ReportPage />} />
+            <Route path="/help-page" element={<HelpPage />} />
+            <Route path="/settings-page" element={<SettingsPage />} />
+            <Route path="/forgot-password" element={<PasswordReset />} />
+            <Route path="/verify-account" element={<StudentVerifyPage />} />
+
+            {/*----------------------------ADMIN---------------------------------*/}
+            <Route
+              path="/admin/dashboard"
+              element={
+                <ProtectedRoute
+                  element={<AdminPage />}
+                  allowedRoles={["admin"]}
+                />
+              }
+            />
+            <Route
+              path="/admin-profile-page/"
+              element={
+                <ProtectedRoute
+                  element={<ProfilePage />}
+                  allowedRoles={["admin"]}
+                />
+              }
+            />
+            <Route
+              path="/admin/users-management"
+              element={
+                <ProtectedRoute
+                  element={<UserManagePage />}
+                  allowedRoles={["admin"]}
+                />
+              }
+            />
+            <Route
+              path="/admin/categories-management"
+              element={
+                <ProtectedRoute
+                  element={<CategoriesManagePage />}
+                  allowedRoles={["admin"]}
+                />
+              }
+            />
+            <Route
+              path="/admin/user-detail/id"
+              element={
+                <ProtectedRoute
+                  element={<UserDetail _id={""} token={""} />}
+                  allowedRoles={["admin"]}
+                />
+              }
+            />
+            {/* <Route
             path="/admin/feedbacks-management"
             element={
               <ProtectedRoute
@@ -141,7 +175,7 @@ const AppRouter = () => {
               />
             }
           /> */}
-          {/* <Route
+            {/* <Route
             path="/admin/reports-management"
             element={
               <ProtectedRoute
@@ -150,7 +184,7 @@ const AppRouter = () => {
               />
             }
           /> */}
-          {/* <Route
+            {/* <Route
             path="/admin/blogs-management"
             element={
               <ProtectedRoute
@@ -159,155 +193,155 @@ const AppRouter = () => {
               />
             }
           /> */}
-          <Route
-            path="/admin/courses-check"
-            element={
-              <ProtectedRoute
-                element={<CoursesCheckPage />}
-                allowedRoles={["admin"]}
-              />
-            }
-          />
-          {/*------------------------------------------------------------------*/}
+            <Route
+              path="/admin/courses-check"
+              element={
+                <ProtectedRoute
+                  element={<CoursesCheckPage />}
+                  allowedRoles={["admin"]}
+                />
+              }
+            />
+            {/*------------------------------------------------------------------*/}
 
-          {/*----------------------------STUDENT-------------------------------*/}
-          <Route
-            path="/view-detail"
-            element={
-              <ProtectedRoute
-                element={<StudentCourseDetailPage />}
-                allowedRoles={["student"]}
-              />
-            }
-          />
-          <Route
-            path="/cart"
-            element={
-              <ProtectedRoute element={<Cart />} allowedRoles={["student"]} />
-            }
-          />
-          <Route
-            path="/checkout"
-            element={
-              <ProtectedRoute
-                element={<CheckOut />}
-                allowedRoles={["student"]}
-              />
-            }
-          />
-          <Route
-            path="/paid-membership"
-            element={
-              <ProtectedRoute
-                element={<PaidMembershipPage />}
-                allowedRoles={["student"]}
-              />
-            }
-          />
-          <Route
-            path="/student-profile-page"
-            element={
-              <ProtectedRoute
-                element={<StudentProfilePage />}
-                allowedRoles={["student"]}
-              />
-            }
-          />
-          <Route
-            path="/student-course-list-page"
-            element={
-              <ProtectedRoute
-                element={<StudentCourseListPage />}
-                allowedRoles={["student"]}
-              />
-            }
-          />
-          <Route
-            path="/student-setting-page"
-            element={
-              <ProtectedRoute
-                element={<StudentSettingPage />}
-                allowedRoles={["student"]}
-              />
-            }
-          />
-          {/*------------------------------------------------------------------*/}
+            {/*----------------------------STUDENT-------------------------------*/}
+            <Route
+              path="/view-detail"
+              element={
+                <ProtectedRoute
+                  element={<StudentCourseDetailPage />}
+                  allowedRoles={["student"]}
+                />
+              }
+            />
+            <Route
+              path="/cart"
+              element={
+                <ProtectedRoute element={<Cart />} allowedRoles={["student"]} />
+              }
+            />
+            <Route
+              path="/checkout"
+              element={
+                <ProtectedRoute
+                  element={<CheckOut />}
+                  allowedRoles={["student"]}
+                />
+              }
+            />
+            <Route
+              path="/paid-membership"
+              element={
+                <ProtectedRoute
+                  element={<PaidMembershipPage />}
+                  allowedRoles={["student"]}
+                />
+              }
+            />
+            <Route
+              path="/student-profile-page"
+              element={
+                <ProtectedRoute
+                  element={<StudentProfilePage />}
+                  allowedRoles={["student"]}
+                />
+              }
+            />
+            <Route
+              path="/student-course-list-page"
+              element={
+                <ProtectedRoute
+                  element={<StudentCourseListPage />}
+                  allowedRoles={["student"]}
+                />
+              }
+            />
+            <Route
+              path="/student-setting-page"
+              element={
+                <ProtectedRoute
+                  element={<StudentSettingPage />}
+                  allowedRoles={["student"]}
+                />
+              }
+            />
+            {/*------------------------------------------------------------------*/}
 
-          {/*---------------------------INSTRUCTOR-----------------------------*/}
-          <Route
-            path="/instructor/dashboard"
-            element={
-              <ProtectedRoute
-                element={<InstructorPage />}
-                allowedRoles={["instructor"]}
-              />
-            }
-          />
-          <Route
-            path="/instructor/courses-management"
-            element={
-              <ProtectedRoute
-                element={<CoursesManagePage />}
-                allowedRoles={["instructor"]}
-              />
-            }
-          />
-          <Route
-            path="/instructor/lessons-management"
-            element={
-              <ProtectedRoute
-                element={<LessonManagePage />}
-                allowedRoles={["instructor"]}
-              />
-            }
-          />
-          <Route
-            path="/instructor/sessions-management"
-            element={
-              <ProtectedRoute
-                element={<SessionManagePage />}
-                allowedRoles={["instructor"]}
-              />
-            }
-          />
-          <Route
-            path="/instructor/courses-management/create-course-step"
-            element={
-              <ProtectedRoute
-                element={<CreateCoursePage />}
-                allowedRoles={["instructor"]}
-              />
-            }
-          />
-          <Route
-            path="/instructor/reviews-management"
-            element={
-              <ProtectedRoute
-                element={<ReviewManagePage />}
-                allowedRoles={["instructor"]}
-              />
-            }
-          />
-          <Route
-            path="/instructor/earning-management"
-            element={
-              <ProtectedRoute
-                element={<EarningPage />}
-                allowedRoles={["instructor"]}
-              />
-            }
-          />
-          <Route
-            path="/instructor/payout"
-            element={
-              <ProtectedRoute
-                element={<PayoutManagePage />}
-                allowedRoles={["instructor"]}
-              />
-            }
-          />
-        </Routes>
-        {/*------------------------------------------------------------------*/}
+            {/*---------------------------INSTRUCTOR-----------------------------*/}
+            <Route
+              path="/instructor/dashboard"
+              element={
+                <ProtectedRoute
+                  element={<InstructorPage />}
+                  allowedRoles={["instructor"]}
+                />
+              }
+            />
+            <Route
+              path="/instructor/courses-management"
+              element={
+                <ProtectedRoute
+                  element={<CoursesManagePage />}
+                  allowedRoles={["instructor"]}
+                />
+              }
+            />
+            <Route
+              path="/instructor/lessons-management"
+              element={
+                <ProtectedRoute
+                  element={<LessonManagePage />}
+                  allowedRoles={["instructor"]}
+                />
+              }
+            />
+            <Route
+              path="/instructor/sessions-management"
+              element={
+                <ProtectedRoute
+                  element={<SessionManagePage />}
+                  allowedRoles={["instructor"]}
+                />
+              }
+            />
+            <Route
+              path="/instructor/courses-management/create-course-step"
+              element={
+                <ProtectedRoute
+                  element={<CreateCoursePage />}
+                  allowedRoles={["instructor"]}
+                />
+              }
+            />
+            <Route
+              path="/instructor/reviews-management"
+              element={
+                <ProtectedRoute
+                  element={<ReviewManagePage />}
+                  allowedRoles={["instructor"]}
+                />
+              }
+            />
+            <Route
+              path="/instructor/earning-management"
+              element={
+                <ProtectedRoute
+                  element={<EarningPage />}
+                  allowedRoles={["instructor"]}
+                />
+              }
+            />
+            <Route
+              path="/instructor/payout"
+              element={
+                <ProtectedRoute
+                  element={<PayoutManagePage />}
+                  allowedRoles={["instructor"]}
+                />
+              }
+            />
+          </Routes>
+          {/*------------------------------------------------------------------*/}
         </Suspense>
       </AuthProvider>
     </BrowserRouter>

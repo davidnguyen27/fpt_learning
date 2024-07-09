@@ -27,8 +27,10 @@ const FormSignUp = () => {
       await dispatch(createAccount(userData)).unwrap();
       notification.success({
         message: "Registration Successful",
-        description: "You have registered successfully!",
+        description: "Please verify your email in 24 hours.",
       });
+      navigate("/verify-account", { state: { email } });
+      console.log({ email });
     } catch (error: any) {
       notification.error({
         message: "Registration Failed",
@@ -47,7 +49,7 @@ const FormSignUp = () => {
           message: "Registration Successful",
           description: "You have registered successfully via Google!",
         });
-        navigate("/sign-in");
+        navigate("/verify-account");
       } else {
         throw new Error("Google credential response is missing.");
       }
