@@ -1,12 +1,9 @@
-import { Form, Input, Radio } from "antd";
+import { Form, Input, notification, Radio } from "antd";
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../app/context/AuthContext";
-import { GoogleLogin } from "@react-oauth/google";
-import axios from "axios";
-import { APILink } from "../../const/linkAPI";
-import { User } from "../../models/Types";
-import { getCurrentLogin } from "../../services/authService";
+import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
+import { getCurrentLogin, loginViaGoogleAPI } from "../../services/authService";
 
 const FormSignIn = () => {
   const navigate = useNavigate();
@@ -39,7 +36,6 @@ const FormSignIn = () => {
 
   const handleLogin = async (values: { email: string; password: string }) => {
     try {
-      console.log("Đang xử lý đăng nhập...");
       await login(values.email, values.password);
     } catch (error) {
       console.error("Unknown error: ", error);
@@ -47,44 +43,30 @@ const FormSignIn = () => {
     }
   };
 
-  const handleGoogleLogin = async (tokenGoogle: string) => {
+  const handleGoogleLogin = async (credentialResponse: CredentialResponse) => {
     try {
-      const checkExists = await getCurrentLogin(tokenGoogle);
-      if (checkExists) {
-        const res = await axios.post(`${APILink}/api/auth/google`, {
-          google_id: tokenGoogle,
-        });
-        const user: User = res.data;
-
-        sessionStorage.setItem("user", JSON.stringify(user));
-        sessionStorage.setItem("token", tokenGoogle);
-      } else {
-        const res = await axios.post(`${APILink}/api/users/google`, {
-          google_id: tokenGoogle,
-        });
-        const user: User = res.data;
-        console.log(user);
-
-        sessionStorage.setItem("user", JSON.stringify(user));
-        sessionStorage.setItem("token", tokenGoogle);
+      const { credential } = credentialResponse;
+      console.log(credential);
+      if (!credential) {
+        throw new Error("Google credential is missing");
       }
 
-      if (user?.data) {
-        navigate("/");
+      const token = await loginViaGoogleAPI(credential);
+      if (token) {
+        const user = await getCurrentLogin(token);
+        if (user?.data) {
+          sessionStorage.setItem("user", JSON.stringify(user));
+          notification.success({
+            message: "Login Successful",
+          });
+          navigate("/");
+        }
       }
-    } catch (error) {
-      alert("Dang ki khong thanh cong");
-    }
-  };
-
-  const onSuccess = (credentialResponse: any) => {
-    console.log(credentialResponse);
-    if (credentialResponse?.credential) {
-      console.log(
-        "Đăng nhập Google thành công. Credential: ",
-        credentialResponse.credential,
-      );
-      handleGoogleLogin(credentialResponse.credential);
+    } catch (error: any) {
+      notification.error({
+        message: "Login via Google Failed!",
+        description: error.message || "Your Google Account isn't registered!",
+      });
     }
   };
 
@@ -154,12 +136,10 @@ const FormSignIn = () => {
             OR
           </p>
         </div>
-
-        {/* <!-- Nút đăng nhập bằng mạng xã hội --> */}
-        <div className="w-full">
-          <GoogleLogin onSuccess={onSuccess} onError={onError} />
-        </div>
       </Form>
+      <div className="w-full">
+        <GoogleLogin onSuccess={handleGoogleLogin} onError={onError} />
+      </div>
     </div>
   );
 };

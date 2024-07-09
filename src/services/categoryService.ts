@@ -49,6 +49,28 @@ export const getCategoriesAPI = async (
   }
 };
 
+export const updateCategoryAPI = async (
+  categoryId: string,
+  categoryData: Partial<Category["pageData"][number]>,
+): Promise<Category["pageData"][number]> => {
+  try {
+    const token = sessionStorage.getItem("token");
+    const res = await axios.put(
+      `${APILink}/api/category/${categoryId}`,
+      categoryData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return { ...res.data.data, _id: categoryId };
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};
+
 export const deleteCategoryAPI = async (categoryId: string): Promise<void> => {
   try {
     const token = sessionStorage.getItem("token");

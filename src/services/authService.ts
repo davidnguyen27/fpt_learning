@@ -7,8 +7,6 @@ export const login = async (
   password: string,
 ): Promise<string> => {
   try {
-    console.log("Bắt đầu đăng nhập với:", { email, password });
-
     const response = await axios.post(
       `${APILink}/api/auth`,
       { email, password },
@@ -25,24 +23,67 @@ export const login = async (
       response.data.data?.token;
 
     if (token) {
-      console.log("Đăng nhập thành công, token nhận được:", token);
       sessionStorage.setItem("token", token);
       return token;
     } else {
-      console.log("Thông tin đăng nhập không hợp lệ.");
-      throw new Error("Thông tin đăng nhập không hợp lệ");
+      throw new Error("Invalid information!");
     }
   } catch (error: any) {
-    if (error.response) {
-      console.error("Đăng nhập thất bại", error.response.data);
-      console.error("Trạng thái", error.response.status);
-      console.error("Headers", error.response.headers);
-    } else if (error.request) {
-      console.error("Không nhận được phản hồi", error.request);
+    throw new Error(error.message);
+  }
+};
+
+export const loginViaGoogleAPI = async (
+  credential: string,
+): Promise<string> => {
+  try {
+    const res = await axios.post(
+      `${APILink}/api/auth/google`,
+      { google_id: credential },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+
+    const token =
+      res.data.token || res.data.accessToken || res.data.data?.token;
+    console.log(token);
+    if (token) {
+      sessionStorage.setItem("token", token);
+      return token;
     } else {
-      console.error("Lỗi", error.message);
+      throw new Error("Invalid Google login response!");
     }
-    throw error;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};
+
+export const registerViaGoogleAPI = async (
+  credential: string,
+): Promise<User["data"]> => {
+  try {
+    const res = await axios.post(
+      `${APILink}/api/users/google`,
+      { google_id: credential, role: "student" },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+
+    const user = res.data;
+    if (user) {
+      sessionStorage.setItem("user", user);
+      return user;
+    } else {
+      throw new Error("Invalid Google registration response!");
+    }
+  } catch (error: any) {
+    throw new Error(error.message);
   }
 };
 
@@ -55,16 +96,14 @@ export const getCurrentLogin = async (token: string): Promise<User> => {
     });
 
     const user = res.data;
-    console.log(user);
     if (user) {
       sessionStorage.setItem("user", JSON.stringify(user));
       return user;
     } else {
-      throw new Error("Không thể lấy dữ liệu người dùng");
+      throw new Error("Cannot get user data!");
     }
   } catch (error: any) {
-    console.error("Error getting current login user:", error);
-    throw error;
+    throw new Error(error.message);
   }
 };
 

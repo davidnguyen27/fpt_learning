@@ -2,8 +2,9 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { Category } from "../../../models/Types";
 import {
   createCategoryAPI,
-  deleteCategoryAPI,
   getCategoriesAPI,
+  deleteCategoryAPI,
+  updateCategoryAPI,
 } from "../../../services/categoryService";
 
 interface CategoryState {
@@ -57,6 +58,27 @@ export const deleteCategory = createAsyncThunk(
   },
 );
 
+export const updateCategory = createAsyncThunk(
+  "category/updateCategory",
+  async (
+    {
+      categoryId,
+      categoryData,
+    }: {
+      categoryId: string;
+      categoryData: Partial<Category["pageData"][number]>;
+    },
+    { rejectWithValue },
+  ) => {
+    try {
+      const res = await updateCategoryAPI(categoryId, categoryData);
+      return res;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
 const categorySlice = createSlice({
   name: "category",
   initialState,
@@ -66,24 +88,32 @@ const categorySlice = createSlice({
       .addCase(
         getCategories.fulfilled,
         (state, action: PayloadAction<Category["pageData"]>) => {
-          state.loading = false;
           state.categories = action.payload;
         },
       )
       .addCase(
         createCategory.fulfilled,
         (state, action: PayloadAction<Category["pageData"][number]>) => {
-          state.loading = false;
           state.categories.push(action.payload);
         },
       )
       .addCase(
         deleteCategory.fulfilled,
         (state, action: PayloadAction<string>) => {
-          state.loading = false;
           state.categories = state.categories.filter(
             (category) => category._id !== action.payload,
           );
+        },
+      )
+      .addCase(
+        updateCategory.fulfilled,
+        (state, action: PayloadAction<Category["pageData"][number]>) => {
+          const index = state.categories.findIndex(
+            (category) => category._id === action.payload._id,
+          );
+          if (index !== -1) {
+            state.categories[index] = action.payload;
+          }
         },
       );
   },

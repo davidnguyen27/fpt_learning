@@ -8,7 +8,9 @@ import ModalAddCategory from "../Modal/ModalAddCategory";
 import {
   deleteCategory,
   getCategories,
+  updateCategory,
 } from "../../app/redux/categories/categorySlice";
+import ModalEditCategory from "../Modal/ModalEditCategory";
 
 const { Search } = Input;
 
@@ -18,11 +20,37 @@ const TableCategories: React.FC = () => {
     (state: RootState) => state.category,
   );
   const [open, setOpen] = useState<boolean>(false);
+  const [currentCategory, setCurrentCategory] = useState<
+    Category["pageData"][number] | null
+  >(null);
   const [searchKeyword, setSearchKeyword] = useState<string>("");
 
   useEffect(() => {
     dispatch(getCategories(searchKeyword));
   }, [dispatch, searchKeyword]);
+
+  const handleUpdate = (category: Category["pageData"][number]) => {
+    setCurrentCategory(category);
+    setOpen(true);
+  };
+
+  const handleUpdateCategory = async (
+    values: Partial<Category["pageData"][number]>,
+  ) => {
+    try {
+      if (currentCategory) {
+        await dispatch(
+          updateCategory({
+            categoryId: currentCategory._id,
+            categoryData: values,
+          }),
+        ).unwrap();
+        setOpen(false);
+      }
+    } catch (error) {
+      console.error("Failed to update category:", error);
+    }
+  };
 
   const handleDelete = (categoryId: string) => {
     Modal.confirm({
@@ -58,6 +86,7 @@ const TableCategories: React.FC = () => {
         <div>
           <Tooltip title="Edit">
             <EditOutlined
+              onClick={() => handleUpdate(record)}
               style={{ fontSize: "16px", marginRight: 16, cursor: "pointer" }}
             />
           </Tooltip>
@@ -89,6 +118,12 @@ const TableCategories: React.FC = () => {
           Add Category
         </button>
         <ModalAddCategory open={open} setOpen={setOpen} />
+        <ModalEditCategory
+          open={open}
+          setOpen={setOpen}
+          currentCategory={currentCategory}
+          onSubmit={handleUpdateCategory}
+        />
       </div>
       <Table
         className="my-5 rounded-none"
