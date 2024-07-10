@@ -6,10 +6,11 @@ import { createCategory } from "../../app/redux/categories/categorySlice";
 interface ModalAddCategoryProps {
   open: boolean;
   setOpen: (open: boolean) => void;
+  onSuccess: () => void;
 }
 
 const ModalAddCategory = (props: ModalAddCategoryProps) => {
-  const { open, setOpen } = props;
+  const { open, setOpen, onSuccess } = props;
   const [form] = Form.useForm();
 
   const dispatch = useDispatch<AppDispatch>();
@@ -28,6 +29,7 @@ const ModalAddCategory = (props: ModalAddCategoryProps) => {
       await dispatch(createCategory(categoryData)).unwrap();
       setOpen(false);
       form.resetFields();
+      onSuccess();
     } catch (error) {
       console.error("Failed to add category:", error);
     }
@@ -37,7 +39,7 @@ const ModalAddCategory = (props: ModalAddCategoryProps) => {
     <Modal
       title="ADD CATEGORY"
       open={open}
-      onClose={() => setOpen(false)}
+      onCancel={() => setOpen(false)}
       width={700}
       footer={[
         <button

@@ -1,5 +1,6 @@
 import React from "react";
-import { Form, Input, Modal, Button } from "antd";
+import { Form, Input, message, Modal } from "antd";
+import { createUserAPI } from "../../services/usersService";
 
 interface ModalCreateProps {
   isOpen: boolean;
@@ -7,33 +8,48 @@ interface ModalCreateProps {
 }
 
 const ModalCreateAcc: React.FC<ModalCreateProps> = ({ isOpen, setIsOpen }) => {
+  const [form] = Form.useForm();
+
+  const handleCreate = async () => {
+    try {
+      const values = await form.validateFields();
+      await createUserAPI(values);
+      message.success("User created successfully!");
+      form.resetFields();
+      setIsOpen(false);
+    } catch (error: any) {
+      message.error(`Error: ${error.message}`);
+    }
+  };
+
   const handleCancel = () => {
-    setIsOpen(false); // Close modal when cancel button is clicked
+    setIsOpen(false);
   };
 
   return (
     <Modal
-      title="EDIT ACCOUNT"
-      visible={isOpen} // Use visible instead of open
+      title="CREATE ACCOUNT"
+      visible={isOpen}
       width={700}
-      onCancel={handleCancel} // Handle cancel event
+      onCancel={handleCancel}
       footer={[
-        <Button
+        <button
           key="cancel"
           className="mr-3 rounded-md bg-zinc-300 px-4 py-1"
           onClick={handleCancel}
         >
           Cancel
-        </Button>,
-        <Button
+        </button>,
+        <button
           key="edit"
           className="rounded-md bg-red-500 px-4 py-1 hover:bg-red-600"
+          onClick={handleCreate}
         >
-          Edit
-        </Button>,
+          Create
+        </button>,
       ]}
     >
-      <Form layout="vertical" className="mt-4">
+      <Form layout="vertical" className="mt-4" form={form}>
         <Form.Item
           name="email"
           label="Email"
@@ -58,47 +74,10 @@ const ModalCreateAcc: React.FC<ModalCreateProps> = ({ isOpen, setIsOpen }) => {
         </Form.Item>
         <Form.Item
           label="Full Name"
-          name="fullName"
+          name="name"
           rules={[{ required: true, message: "Full Name is required!" }]}
         >
           <Input className="text-sm" size="large" placeholder="Full Name" />
-        </Form.Item>
-        <Form.Item
-          label="Date of Birth"
-          name="dateOfBirth"
-          rules={[{ required: true, message: "Date of Birth is required!" }]}
-        >
-          <Input
-            className="text-sm"
-            type="date"
-            size="large"
-            placeholder="Date of Birth"
-          />
-        </Form.Item>
-        <Form.Item
-          label="Address"
-          name="address"
-          rules={[{ required: true, message: "Address is required!" }]}
-        >
-          <Input className="text-sm" size="large" placeholder="Address" />
-        </Form.Item>
-        <Form.Item label="Image" name="image">
-          <Input
-            className="text-sm"
-            type="file"
-            size="large"
-            placeholder="Image"
-          />
-        </Form.Item>
-        <Form.Item
-          label="Phone"
-          name="phone"
-          rules={[
-            { required: true, message: "Phone is required!" },
-            // { type: "number", message: "Phone is a number!" },
-          ]}
-        >
-          <Input className="text-sm" size="large" placeholder="Phone Number" />
         </Form.Item>
         <Form.Item name="role">
           <select className="rounded-md bg-slate-100 p-4" title="role">
