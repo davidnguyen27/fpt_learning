@@ -6,13 +6,13 @@ import { Content, Footer, Header } from "antd/es/layout/layout";
 import { useSider } from "../../app/context/SiderContext";
 import AppHeader from "./AppHeader";
 import AppFooter from "./AppFooter";
-import SiderAdmin from "../Admin/SiderAdmin";
+import AppSider from "./AppSider";
 
 interface MainLayoutProps {
   children: React.ReactNode;
 }
 
-const AdminLayout: React.FC<MainLayoutProps> = ({ children }) => {
+const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const { collapsed } = useSider();
 
   return (
@@ -28,7 +28,7 @@ const AdminLayout: React.FC<MainLayoutProps> = ({ children }) => {
           trigger={null}
           width={230}
         >
-          <SiderAdmin
+          <AppSider
             className={`transition-all duration-75 ${collapsed ? "w-0" : "w-64"}`}
           />
         </Sider>
@@ -47,4 +47,4 @@ const AdminLayout: React.FC<MainLayoutProps> = ({ children }) => {
   );
 };
 
-export default AdminLayout;
+export default MainLayout;

@@ -148,7 +148,7 @@ const AppHeader: React.FC = () => {
               <a className="mr-9 flex" onClick={(e) => e.preventDefault()}>
                 <Space>
                   <img
-                    src={user?.data.role}
+                    src={user?.data.avatar}
                     className="h-12 w-12 rounded-full"
                     alt=""
                   />

@@ -88,7 +88,14 @@ const TableUsers: React.FC = () => {
     }
   };
 
+  const handleNameClick = (user: UserData) => {
+    setSelectedUserDetail(user);
+    setDetailModalVisible(true);
+  };
+
   const handleUpdateCancel = () => {
+    setEditedUser(null);
+    setIsEditModalVisible(false);
     setEditedUser(null);
     setIsEditModalVisible(false);
   };
@@ -96,11 +103,16 @@ const TableUsers: React.FC = () => {
   const handleDelete = (user: UserData) => {
     setSelectedUser(user);
     setIsModalVisible(true);
+    setSelectedUser(user);
+    setIsModalVisible(true);
   };
 
   const handleConfirmDelete = async () => {
     if (selectedUser) {
       try {
+        await deleteUser(selectedUser._id);
+        setIsModalVisible(false);
+        fetchUsers(pagination.current, pagination.pageSize);
         await deleteUser(selectedUser._id);
         setIsModalVisible(false);
         fetchUsers(pagination.current, pagination.pageSize);
@@ -113,6 +125,8 @@ const TableUsers: React.FC = () => {
   const handleCancelDelete = () => {
     setIsModalVisible(false);
     setSelectedUser(null);
+    setIsModalVisible(false);
+    setSelectedUser(null);
   };
 
   const handleSearch = (value: string) => {
@@ -121,9 +135,11 @@ const TableUsers: React.FC = () => {
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
+    setSearchText(e.target.value);
   };
 
   const handleRoleFilterChange = (value: string) => {
+    setRoleFilter(value);
     setRoleFilter(value);
   };
 
@@ -184,8 +200,10 @@ const TableUsers: React.FC = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      render: (text: string, record: UserData) => (
-        <Link to={`/admin/user-detail/${record._id}`}>{text}</Link>
+      render: (name: string, record: UserData) => (
+        <a onClick={() => handleNameClick(record)} style={{ cursor: "pointer" }}>
+          {name}
+        </a>
       ),
     },
     {
@@ -215,7 +233,7 @@ const TableUsers: React.FC = () => {
               onClick={() => handleStatusChange(record, false)}
             >
               <UserDeleteOutlined />
-              <span className="small-text"></span>
+              
             </button>
           ) : (
             <button
@@ -223,7 +241,7 @@ const TableUsers: React.FC = () => {
               onClick={() => handleStatusChange(record, true)}
             >
               <UserAddOutlined />
-              <span className="small-text"></span>
+             
             </button>
           )}
         </div>

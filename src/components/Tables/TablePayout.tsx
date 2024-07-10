@@ -41,7 +41,7 @@ const TablePayout = () => {
           <h3 className="text-sm font-medium">Payout Account</h3>
           <Divider />
           <div>
-            <img src="../../../public/image/ZaloPay_Logo.png" />
+            <img src="../../../public/image/ZaloPay_Logo.png" alt="" />
             <p>
               <span className="text-gray-500">Added: </span>01 Mar 2020
             </p>

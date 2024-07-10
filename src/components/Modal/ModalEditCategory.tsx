@@ -1,14 +1,26 @@
 import { Form, Input, Modal } from "antd";
+import { useEffect } from "react";
+import { Category } from "../../models/Types";
 
 interface ModalEditCategoryProps {
   open: boolean;
   setOpen: (open: boolean) => void;
+  currentCategory: Partial<Category["pageData"][number]> | null;
+  onSubmit: (values: Partial<Category["pageData"][number]>) => void;
 }
 
 const ModalEditCategory = (props: ModalEditCategoryProps) => {
-  const { open, setOpen } = props;
+  const { open, setOpen, currentCategory, onSubmit } = props;
+  const [form] = Form.useForm();
 
-  const handleSubmit = () => {
+  useEffect(() => {
+    if (currentCategory) {
+      form.setFieldsValue(currentCategory);
+    }
+  }, [currentCategory, form]);
+
+  const handleSubmit = (values: Partial<Category["pageData"][number]>) => {
+    onSubmit(values);
     setOpen(false);
   };
 
@@ -16,34 +28,41 @@ const ModalEditCategory = (props: ModalEditCategoryProps) => {
     <Modal
       title="EDIT CATEGORY"
       open={open}
-      onClose={() => setOpen(false)}
+      onCancel={() => setOpen(false)}
       width={700}
       footer={[
         <button
+          key="cancel"
           className="mr-3 rounded-md bg-zinc-300 px-4 py-1"
           onClick={() => setOpen(false)}
         >
           Cancel
         </button>,
-        <button type="submit" className="rounded-md bg-red-500 px-4 py-1">
+        <button
+          key="submit"
+          type="submit"
+          className="rounded-md bg-red-500 px-4 py-1"
+          onClick={() => form.submit()}
+        >
           Edit
         </button>,
       ]}
     >
-      <Form onFinish={handleSubmit} layout="vertical" className="mt-4">
-        <Form.Item
-          name="course_id"
-          label="Course ID"
-          rules={[{ required: true, message: "Course ID is require!" }]}
-        >
-          <Input className="text-sm" size="large" placeholder="Course ID" />
-        </Form.Item>
+      <Form
+        form={form}
+        onFinish={handleSubmit}
+        layout="vertical"
+        className="mt-4"
+      >
         <Form.Item
           label="Category Name"
-          name="categoryName"
+          name="name"
           rules={[{ required: true, message: "Category Name is require!" }]}
         >
           <Input className="text-sm" size="large" placeholder="Category Name" />
+        </Form.Item>
+        <Form.Item label="Description" name="description">
+          <Input className="text-sm" size="large" placeholder="Description" />
         </Form.Item>
       </Form>
     </Modal>

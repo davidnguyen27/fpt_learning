@@ -35,7 +35,7 @@ export type User = {
 export type SearchCondition = {
   keyword?: string;
   role: string;
-  status: boolean | undefined;
+  status: boolean;
   is_delete: boolean;
 
 }
@@ -65,39 +65,39 @@ export type UserData = {
 
 export type UserDetailProp = {
   _id: string;
-}
+};
 
 export type UserSearchResponse = {
   success: boolean;
   data: {
-      totalCount: any;
-      pageData: UserData[];
-      pageInfo: {
-          pageNum: number;
-          pageSize: number;
-          totalItems: number;
-          totalPages: number;
-      };
+    totalCount: any;
+    pageData: UserData[];
+    pageInfo: {
+      pageNum: number;
+      pageSize: number;
+      totalItems: number;
+      totalPages: number;
+    };
   };
-}
+};
 
 export type UserSearchRequest = {
   searchCondition: SearchCondition;
   pageInfo: PageInfo;
-}
+};
 
 export type ApiResponse = {
   success: boolean;
   data: {
-      pageData: UserData[];
-      pageInfo: {
-          pageNum: number;
-          pageSize: number;
-          totalItems: number;
-          totalPages: number;
-      };
+    pageData: UserData[];
+    pageInfo: {
+      pageNum: number;
+      pageSize: number;
+      totalItems: number;
+      totalPages: number;
+    };
   };
-}
+};
 
 // Category
 export type CategorySearchRequest = {
@@ -113,15 +113,17 @@ export type CategorySearchRequest = {
 };
 
 export type Category = {
-  pageData: {
-    _id: string;
-    name: string;
-    parent_category_id?: string | null;
-    description: string;
-    created_at: string;
-    updated_at: string;
-    is_deleted: boolean;
-  }[];
+  pageData: 
+    {
+      _id: string;
+      name: string;
+      parent_category_id?: string | null;
+      description: string;
+      created_at: Date;
+      updated_at: Date;
+      is_deleted: boolean;
+    }[],
+  
   pageInfo: {
     pageNum: number;
     pageSize: number;
