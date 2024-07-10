@@ -1,4 +1,5 @@
 import TableUsers from "../../components/Tables/TableUsers";
+
 import AdminLayout from "../../components/Layout/AdminLayout";
 
 const UserManagePage = () => {
@@ -10,6 +11,7 @@ const UserManagePage = () => {
       </section>
       <TableUsers />
     </AdminLayout>
+
   );
 };
 

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Table, Modal, Tooltip, Input, Select, Tag } from "antd";
 import { UserData, UserSearchRequest } from "../../models/Types";
-import { deleteUser, getUsers, updateUser } from "../../services/usersService";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { deleteUser, getUsers, toggleUserStatus, updateUser } from "../../services/usersService";
+import { DeleteOutlined, EditOutlined, UserDeleteOutlined, UserAddOutlined } from "@ant-design/icons";
 import ModalCreateAcc from "../../components/Modal/ModalCreateAcc";
+
 
 const { Search } = Input;
 const { Option } = Select;
@@ -16,7 +17,7 @@ const TableUsers: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
   const [searchText, setSearchText] = useState<string>("");
   const [roleFilter, setRoleFilter] = useState<string>("all");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<boolean>(true);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
   const [editedUser, setEditedUser] = useState<UserData | null>(null);
@@ -43,7 +44,7 @@ const TableUsers: React.FC = () => {
       searchCondition: {
         keyword: searchText.trim(),
         role: roleFilter,
-        status: statusFilter === "all" ? undefined : statusFilter === "active",
+        status: statusFilter,
         is_delete: false,
       },
       pageInfo: {
@@ -87,7 +88,14 @@ const TableUsers: React.FC = () => {
     }
   };
 
+  const handleNameClick = (user: UserData) => {
+    setSelectedUserDetail(user);
+    setDetailModalVisible(true);
+  };
+
   const handleUpdateCancel = () => {
+    setEditedUser(null);
+    setIsEditModalVisible(false);
     setEditedUser(null);
     setIsEditModalVisible(false);
   };
@@ -95,11 +103,16 @@ const TableUsers: React.FC = () => {
   const handleDelete = (user: UserData) => {
     setSelectedUser(user);
     setIsModalVisible(true);
+    setSelectedUser(user);
+    setIsModalVisible(true);
   };
 
   const handleConfirmDelete = async () => {
     if (selectedUser) {
       try {
+        await deleteUser(selectedUser._id);
+        setIsModalVisible(false);
+        fetchUsers(pagination.current, pagination.pageSize);
         await deleteUser(selectedUser._id);
         setIsModalVisible(false);
         fetchUsers(pagination.current, pagination.pageSize);
@@ -112,6 +125,8 @@ const TableUsers: React.FC = () => {
   const handleCancelDelete = () => {
     setIsModalVisible(false);
     setSelectedUser(null);
+    setIsModalVisible(false);
+    setSelectedUser(null);
   };
 
   const handleSearch = (value: string) => {
@@ -120,13 +135,15 @@ const TableUsers: React.FC = () => {
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
+    setSearchText(e.target.value);
   };
 
   const handleRoleFilterChange = (value: string) => {
     setRoleFilter(value);
+    setRoleFilter(value);
   };
 
-  const handleStatusFilterChange = (value: string) => {
+  const handleStatusFilterChange = (value: boolean) => {
     setStatusFilter(value);
   };
 
@@ -143,9 +160,32 @@ const TableUsers: React.FC = () => {
     setSelectedUserDetail(null);
   };
 
-  const handleNameClick = (user: UserData) => {
-    setSelectedUserDetail(user);
-    setDetailModalVisible(true);
+  const handleStatusChange = (user: UserData, newStatus: boolean) => {
+    if (newStatus !== user.status) {
+      setSelectedUser(user);
+      setIsModalVisible(true);
+    } else {
+      console.log("Status remains unchanged");
+    }
+  };
+
+  const handleConfirmStatusChange = async () => {
+    if (selectedUser) {
+      try {
+        await toggleUserStatus(selectedUser._id, !selectedUser.status);
+        fetchUsers(pagination.current, pagination.pageSize);
+      } catch (error) {
+        console.error("Failed to update status:", error);
+      } finally {
+        setIsModalVisible(false);
+        setSelectedUser(null);
+      }
+    }
+  };
+
+  const handleCancelStatusChange = () => {
+    setIsModalVisible(false);
+    setSelectedUser(null);
   };
 
   const columns = [
@@ -185,17 +225,35 @@ const TableUsers: React.FC = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status: boolean) => (
-        <Tag color={status ? "green" : "volcano"}>
-          {status ? "Active" : "Inactive"}
-        </Tag>
+      render: (status: boolean, record: UserData) => (
+        <div>
+          {status ? (
+            <button
+              className="bg-red-500 px-3 py-1 text-white rounded-md"
+              onClick={() => handleStatusChange(record, false)}
+            >
+              <UserDeleteOutlined />
+              
+            </button>
+          ) : (
+            <button
+              className="bg-green-500 px-3 py-1 text-white rounded-md"
+              onClick={() => handleStatusChange(record, true)}
+            >
+              <UserAddOutlined />
+             
+            </button>
+          )}
+        </div>
       ),
     },
     {
       title: "Role",
       dataIndex: "role",
       key: "role",
-      render: (role: string) => <Tag color="geekblue">{role.toUpperCase()}</Tag>,
+      render: (role: string) => (
+        <Tag color="geekblue">{role.toUpperCase()}</Tag>
+      ),
     },
     {
       title: "Action",
@@ -261,9 +319,8 @@ const TableUsers: React.FC = () => {
             onChange={handleStatusFilterChange}
             value={statusFilter}
           >
-            <Option value="all">All Statuses</Option>
-            <Option value="active">Active</Option>
-            <Option value="inactive">Inactive</Option>
+            <Option value={true}>Active</Option>
+            <Option value={false}>Inactive</Option>
           </Select>
         </div>
         <div>
@@ -346,6 +403,18 @@ const TableUsers: React.FC = () => {
             />
           </div>
         )}
+      </Modal>
+      <Modal
+        title={`Confirm ${selectedUser?.status ? 'Shut Down' : 'Turn On'} User`}
+        visible={isModalVisible}
+        onOk={handleConfirmStatusChange}
+        onCancel={handleCancelStatusChange}
+        okText="Confirm"
+        cancelText="Cancel"
+      >
+        <p>
+          Are you sure you want to {selectedUser?.status ? 'shut down' : 'turn on'} this user?
+        </p>
       </Modal>
       <Modal
         title="User Details"

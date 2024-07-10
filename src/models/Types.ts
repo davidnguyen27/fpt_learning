@@ -35,14 +35,15 @@ export type User = {
 export type SearchCondition = {
   keyword?: string;
   role: string;
-  status: boolean | undefined;
+  status: boolean;
   is_delete: boolean;
-};
+
+}
 
 export type PageInfo = {
   pageNum: number;
   pageSize: number;
-};
+}
 
 export type UserData = {
   _id: string;
@@ -60,7 +61,7 @@ export type UserData = {
   updated_at: Date;
   is_deleted: boolean;
   is_verified: boolean;
-};
+}
 
 export type UserDetailProp = {
   _id: string;

@@ -61,9 +61,9 @@ const EarningPage = React.lazy(() => import("../pages/Instructor/EarningPage"));
 
 //-----------------------------------------------STUDENT-----------------------------------------------
 const StudentVerifyPage = React.lazy(() => import("../pages/User/VerifyPage"));
-const StudentProfilePage = React.lazy(
-  () => import("../pages/Student/StudentProfilePage"),
-);
+// const StudentProfilePage = React.lazy(
+//   () => import("../pages/Student/StudentProfilePage"),
+// );
 const StudentCourseDetailPage = React.lazy(
   () => import("../pages/Student/StudentCourseDetailPage"),
 );
@@ -238,7 +238,7 @@ const AppRouter = () => {
                 />
               }
             />
-            <Route
+            {/* <Route
               path="/student-profile-page"
               element={
                 <ProtectedRoute
@@ -246,7 +246,7 @@ const AppRouter = () => {
                   allowedRoles={["student"]}
                 />
               }
-            />
+            /> */}
             <Route
               path="/student-course-list-page"
               element={

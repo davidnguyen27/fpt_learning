@@ -160,13 +160,18 @@ export const updateUser = async (
 
 //-------------------------------- Update  User (Admin) ---------------------------------------
 
-export const toggleUserStatus = async (
-  userId: string,
-  status: boolean,
-): Promise<UserData> => {
-  const response = await axios.put(`${APILink}/api/users/change-status`, {
-    userId,
-    status,
-  });
-  return response.data;
+
+export const toggleUserStatus = async (user_id: string, status: boolean): Promise<void> => {
+  const token = sessionStorage.getItem("token");
+  const url = `${APILink}/api/users/change-status`;
+  
+  await axios.put(url,
+    { user_id, status },
+    {
+      headers: {
+        "Content-Type": "application/json", // Set content-type header to JSON
+        Authorization: `Bearer ${token}`, // Add token to Authorization header
+      },
+    }
+  );
 };

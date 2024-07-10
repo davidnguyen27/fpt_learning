@@ -1,33 +1,49 @@
-import { useState } from "react";
-import StudentProfileBox from "./StudentProfileBox";
-import StudentProfileSubTab from "./StudentSubTab";
+// import { useState, useEffect } from "react";
+// import StudentProfileBox from "./StudentProfileBox";
+// import StudentProfileSubTab from "./StudentSubTab";
+// import { getUserDetail } from "../../services/usersService"; // Import getUserDetail
+// import { UserData } from "../../models/Types"; // Import UserData type
 
-const StudentProfileContent = () => {
-  const [activeTab, setActiveTab] = useState("about");
+// const StudentProfileContent = () => {
+//   const [activeTab, setActiveTab] = useState("about");
+//   const [userData, setUserData] = useState<UserData | null>(null);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState<string | null>(null);
+  
+//   const userId = sessionStorage.getItem("userId") || "defaultUserId"; // Retrieve userId from sessionStorage or use a default value
+//   const token = sessionStorage.getItem("token") || ""; // Retrieve token from sessionStorage
 
-  return (
-    <div className="m-3 rounded-md bg-gray-300 p-3">
-      <div className="rounded-md bg-gray-100 p-1">
-        <StudentProfileBox
-          StudentProfileData={{
-            title: "Tran Khanh Vinh",
-            description: " I'm a dev",
-            dateOfBirth: "24/08/2023",
-            address: "vn",
-            socialMedias: {
-              facebook:
-                "https://www.facebook.com/profile.php?id=100012301156428",
-              github: "https://github.com/TK-Vinh",
-            },
-          }}
-        />
-        <StudentProfileSubTab
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-        />
-      </div>
-    </div>
-  );
-};
+//   useEffect(() => {
+//     const fetchUserData = async () => {
+//       try {
+//         const data = await getUserDetail(userId, token);
+//         setUserData(data);
+//         setLoading(false);
+//       } catch (error) {
+//         setError("Failed to fetch user data");
+//         setLoading(false);
+//       }
+//     };
 
-export default StudentProfileContent;
+//     fetchUserData();
+//   }, [userId, token]);
+
+//   if (loading) {
+//     return <div>Loading...</div>; // Render loading state if userData is not yet loaded
+//   }
+
+//   if (error) {
+//     return <div>{error}</div>; // Render error state if there's an error
+//   }
+
+//   return (
+//     <div className="m-3 rounded-md bg-gray-300 p-3">
+//       <div className="rounded-md bg-gray-100 p-1">
+//         <StudentProfileBox userData={userData} />
+//         <StudentProfileSubTab activeTab={activeTab} setActiveTab={setActiveTab} />
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default StudentProfileContent;
