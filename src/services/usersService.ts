@@ -160,18 +160,38 @@ export const updateUser = async (
 
 //-------------------------------- Update  User (Admin) ---------------------------------------
 
-
-export const toggleUserStatus = async (user_id: string, status: boolean): Promise<void> => {
+export const toggleUserStatus = async (
+  user_id: string,
+  status: boolean,
+): Promise<void> => {
   const token = sessionStorage.getItem("token");
   const url = `${APILink}/api/users/change-status`;
-  
-  await axios.put(url,
+
+  await axios.put(
+    url,
     { user_id, status },
     {
       headers: {
         "Content-Type": "application/json", // Set content-type header to JSON
         Authorization: `Bearer ${token}`, // Add token to Authorization header
       },
-    }
+    },
   );
+};
+
+export const createUserAPI = async (userData: Partial<User["data"]>) => {
+  try {
+    const token = sessionStorage.getItem("token");
+    if (!token) throw new Error("Cannot get token!");
+
+    const res = await axios.post(`${APILink}/api/users/create`, userData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log(res.data.data);
+    return res.data.data;
+  } catch (error: any) {
+    throw new Error(error);
+  }
 };
