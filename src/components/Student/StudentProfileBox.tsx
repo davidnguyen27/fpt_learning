@@ -1,28 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import coursevideo from "../../assets/coursevideo.mp4";
-
-interface StudentProfileData {
-  title: string;
-  description: string;
-  avatarUrl?: string; // Optional URL for the avatar image
-  dateOfBirth: string;
-  socialMedias?: {
-    // Make socialMedias optional
-    facebook?: string;
-    linkedin?: string;
-    github?: string;
-  };
-  address: string;
-}
+import { UserData } from "../../models/Types"; // Import UserData type
 
 interface StudentProfileBoxProps {
-  StudentProfileData: StudentProfileData;
+  userData: UserData;
 }
 
-const StudentProfileBox: React.FC<StudentProfileBoxProps> = ({
-  StudentProfileData,
-}) => {
+const StudentProfileBox: React.FC<StudentProfileBoxProps> = ({ userData }) => {
   const [visible, setVisible] = useState(false);
   const navigate = useNavigate(); // Initialize useNavigate
 
@@ -44,7 +29,7 @@ const StudentProfileBox: React.FC<StudentProfileBoxProps> = ({
         <img
           className="mb-4 h-32 w-32 cursor-pointer rounded-full border-4 border-gray-500 md:h-48 md:w-48 lg:h-64 lg:w-64"
           src={
-            StudentProfileData.avatarUrl ||
+            userData.avatar ||
             "https://i.pinimg.com/736x/18/2f/fe/182ffe44b2e0782e34370f6e21045825.jpg"
           }
           alt="Student Avatar"
@@ -52,47 +37,14 @@ const StudentProfileBox: React.FC<StudentProfileBoxProps> = ({
         />
         <div className="flex flex-col items-center text-center md:ml-4 md:items-start md:text-left">
           <h2 className="mb-4 text-2xl font-bold text-white md:text-3xl lg:text-4xl">
-            {StudentProfileData.title}
+            {userData.name}
           </h2>
-          <p className="mb-4 max-w-md text-white">
-            {StudentProfileData.description}
-          </p>{" "}
-          {/* Limited width */}
+          <p className="mb-4 max-w-md text-white">{userData.description}</p>
           <p className="mb-4 text-white">
-            <strong>Date of Birth:</strong> {StudentProfileData.dateOfBirth}
+            <strong>Date of Birth:</strong> {new Date(userData.dob).toLocaleDateString()}
           </p>
-          <p className="mb-4 text-white">
-            <strong>Address:</strong> {StudentProfileData.address}
-          </p>
-          <div className="flex space-x-4">
-            {StudentProfileData.socialMedias?.facebook && (
-              <a
-                href={StudentProfileData.socialMedias.facebook}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <i className="fab fa-facebook text-2xl text-white"></i>
-              </a>
-            )}
-            {StudentProfileData.socialMedias?.linkedin && (
-              <a
-                href={StudentProfileData.socialMedias.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <i className="fab fa-linkedin text-2xl text-white"></i>
-              </a>
-            )}
-            {StudentProfileData.socialMedias?.github && (
-              <a
-                href={StudentProfileData.socialMedias.github}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <i className="fab fa-github text-2xl text-white"></i>
-              </a>
-            )}
-          </div>
+          
+          
           <button
             className="mt-4 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700"
             onClick={handleEdit} // Add onClick handler

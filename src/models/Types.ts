@@ -35,7 +35,7 @@ export type User = {
 export type SearchCondition = {
   keyword?: string;
   role: string;
-  status: boolean;
+  status: boolean | undefined;
   is_delete: boolean;
 
 }
@@ -60,6 +60,7 @@ export type UserData = {
   created_at: Date;
   updated_at: Date;
   is_deleted: boolean;
+  is_verified: boolean;
 }
 
 export type UserDetailProp = {

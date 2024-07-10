@@ -184,3 +184,6 @@ body {
   line-height: inherit;
 }
 
+.small-text {
+  font-size: 12px; /* Adjust the size as needed */
+}

@@ -1,12 +1,18 @@
+
+import React from "react";
 import { Layout } from "antd";
 import Sider from "antd/es/layout/Sider";
 import { Content, Footer, Header } from "antd/es/layout/layout";
-import { AppFooter, AppHeader } from "../../components";
 import { useSider } from "../../app/context/SiderContext";
-import SiderAdmin from "../../components/Admin/SiderAdmin";
-import TableUsers from "../../components/Tables/TableUsers";
+import AppHeader from "./AppHeader";
+import AppFooter from "./AppFooter";
+import SiderAdmin from "../Admin/SiderAdmin";
 
-const UserManagePage = () => {
+interface MainLayoutProps {
+  children: React.ReactNode;
+}
+
+const AdminLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const { collapsed } = useSider();
 
   return (
@@ -29,15 +35,11 @@ const UserManagePage = () => {
         <Layout className="flex flex-1 flex-col">
           <Content className="flex-1 overflow-y-auto">
             <div className="p-8">
-              <section>
-                <h1 className="text-xl font-bold">User Management</h1>
-              </section>
-              
-              <TableUsers />
+              {children}
             </div>
             <Footer className="footer">
-              <AppFooter />
-            </Footer>
+            <AppFooter />
+          </Footer>
           </Content>
         </Layout>
       </Layout>
@@ -45,4 +47,4 @@ const UserManagePage = () => {
   );
 };
 
-export default UserManagePage;
+export default AdminLayout;
