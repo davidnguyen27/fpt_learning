@@ -4,7 +4,7 @@ import { UserData, UserSearchRequest } from "../../models/Types";
 import { deleteUser, getUsers, toggleUserStatus, updateUser } from "../../services/usersService";
 import { DeleteOutlined, EditOutlined, UserDeleteOutlined, UserAddOutlined } from "@ant-design/icons";
 import ModalCreateAcc from "../../components/Modal/ModalCreateAcc";
-import { Link } from "react-router-dom";
+
 
 const { Search } = Input;
 const { Option } = Select;
