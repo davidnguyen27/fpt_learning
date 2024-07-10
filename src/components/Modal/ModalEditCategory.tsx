@@ -28,7 +28,7 @@ const ModalEditCategory = (props: ModalEditCategoryProps) => {
     <Modal
       title="EDIT CATEGORY"
       open={open}
-      onCancel={() => setOpen(false)}
+      onCancel={() => setOpen(false)} // Sử dụng onCancel để đóng modal
       width={700}
       footer={[
         <button
