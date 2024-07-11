@@ -1,10 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Table, Modal, Tooltip, Input, Select, Tag } from "antd";
 import { UserData, UserSearchRequest } from "../../models/Types";
-import { deleteUser, getUsers, toggleUserStatus, updateUser } from "../../services/usersService";
-import { DeleteOutlined, EditOutlined, UserDeleteOutlined, UserAddOutlined } from "@ant-design/icons";
+import {
+  deleteUser,
+  getUsers,
+  toggleUserStatus,
+  updateUser,
+} from "../../services/usersService";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  UserDeleteOutlined,
+  UserAddOutlined,
+} from "@ant-design/icons";
 import ModalCreateAcc from "../../components/Modal/ModalCreateAcc";
-
 
 const { Search } = Input;
 const { Option } = Select;
@@ -21,7 +30,9 @@ const TableUsers: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
   const [editedUser, setEditedUser] = useState<UserData | null>(null);
-  const [selectedUserDetail, setSelectedUserDetail] = useState<UserData | null>(null);
+  const [selectedUserDetail, setSelectedUserDetail] = useState<UserData | null>(
+    null,
+  );
   const [detailModalVisible, setDetailModalVisible] = useState<boolean>(false);
   const [pagination, setPagination] = useState({
     current: 1,
@@ -201,7 +212,10 @@ const TableUsers: React.FC = () => {
       dataIndex: "name",
       key: "name",
       render: (name: string, record: UserData) => (
-        <a onClick={() => handleNameClick(record)} style={{ cursor: "pointer" }}>
+        <a
+          onClick={() => handleNameClick(record)}
+          style={{ cursor: "pointer" }}
+        >
           {name}
         </a>
       ),
@@ -229,19 +243,17 @@ const TableUsers: React.FC = () => {
         <div>
           {status ? (
             <button
-              className="bg-red-500 px-3 py-1 text-white rounded-md"
+              className="rounded-md bg-red-500 px-3 py-1 text-white"
               onClick={() => handleStatusChange(record, false)}
             >
               <UserDeleteOutlined />
-              
             </button>
           ) : (
             <button
-              className="bg-green-500 px-3 py-1 text-white rounded-md"
+              className="rounded-md bg-green-500 px-3 py-1 text-white"
               onClick={() => handleStatusChange(record, true)}
             >
               <UserAddOutlined />
-             
             </button>
           )}
         </div>
@@ -330,7 +342,11 @@ const TableUsers: React.FC = () => {
           >
             Create account
           </button>
-          <ModalCreateAcc isOpen={isOpen} setIsOpen={setIsOpen} />
+          <ModalCreateAcc
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            fetchUser={fetchUsers}
+          />
         </div>
       </div>
       <Table
@@ -405,7 +421,7 @@ const TableUsers: React.FC = () => {
         )}
       </Modal>
       <Modal
-        title={`Confirm ${selectedUser?.status ? 'Shut Down' : 'Turn On'} User`}
+        title={`Confirm ${selectedUser?.status ? "Shut Down" : "Turn On"} User`}
         visible={isModalVisible}
         onOk={handleConfirmStatusChange}
         onCancel={handleCancelStatusChange}
@@ -413,7 +429,8 @@ const TableUsers: React.FC = () => {
         cancelText="Cancel"
       >
         <p>
-          Are you sure you want to {selectedUser?.status ? 'shut down' : 'turn on'} this user?
+          Are you sure you want to{" "}
+          {selectedUser?.status ? "shut down" : "turn on"} this user?
         </p>
       </Modal>
       <Modal

@@ -12,38 +12,24 @@ export const getUsers = async (
   requestData: UserSearchRequest,
 ): Promise<UserSearchResponse> => {
   try {
-    console.log("Loading users with:", requestData);
-
-    const token = sessionStorage.getItem("token"); // Retrieve token from sessionStorage
+    const token = sessionStorage.getItem("token");
+    if (!token) throw new Error("Cannot get token!");
 
     const response = await axios.post(
-      // Send a POST request to fetch users from the API
-      `${APILink}/api/users/search`, // API endpoint
-      requestData, // Data to send
+      `${APILink}/api/users/search`,
+      requestData,
       {
         headers: {
-          "Content-Type": "application/json", // Set content-type header to JSON
-          Authorization: `Bearer ${token}`, // Add token to Authorization header
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       },
     );
 
-    const data: UserSearchResponse = response.data; // Get data from response
-
-    console.log("Loading users successfully, users:", data);
-
-    return data; // Return user data from the API
+    const data: UserSearchResponse = response.data;
+    return data;
   } catch (error: any) {
-    if (error.response) {
-      console.error("Loading users fail.", error.response.data); // Handle error if response fails
-      console.error("Status", error.response.status);
-      console.error("Headers", error.response.headers);
-    } else if (error.request) {
-      console.error("Not response", error.request); // Handle error if no response
-    } else {
-      console.error("Fail", error.message); // Handle other errors
-    }
-    throw error; // Throw error for handling in the component
+    throw error;
   }
 };
 //-----------------------------------------------------------------------------------------------
@@ -78,29 +64,17 @@ export const getUserDetail = async (
 //--------------------------------- Delete User (Admin) -----------------------------------------
 export const deleteUser = async (userId: string): Promise<void> => {
   try {
-    console.log("Deleting user with id:", userId);
-
-    const token = sessionStorage.getItem("token"); // Retrieve token from sessionStorage
+    const token = sessionStorage.getItem("token");
+    if (!token) throw new Error("Cannot get token!");
 
     await axios.delete(`${APILink}/api/users/${userId}`, {
       headers: {
-        "Content-Type": "application/json", // Set content-type header to JSON
-        Authorization: `Bearer ${token}`, // Add token to Authorization header
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
     });
-
-    console.log("Delete user successfully");
   } catch (error: any) {
-    if (error.response) {
-      console.error("Delete user failed", error.response.data); // Handle error if delete fails
-      console.error("Status", error.response.status);
-      console.error("Headers", error.response.headers);
-    } else if (error.request) {
-      console.error("Not response", error.request); // Handle error if no response
-    } else {
-      console.error("Fail", error.message); // Handle other errors
-    }
-    throw error; // Throw error for handling in the component
+    throw error;
   }
 };
 //-----------------------------------------------------------------------------------------------

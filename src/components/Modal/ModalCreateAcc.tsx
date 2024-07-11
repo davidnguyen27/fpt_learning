@@ -5,9 +5,14 @@ import { createUserAPI } from "../../services/usersService";
 interface ModalCreateProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
+  fetchUser: () => void;
 }
 
-const ModalCreateAcc: React.FC<ModalCreateProps> = ({ isOpen, setIsOpen }) => {
+const ModalCreateAcc: React.FC<ModalCreateProps> = ({
+  isOpen,
+  setIsOpen,
+  fetchUser,
+}) => {
   const [form] = Form.useForm();
 
   const handleCreate = async () => {
@@ -15,7 +20,9 @@ const ModalCreateAcc: React.FC<ModalCreateProps> = ({ isOpen, setIsOpen }) => {
       const values = await form.validateFields();
       await createUserAPI(values);
       message.success("User created successfully!");
+      fetchUser();
       form.resetFields();
+
       setIsOpen(false);
     } catch (error: any) {
       message.error(`Error: ${error.message}`);
