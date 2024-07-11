@@ -184,14 +184,27 @@ export const createUserAPI = async (userData: Partial<User["data"]>) => {
     const token = sessionStorage.getItem("token");
     if (!token) throw new Error("Cannot get token!");
 
+    console.log("Sending user data to create:", userData); // Log the user data
+
     const res = await axios.post(`${APILink}/api/users/create`, userData, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log(res.data.data);
+
+    console.log("User created successfully:", res.data.data); // Log the response data
     return res.data.data;
   } catch (error: any) {
-    throw new Error(error);
+    if (error.response) {
+      console.error("Create user failed:", error.response.data); // Log detailed error message
+      console.error("Status:", error.response.status);
+      console.error("Headers:", error.response.headers);
+    } else if (error.request) {
+      console.error("No response from server:", error.request); // Log request details if no response
+    } else {
+      console.error("Error creating user:", error.message); // Log any other errors
+    }
+    throw new Error("Failed to create user");
   }
 };
+
