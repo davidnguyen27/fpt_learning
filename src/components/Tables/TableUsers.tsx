@@ -23,7 +23,9 @@ const TableUsers: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [statusModalVisible, setStatusModalVisible] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
+  const [chosenUser, setChosenUser] = useState<UserData | null>(null);
   const [searchText, setSearchText] = useState<string>("");
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<boolean>(true);
@@ -107,13 +109,9 @@ const TableUsers: React.FC = () => {
   const handleUpdateCancel = () => {
     setEditedUser(null);
     setIsEditModalVisible(false);
-    setEditedUser(null);
-    setIsEditModalVisible(false);
   };
 
   const handleDelete = (user: UserData) => {
-    setSelectedUser(user);
-    setIsModalVisible(true);
     setSelectedUser(user);
     setIsModalVisible(true);
   };
@@ -121,9 +119,6 @@ const TableUsers: React.FC = () => {
   const handleConfirmDelete = async () => {
     if (selectedUser) {
       try {
-        await deleteUser(selectedUser._id);
-        setIsModalVisible(false);
-        fetchUsers(pagination.current, pagination.pageSize);
         await deleteUser(selectedUser._id);
         setIsModalVisible(false);
         fetchUsers(pagination.current, pagination.pageSize);
@@ -136,8 +131,6 @@ const TableUsers: React.FC = () => {
   const handleCancelDelete = () => {
     setIsModalVisible(false);
     setSelectedUser(null);
-    setIsModalVisible(false);
-    setSelectedUser(null);
   };
 
   const handleSearch = (value: string) => {
@@ -146,11 +139,9 @@ const TableUsers: React.FC = () => {
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
-    setSearchText(e.target.value);
   };
 
   const handleRoleFilterChange = (value: string) => {
-    setRoleFilter(value);
     setRoleFilter(value);
   };
 
@@ -173,29 +164,29 @@ const TableUsers: React.FC = () => {
 
   const handleStatusChange = (user: UserData, newStatus: boolean) => {
     if (newStatus !== user.status) {
-      setSelectedUser(user);
-      setIsModalVisible(true);
+      setChosenUser(user);
+      setStatusModalVisible(true);
     } else {
       console.log("Status remains unchanged");
     }
   };
 
   const handleConfirmStatusChange = async () => {
-    if (selectedUser) {
+    if (chosenUser) {
       try {
-        await toggleUserStatus(selectedUser._id, !selectedUser.status);
+        await toggleUserStatus(chosenUser._id, !chosenUser.status);
         fetchUsers(pagination.current, pagination.pageSize);
       } catch (error) {
         console.error("Failed to update status:", error);
       } finally {
-        setIsModalVisible(false);
-        setSelectedUser(null);
+        setStatusModalVisible(false);
+        setChosenUser(null);
       }
     }
   };
 
   const handleCancelStatusChange = () => {
-    setIsModalVisible(false);
+    setStatusModalVisible(false);
     setSelectedUser(null);
   };
 
@@ -417,12 +408,30 @@ const TableUsers: React.FC = () => {
               placeholder="Add Video Link"
               style={{ marginBottom: 16 }}
             />
+            <p>Description:</p>
+            <Input
+              value={editedUser.description}
+              onChange={(e) =>
+                setEditedUser({ ...editedUser, description: e.target.value })
+              }
+              placeholder="Description"
+              style={{ marginBottom: 16 }}
+            />
+            <p>Phone:</p>
+            <Input
+              value={editedUser.phone_number}
+              onChange={(e) =>
+                setEditedUser({ ...editedUser, phone_number: e.target.value })
+              }
+              placeholder="Phone"
+              style={{ marginBottom: 16 }}
+            />
           </div>
         )}
       </Modal>
       <Modal
-        title={`Confirm ${selectedUser?.status ? "Shut Down" : "Turn On"} User`}
-        visible={isModalVisible}
+        title={`Confirm ${chosenUser?.status ? "Shut Down" : "Turn On"} User`}
+        visible={statusModalVisible}
         onOk={handleConfirmStatusChange}
         onCancel={handleCancelStatusChange}
         okText="Confirm"
@@ -430,7 +439,7 @@ const TableUsers: React.FC = () => {
       >
         <p>
           Are you sure you want to{" "}
-          {selectedUser?.status ? "shut down" : "turn on"} this user?
+          {chosenUser?.status ? "shut down" : "turn on"} this user?
         </p>
       </Modal>
       <Modal

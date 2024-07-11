@@ -7,7 +7,7 @@ import {
 } from "../models/Types"; // Import types and interfaces from models/Types
 import { APILink } from "../const/linkAPI"; // Import API endpoint from const/linkAPI
 
-//--------------------------------- Get Users (Admin) -------------------------------------------
+//--------------------------------- Get Users (Admin) ------------------------------------------
 export const getUsers = async (
   requestData: UserSearchRequest,
 ): Promise<UserSearchResponse> => {
@@ -74,7 +74,7 @@ export const deleteUser = async (userId: string): Promise<void> => {
       },
     });
   } catch (error: any) {
-    throw error;
+    throw new Error(error);
   }
 };
 //-----------------------------------------------------------------------------------------------
@@ -91,7 +91,7 @@ export const registerUser = async (
     throw new Error(error.response.data);
   }
 };
-//-----------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------
 
 //-------------------------------- Update User (Admin) ---------------------------------------
 export const updateUser = async (
@@ -99,41 +99,30 @@ export const updateUser = async (
   updatedUserData: Partial<UserData>,
 ) => {
   try {
-    const token = sessionStorage.getItem("token"); // Retrieve token from sessionStorage
+    const token = sessionStorage.getItem("token");
+    if (!token) throw new Error("Cannot get token!");
 
     const response = await axios.put(
-      `${APILink}/api/users/${userId}`, // API endpoint for updating user
-      updatedUserData, // Data to send in the request body
+      `${APILink}/api/users/${userId}`,
+      updatedUserData,
       {
         headers: {
-          "Content-Type": "application/json", // Set content-type header to JSON
-          Authorization: `Bearer ${token}`, // Add token to Authorization header
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       },
     );
 
-    const updatedUser: UserData = response.data.data; // Assuming response structure matches UserData
-    console.log("Updated user:", updatedUser);
-
-    return updatedUser; // Return updated user data if successful
+    const updatedUser: UserData = response.data.data;
+    return updatedUser;
   } catch (error: any) {
-    if (error.response) {
-      console.error("Update user failed", error.response.data); // Handle error if update fails
-      console.error("Status", error.response.status);
-      console.error("Headers", error.response.headers);
-    } else if (error.request) {
-      console.error("No response", error.request); // Handle error if no response
-    } else {
-      console.error("Fail", error.message); // Handle other errors
-    }
-    throw error; // Throw error for handling in the component
+    throw new Error(error);
   }
 };
 
-//-----------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------
 
 //-------------------------------- Update  User (Admin) ---------------------------------------
-
 export const toggleUserStatus = async (
   user_id: string,
   status: boolean,
@@ -146,8 +135,8 @@ export const toggleUserStatus = async (
     { user_id, status },
     {
       headers: {
-        "Content-Type": "application/json", // Set content-type header to JSON
-        Authorization: `Bearer ${token}`, // Add token to Authorization header
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
     },
   );
@@ -158,14 +147,17 @@ export const createUserAPI = async (userData: Partial<User["data"]>) => {
     const token = sessionStorage.getItem("token");
     if (!token) throw new Error("Cannot get token!");
 
+    console.log("Sending user data to create:", userData);
+
     const res = await axios.post(`${APILink}/api/users/create`, userData, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log(res.data.data);
+
+    console.log("User created successfully:", res.data.data);
     return res.data.data;
   } catch (error: any) {
-    throw new Error(error);
+    throw new Error("Failed to create user");
   }
 };

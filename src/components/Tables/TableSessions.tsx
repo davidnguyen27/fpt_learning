@@ -1,202 +1,181 @@
-import { Button, Space, Table, Tag, Input, Select, Row, Col } from "antd";
-import { useState } from "react";
+// import React, { useEffect, useState } from "react";
+// import { Button, Space, Table, Tag, Input, Select, Row, Col, Modal } from "antd";
+// import { getSession, updateSessionStatus } from "../../services/sessionService"; // Import your service functions
+// import { SessionData, SessionSearchRequest } from "../../models/Session/Types"; // Import your types
 
-const { Option } = Select;
-const { Search } = Input;
+// const { Option } = Select;
+// const { Search } = Input;
 
-interface DataType {
-    key: string;
-    sessionId: string;
-    sessionName: string;
-    courseName: string | string[];
-    status: string;
-  }
-  
+// const TableSessions: React.FC = () => {
+//   const [data, setData] = useState<SessionData[]>([]);
+//   const [loading, setLoading] = useState<boolean>(true);
+//   const [error, setError] = useState<string | null>(null);
+//   const [searchText, setSearchText] = useState<string>("");
+//   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+//   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+//   const [selectedSession, setSelectedSession] = useState<SessionData | null>(null);
 
-const TableSessions = () => {
-  const [data, setData] = useState<DataType[]>([
-    {
-        key: "1",
-        sessionId: "ss123",
-        sessionName: "Introduction of course",
-        courseName: ["Learn React", "Learn .Net", "Learn Typescript"],
-        status: "Active",
-      },
-      {
-        key: "2",
-        sessionId: "DEF456",
-        sessionName: "Environment, People in IT",
-        courseName: "Learn .Net",
-        status: "Inactive",
-      },
-      {
-        key: "3",
-        sessionId: "GHI789",
-        sessionName: "Methods and directions",
-        courseName: "Learn Typescript",
-        status: "Inactive",
-      },
-      {
-        key: "4",
-        sessionId: "KSI789",
-        sessionName: "Complete Course",
-        courseName: "Learn Typescript",
-        status: "Active",
-      },
-      {
-        key: "5",
-        sessionId: "KSI789",
-        sessionName: "Complete Course",
-        courseName: "Learn Typescript",
-        status: "Active",
-      },
-      {
-        key: "6",
-        sessionId: "KSI789",
-        sessionName: "Complete Course",
-        courseName: "Learn Typescript",
-        status: "Active",
-      },
-  ]);
+//   const fetchSessions = async () => {
+//     const requestData: SessionSearchRequest = {
+//       searchCondition: {
+//         keyword: searchText.trim(),
+//         status: selectedStatus,
+//       },
+//     };
 
-  const [searchText, setSearchText] = useState<string>("");
-  const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+//     try {
+//       const response = await getSession(requestData);
+//       setData(response.data);
+//     } catch (error) {
+//       setError("Failed to fetch sessions");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchText(e.target.value);
-  };
+//   useEffect(() => {
+//     fetchSessions();
+//   }, [searchText, selectedStatus]);
 
-  const handleSearch = (value: string) => {
-    setSearchText(value);
-  };
+//   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     setSearchText(e.target.value);
+//   };
 
-  const handleStatusChange = (key: string) => {
-    const updatedData = data.map((item) => {
-      if (item.key === key) {
-        item.status = item.status === "Active" ? "Inactive" : "Active";
-      }
-      return item;
-    });
-    setData(updatedData);
-  };
+//   const handleSearch = (value: string) => {
+//     setSearchText(value);
+//   };
 
-  const getStatusButtonStyle = (status: string) => ({
-    backgroundColor: status === "Active" ? "#16a34a" : "gray",
-    color: "white",
-    border: "none",
-    width: "80px",
-    height: "32px",
-    borderRadius: "6px",
-  });
+//   const handleStatusChange = (session: SessionData) => {
+//     setSelectedSession(session);
+//     setIsModalVisible(true);
+//   };
 
-  const filteredData = data.filter((item) => {
-    const matchesSearchText =
-      item.sessionName.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.courseName.includes(searchText.toLowerCase());
-    const matchesStatus = !selectedStatus || item.status === selectedStatus;
+//   const handleConfirmStatusChange = async () => {
+//     if (selectedSession) {
+//       try {
+//         await updateSessionStatus(selectedSession.id, selectedSession.status === "Active" ? "Inactive" : "Active");
+//         fetchSessions();
+//       } catch (error) {
+//         console.error("Failed to update status:", error);
+//       } finally {
+//         setIsModalVisible(false);
+//         setSelectedSession(null);
+//       }
+//     }
+//   };
 
-    return matchesSearchText && matchesStatus;
-  });
+//   const handleCancelStatusChange = () => {
+//     setIsModalVisible(false);
+//     setSelectedSession(null);
+//   };
 
-  const columns = [
-    {
-      title: "No.",
-      key: "index",
-      render: (_: any, __: any, index: number) => index + 1,
-      width: 50,
-    },
-      {
-        title: "Session Name",
-        dataIndex: "sessionName",
-        key: "sessionName",
-      },
-      {
-        title: "Course Name",
-        dataIndex: "courseName",
-        key: "courseName",
-        width: 400,
-        render: (courseName: string | string[]) =>
-          Array.isArray(courseName) ? (
-            courseName.map((courseName, index) => (
-              <Tag key={index} style={{ marginBottom: 5 }}>
-                {courseName}
-              </Tag>
-            ))
-          ) : (
-            <Tag style={{ marginBottom: 5 }}>{courseName}</Tag>
-          ),
-      },
-      {
-        title: "Status",
-        dataIndex: "status",
-        key: "status",
-        render: (status: string, record: DataType) => (
-          <Button
-            type="default"
-            onClick={() => handleStatusChange(record.key)}
-            style={getStatusButtonStyle(status)}
-          >
-            {status.toUpperCase()}
-          </Button>
-        ),
-        width: 150,
-      },
-    {
-      title: "Actions",
-      key: "actions",
-      render: (_: any) => (
-        <Space size="middle">
-          <Button type="link" style={{ fontSize: "14px", padding: "0px 8px" }}>
-            Edit
-          </Button>
-          <Button
-            type="link"
-            danger
-            style={{ fontSize: "14px", padding: "0px 8px" }}
-          >
-            Delete
-          </Button>
-          <Button type="link" style={{ fontSize: "14px", padding: "0px 8px" }}>
-            View
-          </Button>
-        </Space>
-      ),
-      width: 100,
-    },
-  ];
+//   const columns = [
+//     {
+//       title: "No.",
+//       key: "index",
+//       render: (_: any, __: any, index: number) => index + 1,
+//       width: 50,
+//     },
+//     {
+//       title: "Session Name",
+//       dataIndex: "sessionName",
+//       key: "sessionName",
+//     },
+//     {
+//       title: "Course Name",
+//       dataIndex: "courseName",
+//       key: "courseName",
+//       render: (courseName: string | string[]) =>
+//         Array.isArray(courseName) ? (
+//           courseName.map((name, index) => (
+//             <Tag key={index} style={{ marginBottom: 5 }}>
+//               {name}
+//             </Tag>
+//           ))
+//         ) : (
+//           <Tag style={{ marginBottom: 5 }}>{courseName}</Tag>
+//         ),
+//       width: 400,
+//     },
+//     {
+//       title: "Status",
+//       dataIndex: "status",
+//       key: "status",
+//       render: (status: string, record: SessionData) => (
+//         <Button
+//           type="default"
+//           onClick={() => handleStatusChange(record)}
+//           style={{ backgroundColor: status === "Active" ? "#16a34a" : "gray", color: "white", border: "none", width: "80px", height: "32px", borderRadius: "6px" }}
+//         >
+//           {status.toUpperCase()}
+//         </Button>
+//       ),
+//       width: 150,
+//     },
+//     {
+//       title: "Actions",
+//       key: "actions",
+//       render: (_: any, record: SessionData) => (
+//         <Space size="middle">
+//           <Button type="link" style={{ fontSize: "14px", padding: "0px 8px" }}>Edit</Button>
+//           <Button type="link" danger style={{ fontSize: "14px", padding: "0px 8px" }}>Delete</Button>
+//           <Button type="link" style={{ fontSize: "14px", padding: "0px 8px" }}>View</Button>
+//         </Space>
+//       ),
+//       width: 100,
+//     },
+//   ];
 
-  return (
-    <div>
-      <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
-        <Col>
-          <Search
-            placeholder="Search by Session Name Or Course Name"
-            onChange={handleSearchChange}
-            onSearch={handleSearch}
-            enterButton
-            style={{ width: 300 }}
-          />
-        </Col>
-        <Col>
-          <Select
-            placeholder="Filter by Status"
-            onChange={(value) => setSelectedStatus(value)}
-            allowClear
-            style={{ width: 200 }}
-          >
-            <Option value="Active">Active</Option>
-            <Option value="Inactive">Inactive</Option>
-          </Select>
-        </Col>
-      </Row>
-      <Table
-        className="my-5 rounded-none"
-        columns={columns}
-        dataSource={filteredData}
-        pagination={{ pageSize: 5 }}
-      />
-    </div>
-  );
-};
+//   if (loading) {
+//     return <div>Loading...</div>;
+//   }
 
-export default TableSessions;
+//   if (error) {
+//     return <div>{error}</div>;
+//   }
+
+//   return (
+//     <div>
+//       <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
+//         <Col>
+//           <Search
+//             placeholder="Search by Session Name or Course Name"
+//             onChange={handleSearchChange}
+//             onSearch={handleSearch}
+//             enterButton
+//             style={{ width: 300 }}
+//           />
+//         </Col>
+//         <Col>
+//           <Select
+//             placeholder="Filter by Status"
+//             onChange={(value) => setSelectedStatus(value)}
+//             allowClear
+//             style={{ width: 200 }}
+//           >
+//             <Option value="Active">Active</Option>
+//             <Option value="Inactive">Inactive</Option>
+//           </Select>
+//         </Col>
+//       </Row>
+//       <Table
+//         className="my-5 rounded-none"
+//         columns={columns}
+//         dataSource={data}
+//         pagination={{ pageSize: 5 }}
+//       />
+//       <Modal
+//         title="Confirm Status Change"
+//         visible={isModalVisible}
+//         onOk={handleConfirmStatusChange}
+//         onCancel={handleCancelStatusChange}
+//         okText="Confirm"
+//         cancelText="Cancel"
+//       >
+//         <p>Are you sure you want to change the status of this session?</p>
+//       </Modal>
+//     </div>
+//   );
+// };
+
+// export default TableSessions;

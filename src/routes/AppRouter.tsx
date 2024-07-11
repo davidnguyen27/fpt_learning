@@ -48,9 +48,9 @@ const CreateCoursePage = React.lazy(
 const LessonManagePage = React.lazy(
   () => import("../pages/Instructor/LessonManagePage"),
 );
-const SessionManagePage = React.lazy(
-  () => import("../pages/Instructor/SessionManagePage"),
-);
+// const SessionManagePage = React.lazy(
+//   () => import("../pages/Instructor/SessionManagePage"),
+// );
 const ReviewManagePage = React.lazy(
   () => import("../pages/Instructor/ReviewManagePage"),
 );
@@ -295,7 +295,7 @@ const AppRouter = () => {
                 />
               }
             />
-            <Route
+            {/* <Route
               path="/instructor/sessions-management"
               element={
                 <ProtectedRoute
@@ -303,7 +303,7 @@ const AppRouter = () => {
                   allowedRoles={["instructor"]}
                 />
               }
-            />
+            /> */}
             <Route
               path="/instructor/courses-management/create-course-step"
               element={

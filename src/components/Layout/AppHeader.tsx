@@ -65,7 +65,10 @@ const AppHeader: React.FC = () => {
     },
     {
       key: "2",
-      label: <a href="/paid-membership">Paid Memberships</a>,
+      label:
+        user?.data.role === "admin" ? (
+          <a href="/paid-membership">Paid Memberships</a>
+        ) : null,
     },
     {
       key: "3",
