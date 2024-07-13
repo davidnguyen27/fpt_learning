@@ -22,7 +22,12 @@ const TableLessons = () => {
       key: "1",
       lesson_id: "1",
       lessonTitle: "Design UI with Figma",
-      sessionName: ["Introduction of course", "Environment, People in IT", "Methods and directions", "Complete Course"],
+      sessionName: [
+        "Introduction of course",
+        "Environment, People in IT",
+        "Methods and directions",
+        "Complete Course",
+      ],
       duration: "10 mins",
       createdAt: "2024-01-01",
       status: "Active",
@@ -144,13 +149,13 @@ const TableLessons = () => {
       width: 50,
     },
     {
-      title: "Lesson Title",
+      title: "Session",
       dataIndex: "lessonTitle",
       key: "lessonTitle",
       width: 400,
     },
     {
-      title: "Session Name",
+      title: "Lesson",
       dataIndex: "sessionName",
       key: "sessionName",
       width: 400,
@@ -172,7 +177,7 @@ const TableLessons = () => {
       width: 100,
     },
     {
-      title: "Created At",
+      title: "Video URL",
       dataIndex: "createdAt",
       key: "createdAt",
       width: 250,

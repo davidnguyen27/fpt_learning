@@ -12,8 +12,10 @@ import {
   EditOutlined,
   UserDeleteOutlined,
   UserAddOutlined,
+  RetweetOutlined,
 } from "@ant-design/icons";
 import ModalCreateAcc from "../../components/Modal/ModalCreateAcc";
+import ModalChangeRole from "../Modal/ModalChangeRole";
 
 const { Search } = Input;
 const { Option } = Select;
@@ -30,6 +32,7 @@ const TableUsers: React.FC = () => {
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<boolean>(true);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [openChange, setOpenChange] = useState<boolean>(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
   const [editedUser, setEditedUser] = useState<UserData | null>(null);
   const [selectedUserDetail, setSelectedUserDetail] = useState<UserData | null>(
@@ -41,6 +44,7 @@ const TableUsers: React.FC = () => {
     pageSize: 10,
     total: 0,
   });
+  const [currentUser, setCurrentUser] = useState<UserData | null>(null);
 
   useEffect(() => {
     fetchUsers(pagination.current, pagination.pageSize);
@@ -190,6 +194,11 @@ const TableUsers: React.FC = () => {
     setSelectedUser(null);
   };
 
+  const handleOpenChangeRoleModal = (user: UserData) => {
+    setCurrentUser(user);
+    setOpenChange(true);
+  };
+
   const columns = [
     {
       title: "No",
@@ -267,6 +276,17 @@ const TableUsers: React.FC = () => {
             <EditOutlined
               onClick={() => handleUpdate(record)}
               style={{ fontSize: "16px", marginRight: 16, cursor: "pointer" }}
+            />
+          </Tooltip>
+          <Tooltip title="Role">
+            <RetweetOutlined
+              onClick={() => handleOpenChangeRoleModal(record)}
+              style={{
+                fontSize: "16px",
+                color: "green",
+                marginRight: 16,
+                cursor: "pointer",
+              }}
             />
           </Tooltip>
           <Tooltip title="Delete">
@@ -459,6 +479,14 @@ const TableUsers: React.FC = () => {
           </div>
         )}
       </Modal>
+      {currentUser && (
+        <ModalChangeRole
+          open={openChange}
+          setOpen={setOpenChange}
+          userId={currentUser._id}
+          currentRole={currentUser.role}
+        />
+      )}
     </>
   );
 };

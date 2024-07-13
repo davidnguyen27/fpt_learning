@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { User } from "../../../models/Types";
-import { registerUser } from "../../../services/usersService";
+import { changeRoleAPI, registerUser } from "../../../services/usersService";
 
 interface UserState {
   users: User[];
@@ -28,6 +28,18 @@ export const createAccount = createAsyncThunk(
       return data;
     } catch (error: any) {
       return rejectWithValue(error.message);
+    }
+  },
+);
+
+export const changeUserRole = createAsyncThunk(
+  "users/changeRole",
+  async ({ userId, role }: { userId: string; role: string }, thunkAPI) => {
+    try {
+      const response = await changeRoleAPI(userId, role);
+      return response;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.message);
     }
   },
 );

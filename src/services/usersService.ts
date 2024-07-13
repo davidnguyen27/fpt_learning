@@ -161,3 +161,27 @@ export const createUserAPI = async (userData: Partial<User["data"]>) => {
     throw new Error("Failed to create user");
   }
 };
+
+export const changeRoleAPI = async (
+  userId: string,
+  role: string,
+): Promise<User> => {
+  try {
+    const token = sessionStorage.getItem("token");
+    if (!token) throw new Error("Cannot get token!");
+
+    const res = await axios.put(
+      `${APILink}/api/users/change-role`,
+      { user_id: userId, role: role },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    console.log(res.data.data);
+    return res.data;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
