@@ -1,272 +1,204 @@
-import { Button, Space, Table, Tag, Input, Select, Row, Col } from "antd";
-import { useState } from "react";
-
-const { Option } = Select;
-const { Search } = Input;
+import { DeleteOutlined, FormOutlined } from "@ant-design/icons";
+import { Table, Spin, message, Modal } from "antd";
+import type { ColumnsType } from "antd/es/table";
+import { DataTransfer } from "../../models/Lesson";
+import useLessonsData from "../../hooks/lesson/useLessonData";
+import Search from "antd/es/input/Search";
+import { useState, useMemo } from "react";
+import ModalAddLesson from "../Modal/ModalAddLesson";
+import useDeleteLesson from "../../hooks/lesson/useDeleteLesson";
+import ModalEditLesson from "../Modal/ModalEditLesson";
 
 interface DataType {
   key: string;
-  lesson_id: string;
-  lessonTitle: string;
-  sessionName: string | string[];
-  duration: string;
-  createdAt: string;
-  status: string;
-  preview: boolean;
-  quizAssignment: boolean;
+  session_id: string;
+  session_name: string;
+  course_name: string;
+  position_order: number;
+  name: string;
+  video_url: string;
+  full_time: number;
 }
 
 const TableLessons = () => {
-  const [data, setData] = useState<DataType[]>([
-    {
-      key: "1",
-      lesson_id: "1",
-      lessonTitle: "Design UI with Figma",
-      sessionName: [
-        "Introduction of course",
-        "Environment, People in IT",
-        "Methods and directions",
-        "Complete Course",
-      ],
-      duration: "10 mins",
-      createdAt: "2024-01-01",
-      status: "Active",
-      preview: true,
-      quizAssignment: false,
-    },
-    {
-      key: "2",
-      lesson_id: "2",
-      lessonTitle: "Getting Started with Python",
-      sessionName: "Introduction of course",
-      duration: "20 mins",
-      createdAt: "2024-01-02",
-      status: "Inactive",
-      preview: false,
-      quizAssignment: true,
-    },
-    {
-      key: "3",
-      lesson_id: "3",
-      lessonTitle: "Get start with .Net",
-      sessionName: "Introduction of course",
-      duration: "20 mins",
-      createdAt: "2024-01-02",
-      status: "Active",
-      preview: false,
-      quizAssignment: true,
-    },
-    {
-      key: "4",
-      lesson_id: "4",
-      lessonTitle: "Getting Started with Python",
-      sessionName: "Introduction of course",
-      duration: "20 mins",
-      createdAt: "2024-01-02",
-      status: "Inactive",
-      preview: false,
-      quizAssignment: true,
-    },
-    {
-      key: "5",
-      lesson_id: "5",
-      lessonTitle: "Getting Started with Python",
-      sessionName: "Introduction of course",
-      duration: "20 mins",
-      createdAt: "2024-01-02",
-      status: "Active",
-      preview: false,
-      quizAssignment: true,
-    },
-    {
-      key: "6",
-      lesson_id: "6",
-      lessonTitle: "Advanced Python",
-      sessionName: "Introduction of course",
-      duration: "30 mins",
-      createdAt: "2024-01-03",
-      status: "Active",
-      preview: false,
-      quizAssignment: true,
-    },
-    {
-      key: "7",
-      lesson_id: "7",
-      lessonTitle: "Machine Learning Basics",
-      sessionName: "Introduction of course",
-      duration: "40 mins",
-      createdAt: "2024-01-04",
-      status: "Inactive",
-      preview: true,
-      quizAssignment: false,
-    },
-  ]);
-
-  const [searchText, setSearchText] = useState<string>("");
-  const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchText(e.target.value);
-  };
+  const [searchKeyword, setSearchKeyword] = useState<string>("");
+  const [openAdd, setOpenAdd] = useState<boolean>(false);
+  const [openEdit, setOpenEdit] = useState<boolean>(false);
+  const [editingLessonId, setEditingLessonId] = useState<string | null>(null);
 
   const handleSearch = (value: string) => {
-    setSearchText(value);
+    setSearchKeyword(value);
   };
 
-  const handleStatusChange = (key: string) => {
-    const updatedData = data.map((item) => {
-      if (item.key === key) {
-        item.status = item.status === "Active" ? "Inactive" : "Active";
-      }
-      return item;
+  const handleSuccess = () => {
+    message.success("Lesson added successfully");
+    refetchData();
+  };
+
+  const handleDelete = (lessonId: string) => {
+    Modal.confirm({
+      title: "Are you sure you want to delete this lesson?",
+      onOk: () => deleteLesson(lessonId),
     });
-    setData(updatedData);
   };
 
-  const getStatusButtonStyle = (status: string) => ({
-    backgroundColor: status === "Active" ? "#16a34a" : "gray",
-    color: "white",
-    border: "none",
-    width: "80px",
-    height: "32px",
-    borderRadius: "6px",
-  });
+  const handleEdit = (lessonId: string) => {
+    setEditingLessonId(lessonId);
+    setOpenEdit(true);
+  };
 
-  const filteredData = data.filter((item) => {
-    const matchesSearchText =
-      item.sessionName.includes(searchText.toLowerCase()) ||
-      item.lessonTitle.toLowerCase().includes(searchText.toLowerCase());
-    const matchesStatus = !selectedStatus || item.status === selectedStatus;
+  const searchCondition = useMemo(
+    () => ({
+      keyword: searchKeyword,
+      course_id: "",
+      session_id: "",
+      lesson_type: "",
+      is_position_order: true,
+      is_delete: false,
+    }),
+    [searchKeyword],
+  );
 
-    return matchesSearchText && matchesStatus;
-  });
+  const pageInfo = useMemo(
+    () => ({
+      pageNum: 1,
+      pageSize: 10,
+    }),
+    [],
+  );
 
-  const columns = [
-    {
-      title: "No.",
-      key: "index",
-      render: (_: any, __: any, index: number) => index + 1,
-      width: 50,
-    },
+  const dataTransfer: DataTransfer = useMemo(
+    () => ({
+      searchCondition,
+      pageInfo,
+    }),
+    [searchCondition, pageInfo],
+  );
+
+  const { data, loading, error, refetchData } = useLessonsData(dataTransfer);
+  const { deleteLesson } = useDeleteLesson(refetchData);
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  const columns: ColumnsType<DataType> = [
     {
       title: "Session",
-      dataIndex: "lessonTitle",
-      key: "lessonTitle",
-      width: 400,
+      dataIndex: "session_name",
+      key: "session_name",
+      onCell: (record, rowIndex) => {
+        if (
+          rowIndex === undefined ||
+          rowIndex === 0 ||
+          record.session_id !== data[rowIndex - 1]?.session_id
+        ) {
+          let rowSpan = 1;
+          for (let i = (rowIndex ?? 0) + 1; i < data.length; i++) {
+            if (data[i].session_id !== record.session_id) break;
+            rowSpan++;
+          }
+          return { rowSpan };
+        } else {
+          return { rowSpan: 0 };
+        }
+      },
     },
     {
-      title: "Lesson",
-      dataIndex: "sessionName",
-      key: "sessionName",
-      width: 400,
-      render: (sessionName: string | string[]) =>
-        Array.isArray(sessionName) ? (
-          sessionName.map((sessionName, index) => (
-            <Tag key={index} style={{ marginBottom: 5 }}>
-              {sessionName}
-            </Tag>
-          ))
-        ) : (
-          <Tag style={{ marginBottom: 5 }}>{sessionName}</Tag>
-        ),
+      title: "Course",
+      dataIndex: "course_name",
+      key: "course_name",
+      width: 300,
+      onCell: (record, rowIndex) => {
+        if (
+          rowIndex === undefined ||
+          rowIndex === 0 ||
+          record.course_name !== data[rowIndex - 1]?.course_name
+        ) {
+          let rowSpan = 1;
+          for (let i = (rowIndex ?? 0) + 1; i < data.length; i++) {
+            if (data[i].course_name !== record.course_name) break;
+            rowSpan++;
+          }
+          return { rowSpan };
+        } else {
+          return { rowSpan: 0 };
+        }
+      },
+    },
+    {
+      title: "Lesson Name",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Order",
+      dataIndex: "position_order",
+      key: "position_order",
+      width: 100,
+    },
+    {
+      title: "Video (url)",
+      dataIndex: "video_url",
+      key: "video_url",
+      width: 300,
     },
     {
       title: "Duration",
-      dataIndex: "duration",
-      key: "duration",
+      dataIndex: "full_time",
+      key: "full_time",
       width: 100,
     },
     {
-      title: "Video URL",
-      dataIndex: "createdAt",
-      key: "createdAt",
-      width: 250,
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (status: string, record: DataType) => (
-        <Button
-          type="default"
-          onClick={() => handleStatusChange(record.key)}
-          style={getStatusButtonStyle(status)}
-        >
-          {status.toUpperCase()}
-        </Button>
+      title: "Action",
+      key: "action",
+      width: 200,
+      render: (_, record) => (
+        <>
+          <FormOutlined
+            onClick={() => handleEdit(record.key)}
+            className="mx-6 cursor-pointer text-blue-500"
+          />
+          <DeleteOutlined
+            className="cursor-pointer text-red-500"
+            onClick={() => handleDelete(record.key)}
+          />
+        </>
       ),
-      width: 150,
-    },
-    {
-      title: "Preview",
-      dataIndex: "preview",
-      key: "preview",
-      render: (preview: boolean) => (preview ? "Yes" : "No"),
-      width: 100,
-    },
-    {
-      title: "Quiz/Assignment",
-      dataIndex: "quizAssignment",
-      key: "quizAssignment",
-      render: (hasQuizAssignment: boolean) =>
-        hasQuizAssignment ? "Yes" : "No",
-      width: 150,
-    },
-    {
-      title: "Actions",
-      key: "actions",
-      render: (_: DataType) => (
-        <Space size="middle">
-          <Button type="link" style={{ fontSize: "14px", padding: "0px 8px" }}>
-            Edit
-          </Button>
-          <Button
-            type="link"
-            danger
-            style={{ fontSize: "14px", padding: "0px 8px" }}
-          >
-            Delete
-          </Button>
-          <Button type="link" style={{ fontSize: "14px", padding: "0px 8px" }}>
-            View
-          </Button>
-        </Space>
-      ),
-      width: 100,
     },
   ];
 
   return (
-    <div>
-      <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
-        <Col>
-          <Search
-            placeholder="Search by Lesson Title or Session Name"
-            onChange={handleSearchChange}
-            onSearch={handleSearch}
-            enterButton
-            style={{ width: 300 }}
-          />
-        </Col>
-        <Col>
-          <Select
-            placeholder="Filter by Status"
-            onChange={(value) => setSelectedStatus(value)}
-            allowClear
-            style={{ width: 200 }}
-          >
-            <Option value="Active">Active</Option>
-            <Option value="Inactive">Inactive</Option>
-          </Select>
-        </Col>
-      </Row>
-      <Table
-        className="my-5 rounded-none"
-        columns={columns}
-        dataSource={filteredData}
-        pagination={{ pageSize: 5 }}
+    <>
+      <div className="my-3 flex items-center justify-between">
+        <Search
+          onSearch={handleSearch}
+          placeholder="Search by keyword"
+          allowClear
+          style={{ width: 300 }}
+        />
+        <button
+          onClick={() => setOpenAdd(true)}
+          className="rounded-lg bg-red-500 px-5 py-2 text-sm font-medium text-white hover:bg-red-600"
+        >
+          Add Lesson
+        </button>
+      </div>
+      <Spin spinning={loading}>
+        <Table columns={columns} dataSource={data} />
+      </Spin>
+      <ModalAddLesson
+        open={openAdd}
+        setOpen={setOpenAdd}
+        onSuccess={handleSuccess}
       />
-    </div>
+      <ModalEditLesson
+        open={openEdit}
+        setOpen={setOpenEdit}
+        lessonId={editingLessonId}
+        onSuccess={handleSuccess}
+      />
+    </>
   );
 };
 
