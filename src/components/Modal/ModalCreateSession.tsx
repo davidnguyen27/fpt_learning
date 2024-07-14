@@ -1,28 +1,21 @@
 import React from "react";
 import { Form, Input, message, Modal } from "antd";
-import { createUserAPI } from "../../services/usersService";
+import { createSessionAPI } from "../../services/sessionService";
 
 interface ModalCreateProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  fetchUser: () => void;
 }
 
-const ModalCreateAcc: React.FC<ModalCreateProps> = ({
-  isOpen,
-  setIsOpen,
-  fetchUser,
-}) => {
+const ModalCreateSession: React.FC<ModalCreateProps> = ({ isOpen, setIsOpen }) => {
   const [form] = Form.useForm();
 
   const handleCreate = async () => {
     try {
       const values = await form.validateFields();
-      await createUserAPI(values);
-      message.success("User created successfully!");
-      fetchUser();
+      await createSessionAPI(values);
+      message.success("Session created successfully!");
       form.resetFields();
-
       setIsOpen(false);
     } catch (error: any) {
       message.error(`Error: ${error.message}`);
@@ -35,7 +28,7 @@ const ModalCreateAcc: React.FC<ModalCreateProps> = ({
 
   return (
     <Modal
-      title="CREATE ACCOUNT"
+      title="CREATE SESSION"
       visible={isOpen}
       width={700}
       onCancel={handleCancel}
@@ -48,7 +41,7 @@ const ModalCreateAcc: React.FC<ModalCreateProps> = ({
           Cancel
         </button>,
         <button
-          key="create"
+          key="edit"
           className="rounded-md bg-red-500 px-4 py-1 hover:bg-red-600"
           onClick={handleCreate}
         >
@@ -58,35 +51,35 @@ const ModalCreateAcc: React.FC<ModalCreateProps> = ({
     >
       <Form layout="vertical" className="mt-4" form={form}>
         <Form.Item
-          name="email"
-          label="Email"
+          name="name"
+          label="Name"
           rules={[
-            { required: true, message: "Email is required!" },
-            { type: "email", message: "Please enter a valid email address!" },
+            { required: true, message: "Name is required!" },
+            { type: "string", message: "Please enter a valid name address!" },
           ]}
         >
-          <Input className="text-sm" size="large" placeholder="Email address" />
+          <Input className="text-sm" size="large" placeholder="Session name" />
         </Form.Item>
         <Form.Item
-          label="Password"
-          name="password"
-          rules={[{ required: true, message: "Password is required!" }]}
+          label="Course Id"
+          name="course_id"
+          rules={[{ required: true, message: "Course Id is required!" }]}
         >
           <Input
             className="text-sm"
-            type="password"
+            type="string"
             size="large"
-            placeholder="Password"
+            placeholder="Course Id"
           />
         </Form.Item>
         <Form.Item
-          label="Full Name"
-          name="name"
-          rules={[{ required: true, message: "Full Name is required!" }]}
+          label="Position Order"
+          name="position_order"
+          rules={[{ required: true, message: "Position order is required!" }]}
         >
           <Input className="text-sm" size="large" placeholder="Full Name" />
         </Form.Item>
-        <Form.Item name="role">
+        {/* <Form.Item name="role">
           <select className="rounded-md bg-slate-100 p-4" title="role">
             <option className="mb-2 p-2" value="admin">
               Admin
@@ -98,10 +91,22 @@ const ModalCreateAcc: React.FC<ModalCreateProps> = ({
               Student
             </option>
           </select>
+        </Form.Item> */}
+        <Form.Item
+          label="Description"
+          name="description"
+          rules={[{ required: true, message: "Description is required!" }]}
+        >
+          <Input
+            className="text-sm"
+            type="string"
+            size="large"
+            placeholder="Description"
+          />
         </Form.Item>
       </Form>
     </Modal>
   );
 };
 
-export default ModalCreateAcc;
+export default ModalCreateSession;

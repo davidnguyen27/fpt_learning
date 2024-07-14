@@ -17,7 +17,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   // Sign In
   const login = async (email: string, password: string) => {
     try {
-      const token = await authServiceLogin(email, password);
+    const token = await authServiceLogin(email, password);
       sessionStorage.setItem("token", token); // Store token in sessionStorage
 
       const userData = await getCurrentLogin(token);

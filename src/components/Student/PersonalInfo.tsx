@@ -24,7 +24,7 @@ const PersonalInfo: React.FC = () => {
   useEffect(() => {
     // Fetch data from MockAPI by role
     axios
-      .get("https://665fc1c95425580055b0bf26.mockapi.io/users?role=student")
+      .get("https://api-ojt-hcm24-react06-group02.vercel.app/api/users/:id")
       .then((response) => {
         // Set the first user as the selected user
         if (response.data.length > 0) {
