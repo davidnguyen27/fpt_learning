@@ -1,31 +1,8 @@
-import { Tabs, TabsProps } from "antd";
 import TableCourses from "../../components/Tables/TableCourses";
 import { useNavigate } from "react-router-dom";
-import TableUpcomingCourses from "../../components/Tables/TableUpComingCourses";
-import { ArrowUpOutlined, ReadOutlined } from "@ant-design/icons";
+import { ReadOutlined } from "@ant-design/icons";
 import "../../styles/tabCustom.css";
 import InstructorLayout from "../../components/Layout/InstructorLayout";
-
-const items: TabsProps["items"] = [
-  {
-    key: "1",
-    label: (
-      <span className="text-sm font-medium">
-        <ReadOutlined /> Courses
-      </span>
-    ),
-    children: <TableCourses />,
-  },
-  {
-    key: "2",
-    label: (
-      <span className="text-sm font-medium">
-        <ArrowUpOutlined /> Upcoming Courses
-      </span>
-    ),
-    children: <TableUpcomingCourses />,
-  },
-];
 
 const CoursesManagePage = () => {
   const navigate = useNavigate();
@@ -35,7 +12,7 @@ const CoursesManagePage = () => {
       <section>
         <h1 className="text-xl font-bold">Courses Management</h1>
       </section>
-      <div className="mt-4 flex items-center justify-between bg-slate-200 p-4">
+      <div className="my-4 flex items-center justify-between bg-slate-200 p-4">
         <div className="flex items-center">
           <ReadOutlined />
           <span className="text-md ml-4 font-semibold">
@@ -53,7 +30,7 @@ const CoursesManagePage = () => {
           </button>
         </div>
       </div>
-      <Tabs defaultActiveKey="1" items={items} className="mt-10" />
+      <TableCourses />
     </InstructorLayout>
   );
 };

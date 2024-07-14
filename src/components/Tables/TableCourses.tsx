@@ -1,115 +1,58 @@
-import { Button, Col, Row, Space, Table, Input, Select, Tag } from "antd";
-import { useState } from "react";
+import { DeleteOutlined, FormOutlined } from "@ant-design/icons";
+import { Col, Row, Space, Table, Input, Select, Spin, Modal } from "antd";
+import { useMemo, useState } from "react";
+import useCourseData from "../../hooks/course/useCourseData";
+import { DataTransfer } from "../../models/Course";
+import useDeleteCourse from "../../hooks/course/useDeleteCourse";
 const { Option } = Select;
 const { Search } = Input;
 
-interface DataType {
-  key: string;
-  courseId: string;
-  courseName: string;
-  categoryName: string | string[];
-  createdAt: string;
-  status: string;
-}
-
 const TableCourses = () => {
-  const [data, setData] = useState<DataType[]>([
-    {
-      key: "1",
-      courseId: "1",
-      courseName: "Introduction to Course",
-      categoryName: ["Category 1", "Category 2", "Category 3"],
-      createdAt: "12/06/2024",
-      status: "Active",
-    },
-    {
-      key: "2",
-      courseId: "2",
-      courseName: "Getting Started with Python",
-      categoryName: "Course 2",
-      createdAt: "13/06/2024",
-      status: "Inactive",
-    },
-    {
-      key: "3",
-      courseId: "3",
-      courseName: "Getting Started with Python",
-      categoryName: "Course 2",
-      createdAt: "13/06/2024",
-      status: "Inactive",
-    },
-    {
-      key: "4",
-      courseId: "4",
-      courseName: "Getting Started with Python",
-      categoryName: "Course 2",
-      createdAt: "13/06/2024",
-      status: "Inactive",
-    },
-    {
-      key: "5",
-      courseId: "5",
-      courseName: "Getting Started with Python",
-      categoryName: "Course 2",
-      createdAt: "13/06/2024",
-      status: "Inactive",
-    },
-    {
-      key: "6",
-      courseId: "6",
-      courseName: "Getting Started with Python",
-      categoryName: "Course 2",
-      createdAt: "13/06/2024",
-      status: "Inactive",
-    },
-    {
-      key: "7",
-      courseId: "7",
-      courseName: "Getting Started with Python",
-      categoryName: "Course 2",
-      createdAt: "13/06/2024",
-      status: "Inactive",
-    },
-  ]);
-
-  const [searchText, setSearchText] = useState<string>("");
-  const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchText(e.target.value);
-  };
+  const [searchKeyword, setSearchKeyword] = useState<string>("");
 
   const handleSearch = (value: string) => {
-    setSearchText(value);
+    setSearchKeyword(value);
   };
 
-  const handleStatusChange = (key: string) => {
-    const updatedData = data.map((item) => {
-      if (item.key === key) {
-        item.status = item.status === "Active" ? "Inactive" : "Active";
-      }
-      return item;
+  const handleDelete = (courseId: string) => {
+    Modal.confirm({
+      title: "Are you sure you want to delete this lesson?",
+      onOk: () => deleteCourse(courseId),
     });
-    setData(updatedData);
   };
 
-  const getStatusButtonStyle = (status: string) => ({
-    backgroundColor: status === "Active" ? "#16a34a" : "gray",
-    color: "white",
-    border: "none",
-    width: "80px",
-    height: "32px",
-    borderRadius: "6px",
-  });
+  const searchCondition = useMemo(
+    () => ({
+      keyword: searchKeyword,
+      category_id: "",
+      status: "",
+      is_deleted: false,
+    }),
+    [searchKeyword],
+  );
 
-  const filteredData = data.filter((item) => {
-    const matchesSearchText =
-      item.courseName.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.categoryName.includes(searchText.toLowerCase());
-    const matchesStatus = !selectedStatus || item.status === selectedStatus;
+  const pageInfo = useMemo(
+    () => ({
+      pageNum: 1,
+      pageSize: 10,
+    }),
+    [],
+  );
 
-    return matchesSearchText && matchesStatus;
-  });
+  const dataTransfer: DataTransfer = useMemo(
+    () => ({
+      searchCondition,
+      pageInfo,
+    }),
+    [searchCondition, pageInfo],
+  );
+
+  const { data, loading, error, refetchData } = useCourseData(dataTransfer);
+  const { deleteCourse } = useDeleteCourse(refetchData);
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   const columns = [
     {
@@ -120,62 +63,35 @@ const TableCourses = () => {
     },
     {
       title: "Course Name",
-      dataIndex: "courseName",
-      key: "courseName",
+      dataIndex: "course_name",
+      key: "course_name",
     },
     {
       title: "Category Name",
-      dataIndex: "categoryName",
-      key: "categoryName",
+      dataIndex: "category_name",
+      key: "category_name",
       width: 400,
-      render: (categoryName: string | string[]) =>
-        Array.isArray(categoryName) ? (
-          categoryName.map((categoryName, index) => (
-            <Tag key={index} style={{ marginBottom: 5 }}>
-              {categoryName}
-            </Tag>
-          ))
-        ) : (
-          <Tag style={{ marginBottom: 5 }}>{categoryName}</Tag>
-        ),
     },
     {
       title: "Created At",
-      dataIndex: "createdAt",
-      key: "createdAt",
+      dataIndex: "created_at",
+      key: "created_at",
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status: string, record: DataType) => (
-        <Button
-          type="default"
-          onClick={() => handleStatusChange(record.key)}
-          style={getStatusButtonStyle(status)}
-        >
-          {status.toUpperCase()}
-        </Button>
-      ),
     },
     {
       title: "Actions",
       key: "actions",
-      render: (_: any) => (
+      render: (_: any, record: any) => (
         <Space size="middle">
-          <Button type="link" style={{ fontSize: "14px", padding: "0px 8px" }}>
-            Edit
-          </Button>
-          <Button
-            type="link"
-            danger
-            style={{ fontSize: "14px", padding: "0px 8px" }}
-          >
-            Delete
-          </Button>
-          <Button type="link" style={{ fontSize: "14px", padding: "0px 8px" }}>
-            View
-          </Button>
+          <FormOutlined />
+          <DeleteOutlined
+            className="cursor-pointer text-red-500"
+            onClick={() => handleDelete(record.key)}
+          />
         </Space>
       ),
       width: 100,
@@ -187,9 +103,8 @@ const TableCourses = () => {
       <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
         <Col>
           <Search
-            placeholder="Search by Course Name or Category Name"
-            onChange={handleSearchChange}
             onSearch={handleSearch}
+            placeholder="Search by Course Name"
             enterButton
             style={{ width: 300 }}
           />
@@ -197,7 +112,6 @@ const TableCourses = () => {
         <Col>
           <Select
             placeholder="Filter by Status"
-            onChange={(value) => setSelectedStatus(value)}
             allowClear
             style={{ width: 200 }}
           >
@@ -206,12 +120,13 @@ const TableCourses = () => {
           </Select>
         </Col>
       </Row>
-      <Table
-        className="my-5 rounded-none"
-        columns={columns}
-        dataSource={filteredData}
-        pagination={{ pageSize: 5 }}
-      />
+      <Spin spinning={loading}>
+        <Table
+          className="my-5 rounded-none"
+          dataSource={data}
+          columns={columns}
+        />
+      </Spin>
     </div>
   );
 };

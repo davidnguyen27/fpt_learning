@@ -21,3 +21,24 @@ export type Course = {
     totalPages: number;
   };
 };
+
+export type DataTransfer = {
+  searchCondition: {
+    keyword: string;
+    category_id: string;
+    status: string;
+    is_deleted: boolean;
+  };
+  pageInfo: {
+    pageNum: number;
+    pageSize: number;
+  };
+};
+
+export type DataType = {
+  keyword: string;
+  course_name: string;
+  category_name: string;
+  created_at: string;
+  status: string;
+};
