@@ -6,7 +6,7 @@ import { Lesson } from "../../models/Lesson";
 const useAddLesson = (onSuccess: () => void) => {
   const [loading, setLoading] = useState<boolean>(false);
 
-  const createLesson = async (lessonData: Lesson["data"]["pageData"]) => {
+  const createLesson = async (lessonData: Lesson["pageData"]) => {
     try {
       setLoading(true);
       await createLessonAPI(lessonData);
