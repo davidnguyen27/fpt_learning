@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { Category } from "../../../models/Types";
+import { Category } from "../../../models/Category/index";
 import {
   createCategoryAPI,
   getCategoriesAPI,

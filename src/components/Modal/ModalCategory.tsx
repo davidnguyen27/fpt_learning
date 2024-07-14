@@ -1,5 +1,5 @@
 import { Form, Input, Modal } from "antd";
-import { Category } from "../../models/Types";
+import { Category } from "../../models/Category/index";
 import { useEffect } from "react";
 
 interface ModalCategoryProps {

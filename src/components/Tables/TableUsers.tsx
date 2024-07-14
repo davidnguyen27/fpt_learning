@@ -356,6 +356,7 @@ const TableUsers: React.FC = () => {
           <ModalCreateAcc
             isOpen={isOpen}
             setIsOpen={setIsOpen}
+            fetchUser={fetchUsers}
           />
         </div>
       </div>

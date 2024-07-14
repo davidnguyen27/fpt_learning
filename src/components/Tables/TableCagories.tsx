@@ -7,7 +7,7 @@ import {
 } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../app/redux/store";
-import { Category } from "../../models/Types";
+import { Category } from "../../models/Category/index";
 import ModalAddCategory from "../Modal/ModalAddCategory";
 import {
   deleteCategory,

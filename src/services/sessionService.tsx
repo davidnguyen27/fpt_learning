@@ -1,6 +1,6 @@
 import axios from "axios";
-import { Session, SessionData, SessionSearchRequest, SessionSearchResponse } from "../models/Session/Types";
 import { APILink } from "../const/linkAPI";
+import { Session, SessionData, SessionSearchRequest, SessionSearchResponse } from "../models/Session/Types";
 
 //--------------------------------- Get Session (Admin/ Instructor) -------------------------------------------
 export const getSession = async (

@@ -1,6 +1,6 @@
 import { Form, Input, Modal } from "antd";
 import { useEffect } from "react";
-import { Category } from "../../models/Types";
+import { Category } from "../../models/Category/index";
 
 interface ModalEditCategoryProps {
   open: boolean;

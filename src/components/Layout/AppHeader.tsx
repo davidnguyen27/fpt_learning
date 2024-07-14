@@ -11,7 +11,11 @@ import { useAuth } from "../../app/context/AuthContext";
 const AppHeader: React.FC = () => {
   const { toggleSider } = useSider();
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
+
+  const storedUser: any = sessionStorage.getItem("user");
+
+  const user = JSON.parse(storedUser);
 
   const handleLogout = () => {
     logout();
@@ -23,9 +27,9 @@ const AppHeader: React.FC = () => {
   };
 
   const handleView = () => {
-    if (user?.data.role === "admin") {
+    if (user.data.role === "admin") {
       navigate("/admin-profile-page");
-    } else if (user?.data.role === "instructor") {
+    } else if (user.data.role === "instructor") {
       navigate("/instructor-profile-page");
     } else {
       navigate("/student-profile-page");
@@ -33,9 +37,9 @@ const AppHeader: React.FC = () => {
   };
 
   const handleManagement = () => {
-    if (user?.data.role === "admin") {
+    if (user.data.role === "admin") {
       navigate("/admin/dashboard");
-    } else if (user?.data.role === "instructor") {
+    } else if (user?.role === "instructor") {
       navigate("/instructor/dashboard");
     } else {
       navigate("/student-course-list-page");
@@ -43,7 +47,7 @@ const AppHeader: React.FC = () => {
   };
 
   const handleShoppingCart = () => {
-    if (user?.data.role === "student") {
+    if (user.data.role === "student") {
       navigate("/cart");
     }
   };
@@ -57,18 +61,13 @@ const AppHeader: React.FC = () => {
       key: "1",
       label: (
         <a onClick={handleManagement}>
-          {user?.data.role === "admin" || "instructor"
-            ? "Dashboard"
-            : "My Course"}
+          {user?.role === "admin" || "instructor" ? "Dashboard" : "My Course"}
         </a>
       ),
     },
     {
       key: "2",
-      label:
-        user?.data.role === "admin" ? (
-          <a href="/paid-membership">Paid Memberships</a>
-        ) : null,
+      label: <a href="/paid-membership">Paid Memberships</a>,
     },
     {
       key: "3",
@@ -113,7 +112,7 @@ const AppHeader: React.FC = () => {
         </div>
       </div>
       <div className="styles-x-axis w-1/2 justify-end gap-5">
-        {user?.data.role === "instructor" ? (
+        {user?.role === "instructor" ? (
           <Button
             type="primary"
             danger
@@ -125,7 +124,7 @@ const AppHeader: React.FC = () => {
         ) : null}
         {user ? (
           <>
-            {user?.data.role === "student" && (
+            {user.role === "student" && (
               <Badge count={1}>
                 <ShoppingCartOutlined
                   style={{ fontSize: "1.5em" }}
@@ -133,7 +132,7 @@ const AppHeader: React.FC = () => {
                 />
               </Badge>
             )}
-            {user?.data.role === "instructor" && (
+            {user.role === "instructor" && (
               <Badge count={1}>
                 <ShoppingCartOutlined
                   style={{ fontSize: "1.5em" }}
@@ -151,7 +150,7 @@ const AppHeader: React.FC = () => {
               <a className="mr-9 flex" onClick={(e) => e.preventDefault()}>
                 <Space>
                   <img
-                    src={user?.data.avatar}
+                    src={user.image}
                     className="h-12 w-12 rounded-full"
                     alt=""
                   />
