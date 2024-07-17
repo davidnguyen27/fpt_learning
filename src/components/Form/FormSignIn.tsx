@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../app/context/AuthContext";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import { getCurrentLogin, loginViaGoogleAPI } from "../../services/authService";
+import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 
 const FormSignIn = () => {
   const navigate = useNavigate();
@@ -99,12 +100,15 @@ const FormSignIn = () => {
           name="password"
           rules={[{ required: true, message: "Mật khẩu là bắt buộc!" }]}
         >
-          <Input
+          <Input.Password
             className="text-sm"
             type="password"
             size="large"
             placeholder="Password"
             prefix={<i className="fa-solid fa-key"></i>}
+            iconRender={(visible) =>
+              visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+            }
           />
         </Form.Item>
         <div className="flex items-center justify-between">
@@ -129,7 +133,7 @@ const FormSignIn = () => {
             className="mb-3 flex w-full items-center justify-center rounded border border-black bg-[#ef4444] px-7 py-3 text-center text-sm font-medium uppercase leading-normal text-white shadow-md transition duration-150 hover:bg-[#333] hover:text-white"
           >
             <a href="/admin-login">
-              Sign In WITH ADMIN
+              SiGN IN WITH ADMIN
             </a>
             
           </button>
