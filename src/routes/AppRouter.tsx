@@ -35,6 +35,9 @@ const UserManagePage = React.lazy(
 const CoursesCheckPage = React.lazy(
   () => import("../pages/Admin/CoursesCheckPage"),
 );
+const AdminLoginPage = React.lazy(
+  () => import("../pages/Admin/AdminLoginPage")
+)
 
 //---------------------------------------------INSTRUCTOR----------------------------------------------
 const InstructorPage = React.lazy(
@@ -120,6 +123,7 @@ const AppRouter = () => {
             <Route path="/settings-page" element={<SettingsPage />} />
             <Route path="/forgot-password" element={<PasswordReset />} />
             <Route path="/verify-account" element={<StudentVerifyPage />} />
+            <Route path="/admin-login" element={<AdminLoginPage />} />
 
             {/*----------------------------ADMIN---------------------------------*/}
             <Route

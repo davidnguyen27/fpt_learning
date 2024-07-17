@@ -124,6 +124,15 @@ const FormSignIn = () => {
           >
             Sign In
           </button>
+          <button
+            type="submit"
+            className="mb-3 flex w-full items-center justify-center rounded border border-black bg-[#ef4444] px-7 py-3 text-center text-sm font-medium uppercase leading-normal text-white shadow-md transition duration-150 hover:bg-[#333] hover:text-white"
+          >
+            <a href="/admin-login">
+              Sign In WITH ADMIN
+            </a>
+            
+          </button>
           <p className="mb-0 text-sm font-semibold">
             Don't have an account?{" "}
             <a href="sign-up" className="text-red-500">
