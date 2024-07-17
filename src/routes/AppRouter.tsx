@@ -2,6 +2,7 @@ import React, { Suspense } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { AuthContext, AuthProvider } from "../app/context/AuthContext";
 import { useContext } from "react";
+import Loading from "../components/Loading/loading";
 
 //-------------------------------------------------USER------------------------------------------------
 const HomePage = React.lazy(() => import("../pages/User/HomePage"));
@@ -107,7 +108,7 @@ const AppRouter = () => {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<div>L<Loading/></div>}>
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/about" element={<AboutPage />} />

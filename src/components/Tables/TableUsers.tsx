@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Modal, Tooltip, Input, Select, Tag } from "antd";
+import { Table, Modal, Tooltip, Input, Select, Tag, Button } from "antd";
 import { UserData, UserSearchRequest } from "../../models/Types";
 import {
   deleteUser,
@@ -16,6 +16,7 @@ import {
 } from "@ant-design/icons";
 import ModalCreateAcc from "../../components/Modal/ModalCreateAcc";
 import ModalChangeRole from "../Modal/ModalChangeRole";
+import Loading from "../Loading/loading";
 
 const { Search } = Input;
 const { Option } = Select;
@@ -242,19 +243,19 @@ const TableUsers: React.FC = () => {
       render: (status: boolean, record: UserData) => (
         <div>
           {status ? (
-            <button
+            <Button
               className="rounded-md bg-red-500 px-3 py-1 text-white"
               onClick={() => handleStatusChange(record, false)}
             >
               <UserDeleteOutlined />
-            </button>
+            </Button>
           ) : (
-            <button
+            <Button
               className="rounded-md bg-green-500 px-3 py-1 text-white"
               onClick={() => handleStatusChange(record, true)}
             >
               <UserAddOutlined />
-            </button>
+            </Button>
           )}
         </div>
       ),
@@ -301,7 +302,7 @@ const TableUsers: React.FC = () => {
   ];
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div><Loading/></div>;
   }
 
   if (error) {
