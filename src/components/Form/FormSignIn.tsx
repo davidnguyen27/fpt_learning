@@ -6,12 +6,13 @@ import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import { getCurrentLogin, loginViaGoogleAPI } from "../../services/authService";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 
+
 const FormSignIn = () => {
   const navigate = useNavigate();
   const authContext = useContext(AuthContext);
 
   if (!authContext) {
-    throw new Error("AuthContext phải được sử dụng trong AuthProvider");
+    throw new Error("AuthContext must be used within AuthProvider");
   }
 
   const { user, login } = authContext;
@@ -29,7 +30,7 @@ const FormSignIn = () => {
           navigate("/");
           break;
         default:
-          console.log("Vai trò không xác định!");
+          console.log("Unknown role!");
           break;
       }
     }
@@ -38,9 +39,12 @@ const FormSignIn = () => {
   const handleLogin = async (values: { email: string; password: string }) => {
     try {
       await login(values.email, values.password);
+      notification.success({
+        message: "Login Successful",
+        description: "You have successfully logged in!",
+      });
     } catch (error) {
       console.error("Unknown error: ", error);
-      alert("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.");
     }
   };
 
@@ -72,8 +76,7 @@ const FormSignIn = () => {
   };
 
   const onError = () => {
-    console.log("Đăng nhập Google thất bại");
-    alert("Không thể đăng nhập bằng Google.");
+    console.log("Google login failed");
   };
 
   return (
@@ -85,8 +88,8 @@ const FormSignIn = () => {
         <Form.Item
           name="email"
           rules={[
-            { required: true, message: "Email là bắt buộc!" },
-            { type: "email", message: "Vui lòng nhập đúng địa chỉ email!" },
+            { required: true, message: "Email is required!" },
+            { type: "email", message: "Please enter a valid email address!" },
           ]}
         >
           <Input
@@ -98,7 +101,7 @@ const FormSignIn = () => {
         </Form.Item>
         <Form.Item
           name="password"
-          rules={[{ required: true, message: "Mật khẩu là bắt buộc!" }]}
+          rules={[{ required: true, message: "Password is required!" }]}
         >
           <Input.Password
             className="text-sm"
@@ -133,9 +136,8 @@ const FormSignIn = () => {
             className="mb-3 flex w-full items-center justify-center rounded border border-black bg-[#ef4444] px-7 py-3 text-center text-sm font-medium uppercase leading-normal text-white shadow-md transition duration-150 hover:bg-[#333] hover:text-white"
           >
             <a href="/admin-login">
-              SiGN IN WITH ADMIN
+              SIGN IN WITH ADMIN
             </a>
-            
           </button>
           <p className="mb-0 text-sm font-semibold">
             Don't have an account?{" "}

@@ -11,12 +11,14 @@ interface CategoryState {
   categories: Category["pageData"];
   loading: boolean;
   error: string | null;
+  total: number,
 }
 
 const initialState: CategoryState = {
   categories: [],
   loading: false,
   error: null,
+  total: 1,
 };
 
 export const createCategory = createAsyncThunk(
