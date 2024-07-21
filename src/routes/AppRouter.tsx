@@ -3,6 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { AuthContext, AuthProvider } from "../app/context/AuthContext";
 import { useContext } from "react";
 import Loading from "../components/Loading/loading";
+import { Spin } from "antd";
 
 //-------------------------------------------------USER------------------------------------------------
 const HomePage = React.lazy(() => import("../pages/User/HomePage"));
@@ -35,6 +36,9 @@ const UserManagePage = React.lazy(
 const CoursesCheckPage = React.lazy(
   () => import("../pages/Admin/CoursesCheckPage"),
 );
+const AdminLoginPage = React.lazy(
+  () => import("../pages/Admin/AdminLoginPage")
+)
 
 //---------------------------------------------INSTRUCTOR----------------------------------------------
 const InstructorPage = React.lazy(
@@ -108,7 +112,9 @@ const AppRouter = () => {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Suspense fallback={<div>L<Loading/></div>}>
+        <Suspense fallback={<Spin tip="Loading" size="large">
+          <Loading/>
+      </Spin>}>
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/about" element={<AboutPage />} />
@@ -120,6 +126,7 @@ const AppRouter = () => {
             <Route path="/settings-page" element={<SettingsPage />} />
             <Route path="/forgot-password" element={<PasswordReset />} />
             <Route path="/verify-account" element={<StudentVerifyPage />} />
+            <Route path="/admin-login" element={<AdminLoginPage />} />
 
             {/*----------------------------ADMIN---------------------------------*/}
             <Route

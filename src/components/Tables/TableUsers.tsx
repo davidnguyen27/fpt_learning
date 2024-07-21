@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Modal, Tooltip, Input, Select, Tag, Button } from "antd";
+import { Table, Modal, Tooltip, Input, Select, Tag, Switch } from "antd";
 import { UserData, UserSearchRequest } from "../../models/Types";
 import {
   deleteUser,
@@ -142,9 +142,9 @@ const TableUsers: React.FC = () => {
     setSearchText(value);
   };
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchText(e.target.value);
-  };
+  // const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setSearchText(e.target.value);
+  // };
 
   const handleRoleFilterChange = (value: string) => {
     setRoleFilter(value);
@@ -241,32 +241,35 @@ const TableUsers: React.FC = () => {
       dataIndex: "status",
       key: "status",
       render: (status: boolean, record: UserData) => (
-        <div>
-          {status ? (
-            <Button
-              className="rounded-md bg-red-500 px-3 py-1 text-white"
-              onClick={() => handleStatusChange(record, false)}
-            >
-              <UserDeleteOutlined />
-            </Button>
-          ) : (
-            <Button
-              className="rounded-md bg-green-500 px-3 py-1 text-white"
-              onClick={() => handleStatusChange(record, true)}
-            >
-              <UserAddOutlined />
-            </Button>
-          )}
-        </div>
+        <Switch
+          checked={status}
+          checkedChildren={<UserDeleteOutlined />}
+          unCheckedChildren={<UserAddOutlined />}
+          onChange={(checked) => handleStatusChange(record, checked)}
+        />
       ),
     },
     {
       title: "Role",
       dataIndex: "role",
       key: "role",
-      render: (role: string) => (
-        <Tag color="geekblue">{role.toUpperCase()}</Tag>
-      ),
+      render: (role: string) => {
+        let color;
+        switch (role.toLowerCase()) {
+          case 'admin':
+            color = 'volcano';
+            break;
+          case 'instructor':
+            color = 'geekblue';
+            break;
+          case 'student':
+            color = 'green';
+            break;
+          default:
+            color = 'geekblue';
+        }
+        return <Tag color={color}>{role.toUpperCase()}</Tag>;
+      },
     },
     {
       title: "Action",
@@ -323,7 +326,7 @@ const TableUsers: React.FC = () => {
             placeholder="Search by name or email"
             allowClear
             onSearch={handleSearch}
-            onChange={handleSearchChange}
+            // onChange={handleSearchChange}
             style={{ width: 300, marginRight: 16 }}
           />
           <Select
