@@ -6,9 +6,12 @@ import { Lesson } from "../../models/Lesson";
 const useAddLesson = (onSuccess: () => void) => {
   const [loading, setLoading] = useState<boolean>(false);
 
-  const createLesson = async (lessonData: Lesson["pageData"]) => {
+  const createLesson = async (lessonData: Lesson) => {
     try {
       setLoading(true);
+      lessonData.position_order = Number(lessonData.position_order);
+      lessonData.full_time = Number(lessonData.full_time);
+
       await createLessonAPI(lessonData);
       message.success("Lesson added successfully");
       onSuccess();

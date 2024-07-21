@@ -1,0 +1,25 @@
+export type Session = {
+      _id: string;
+      name: string;
+      course_id: string;
+      course_name: string;
+      user_id: string;
+      description: string;
+      position_order: number;
+      created_at: Date;
+      updated_at: Date;
+      is_deleted: boolean;
+  };
+    export type DataTransfer = {
+        searchCondition: {
+          keyword: string;
+          course_id: string;
+          course_name: string;
+          is_position_order: boolean;
+          is_delete: boolean;
+        };
+        pageInfo: {
+          pageNum: number;
+          pageSize: number;
+        };
+      };

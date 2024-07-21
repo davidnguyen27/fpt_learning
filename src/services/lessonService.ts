@@ -4,7 +4,7 @@ import { APILink } from "../const/linkAPI";
 
 export const getLessonsAPI = async (
   dataTransfer: DataTransfer,
-): Promise<Lesson["pageData"]> => {
+): Promise<Lesson[]> => {
   try {
     const token = sessionStorage.getItem("token");
     if (!token) throw new Error("Cannot get token!");
@@ -31,7 +31,7 @@ export const getLessonAPI = async (lessonId: string) => {
       },
     });
 
-    const lessonData: Lesson["pageData"][number] = res.data.data;
+    const lessonData: Lesson = res.data.data;
     if (!lessonData) throw new Error("Not found lessonData");
 
     return lessonData;
@@ -42,7 +42,7 @@ export const getLessonAPI = async (lessonId: string) => {
 };
 
 export const createLessonAPI = async (
-  lessonData: Partial<Lesson["pageData"]>,
+  lessonData: Partial<Lesson>,
 ) => {
   try {
     const token = sessionStorage.getItem("token");
@@ -61,8 +61,8 @@ export const createLessonAPI = async (
 
 export const editLessonAPI = async (
   lessonId: string,
-  lessonData: Partial<Lesson["pageData"][number]>,
-): Promise<Lesson["pageData"][number]> => {
+  lessonData: Partial<Lesson>,
+): Promise<Lesson> => {
   try {
     const token = sessionStorage.getItem("token");
     if (!token) throw new Error("Cannot get token!");
@@ -98,3 +98,72 @@ export const deleteLessonAPI = async (lessonId: string) => {
     throw new Error(error);
   }
 };
+
+export const getCoursesAPI = async (
+  keyword: string,
+  pageNum: number,
+  pageSize: number,
+  is_delete: boolean,
+) => {
+  try {
+    const token = sessionStorage.getItem("token");
+    console.log("token", token);
+    if (!token) throw new Error("Cannot get token!");
+
+    const res = await axios.post(
+      `${APILink}/api/course/search`,
+      {
+        searchCondition: { keyword, is_delete },
+        pageInfo: { pageNum, pageSize },
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    
+    console.log("res", res.data);
+    return res.data;
+
+  } catch (error: any) {
+    console.error("API Error:", error);
+    throw new Error(error.message || "An error occurred while fetching courses");
+  }
+};
+
+export const getSessionsAPI = async (
+  keyword: string,
+  pageNum: number,
+  pageSize: number,
+  is_delete: boolean,
+) => {
+  try {
+    const token = sessionStorage.getItem("token");
+    console.log("token", token);
+    if (!token) throw new Error("Cannot get token!");
+
+    const res = await axios.post(
+      `${APILink}/api/session/search`,
+      {
+        searchCondition: { keyword, is_delete },
+        pageInfo: { pageNum, pageSize },
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    
+    console.log("res", res.data);
+    return res.data;
+
+  } catch (error: any) {
+    console.error("API Error:", error);
+    throw new Error(error.message || "An error occurred while fetching sessions");
+  }
+};
+
