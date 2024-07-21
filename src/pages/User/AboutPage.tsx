@@ -64,7 +64,7 @@ const AboutPage: React.FC = () => {
           <Row gutter={16}>
             <Col xs={24} md={12} lg={8} className="mb-8">
               <img
-                src="/public/image/drawing-tablet.png"
+                src="../../assets/Image/drawing-tablet.png"
                 alt="Our Story"
                 className="w-full"
               />

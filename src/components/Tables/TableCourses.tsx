@@ -2,8 +2,9 @@ import { DeleteOutlined, FormOutlined } from "@ant-design/icons";
 import { Col, Row, Space, Table, Input, Select, Spin, Modal } from "antd";
 import { useMemo, useState } from "react";
 import useCourseData from "../../hooks/course/useCourseData";
-import { DataTransfer } from "../../models/Course";
+import { DataTransfer, DataType } from "../../models/Course";
 import useDeleteCourse from "../../hooks/course/useDeleteCourse";
+import { ColumnsType } from "antd/es/table";
 const { Option } = Select;
 const { Search } = Input;
 
@@ -54,7 +55,7 @@ const TableCourses = () => {
     return <div>{error}</div>;
   }
 
-  const columns = [
+  const columns: ColumnsType<DataType> = [
     {
       title: "No.",
       key: "index",

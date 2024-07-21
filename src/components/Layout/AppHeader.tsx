@@ -5,6 +5,10 @@ import {
   ShoppingCartOutlined,
   MailOutlined,
   BellOutlined,
+  ContactsOutlined,
+  AreaChartOutlined,
+  RetweetOutlined,
+  LogoutOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "../../app/context/AuthContext";
 
@@ -14,7 +18,6 @@ const AppHeader: React.FC = () => {
   const { logout } = useAuth();
 
   const storedUser: any = sessionStorage.getItem("user");
-
   const user = JSON.parse(storedUser);
 
   const handleLogout = () => {
@@ -27,9 +30,9 @@ const AppHeader: React.FC = () => {
   };
 
   const handleView = () => {
-    if (user.data.role === "admin") {
+    if (user?.data.role === "admin") {
       navigate("/admin-profile-page");
-    } else if (user.data.role === "instructor") {
+    } else if (user?.data.role === "instructor") {
       navigate("/instructor-profile-page");
     } else {
       navigate("/student-profile-page");
@@ -37,9 +40,9 @@ const AppHeader: React.FC = () => {
   };
 
   const handleManagement = () => {
-    if (user.data.role === "admin") {
+    if (user?.data.role === "admin") {
       navigate("/admin/dashboard");
-    } else if (user?.role === "instructor") {
+    } else if (user?.data.role === "instructor") {
       navigate("/instructor/dashboard");
     } else {
       navigate("/student-course-list-page");
@@ -47,7 +50,7 @@ const AppHeader: React.FC = () => {
   };
 
   const handleShoppingCart = () => {
-    if (user.data.role === "student") {
+    if (user?.data.role === "student") {
       navigate("/cart");
     }
   };
@@ -55,13 +58,20 @@ const AppHeader: React.FC = () => {
   const items: MenuProps["items"] = [
     {
       key: "0",
-      label: <a onClick={handleView}>Profile</a>,
+      label: (
+        <a onClick={handleView}>
+          <ContactsOutlined /> Profile
+        </a>
+      ),
     },
     {
       key: "1",
       label: (
         <a onClick={handleManagement}>
-          {user?.role === "admin" || "instructor" ? "Dashboard" : "My Course"}
+          <AreaChartOutlined />{" "}
+          {user?.data.role === "admin" || "instructor"
+            ? "Dashboard"
+            : "My Course"}
         </a>
       ),
     },
@@ -79,11 +89,19 @@ const AppHeader: React.FC = () => {
     },
     {
       key: "5",
-      label: <a href="/feedback">Send Feedback</a>,
+      label: (
+        <a href="/user/change-password">
+          <RetweetOutlined /> Change Password
+        </a>
+      ),
     },
     {
       key: "6",
-      label: <a onClick={handleLogout}>Logout</a>,
+      label: (
+        <a onClick={handleLogout}>
+          <LogoutOutlined /> Logout
+        </a>
+      ),
     },
   ];
 
@@ -112,7 +130,7 @@ const AppHeader: React.FC = () => {
         </div>
       </div>
       <div className="styles-x-axis w-1/2 justify-end gap-5">
-        {user?.role === "instructor" ? (
+        {user?.data.role === "instructor" ? (
           <Button
             type="primary"
             danger
@@ -124,7 +142,7 @@ const AppHeader: React.FC = () => {
         ) : null}
         {user ? (
           <>
-            {user.role === "student" && (
+            {user?.data.role === "student" && (
               <Badge count={1}>
                 <ShoppingCartOutlined
                   style={{ fontSize: "1.5em" }}
@@ -132,7 +150,7 @@ const AppHeader: React.FC = () => {
                 />
               </Badge>
             )}
-            {user.role === "instructor" && (
+            {user?.data.role === "instructor" && (
               <Badge count={1}>
                 <ShoppingCartOutlined
                   style={{ fontSize: "1.5em" }}
@@ -150,7 +168,7 @@ const AppHeader: React.FC = () => {
               <a className="mr-9 flex" onClick={(e) => e.preventDefault()}>
                 <Space>
                   <img
-                    src={user.image}
+                    src={user.data.avatar}
                     className="h-12 w-12 rounded-full"
                     alt=""
                   />
@@ -180,6 +198,13 @@ const AppHeader: React.FC = () => {
               onClick={() => navigate("/sign-up")}
             >
               Sign Up
+            </Button>
+            <Button
+              className="mr-4 border-slate-900 bg-slate-900 text-white"
+              type="primary"
+              onClick={() => navigate("/sign-up-instructor")}
+            >
+              Become an Instructor
             </Button>
           </div>
         )}

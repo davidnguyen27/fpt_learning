@@ -5,7 +5,7 @@ import signUp from "../../assets/Image/background.png";
 const SignUpPage = () => {
   return (
     <div
-      className="flex h-screen w-screen items-center justify-center bg-slate-300"
+      className="flex h-screen w-full items-center justify-center bg-slate-300"
       style={{
         backgroundImage: `url(${signUp})`,
         backgroundSize: "cover",

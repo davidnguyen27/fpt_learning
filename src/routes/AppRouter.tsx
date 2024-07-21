@@ -2,6 +2,7 @@ import React, { Suspense } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { AuthContext, AuthProvider } from "../app/context/AuthContext";
 import { useContext } from "react";
+import { Spin } from "antd";
 
 //-------------------------------------------------USER------------------------------------------------
 const HomePage = React.lazy(() => import("../pages/User/HomePage"));
@@ -21,6 +22,11 @@ const SettingsPage = React.lazy(() => import("../pages/User/SettingPage"));
 const AboutPage = React.lazy(() => import("../pages/User/AboutPage"));
 const PasswordReset = React.lazy(() => import("../pages/User/ForgotPassword"));
 const UserDetail = React.lazy(() => import("../pages/User/UserDetail"));
+const RegisterInstructorPage = React.lazy(
+  () => import("../pages/Instructor/RegisterInstructorPage"),
+);
+const VerifyPage = React.lazy(() => import("../pages/User/VerifyPage"));
+const ChangePassPage = React.lazy(() => import("../pages/ChangePasswordPage"));
 
 //-----------------------------------------------ADMIN-------------------------------------------------
 const AdminPage = React.lazy(() => import("../pages/Admin/AdminPage"));
@@ -33,6 +39,9 @@ const UserManagePage = React.lazy(
 );
 const CoursesCheckPage = React.lazy(
   () => import("../pages/Admin/CoursesCheckPage"),
+);
+const ReviewProfilePage = React.lazy(
+  () => import("../pages/Admin/ReviewProfilePage"),
 );
 
 //---------------------------------------------INSTRUCTOR----------------------------------------------
@@ -61,9 +70,9 @@ const EarningPage = React.lazy(() => import("../pages/Instructor/EarningPage"));
 
 //-----------------------------------------------STUDENT-----------------------------------------------
 const StudentVerifyPage = React.lazy(() => import("../pages/User/VerifyPage"));
-// const StudentProfilePage = React.lazy(
-//   () => import("../pages/Student/StudentProfilePage"),
-// );
+const StudentProfilePage = React.lazy(
+  () => import("../pages/Student/StudentProfilePage"),
+);
 const StudentCourseDetailPage = React.lazy(
   () => import("../pages/Student/StudentCourseDetailPage"),
 );
@@ -88,7 +97,7 @@ const ProtectedRoute = ({ element, allowedRoles }: ProtectedRouteProps) => {
 
   const storedUser: any = sessionStorage.getItem("user");
   if (!storedUser) {
-    throw new Error("Could not find user in sessionStorage");
+    return <Navigate to="/sign-in" replace />;
   }
   const user = JSON.parse(storedUser);
 
@@ -107,7 +116,13 @@ const AppRouter = () => {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense
+          fallback={
+            <Spin tip="Loading" size="large">
+              Loading...
+            </Spin>
+          }
+        >
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/about" element={<AboutPage />} />
@@ -119,6 +134,12 @@ const AppRouter = () => {
             <Route path="/settings-page" element={<SettingsPage />} />
             <Route path="/forgot-password" element={<PasswordReset />} />
             <Route path="/verify-account" element={<StudentVerifyPage />} />
+            <Route
+              path="/sign-up-instructor"
+              element={<RegisterInstructorPage />}
+            />
+            <Route path="/verify-email/:token" element={<VerifyPage />} />
+            <Route path="/user/change-password" element={<ChangePassPage />} />
 
             {/*----------------------------ADMIN---------------------------------*/}
             <Route
@@ -175,15 +196,15 @@ const AppRouter = () => {
               />
             }
           /> */}
-            {/* <Route
-            path="/admin/reports-management"
-            element={
-              <ProtectedRoute
-                element={<ReportManagePage />}
-                allowedRoles={["admin"]}
-              />
-            }
-          /> */}
+            <Route
+              path="/admin/review-profile"
+              element={
+                <ProtectedRoute
+                  element={<ReviewProfilePage />}
+                  allowedRoles={["admin"]}
+                />
+              }
+            />
             {/* <Route
             path="/admin/blogs-management"
             element={
@@ -238,7 +259,7 @@ const AppRouter = () => {
                 />
               }
             />
-            {/* <Route
+            <Route
               path="/student-profile-page"
               element={
                 <ProtectedRoute
@@ -246,7 +267,7 @@ const AppRouter = () => {
                   allowedRoles={["student"]}
                 />
               }
-            /> */}
+            />
             <Route
               path="/student-course-list-page"
               element={

@@ -29,6 +29,16 @@ export type User = {
     status: boolean;
     created_at: string;
     updated_at: string;
+    balance_total: number;
+    balance_account: string;
+    balance_name: string;
+    transactions: {
+      _id: string;
+      payout_id: string;
+      payout_no: string;
+      payout_amount: string;
+      created_at: string;
+    };
   };
 };
 
@@ -37,13 +47,12 @@ export type SearchCondition = {
   role: string;
   status: boolean;
   is_delete: boolean;
-
-}
+};
 
 export type PageInfo = {
   pageNum: number;
   pageSize: number;
-}
+};
 
 export type UserData = {
   _id: string;
@@ -56,12 +65,22 @@ export type UserData = {
   phone_number: string;
   avatar: string;
   video: string;
-  dob: Date;
-  created_at: Date;
-  updated_at: Date;
+  dob: string;
+  created_at: string;
+  updated_at: string;
   is_deleted: boolean;
   is_verified: boolean;
-}
+  balance_total: number;
+  balance_account: string;
+  balance_name: string;
+  transactions: {
+    _id: string;
+    payout_id: string;
+    payout_no: string;
+    payout_amount: string;
+    created_at: string;
+  };
+};
 
 export type UserDetailProp = {
   _id: string;
@@ -100,7 +119,6 @@ export type ApiResponse = {
 };
 
 // Category
-
 
 // Course
 export type SiderProviderProps = {

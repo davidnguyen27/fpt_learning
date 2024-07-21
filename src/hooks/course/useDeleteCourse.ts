@@ -5,10 +5,10 @@ import { deleteCourseAPI } from "../../services/courseManageService";
 const useDeleteCourse = (onSuccess: () => void) => {
   const [loading, setLoading] = useState<boolean>(false);
 
-  const deleteCourse = async (lessonId: string) => {
+  const deleteCourse = async (courseId: string) => {
     try {
       setLoading(true);
-      await deleteCourseAPI(lessonId);
+      await deleteCourseAPI(courseId);
       message.success("Course deleted successfully");
       onSuccess();
     } catch (error) {

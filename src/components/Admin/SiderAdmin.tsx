@@ -1,6 +1,6 @@
 import {
+  AuditOutlined,
   BarsOutlined,
-
   LineChartOutlined,
   ReadOutlined,
   UserOutlined,
@@ -36,7 +36,14 @@ const SiderAdmin: React.FC<{ className?: string }> = () => {
       className: "hover:rounded-none hover:bg-red-500 hover:text-white",
     },
     {
-      key: "7",
+      key: "4",
+      icon: <AuditOutlined />,
+      label: "Instructor Request",
+      onClick: () => navigate("/admin/review-profile"),
+      className: "hover:rounded-none hover:bg-red-500 hover:text-white",
+    },
+    {
+      key: "5",
       icon: <ReadOutlined />,
       label: "Courses",
       onClick: () => navigate("/admin/courses-check"),

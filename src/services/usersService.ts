@@ -10,10 +10,15 @@ import { APILink } from "../const/linkAPI"; // Import API endpoint from const/li
 //--------------------------------- Get Users (Admin) ------------------------------------------
 export const getUsers = async (
   requestData: UserSearchRequest,
+  role: string,
 ): Promise<UserSearchResponse> => {
   try {
     const token = sessionStorage.getItem("token");
     if (!token) throw new Error("Cannot get token!");
+
+    if (role) {
+      requestData.searchCondition.role = role;
+    }
 
     const response = await axios.post(
       `${APILink}/api/users/search`,
@@ -34,11 +39,8 @@ export const getUsers = async (
 };
 //-----------------------------------------------------------------------------------------------
 
-//------------------------------ Get User Detail (Admin) ----------------------------------------
-export const getUserDetail = async (
-  userId: string,
-  token: string,
-): Promise<UserData> => {
+//------------------------------ Get User Detail ------------------------------------------------
+export const getUserDetail = async (userId: string, token: string) => {
   try {
     const response = await axios.get(`${APILink}/api/users/${userId}`, {
       headers: {
@@ -46,17 +48,13 @@ export const getUserDetail = async (
       },
     });
 
-    const userData: UserData = response.data.data; // Assuming response structure matches UserData
-    console.log(userData);
+    const userData: UserData = response.data.data;
 
     if (userData) {
-      return userData; // Return user data if successful
-    } else {
-      throw new Error("Failed to fetch user detail");
+      return userData;
     }
   } catch (error: any) {
-    console.error("Error fetching user detail:", error);
-    throw error; // Throw error for handling in the component
+    throw new Error(error.response.data.message);
   }
 };
 //-----------------------------------------------------------------------------------------------
@@ -74,26 +72,27 @@ export const deleteUser = async (userId: string): Promise<void> => {
       },
     });
   } catch (error: any) {
-    throw new Error(error);
+    if (error.response && error.response.data && error.response.data.message) {
+      throw new Error(error.response.data.message);
+    }
+    throw new Error(error.message);
   }
 };
 //-----------------------------------------------------------------------------------------------
 
 //-------------------------------- Register User (Public) ---------------------------------------
-export const registerUser = async (
-  userData: Partial<User["data"]>,
-): Promise<User> => {
+export const registerUser = async (userData: Partial<User["data"]>) => {
   try {
     const res = await axios.post<User>(`${APILink}/api/users`, userData);
-    console.log(res.data);
     return res.data;
   } catch (error: any) {
-    throw new Error(error.response.data);
+    if (error.response && error.response.data)
+      throw new Error(error.response.data.message);
   }
 };
 //--------------------------------------------------------------------------------------------
 
-//-------------------------------- Update User (Admin) ---------------------------------------
+//-------------------------------- Update User -----------------------------------------------
 export const updateUser = async (
   userId: string,
   updatedUserData: Partial<UserData>,
@@ -116,7 +115,7 @@ export const updateUser = async (
     const updatedUser: UserData = response.data.data;
     return updatedUser;
   } catch (error: any) {
-    throw new Error(error);
+    throw new Error(error.response.data.message);
   }
 };
 
@@ -183,5 +182,56 @@ export const changeRoleAPI = async (
     return res.data;
   } catch (error: any) {
     throw new Error(error);
+  }
+};
+
+export const reviewInstructorAPI = async (
+  user_id: string,
+  status: string,
+  comment: string,
+) => {
+  try {
+    const token = sessionStorage.getItem("token");
+    if (!token) throw new Error("Token is not valid!");
+
+    const res = await axios.put(
+      `${APILink}/api/users/review-profile-instructor`,
+      { user_id, status, comment },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    return res.data;
+  } catch (error: any) {
+    if (error.response && error.response.data && error.response.data.message) {
+      throw new Error(error.response.data.message);
+    }
+  }
+};
+
+export const changePasswordAPI = async (
+  user_id: string,
+  old_password: string,
+  new_password: string,
+) => {
+  try {
+    const token = sessionStorage.getItem("token");
+    if (!token) throw new Error("Invalid token!");
+
+    const res = await axios.put(
+      `${APILink}/api/users/change-password`,
+      { user_id, old_password, new_password },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return res.data;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
   }
 };

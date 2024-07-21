@@ -16,6 +16,7 @@ import {
 } from "@ant-design/icons";
 import ModalCreateAcc from "../../components/Modal/ModalCreateAcc";
 import ModalChangeRole from "../Modal/ModalChangeRole";
+import ModalUserDetails from "../Modal/ModalUserDetails";
 
 const { Search } = Input;
 const { Option } = Select;
@@ -60,7 +61,7 @@ const TableUsers: React.FC = () => {
     const requestData: UserSearchRequest = {
       searchCondition: {
         keyword: searchText.trim(),
-        role: roleFilter,
+        role: roleFilter === "all" ? "" : roleFilter,
         status: statusFilter,
         is_delete: false,
       },
@@ -71,7 +72,7 @@ const TableUsers: React.FC = () => {
     };
 
     try {
-      const response = await getUsers(requestData);
+      const response = await getUsers(requestData, roleFilter);
       setUsers(response.data.pageData);
       setPagination({
         ...pagination,
@@ -159,11 +160,6 @@ const TableUsers: React.FC = () => {
       current: pagination.current,
       pageSize: pagination.pageSize,
     });
-  };
-
-  const handleCloseDetailModal = () => {
-    setDetailModalVisible(false);
-    setSelectedUserDetail(null);
   };
 
   const handleStatusChange = (user: UserData, newStatus: boolean) => {
@@ -462,23 +458,6 @@ const TableUsers: React.FC = () => {
           {chosenUser?.status ? "shut down" : "turn on"} this user?
         </p>
       </Modal>
-      <Modal
-        title="User Details"
-        visible={detailModalVisible}
-        onOk={handleCloseDetailModal}
-        onCancel={handleCloseDetailModal}
-        footer={null}
-      >
-        {selectedUserDetail && (
-          <div>
-            <p>Name: {selectedUserDetail.name}</p>
-            <p>Email: {selectedUserDetail.email}</p>
-            <p>Role: {selectedUserDetail.role}</p>
-            <p>Status: {selectedUserDetail.status ? "Active" : "Inactive"}</p>
-            <p>Verified: {selectedUserDetail.is_verified ? "Yes" : "No"}</p>
-          </div>
-        )}
-      </Modal>
       {currentUser && (
         <ModalChangeRole
           open={openChange}
@@ -487,6 +466,11 @@ const TableUsers: React.FC = () => {
           currentRole={currentUser.role}
         />
       )}
+      <ModalUserDetails
+        open={detailModalVisible}
+        setOpen={setDetailModalVisible}
+        selectedUser={selectedUserDetail}
+      />
     </>
   );
 };

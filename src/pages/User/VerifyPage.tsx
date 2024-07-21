@@ -1,21 +1,46 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Input, Button, Typography, notification } from "antd";
 import { MailOutlined } from "@ant-design/icons";
 import "../../styles/PasswordReset.css";
 import forgotPassword from "../../assets/Image/background.png";
 import { resendEmailAPI, verifyEmailAPI } from "../../services/authService";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const { Title } = Typography;
 
 const VerifyPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { token } = useParams<{ token: string }>();
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [counter, setCounter] = useState(60);
 
   const email = location.state?.email;
+
+  useEffect(() => {
+    if (token) {
+      const verifyToken = async () => {
+        try {
+          const res = await verifyEmailAPI(token);
+          if (res) {
+            notification.success({
+              message: "Email Verified Successfully",
+              description: "You can now log in to the system.",
+            });
+            navigate("/sign-in");
+          }
+        } catch (error) {
+          notification.error({
+            message: "Verification Failed",
+            description: "Your token is expired or incorrect!",
+          });
+        }
+      };
+
+      verifyToken();
+    }
+  }, [token, navigate]);
 
   const onFinish = async (values: { token: string }) => {
     try {
@@ -77,7 +102,7 @@ const VerifyPage: React.FC = () => {
         justifyContent: "center",
       }}
     >
-      <div className="password-reset-container">
+      <div className="password-reset-container w-full">
         <Title level={2} className="password-reset-title">
           Verify Email
         </Title>
