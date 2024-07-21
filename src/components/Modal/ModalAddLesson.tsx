@@ -1,5 +1,11 @@
-import { Form, Input, Modal } from "antd";
+import { useEffect, useState } from "react";
+import { Form, Input, Modal, Select } from "antd";
 import useAddLesson from "../../hooks/lesson/useAddLesson";
+import { getCoursesAPI, getSessionsAPI } from "../../services/lessonService";
+import { Course } from "../../models/Course";
+import { Session } from "../../models/Session";
+
+const { Option } = Select;
 
 interface ModalAddLessonProps {
   open: boolean;
@@ -7,16 +13,56 @@ interface ModalAddLessonProps {
   onSuccess: () => void;
 }
 
+const lessonTypes = ["text", "video", "image"];
+
 const ModalAddLesson = (props: ModalAddLessonProps) => {
   const { open, setOpen, onSuccess } = props;
   const [form] = Form.useForm();
   const { createLesson, loading } = useAddLesson(onSuccess);
 
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [coursesLoading, setCoursesLoading] = useState<boolean>(true);
+  const [sessionsLoading, setSessionsLoading] = useState<boolean>(false);
+  const [lessonType, setLessonType] = useState<string>("text");
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const coursesData = await getCoursesAPI("", 1, 10, false);
+        setCourses(coursesData.data.pageData);
+      } catch (error) {
+        console.error("Failed to fetch courses:", error);
+      } finally {
+        setCoursesLoading(false);
+      }
+    };
+
+    fetchCourses();
+  }, []);
+
+  const handleCourseChange = async (courseId: string) => {
+    form.setFieldsValue({ session_id: undefined }); // Reset session field
+    setSessionsLoading(true);
+    try {
+      const sessionsData = await getSessionsAPI("", 1, 10, false);
+      setSessions(
+        sessionsData.data.pageData.filter((session: Session) => session.course_id === courseId)
+      );
+    } catch (error) {
+      console.error("Failed to fetch sessions:", error);
+    } finally {
+      setSessionsLoading(false);
+    }
+  };
+
+  const handleLessonTypeChange = (value: string) => {
+    setLessonType(value);
+  };
+
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-      values.full_time = Number(values.full_time);
-      values.position_order = Number(values.position_order);
       await createLesson(values);
       form.resetFields();
       setOpen(false);
@@ -47,7 +93,7 @@ const ModalAddLesson = (props: ModalAddLessonProps) => {
           className="rounded-md bg-red-500 px-4 py-1"
           onClick={handleSubmit}
         >
-          {loading ? "Add" : "Add..."}
+          {loading ? "Adding..." : "Add"}
         </button>,
       ]}
     >
@@ -55,70 +101,102 @@ const ModalAddLesson = (props: ModalAddLessonProps) => {
         <Form.Item
           label="Lesson Name"
           name="name"
-          rules={[{ required: true, message: "Lesson Name is require!" }]}
+          rules={[{ required: true, message: "Lesson Name is required!" }]}
         >
           <Input className="text-sm" size="large" placeholder="Lesson Name" />
         </Form.Item>
+
         <Form.Item
-          label="Course ID"
+          label="Course"
           name="course_id"
-          rules={[{ required: true, message: "Course ID is require!" }]}
+          rules={[{ required: true, message: "Course is required!" }]}
         >
-          <Input className="text-sm" size="large" placeholder="Course ID" />
+          <Select
+            placeholder="Select a course"
+            loading={coursesLoading}
+            disabled={coursesLoading}
+            onChange={handleCourseChange}
+          >
+            {courses.map((course) => (
+              <Option key={course._id} value={course._id}>
+                {course.name}
+              </Option>
+            ))}
+          </Select>
         </Form.Item>
+
         <Form.Item
-          label="Session ID"
+          label="Session"
           name="session_id"
-          rules={[{ required: true, message: "Session ID is require!" }]}
+          rules={[{ required: true, message: "Session is required!" }]}
         >
-          <Input className="text-sm" size="large" placeholder="Session ID" />
+          <Select
+            placeholder="Select a session"
+            loading={sessionsLoading}
+            disabled={sessionsLoading || !form.getFieldValue("course_id")}
+          >
+            {sessions.map((session) => (
+              <Option key={session._id} value={session._id}>
+                {session.name}
+              </Option>
+            ))}
+          </Select>
         </Form.Item>
+
         <Form.Item
           label="Lesson Type"
           name="lesson_type"
-          rules={[{ required: true, message: "Lesson Type is require!" }]}
+          rules={[{ required: true, message: "Lesson Type is required!" }]}
         >
-          <Input className="text-sm" size="large" placeholder="Lesson Type" />
+          <Select placeholder="Select lesson type" onChange={handleLessonTypeChange}>
+            {lessonTypes.map((type) => (
+              <Option key={type} value={type}>
+                {type}
+              </Option>
+            ))}
+          </Select>
         </Form.Item>
-        <Form.Item label="Description" name="description">
-          <Input className="text-sm" size="large" placeholder="Description" />
+
+        {lessonType === "text" && (
+          <Form.Item
+            label="Description"
+            name="description"
+            rules={[{ required: true, message: "Description is required for text lessons!" }]}
+          >
+            <Input.TextArea className="text-sm" size="large" placeholder="Description" />
+          </Form.Item>
+        )}
+
+        {lessonType === "video" && (
+          <Form.Item
+            label="Video URL"
+            name="video_url"
+            rules={[{ required: true, message: "Video URL is required for video lessons!" }]}
+          >
+            <Input className="text-sm" size="large" placeholder="Video URL" />
+          </Form.Item>
+        )}
+
+        {lessonType === "image" && (
+          <Form.Item
+            label="Image URL"
+            name="image_url"
+            rules={[{ required: true, message: "Image URL is required for image lessons!" }]}
+          >
+            <Input className="text-sm" size="large" placeholder="Image URL" />
+          </Form.Item>
+        )}
+
+        <Form.Item label="Position Order" name="position_order">
+          <Input className="text-sm" size="large" placeholder="99" />
         </Form.Item>
-        <Form.Item label="Video" name="video_url">
-          <Input
-            type="url"
-            className="text-sm"
-            size="large"
-            placeholder="Video (url)"
-          />
-        </Form.Item>
-        <Form.Item label="Image" name="image_url">
-          <Input
-            type="url"
-            className="text-sm"
-            size="large"
-            placeholder="Image (url)"
-          />
-        </Form.Item>
+
         <Form.Item
-          label="Duration"
+          label="Full time"
           name="full_time"
-          rules={[{ required: true, message: "Duration is require!" }]}
+          rules={[{ required: true, message: "Full time is required!" }]}
         >
-          <Input
-            type="number"
-            className="text-sm"
-            size="large"
-            placeholder="Duration"
-          />
-        </Form.Item>
-        <Form.Item label="Order" name="position_order">
-          <Input
-            type="number"
-            defaultValue={1}
-            className="text-sm"
-            size="large"
-            placeholder="Order"
-          />
+          <Input className="text-sm" size="large" placeholder="" />
         </Form.Item>
       </Form>
     </Modal>

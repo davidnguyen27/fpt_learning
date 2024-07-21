@@ -1,15 +1,23 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, createSlice } from "@reduxjs/toolkit";
 import userReducer from "./user/userSlice";
-import courseReducer from "./courses/courseSlice";
-import categoryReducer from "./categories/categorySlice";
-import updateReducer from "./user/updateSlice"
+import paginationSlice from "./pagination/paginationSlice";
+
+const loadingSlice = createSlice({
+  name: 'loading',
+  initialState: false,
+  reducers: {
+    toggleLoading: (_state, action) => action.payload,
+  },
+});
+
+export const { toggleLoading } = loadingSlice.actions;
+
 
 export const store = configureStore({
   reducer: {
     user: userReducer,
-    category: categoryReducer,
-    course: courseReducer,
-    update: updateReducer,
+    loading: loadingSlice.reducer,
+    pagination: paginationSlice,
   },
 });
 

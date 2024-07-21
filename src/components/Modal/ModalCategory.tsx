@@ -5,7 +5,7 @@ import { useEffect } from "react";
 interface ModalCategoryProps {
   open: boolean;
   setOpen: (open: boolean) => void;
-  category: Category["pageData"][number] | null;
+  category: Category | null;
 }
 
 const ModalCategory = (props: ModalCategoryProps) => {

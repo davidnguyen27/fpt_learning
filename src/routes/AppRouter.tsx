@@ -2,6 +2,7 @@ import React, { Suspense } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { AuthContext, AuthProvider } from "../app/context/AuthContext";
 import { useContext } from "react";
+import Loading from "../components/Loading/loading";
 import { Spin } from "antd";
 
 //-------------------------------------------------USER------------------------------------------------
@@ -42,6 +43,9 @@ const CoursesCheckPage = React.lazy(
 );
 const ReviewProfilePage = React.lazy(
   () => import("../pages/Admin/ReviewProfilePage"),
+);
+const AdminLoginPage = React.lazy(
+  () => import("../pages/Admin/AdminLoginPage"),
 );
 
 //---------------------------------------------INSTRUCTOR----------------------------------------------
@@ -119,7 +123,7 @@ const AppRouter = () => {
         <Suspense
           fallback={
             <Spin tip="Loading" size="large">
-              Loading...
+              <Loading />
             </Spin>
           }
         >
@@ -140,6 +144,7 @@ const AppRouter = () => {
             />
             <Route path="/verify-email/:token" element={<VerifyPage />} />
             <Route path="/user/change-password" element={<ChangePassPage />} />
+            <Route path="/admin-login" element={<AdminLoginPage />} />
 
             {/*----------------------------ADMIN---------------------------------*/}
             <Route

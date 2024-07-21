@@ -1,6 +1,6 @@
 import { useState } from "react";
+import { deleteCourseAPI } from "../../services/coursesService";
 import { message } from "antd";
-import { deleteCourseAPI } from "../../services/courseManageService";
 
 const useDeleteCourse = (onSuccess: () => void) => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -10,7 +10,7 @@ const useDeleteCourse = (onSuccess: () => void) => {
       setLoading(true);
       await deleteCourseAPI(courseId);
       message.success("Course deleted successfully");
-      onSuccess();
+      onSuccess(); // Call onSuccess to refresh the lessons list
     } catch (error) {
       message.error("Failed to delete course");
     } finally {

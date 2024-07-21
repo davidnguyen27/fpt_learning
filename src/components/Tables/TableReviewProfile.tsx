@@ -47,10 +47,7 @@ const TableReviewProfile = () => {
         },
       };
 
-      const response: UserSearchResponse = await getUsers(
-        requestData,
-        "instructor",
-      );
+      const response: UserSearchResponse = await getUsers(requestData);
       const instructors: DataType[] = response.data.pageData
         .filter((user) => !user.is_verified)
         .map((user, index) => ({

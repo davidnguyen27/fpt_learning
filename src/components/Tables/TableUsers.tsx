@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Modal, Tooltip, Input, Select, Tag } from "antd";
+import { Table, Modal, Tooltip, Input, Select, Tag, Switch } from "antd";
 import { UserData, UserSearchRequest } from "../../models/Types";
 import {
   deleteUser,
@@ -16,7 +16,7 @@ import {
 } from "@ant-design/icons";
 import ModalCreateAcc from "../../components/Modal/ModalCreateAcc";
 import ModalChangeRole from "../Modal/ModalChangeRole";
-import ModalUserDetails from "../Modal/ModalUserDetails";
+import Loading from "../Loading/loading";
 
 const { Search } = Input;
 const { Option } = Select;
@@ -61,7 +61,7 @@ const TableUsers: React.FC = () => {
     const requestData: UserSearchRequest = {
       searchCondition: {
         keyword: searchText.trim(),
-        role: roleFilter === "all" ? "" : roleFilter,
+        role: roleFilter,
         status: statusFilter,
         is_delete: false,
       },
@@ -72,7 +72,7 @@ const TableUsers: React.FC = () => {
     };
 
     try {
-      const response = await getUsers(requestData, roleFilter);
+      const response = await getUsers(requestData);
       setUsers(response.data.pageData);
       setPagination({
         ...pagination,
@@ -142,10 +142,6 @@ const TableUsers: React.FC = () => {
     setSearchText(value);
   };
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchText(e.target.value);
-  };
-
   const handleRoleFilterChange = (value: string) => {
     setRoleFilter(value);
   };
@@ -160,6 +156,11 @@ const TableUsers: React.FC = () => {
       current: pagination.current,
       pageSize: pagination.pageSize,
     });
+  };
+
+  const handleCloseDetailModal = () => {
+    setDetailModalVisible(false);
+    setSelectedUserDetail(null);
   };
 
   const handleStatusChange = (user: UserData, newStatus: boolean) => {
@@ -236,32 +237,35 @@ const TableUsers: React.FC = () => {
       dataIndex: "status",
       key: "status",
       render: (status: boolean, record: UserData) => (
-        <div>
-          {status ? (
-            <button
-              className="rounded-md bg-red-500 px-3 py-1 text-white"
-              onClick={() => handleStatusChange(record, false)}
-            >
-              <UserDeleteOutlined />
-            </button>
-          ) : (
-            <button
-              className="rounded-md bg-green-500 px-3 py-1 text-white"
-              onClick={() => handleStatusChange(record, true)}
-            >
-              <UserAddOutlined />
-            </button>
-          )}
-        </div>
+        <Switch
+          checked={status}
+          checkedChildren={<UserDeleteOutlined />}
+          unCheckedChildren={<UserAddOutlined />}
+          onChange={(checked) => handleStatusChange(record, checked)}
+        />
       ),
     },
     {
       title: "Role",
       dataIndex: "role",
       key: "role",
-      render: (role: string) => (
-        <Tag color="geekblue">{role.toUpperCase()}</Tag>
-      ),
+      render: (role: string) => {
+        let color;
+        switch (role.toLowerCase()) {
+          case "admin":
+            color = "volcano";
+            break;
+          case "instructor":
+            color = "geekblue";
+            break;
+          case "student":
+            color = "green";
+            break;
+          default:
+            color = "geekblue";
+        }
+        return <Tag color={color}>{role.toUpperCase()}</Tag>;
+      },
     },
     {
       title: "Action",
@@ -297,7 +301,11 @@ const TableUsers: React.FC = () => {
   ];
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
   }
 
   if (error) {
@@ -318,7 +326,6 @@ const TableUsers: React.FC = () => {
             placeholder="Search by name or email"
             allowClear
             onSearch={handleSearch}
-            onChange={handleSearchChange}
             style={{ width: 300, marginRight: 16 }}
           />
           <Select
@@ -458,6 +465,23 @@ const TableUsers: React.FC = () => {
           {chosenUser?.status ? "shut down" : "turn on"} this user?
         </p>
       </Modal>
+      <Modal
+        title="User Details"
+        visible={detailModalVisible}
+        onOk={handleCloseDetailModal}
+        onCancel={handleCloseDetailModal}
+        footer={null}
+      >
+        {selectedUserDetail && (
+          <div>
+            <p>Name: {selectedUserDetail.name}</p>
+            <p>Email: {selectedUserDetail.email}</p>
+            <p>Role: {selectedUserDetail.role}</p>
+            <p>Status: {selectedUserDetail.status ? "Active" : "Inactive"}</p>
+            <p>Verified: {selectedUserDetail.is_verified ? "Yes" : "No"}</p>
+          </div>
+        )}
+      </Modal>
       {currentUser && (
         <ModalChangeRole
           open={openChange}
@@ -466,11 +490,6 @@ const TableUsers: React.FC = () => {
           currentRole={currentUser.role}
         />
       )}
-      <ModalUserDetails
-        open={detailModalVisible}
-        setOpen={setDetailModalVisible}
-        selectedUser={selectedUserDetail}
-      />
     </>
   );
 };

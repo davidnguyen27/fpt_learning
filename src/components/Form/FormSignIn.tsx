@@ -12,7 +12,7 @@ const FormSignIn = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   if (!authContext) {
-    throw new Error("AuthContext phải được sử dụng trong AuthProvider");
+    throw new Error("AuthContext must be used within AuthProvider");
   }
 
   const { user, login } = authContext;
@@ -99,8 +99,8 @@ const FormSignIn = () => {
         <Form.Item
           name="email"
           rules={[
-            { required: true, message: "Email là bắt buộc!" },
-            { type: "email", message: "Vui lòng nhập đúng địa chỉ email!" },
+            { required: true, message: "Email is required!" },
+            { type: "email", message: "Please enter a valid email address!" },
           ]}
         >
           <Input
@@ -112,7 +112,7 @@ const FormSignIn = () => {
         </Form.Item>
         <Form.Item
           name="password"
-          rules={[{ required: true, message: "Mật khẩu là bắt buộc!" }]}
+          rules={[{ required: true, message: "Password is required!" }]}
         >
           <Input.Password
             className="text-sm"
@@ -144,6 +144,7 @@ const FormSignIn = () => {
           >
             Sign In
           </Button>
+
           <p className="mb-0 text-sm font-semibold">
             Don't have an account?{" "}
             <a href="sign-up" className="text-red-500">
