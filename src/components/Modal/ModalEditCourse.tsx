@@ -114,7 +114,7 @@ const ModalEditCourse = (props: ModalEditCourseProps) => {
         </button>,
       ]}
     >
-      <Form layout="horizontal" className="mt-4" form={form} initialValues={initialValues}>
+      <Form layout="horizontal" className="mt-4" form={form} labelCol={{span: 4}} initialValues={initialValues}>
         <Form.Item
           label="Course Name"
           name="name"

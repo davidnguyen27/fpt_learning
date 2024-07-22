@@ -132,3 +132,50 @@ export const getCategoriesAPI = async (
   }
 };
 
+//-------------------------------- Change Status Course (Instructor) ---------------------------------------
+export const toggleCourseStatus = async (
+  course_id: string,
+  new_status: string,
+  comment: string = "",
+): Promise<void> => {
+  const token = sessionStorage.getItem("token");
+  const url = `${APILink}/api/course/change-status`;
+
+  try {
+    console.log("Sending request to:", url);
+    console.log("Request payload:", { course_id, status, comment });
+
+    const response = await axios.put(
+      url,
+      { course_id, new_status, comment },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    console.log("Response:", response.data);
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error("Axios error response:", error.response?.data);
+    } else {
+      console.error("Unexpected error:", error);
+    }
+    throw error;
+  }
+};
+
+
+
+export const getCoursesClientAPI = async (
+  dataTransfer: DataTransfer,
+): Promise<Course[]> => {
+  try {
+    const res = await axios.post(`${APILink}/api/client/course/search`, dataTransfer);
+    return res.data.data.pageData;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};
