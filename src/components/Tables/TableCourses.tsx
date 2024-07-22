@@ -1,12 +1,14 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { DeleteOutlined, FormOutlined } from "@ant-design/icons";
-import { Table, Spin, Modal, Input, Tag } from "antd";
+import { DeleteOutlined, FormOutlined, SendOutlined } from "@ant-design/icons";
+import { Table, Spin, Modal, Input, Tag, Button, Drawer } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Course, DataTransfer } from "../../models/Course";
 import useCourseData from "../../hooks/course/useCourseData";
 import useDeleteCourse from "../../hooks/course/useDeleteCourse";
 import ModalAddCourse from "../Modal/ModalAddCourse";
 import ModalEditCourse from "../Modal/ModalEditCourse";
+import { toggleCourseStatus } from "../../services/coursesService"; // Import the toggleCourseStatus function
+
 const { Search } = Input;
 
 const TableCourses: React.FC = () => {
@@ -16,6 +18,9 @@ const TableCourses: React.FC = () => {
   const [editingCourseId, setEditingCourseId] = useState<string | null>(null);
   const [selectedCourseDetail, setSelectedCourseDetail] = useState<Course | null>(null);
   const [detailModalVisible, setDetailModalVisible] = useState<boolean>(false);
+  const [comment, setComment] = useState<string>("");
+  const [drawerVisible, setDrawerVisible] = useState<boolean>(false);
+  const [currentCourseId, setCurrentCourseId] = useState<string | null>(null);
 
   const handleSearch = useCallback((value: string) => {
     setSearchKeyword(value);
@@ -79,6 +84,40 @@ const TableCourses: React.FC = () => {
     setSelectedCourseDetail(null);
   };
 
+  const handleChangeStatus = useCallback(
+    async (courseId: string, currentStatus: string) => {
+      let newStatus = "";
+      if (currentStatus === "new") {
+        newStatus = "waiting_approve";
+      } else if (currentStatus === "waiting_approve") {
+        newStatus = "approved"; // Adjust this as necessary based on your status flow
+      }
+
+      if (newStatus) {
+        try {
+          await toggleCourseStatus(courseId, newStatus, comment);
+          refetchData();
+          setDrawerVisible(false); // Close the drawer after status change
+        } catch (error) {
+          console.error("Error changing status:", error);
+        }
+      } else {
+        console.error("Invalid status change:", currentStatus, "->", newStatus);
+      }
+    },
+    [refetchData, comment]
+  );
+
+  const openCommentDrawer = useCallback((courseId: string) => {
+    setCurrentCourseId(courseId);
+    setDrawerVisible(true);
+  }, []);
+
+  const closeCommentDrawer = useCallback(() => {
+    setDrawerVisible(false);
+    setComment("");
+  }, []);
+
   if (error) {
     return <div>{error}</div>;
   }
@@ -125,7 +164,7 @@ const TableCourses: React.FC = () => {
     {
       title: "Action",
       key: "action",
-      width: 120,
+      width: 200,
       render: (_, record) => (
         <div className="flex space-x-2">
           <FormOutlined
@@ -136,6 +175,13 @@ const TableCourses: React.FC = () => {
             className="cursor-pointer text-red-500"
             onClick={() => handleDelete(record._id)}
           />
+          <Button
+            type="primary"
+            onClick={() => openCommentDrawer(record._id)}
+            disabled={record.status === "waiting_approve"}
+          >
+            {record.status === "new" ? "Send for Approval" : "Waiting"}
+          </Button>
         </div>
       ),
     },
@@ -201,6 +247,34 @@ const TableCourses: React.FC = () => {
           </div>
         )}
       </Modal>
+      <Drawer
+        title="Add Comment"
+        placement="right"
+        closable={false}
+        onClose={closeCommentDrawer}
+        visible={drawerVisible}
+        width={300}
+      >
+        <Input.TextArea
+          rows={4}
+          placeholder="Comment (optional)"
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+        />
+        <Button
+          type="primary"
+          icon={<SendOutlined />}
+          onClick={() => {
+            if (currentCourseId) {
+              handleChangeStatus(currentCourseId, "new");
+            }
+          }}
+          style={{ marginTop: 16 }}
+          block
+        >
+          Confirm
+        </Button>
+      </Drawer>
     </>
   );
 };

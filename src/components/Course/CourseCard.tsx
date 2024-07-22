@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DataTransfer } from "../../models/Course";
-import useCourseData from "../../hooks/course/useCourseData";
+import useCourseDataClient from "../../hooks/course/useCourseDataClient";
 
 const CourseCard: React.FC = () => {
   const navigate = useNavigate();
@@ -33,7 +33,7 @@ const CourseCard: React.FC = () => {
     [searchCondition, pageInfo],
   );
 
-  const { data: courses, loading, error, refetchData } = useCourseData(dataTransfer);
+  const { data: courses, loading, error, refetchData } = useCourseDataClient(dataTransfer);
 
   useEffect(() => {
     refetchData();

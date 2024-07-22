@@ -50,7 +50,7 @@ const ModalAddCategory = (props: ModalAddCategoryProps) => {
         </button>,
       ]}
     >
-      <Form layout="horizontal" className="mt-4" form={form}>
+      <Form layout="horizontal" className="mt-4" form={form} labelCol={{span: 4}}>
         <Form.Item
           label="Category Name"
           name="name"
