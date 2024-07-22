@@ -1,28 +1,21 @@
+import React, { useCallback, useMemo, useState } from "react";
 import { DeleteOutlined, FormOutlined } from "@ant-design/icons";
-import { Table, Spin, Modal } from "antd";
+import { Table, Spin, Modal, Input, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { DataTransfer } from "../../models/Course";
+import { Course, DataTransfer } from "../../models/Course";
 import useCourseData from "../../hooks/course/useCourseData";
-import { useState, useMemo, useCallback } from "react";
-import ModalAddCourse from "../Modal/ModalAddCourse";
 import useDeleteCourse from "../../hooks/course/useDeleteCourse";
+import ModalAddCourse from "../Modal/ModalAddCourse";
 import ModalEditCourse from "../Modal/ModalEditCourse";
-import Search from "antd/es/input/Search";
+const { Search } = Input;
 
-interface DataType {
-  key: string;
-  name: string;
-  category_name: string;
-  status: string;
-  created_at: string;
-  updated_at: string;
-}
-
-const TableCourses = () => {
+const TableCourses: React.FC = () => {
   const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [openAdd, setOpenAdd] = useState<boolean>(false);
   const [openEdit, setOpenEdit] = useState<boolean>(false);
   const [editingCourseId, setEditingCourseId] = useState<string | null>(null);
+  const [selectedCourseDetail, setSelectedCourseDetail] = useState<Course | null>(null);
+  const [detailModalVisible, setDetailModalVisible] = useState<boolean>(false);
 
   const handleSearch = useCallback((value: string) => {
     setSearchKeyword(value);
@@ -68,7 +61,7 @@ const TableCourses = () => {
         onOk: () => deleteCourse(courseId),
       });
     },
-    [deleteCourse],
+    [deleteCourse]
   );
 
   const handleEdit = useCallback((courseId: string) => {
@@ -76,25 +69,34 @@ const TableCourses = () => {
     setOpenEdit(true);
   }, []);
 
+  const handleNameClick = (course: Course) => {
+    setSelectedCourseDetail(course);
+    setDetailModalVisible(true);
+  };
+
+  const handleCloseDetailModal = () => {
+    setDetailModalVisible(false);
+    setSelectedCourseDetail(null);
+  };
+
   if (error) {
     return <div>{error}</div>;
   }
 
-  const columns: ColumnsType<DataType> = [
-    {
-      title: "No.",
-      key: "index",
-      render: (_: any, __: any, index: number) => index + 1,
-      width: 50,
-    },
+  const columns: ColumnsType<Course> = [
     {
       title: "Course Name",
       dataIndex: "name",
       key: "name",
       width: 150,
+      render: (name: string, record: Course) => (
+        <a onClick={() => handleNameClick(record)} style={{ cursor: "pointer" }}>
+          {name}
+        </a>
+      ),
     },
     {
-      title: "Category",
+      title: "Category Name",
       dataIndex: "category_name",
       key: "category_name",
       width: 100,
@@ -104,6 +106,9 @@ const TableCourses = () => {
       dataIndex: "status",
       key: "status",
       width: 80,
+      render: (status: string) => (
+        <Tag color={status === "Active" ? "green" : "red"}>{status}</Tag>
+      ),
     },
     {
       title: "Created At",
@@ -124,12 +129,12 @@ const TableCourses = () => {
       render: (_, record) => (
         <div className="flex space-x-2">
           <FormOutlined
-            onClick={() => handleEdit(record.key)}
+            onClick={() => handleEdit(record._id)}
             className="cursor-pointer text-blue-500"
           />
           <DeleteOutlined
             className="cursor-pointer text-red-500"
-            onClick={() => handleDelete(record.key)}
+            onClick={() => handleDelete(record._id)}
           />
         </div>
       ),
@@ -158,7 +163,7 @@ const TableCourses = () => {
             columns={columns}
             dataSource={data}
             pagination={false}
-            scroll={{ x: "max-content" }} // Ensures table scrolls horizontally if needed
+            scroll={{ x: 'max-content' }} // Ensures table scrolls horizontally if needed
           />
         </div>
       </Spin>
@@ -173,6 +178,29 @@ const TableCourses = () => {
         courseId={editingCourseId}
         onSuccess={handleSuccess}
       />
+      <Modal
+        title="Course Details"
+        visible={detailModalVisible}
+        onOk={handleCloseDetailModal}
+        onCancel={handleCloseDetailModal}
+        footer={null}
+      >
+        {selectedCourseDetail && (
+          <div>
+            <p>Name: {selectedCourseDetail.name}</p>
+            <p>Category: {selectedCourseDetail.category_name}</p>
+            <p>Status: {selectedCourseDetail.status}</p>
+            <p>Created At: {selectedCourseDetail.created_at}</p>
+            <p>Updated At: {selectedCourseDetail.updated_at}</p>
+            <p>Description: {selectedCourseDetail.description}</p>
+            <p>Video URL: {selectedCourseDetail.video_url}</p>
+            <p>Image URL: {selectedCourseDetail.image_url}</p>
+            <p>Price: {selectedCourseDetail.price}</p>
+            <p>Discount: {selectedCourseDetail.discount}</p>
+            <p>Content: {selectedCourseDetail.content}</p>
+          </div>
+        )}
+      </Modal>
     </>
   );
 };

@@ -33,9 +33,9 @@ const AppHeader: React.FC = () => {
     if (user?.data.role === "admin") {
       navigate("/admin-profile-page");
     } else if (user?.data.role === "instructor") {
-      navigate("/instructor-profile-page");
+      navigate("/user-profile-page");
     } else {
-      navigate("/student-profile-page");
+      navigate("/user-profile-page");
     }
   };
 

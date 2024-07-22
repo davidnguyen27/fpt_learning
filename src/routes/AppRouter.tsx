@@ -74,7 +74,7 @@ const EarningPage = React.lazy(() => import("../pages/Instructor/EarningPage"));
 
 //-----------------------------------------------STUDENT-----------------------------------------------
 const StudentVerifyPage = React.lazy(() => import("../pages/User/VerifyPage"));
-const StudentProfilePage = React.lazy(
+const UserProfilePage = React.lazy(
   () => import("../pages/Student/StudentProfilePage"),
 );
 const StudentCourseDetailPage = React.lazy(
@@ -265,11 +265,11 @@ const AppRouter = () => {
               }
             />
             <Route
-              path="/student-profile-page"
+              path="/user-profile-page"
               element={
                 <ProtectedRoute
-                  element={<StudentProfilePage />}
-                  allowedRoles={["student"]}
+                  element={<UserProfilePage />}
+                  allowedRoles={["student", "instructor"]}
                 />
               }
             />
