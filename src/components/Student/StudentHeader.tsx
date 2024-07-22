@@ -1,8 +1,7 @@
-import React from "react";
 import { useSider } from "../../app/context/SiderContext";
 import StudentUser from "./StudentUser";
 
-const StudentHeader: React.FC = () => {
+const StudentHeader = () => {
   const { toggleSider } = useSider();
 
   return (

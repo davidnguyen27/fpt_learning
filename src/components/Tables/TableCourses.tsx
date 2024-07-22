@@ -68,7 +68,7 @@ const TableCourses = () => {
         onOk: () => deleteCourse(courseId),
       });
     },
-    [deleteCourse]
+    [deleteCourse],
   );
 
   const handleEdit = useCallback((courseId: string) => {
@@ -81,6 +81,12 @@ const TableCourses = () => {
   }
 
   const columns: ColumnsType<DataType> = [
+    {
+      title: "No.",
+      key: "index",
+      render: (_: any, __: any, index: number) => index + 1,
+      width: 50,
+    },
     {
       title: "Course Name",
       dataIndex: "name",
@@ -152,7 +158,7 @@ const TableCourses = () => {
             columns={columns}
             dataSource={data}
             pagination={false}
-            scroll={{ x: 'max-content' }} // Ensures table scrolls horizontally if needed
+            scroll={{ x: "max-content" }} // Ensures table scrolls horizontally if needed
           />
         </div>
       </Spin>

@@ -6,6 +6,7 @@ import {
 } from "../models/Types"; // Import types and interfaces from models/Types
 import { APILink } from "../const/linkAPI"; // Import API endpoint from const/linkAPI
 import { axiosInstance } from "./baseService";
+import axios from "axios";
 
 //--------------------------------- Get Users (Admin) ------------------------------------------
 export const getUsers = async (
@@ -33,14 +34,10 @@ export const getUsers = async (
   }
 };
 
-
 //-----------------------------------------------------------------------------------------------
 
-//------------------------------ Get User Detail (Admin) ----------------------------------------
-export const getUserDetail = async (
-  userId: string,
-  token: string,
-): Promise<UserData> => {
+//------------------------------ Get User Detail ------------------------------------------------
+export const getUserDetail = async (userId: string, token: string) => {
   try {
     const response = await axiosInstance.get(`${APILink}/api/users/${userId}`, {
       headers: {
@@ -48,17 +45,13 @@ export const getUserDetail = async (
       },
     });
 
-    const userData: UserData = response.data.data; // Assuming response structure matches UserData
-    console.log(userData);
+    const userData: UserData = response.data.data;
 
     if (userData) {
-      return userData; // Return user data if successful
-    } else {
-      throw new Error("Failed to fetch user detail");
+      return userData;
     }
   } catch (error: any) {
-    console.error("Error fetching user detail:", error);
-    throw new Error(error.message);
+    throw new Error(error.response.data.message);
   }
 };
 //-----------------------------------------------------------------------------------------------
@@ -76,24 +69,34 @@ export const deleteUser = async (userId: string): Promise<void> => {
       },
     });
   } catch (error: any) {
+    if (error.response && error.response.data && error.response.data.message) {
+      throw new Error(error.response.data.message);
+    }
     throw new Error(error.message);
   }
 };
 //-----------------------------------------------------------------------------------------------
 
 //----------------------------------Create User (Public)-----------------------------------------
-export const createUser = async (
-  userData: { name: string; password: string; email: string; role?: string },
-): Promise<UserData> => {
+export const createUser = async (userData: {
+  name: string;
+  password: string;
+  email: string;
+  role?: string;
+}): Promise<UserData> => {
   try {
     const token = sessionStorage.getItem("token"); // Retrieve token from sessionStorage
 
-    const response = await axiosInstance.post(`${APILink}/api/users/create`, userData, {
-      headers: {
-        "Content-Type": "application/json", // Set content-type header to JSON
-        Authorization: `Bearer ${token}`, // Add token to Authorization header
+    const response = await axiosInstance.post(
+      `${APILink}/api/users/create`,
+      userData,
+      {
+        headers: {
+          "Content-Type": "application/json", // Set content-type header to JSON
+          Authorization: `Bearer ${token}`, // Add token to Authorization header
+        },
       },
-    });
+    );
 
     const newUser: UserData = response.data.data; // Assuming response structure matches UserData
     console.log("Created user:", newUser);
@@ -115,20 +118,22 @@ export const createUser = async (
 //-----------------------------------------------------------------------------------------------
 
 //---------------------------------Register User (Public)----------------------------------------
-export const registerUser = async (
-  userData: Partial<User["data"]>,
-): Promise<User> => {
+export const registerUser = async (userData: Partial<User["data"]>) => {
   try {
-    const res = await axiosInstance.post<User>(`${APILink}/api/users`, userData);
+    const res = await axiosInstance.post<User>(
+      `${APILink}/api/users`,
+      userData,
+    );
     console.log(res.data);
     return res.data;
   } catch (error: any) {
-    throw new Error(error.response.data);
+    if (error.response && error.response.data)
+      throw new Error(error.response.data.message);
   }
 };
 //--------------------------------------------------------------------------------------------
 
-//-------------------------------- Update User (Admin) ---------------------------------------
+//-------------------------------- Update User -----------------------------------------------
 export const updateUser = async (
   userId: string,
   updatedUserData: Partial<UserData>,
@@ -151,7 +156,7 @@ export const updateUser = async (
     const updatedUser: UserData = response.data.data;
     return updatedUser;
   } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error(error.response.data.message);
   }
 };
 
@@ -184,16 +189,21 @@ export const createUserAPI = async (userData: Partial<User["data"]>) => {
 
     console.log("Sending user data to create:", userData);
 
-    const res = await axiosInstance.post(`${APILink}/api/users/create`, userData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
+    const res = await axiosInstance.post(
+      `${APILink}/api/users/create`,
+      userData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       },
-    });
+    );
 
     console.log("User created successfully:", res.data.data);
     return res.data.data;
   } catch (error: any) {
-    throw new Error(error.message);  }
+    throw new Error(error.message);
+  }
 };
 
 export const changeRoleAPI = async (
@@ -216,5 +226,57 @@ export const changeRoleAPI = async (
     console.log(res.data.data);
     return res.data;
   } catch (error: any) {
-    throw new Error(error.message);  }
+    throw new Error(error.message);
+  }
+};
+
+export const reviewInstructorAPI = async (
+  user_id: string,
+  status: string,
+  comment: string,
+) => {
+  try {
+    const token = sessionStorage.getItem("token");
+    if (!token) throw new Error("Token is not valid!");
+
+    const res = await axios.put(
+      `${APILink}/api/users/review-profile-instructor`,
+      { user_id, status, comment },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    return res.data;
+  } catch (error: any) {
+    if (error.response && error.response.data && error.response.data.message) {
+      throw new Error(error.response.data.message);
+    }
+  }
+};
+
+export const changePasswordAPI = async (
+  user_id: string,
+  old_password: string,
+  new_password: string,
+) => {
+  try {
+    const token = sessionStorage.getItem("token");
+    if (!token) throw new Error("Invalid token!");
+
+    const res = await axios.put(
+      `${APILink}/api/users/change-password`,
+      { user_id, old_password, new_password },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return res.data;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
 };

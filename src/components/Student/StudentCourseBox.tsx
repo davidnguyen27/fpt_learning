@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import coursethumbnail from "../../assets/coursethumbnail.jpg";
-import coursevideo from "../../assets/coursevideo.mp4";
 import { CourseBoxProps } from "../../models/Types";
 
 const StudentCourseBox: React.FC<CourseBoxProps> = ({ courseData }) => {
@@ -16,28 +15,28 @@ const StudentCourseBox: React.FC<CourseBoxProps> = ({ courseData }) => {
 
   return (
     <div className="p-5 text-black">
-      <div className="flex flex-col md:flex-row items-center md:items-start bg-gray-800 p-6 md:p-12">
+      <div className="flex flex-col items-center bg-gray-800 p-6 md:flex-row md:items-start md:p-12">
         <img
-          className="cursor-pointer w-32 h-32 md:w-48 md:h-48 lg:w-64 lg:h-64 rounded-lg border-4 border-gray-500 mb-4 md:mb-0"
+          className="mb-4 h-32 w-32 cursor-pointer rounded-lg border-4 border-gray-500 md:mb-0 md:h-48 md:w-48 lg:h-64 lg:w-64"
           src={coursethumbnail}
           alt="Course Thumbnail"
           onClick={showModal}
         />
-        <div className="md:ml-4 text-center md:text-left flex flex-col items-center md:items-start">
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4">
+        <div className="flex flex-col items-center text-center md:ml-4 md:items-start md:text-left">
+          <h2 className="mb-4 text-2xl font-bold text-white md:text-3xl lg:text-4xl">
             {courseData.title}
           </h2>
-          <p className="text-white mb-4">{courseData.description}</p>
-          <div className="flex space-x-4 w-full">
+          <p className="mb-4 text-white">{courseData.description}</p>
+          <div className="flex w-full space-x-4">
             <button
               type="button"
-              className="flex-1 py-2 md:py-3 px-3 md:px-4 bg-red-500 text-white rounded hover:bg-red-700"
+              className="flex-1 rounded bg-red-500 px-3 py-2 text-white hover:bg-red-700 md:px-4 md:py-3"
             >
               Cancel Subscription
             </button>
             <button
               type="button"
-              className="flex-1 py-2 md:py-3 px-3 md:px-4 bg-gray-700 text-white rounded border hover:bg-red-500"
+              className="flex-1 rounded border bg-gray-700 px-3 py-2 text-white hover:bg-red-500 md:px-4 md:py-3"
             >
               Continue
             </button>
@@ -64,7 +63,10 @@ const StudentCourseBox: React.FC<CourseBoxProps> = ({ courseData }) => {
             </span>
             <div className="inline-block transform overflow-hidden rounded-lg bg-white text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
               <video width="100%" controls>
-                <source src={coursevideo} type="video/mp4" />
+                <source
+                  src="https://youtu.be/wxxszUSs4Kk?si=Wptf4xdyVWEvu2vj"
+                  type="video/mp4"
+                />
                 Your browser does not support the video tag.
               </video>
               <button

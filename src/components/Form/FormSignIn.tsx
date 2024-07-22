@@ -1,15 +1,15 @@
-import { Form, Input, notification, Radio } from "antd";
-import { useContext, useEffect } from "react";
+import { Button, Form, Input, notification, Radio } from "antd";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../app/context/AuthContext";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import { getCurrentLogin, loginViaGoogleAPI } from "../../services/authService";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 
-
 const FormSignIn = () => {
   const navigate = useNavigate();
   const authContext = useContext(AuthContext);
+  const [loading, setLoading] = useState<boolean>(false);
 
   if (!authContext) {
     throw new Error("AuthContext must be used within AuthProvider");
@@ -38,20 +38,26 @@ const FormSignIn = () => {
 
   const handleLogin = async (values: { email: string; password: string }) => {
     try {
+      setLoading(true);
       await login(values.email, values.password);
       notification.success({
         message: "Login Successful",
-        description: "You have successfully logged in!",
       });
-    } catch (error) {
-      console.error("Unknown error: ", error);
+    } catch (error: any) {
+      notification.error({
+        message: "Login Failed",
+        description:
+          error.message || "Invalid email or password. Please try again.",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleGoogleLogin = async (credentialResponse: CredentialResponse) => {
     try {
+      setLoading(true);
       const { credential } = credentialResponse;
-      console.log(credential);
       if (!credential) {
         throw new Error("Google credential is missing");
       }
@@ -72,11 +78,16 @@ const FormSignIn = () => {
         message: "Login via Google Failed!",
         description: error.message || "Your Google Account isn't registered!",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
   const onError = () => {
-    console.log("Google login failed");
+    notification.error({
+      message: "Login via Google Failed!",
+      description: "Unable to log in with Google.",
+    });
   };
 
   return (
@@ -108,10 +119,10 @@ const FormSignIn = () => {
             type="password"
             size="large"
             placeholder="Password"
-            prefix={<i className="fa-solid fa-key"></i>}
             iconRender={(visible) =>
               visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
             }
+            prefix={<i className="fa-solid fa-key"></i>}
           />
         </Form.Item>
         <div className="flex items-center justify-between">
@@ -125,20 +136,15 @@ const FormSignIn = () => {
         </div>
         <br />
         <Form.Item>
-          <button
-            type="submit"
-            className="mb-3 flex w-full items-center justify-center rounded border border-black bg-[#ef4444] px-7 py-3 text-center text-sm font-medium uppercase leading-normal text-white shadow-md transition duration-150 hover:bg-[#333] hover:text-white"
+          <Button
+            htmlType="submit"
+            type="primary"
+            className="mb-4 w-full bg-red-500 py-5 text-white hover:bg-black hover:text-white"
+            loading={loading}
           >
             Sign In
-          </button>
-          <button
-            type="submit"
-            className="mb-3 flex w-full items-center justify-center rounded border border-black bg-[#ef4444] px-7 py-3 text-center text-sm font-medium uppercase leading-normal text-white shadow-md transition duration-150 hover:bg-[#333] hover:text-white"
-          >
-            <a href="/admin-login">
-              SIGN IN WITH ADMIN
-            </a>
-          </button>
+          </Button>
+
           <p className="mb-0 text-sm font-semibold">
             Don't have an account?{" "}
             <a href="sign-up" className="text-red-500">

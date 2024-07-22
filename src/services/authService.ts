@@ -2,10 +2,7 @@ import { APILink } from "../const/linkAPI";
 import { User } from "../models/Types";
 import { axiosInstance } from "./baseService";
 
-export const login = async (
-  email: string,
-  password: string,
-): Promise<string> => {
+export const login = async (email: string, password: string) => {
   try {
     const response = await axiosInstance.post(
       `${APILink}/api/auth`,
@@ -25,10 +22,11 @@ export const login = async (
     if (token) {
       sessionStorage.setItem("token", token);
       return token;
-    } else {
-      throw new Error("Invalid information!");
     }
   } catch (error: any) {
+    if (error.response && error.response.data && error.response.data.message) {
+      throw new Error(error.response.data.message);
+    }
     throw new Error(error.message);
   }
 };
@@ -63,11 +61,15 @@ export const loginViaGoogleAPI = async (
 
 export const registerViaGoogleAPI = async (
   credential: string,
-): Promise<User["data"]> => {
+  role: string,
+  description: string,
+  video: string,
+  phone_number: string,
+) => {
   try {
     const res = await axiosInstance.post(
       `${APILink}/api/users/google`,
-      { google_id: credential, role: "student" },
+      { google_id: credential, role, description, video, phone_number },
       {
         headers: {
           "Content-Type": "application/json",
@@ -83,7 +85,9 @@ export const registerViaGoogleAPI = async (
       throw new Error("Invalid Google registration response!");
     }
   } catch (error: any) {
-    throw new Error(error.message);
+    if (error.response && error.response.data && error.response.data.message) {
+      return error.response.data.message;
+    }
   }
 };
 

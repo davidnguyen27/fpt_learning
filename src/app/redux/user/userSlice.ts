@@ -58,8 +58,10 @@ const userSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(
       createAccount.fulfilled,
-      (state: UserState, action: PayloadAction<User>) => {
-        state.users.push(action.payload);
+      (state: UserState, action: PayloadAction<User | undefined>) => {
+        if (action.payload) {
+          state.users.push(action.payload);
+        }
       },
     );
   },
