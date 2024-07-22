@@ -12,14 +12,8 @@ import Search from "antd/es/input/Search";
 interface DataType {
   key: string;
   name: string;
-  description: string;
-  category_id: string;
-  user_id: string;
-  video_url: string | null;
-  image_url: string | null;
+  category_name: string;
   status: string;
-  price: number;
-  discount: number;
   created_at: string;
   updated_at: string;
 }
@@ -94,51 +88,15 @@ const TableCourses = () => {
       width: 150,
     },
     {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
-      width: 150,
-    },
-    {
       title: "Category",
-      dataIndex: "category_id",
-      key: "category_id",
-      width: 100,
-    },
-    {
-      title: "User",
-      dataIndex: "user_id",
-      key: "user_id",
-      width: 100,
-    },
-    {
-      title: "Video",
-      dataIndex: "video_url",
-      key: "video_url",
-      width: 100,
-    },
-    {
-      title: "Image",
-      dataIndex: "image_url",
-      key: "image_url",
+      dataIndex: "category_name",
+      key: "category_name",
       width: 100,
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      width: 80,
-    },
-    {
-      title: "Price",
-      dataIndex: "price",
-      key: "price",
-      width: 80,
-    },
-    {
-      title: "Discount",
-      dataIndex: "discount",
-      key: "discount",
       width: 80,
     },
     {
