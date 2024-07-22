@@ -157,7 +157,7 @@ const TableSessions: React.FC = () => {
       title: "Action",
       key: "action",
       width: 120,
-      render: (_, record) => (
+      render: (_, record: Session) => (
         <div className="flex space-x-2">
           <FormOutlined
             onClick={() => handleEdit(record._id)}
