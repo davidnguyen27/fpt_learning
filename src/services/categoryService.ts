@@ -9,14 +9,18 @@ export const getCategoriesAPI = async (
     const token = sessionStorage.getItem("token");
     if (!token) throw new Error("Cannot get token!");
 
-    const res = await axios.post(`${APILink}/api/category/search`, dataTransfer, {
-      headers: {
-        Authorization: `Bearer ${token}`,
+    const res = await axios.post(
+      `${APILink}/api/category/search`,
+      dataTransfer,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       },
-    });
+    );
     return res.data.data.pageData;
   } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error(error.response.data.message);
   }
 };
 
@@ -41,9 +45,7 @@ export const getCategoryAPI = async (categoryId: string) => {
   }
 };
 
-export const createCategoryAPI = async (
-  categoryData: Partial<Category>,
-) => {
+export const createCategoryAPI = async (categoryData: Partial<Category>) => {
   try {
     const token = sessionStorage.getItem("token");
     if (!token) throw new Error("Cannot get token!");
