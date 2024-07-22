@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Layout } from "antd";
 import Sider from "antd/es/layout/Sider";
@@ -33,13 +32,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           />
         </Sider>
         <Layout className="flex flex-1 flex-col">
-          <Content className="flex-1 overflow-y-auto">
-            <div className="p-8">
-              {children}
-            </div>
+          <Content className="flex-1 overflow-y-auto bg-gradient-to-b from-blue-100 to-red-100">
+            <div className="p-8">{children}</div>
             <Footer className="footer">
-            <AppFooter />
-          </Footer>
+              <AppFooter />
+            </Footer>
           </Content>
         </Layout>
       </Layout>

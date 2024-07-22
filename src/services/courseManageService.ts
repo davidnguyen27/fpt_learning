@@ -35,3 +35,27 @@ export const deleteCourseAPI = async (courseId: string) => {
     throw new Error(error);
   }
 };
+
+export const editCourseAPI = async (
+  courseId: string,
+  courseData: Partial<Course["pageData"][number]>,
+): Promise<Course["pageData"][number]> => {
+  try {
+    const token = sessionStorage.getItem("token");
+    if (!token) throw new Error("Cannot get token!");
+
+    const res = await axios.put(
+      `${APILink}/api/lesson/${courseId}`,
+      courseData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return { ...res.data.data, _id: courseId };
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};

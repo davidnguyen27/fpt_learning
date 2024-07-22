@@ -1,3 +1,4 @@
+import Editor from "../../app/Editor/RichTextEditor";
 import { Button, Flex, Form, Input, Select } from "antd";
 
 const ReportForm = () => {
@@ -36,12 +37,8 @@ const ReportForm = () => {
         />
       </Form.Item>
 
-      <Form.Item
-        name="description"
-        label="Description"
-        rules={[{ required: true, message: "Required!" }]}
-      >
-        <Input.TextArea rows={4} />
+      <Form.Item name="description" label="Description">
+        <Editor />
       </Form.Item>
 
       <Form.Item name="file" label="Image">

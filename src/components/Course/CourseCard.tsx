@@ -29,7 +29,11 @@ const CourseCard: React.FC = () => {
         >
           <div className="p-4">
             <div>
-              <img src={item.image} alt={item.courseName} className="rounded-md" />
+              <img
+                src={item.image}
+                alt={item.courseName}
+                className="rounded-md"
+              />
             </div>
             <div className="my-3 flex justify-between">
               <div>

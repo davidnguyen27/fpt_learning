@@ -1,14 +1,21 @@
-import { DeleteOutlined, FormOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { Col, Row, Space, Table, Input, Select, Spin, Modal } from "antd";
 import { useMemo, useState } from "react";
 import useCourseData from "../../hooks/course/useCourseData";
-import { DataTransfer } from "../../models/Course";
+import { DataTransfer, Course } from "../../models/Course";
 import useDeleteCourse from "../../hooks/course/useDeleteCourse";
+import useEditCourse from "../../hooks/course/useEditCourse";
+import ModalEditCourse from "../Modal/ModalEditCourse";
+
 const { Option } = Select;
 const { Search } = Input;
 
 const TableCourses = () => {
   const [searchKeyword, setSearchKeyword] = useState<string>("");
+  const [editingCourse, setEditingCourse] = useState<
+    Course["pageData"][number] | null
+  >(null);
+  const [openEdit, setOpenEdit] = useState<boolean>(false);
 
   const handleSearch = (value: string) => {
     setSearchKeyword(value);
@@ -16,9 +23,14 @@ const TableCourses = () => {
 
   const handleDelete = (courseId: string) => {
     Modal.confirm({
-      title: "Are you sure you want to delete this lesson?",
+      title: "Bạn có chắc chắn muốn xóa khóa học này?",
       onOk: () => deleteCourse(courseId),
     });
+  };
+
+  const handleEdit = (course: Course["pageData"][number]) => {
+    setEditingCourse(course);
+    setOpenEdit(true);
   };
 
   const searchCondition = useMemo(
@@ -49,6 +61,7 @@ const TableCourses = () => {
 
   const { data, loading, error, refetchData } = useCourseData(dataTransfer);
   const { deleteCourse } = useDeleteCourse(refetchData);
+  const { editCourse, loading: editLoading } = useEditCourse(refetchData);
 
   if (error) {
     return <div>{error}</div>;
@@ -62,35 +75,35 @@ const TableCourses = () => {
       width: 50,
     },
     {
-      title: "Course Name",
+      title: "Tên khóa học",
       dataIndex: "course_name",
       key: "course_name",
     },
     {
-      title: "Category Name",
+      title: "Tên danh mục",
       dataIndex: "category_name",
       key: "category_name",
       width: 400,
     },
     {
-      title: "Created At",
+      title: "Ngày tạo",
       dataIndex: "created_at",
       key: "created_at",
     },
     {
-      title: "Status",
+      title: "Trạng thái",
       dataIndex: "status",
       key: "status",
     },
     {
-      title: "Actions",
+      title: "Thao tác",
       key: "actions",
       render: (_: any, record: any) => (
         <Space size="middle">
-          <FormOutlined />
+          <EditOutlined onClick={() => handleEdit(record)} />
           <DeleteOutlined
             className="cursor-pointer text-red-500"
-            onClick={() => handleDelete(record.key)}
+            onClick={() => handleDelete(record._id)}
           />
         </Space>
       ),
@@ -104,19 +117,19 @@ const TableCourses = () => {
         <Col>
           <Search
             onSearch={handleSearch}
-            placeholder="Search by Course Name"
+            placeholder="Tìm kiếm theo tên khóa học"
             enterButton
             style={{ width: 300 }}
           />
         </Col>
         <Col>
           <Select
-            placeholder="Filter by Status"
+            placeholder="Lọc theo trạng thái"
             allowClear
             style={{ width: 200 }}
           >
-            <Option value="Active">Active</Option>
-            <Option value="Inactive">Inactive</Option>
+            <Option value="Active">Hoạt động</Option>
+            <Option value="Inactive">Không hoạt động</Option>
           </Select>
         </Col>
       </Row>
@@ -127,6 +140,15 @@ const TableCourses = () => {
           columns={columns}
         />
       </Spin>
+      {editingCourse && (
+        <ModalEditCourse
+          open={openEdit}
+          setOpen={setOpenEdit}
+          course={editingCourse}
+          editCourse={editCourse}
+          editLoading={editLoading}
+        />
+      )}
     </div>
   );
 };
