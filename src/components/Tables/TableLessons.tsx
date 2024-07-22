@@ -1,6 +1,5 @@
 import { DeleteOutlined, FormOutlined } from "@ant-design/icons";
 import { Table, Spin, Modal } from "antd";
-
 import { DataTransfer } from "../../models/Lesson";
 import useLessonsData from "../../hooks/lesson/useLessonData";
 import Search from "antd/es/input/Search";
@@ -13,14 +12,11 @@ import type { ColumnsType } from "antd/es/table";
 interface DataType {
   key: string;
   name: string;
-  course_id: string;
-  session_id: string;
+  course_name: string;
+  session_name: string;
   lesson_type: string;
-  description: string;
-  video_url: string;
-  image_url: string;
-  position_order: number;
   full_time: number;
+  position_order: number;
 }
 
 const TableLessons = () => {
@@ -86,44 +82,25 @@ const TableLessons = () => {
 
   const columns: ColumnsType<DataType> = [
     {
-      title: "Lesson name",
+      title: "Lesson Name",
       dataIndex: "name",
       key: "name",
     },
     {
-      title: "Course",
-      dataIndex: "course_id",
-      key: "course_id",
-      width: 300,
+      title: "Course Name",
+      dataIndex: "course_name",
+      key: "course_name",
     },
     {
-      title: "Session",
-      dataIndex: "session_id",
-      key: "session_id",
+      title: "Session Name",
+      dataIndex: "session_name",
+      key: "session_name",
     },
     {
       title: "Lesson Type",
       dataIndex: "lesson_type",
       key: "lesson_type",
       width: 100,
-    },
-    {
-      title: "Image (url)",
-      dataIndex: "image_url",
-      key: "image_url",
-      width: 300,
-    },
-    {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
-      width: 300,
-    },
-    {
-      title: "Video (url)",
-      dataIndex: "video_url",
-      key: "video_url",
-      width: 300,
     },
     {
       title: "Duration",
@@ -173,7 +150,7 @@ const TableLessons = () => {
         </button>
       </div>
       <Spin spinning={loading}>
-      <Table columns={columns} dataSource={data} />
+        <Table columns={columns} dataSource={data} />
       </Spin>
       <ModalAddLesson
         open={openAdd}

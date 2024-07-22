@@ -1,48 +1,29 @@
+import React, { useCallback, useMemo, useState, useEffect } from "react";
 import { DeleteOutlined, FormOutlined } from "@ant-design/icons";
-import { Table, Spin, Modal } from "antd";
+import { Table, Spin, Modal, Input } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { DataTransfer } from "../../models/Session";
+import { Session } from "../../models/Session";
+import { Course } from "../../models/Course";
 import useSessionData from "../../hooks/session/useSessionData";
-import { useState, useMemo } from "react";
-import ModalAddSession from "../Modal/ModalAddSession";
+import useCourseData from "../../hooks/course/useCourseData";
 import useDeleteSession from "../../hooks/session/useDeleteSession";
+import ModalAddSession from "../Modal/ModalAddSession";
 import ModalEditSession from "../Modal/ModalEditSession";
-import Search from "antd/es/input/Search";
 
-interface DataType {
-  key: string;
-  name: string;
-  course_id: string;
-  created_at: Date;
-  updated_at: Date;
-  position_order: number;
-}
+const { Search } = Input;
 
-const TableSessions = () => {
+const TableSessions: React.FC = () => {
   const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [openAdd, setOpenAdd] = useState<boolean>(false);
   const [openEdit, setOpenEdit] = useState<boolean>(false);
   const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
+  const [selectedSessionDetail, setSelectedSessionDetail] = useState<Session | null>(null);
+  const [detailModalVisible, setDetailModalVisible] = useState<boolean>(false);
+  const [courses, setCourses] = useState<Course[]>([]);
 
-  const handleSearch = (value: string) => {
+  const handleSearch = useCallback((value: string) => {
     setSearchKeyword(value);
-  };
-
-  const handleSuccess = () => {
-    refetchData();
-  };
-
-  const handleDelete = (sessionId: string) => {
-    Modal.confirm({
-      title: "Are you sure you want to delete this course?",
-      onOk: () => deleteSession(sessionId),
-    });
-  };
-
-  const handleEdit = (sessionId: string) => {
-    setEditingSessionId(sessionId);
-    setOpenEdit(true);
-  };
+  }, []);
 
   const searchCondition = useMemo(
     () => ({
@@ -63,7 +44,7 @@ const TableSessions = () => {
     [],
   );
 
-  const dataTransfer: DataTransfer = useMemo(
+  const sessionDataTransfer = useMemo(
     () => ({
       searchCondition,
       pageInfo,
@@ -71,37 +52,100 @@ const TableSessions = () => {
     [searchCondition, pageInfo],
   );
 
-  const { data, loading, error, refetchData } = useSessionData(dataTransfer);
+  const courseDataTransfer = useMemo(
+    () => ({
+      searchCondition: {
+        keyword: "",
+        category_id: "",
+        status: "",
+        is_delete: false,
+      },
+      pageInfo,
+    }),
+    [pageInfo],
+  );
+
+  const { data: sessions, loading, error, refetchData } = useSessionData(sessionDataTransfer);
+  const { data: fetchedCourses, refetchData: refetchCourses } = useCourseData(courseDataTransfer);
   const { deleteSession } = useDeleteSession(refetchData);
+
+  useEffect(() => {
+    refetchCourses(); // Fetch courses when component mounts or pageInfo changes
+  }, [refetchCourses]);
+
+  useEffect(() => {
+    setCourses(fetchedCourses);
+  }, [fetchedCourses]);
+
+  const handleSuccess = useCallback(() => {
+    refetchData();
+  }, [refetchData]);
+
+  const handleDelete = useCallback(
+    (sessionId: string) => {
+      Modal.confirm({
+        title: "Are you sure you want to delete this session?",
+        onOk: () => deleteSession(sessionId),
+      });
+    },
+    [deleteSession]
+  );
+
+  const handleEdit = useCallback((sessionId: string) => {
+    setEditingSessionId(sessionId);
+    setOpenEdit(true);
+  }, []);
+
+  const handleNameClick = (session: Session) => {
+    const course = courses.find((course) => course._id === session.course_id);
+    setSelectedSessionDetail({
+      ...session,
+      course_name: course ? course.name : "Unknown",
+      user_id: course ? course.user_id : "Unknown", // Handle undefined values
+    });
+    setDetailModalVisible(true);
+  };
+
+  const handleCloseDetailModal = () => {
+    setDetailModalVisible(false);
+    setSelectedSessionDetail(null);
+  };
 
   if (error) {
     return <div>{error}</div>;
   }
 
-  const columns: ColumnsType<DataType> = [
+  const columns: ColumnsType<Session> = [
     {
       title: "Session Name",
       dataIndex: "name",
       key: "name",
       width: 150,
+      render: (name: string, record: Session) => (
+        <a onClick={() => handleNameClick(record)} style={{ cursor: "pointer" }}>
+          {name}
+        </a>
+      ),
     },
     {
       title: "Course Id",
       dataIndex: "course_id",
       key: "course_id",
       width: 100,
-    },   
+    },
     {
       title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
       width: 150,
+      render: (date: string) => new Date(date).toLocaleString(),
     },
     {
       title: "Updated At",
       dataIndex: "updated_at",
       key: "updated_at",
       width: 150,
+      render: (date: string) => new Date(date).toLocaleString(),
     },
     {
       title: "Position",
@@ -113,29 +157,29 @@ const TableSessions = () => {
       title: "Action",
       key: "action",
       width: 120,
-      render: (_, record) => (
-        <>
+      render: (_, record: Session) => (
+        <div className="flex space-x-2">
           <FormOutlined
-            onClick={() => handleEdit(record.key)}
-            className="mx-2 cursor-pointer text-blue-500"
+            onClick={() => handleEdit(record._id)}
+            className="cursor-pointer text-blue-500"
           />
           <DeleteOutlined
             className="cursor-pointer text-red-500"
-            onClick={() => handleDelete(record.key)}
+            onClick={() => handleDelete(record._id)}
           />
-        </>
+        </div>
       ),
     },
   ];
 
   return (
     <>
-      <div className="my-3 flex items-center justify-between">
+      <div className="my-3 flex flex-wrap items-center justify-between gap-2">
         <Search
           onSearch={handleSearch}
           placeholder="Search by keyword"
           allowClear
-          style={{ width: 300 }}
+          className="w-full md:w-1/3"
         />
         <button
           onClick={() => setOpenAdd(true)}
@@ -148,9 +192,9 @@ const TableSessions = () => {
         <div className="overflow-x-auto">
           <Table
             columns={columns}
-            dataSource={data}
+            dataSource={sessions}
             pagination={false}
-            scroll={{ x: true }} // Enables horizontal scrolling
+            scroll={{ x: 'max-content' }} // Ensures table scrolls horizontally if needed
           />
         </div>
       </Spin>
@@ -165,6 +209,26 @@ const TableSessions = () => {
         sessionId={editingSessionId}
         onSuccess={handleSuccess}
       />
+      <Modal
+        title="Session Details"
+        visible={detailModalVisible}
+        onOk={handleCloseDetailModal}
+        onCancel={handleCloseDetailModal}
+        footer={null}
+      >
+        {selectedSessionDetail && (
+          <div>
+            <p>Name: {selectedSessionDetail.name}</p>
+            <p>Course Name: {selectedSessionDetail.course_name}</p>
+            <p>User ID: {selectedSessionDetail.user_id}</p>
+            <p>Description: {selectedSessionDetail.description}</p>
+            <p>Position Order: {selectedSessionDetail.position_order}</p>
+            <p>Created At: {new Date(selectedSessionDetail.created_at).toLocaleString()}</p>
+            <p>Updated At: {new Date(selectedSessionDetail.updated_at).toLocaleString()}</p>
+            <p>Deleted: {selectedSessionDetail.is_deleted ? "Yes" : "No"}</p>
+          </div>
+        )}
+      </Modal>
     </>
   );
 };

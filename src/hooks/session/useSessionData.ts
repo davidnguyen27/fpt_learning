@@ -1,45 +1,28 @@
-import { useEffect, useState } from "react";
-import { DataTransfer } from "../../models/Session";
+import { useEffect, useState, useCallback } from "react";
 import { getSessionsAPI } from "../../services/sessionService";
-
-interface DataType {
-  key: string;
-  name: string;
-  course_id: string;
-  created_at: Date;
-  updated_at: Date;
-  position_order: number;
-}
+import { Session, DataTransfer } from "../../models/Session";
 
 const useSessionData = (dataTransfer: DataTransfer) => {
   const [loading, setLoading] = useState<boolean>(true);
-  const [data, setData] = useState<DataType[]>([]);
+  const [data, setData] = useState<Session[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchSession();
-  }, [dataTransfer]);
-
-  const fetchSession = async () => {
+  const fetchSession = useCallback(async () => {
     setLoading(true);
     try {
-      const session = await getSessionsAPI(dataTransfer);
-      const groupedData: DataType[] = session.map((session) => ({
-        key: session._id,
-        position_order: session.position_order,
-        name: session.name,
-        course_id: session.course_id,
-        created_at: session.created_at,
-        updated_at: session.updated_at,
-      }));
-      setData(groupedData);
+      const sessions = await getSessionsAPI(dataTransfer);
+      setData(sessions);
       setError(null);
     } catch (err) {
-      setError("Failed to fetch session.");
+      setError("Failed to fetch sessions.");
     } finally {
       setLoading(false);
     }
-  };
+  }, [dataTransfer]);
+
+  useEffect(() => {
+    fetchSession();
+  }, [fetchSession]);
 
   return { data, loading, error, refetchData: fetchSession };
 };
