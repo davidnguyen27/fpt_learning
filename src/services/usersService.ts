@@ -5,7 +5,6 @@ import {
   UserSearchResponse,
 } from "../models/Types"; // Import types and interfaces from models/Types
 import { APILink } from "../const/linkAPI"; // Import API endpoint from const/linkAPI
-import { axiosInstance } from "./baseService";
 import axios from "axios";
 
 //--------------------------------- Get Users (Admin) ------------------------------------------
@@ -16,7 +15,7 @@ export const getUsers = async (
     const token = sessionStorage.getItem("token");
     if (!token) throw new Error("Cannot get token!");
 
-    const response = await axiosInstance.post(
+    const response = await axios.post(
       `${APILink}/api/users/search`,
       requestData,
       {
@@ -39,7 +38,7 @@ export const getUsers = async (
 //------------------------------ Get User Detail ------------------------------------------------
 export const getUserDetail = async (userId: string, token: string) => {
   try {
-    const response = await axiosInstance.get(`${APILink}/api/users/${userId}`, {
+    const response = await axios.get(`${APILink}/api/users/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -62,7 +61,7 @@ export const deleteUser = async (userId: string): Promise<void> => {
     const token = sessionStorage.getItem("token");
     if (!token) throw new Error("Cannot get token!");
 
-    await axiosInstance.delete(`${APILink}/api/users/${userId}`, {
+    await axios.delete(`${APILink}/api/users/${userId}`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -87,16 +86,12 @@ export const createUser = async (userData: {
   try {
     const token = sessionStorage.getItem("token"); // Retrieve token from sessionStorage
 
-    const response = await axiosInstance.post(
-      `${APILink}/api/users/create`,
-      userData,
-      {
-        headers: {
-          "Content-Type": "application/json", // Set content-type header to JSON
-          Authorization: `Bearer ${token}`, // Add token to Authorization header
-        },
+    const response = await axios.post(`${APILink}/api/users/create`, userData, {
+      headers: {
+        "Content-Type": "application/json", // Set content-type header to JSON
+        Authorization: `Bearer ${token}`, // Add token to Authorization header
       },
-    );
+    });
 
     const newUser: UserData = response.data.data; // Assuming response structure matches UserData
     console.log("Created user:", newUser);
@@ -120,10 +115,7 @@ export const createUser = async (userData: {
 //---------------------------------Register User (Public)----------------------------------------
 export const registerUser = async (userData: Partial<User["data"]>) => {
   try {
-    const res = await axiosInstance.post<User>(
-      `${APILink}/api/users`,
-      userData,
-    );
+    const res = await axios.post<User>(`${APILink}/api/users`, userData);
     console.log(res.data);
     return res.data;
   } catch (error: any) {
@@ -142,7 +134,7 @@ export const updateUser = async (
     const token = sessionStorage.getItem("token");
     if (!token) throw new Error("Cannot get token!");
 
-    const response = await axiosInstance.put(
+    const response = await axios.put(
       `${APILink}/api/users/${userId}`,
       updatedUserData,
       {
@@ -170,7 +162,7 @@ export const toggleUserStatus = async (
   const token = sessionStorage.getItem("token");
   const url = `${APILink}/api/users/change-status`;
 
-  await axiosInstance.put(
+  await axios.put(
     url,
     { user_id, status },
     {
@@ -189,20 +181,16 @@ export const createUserAPI = async (userData: Partial<User["data"]>) => {
 
     console.log("Sending user data to create:", userData);
 
-    const res = await axiosInstance.post(
-      `${APILink}/api/users/create`,
-      userData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+    const res = await axios.post(`${APILink}/api/users/create`, userData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
-    );
+    });
 
     console.log("User created successfully:", res.data.data);
     return res.data.data;
   } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error(error.response.data.message);
   }
 };
 
@@ -214,7 +202,7 @@ export const changeRoleAPI = async (
     const token = sessionStorage.getItem("token");
     if (!token) throw new Error("Cannot get token!");
 
-    const res = await axiosInstance.put(
+    const res = await axios.put(
       `${APILink}/api/users/change-role`,
       { user_id: userId, role: role },
       {

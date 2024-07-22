@@ -1,16 +1,13 @@
 import { Button, Form, Input, notification } from "antd";
 import { EyeTwoTone, EyeInvisibleOutlined } from "@ant-design/icons";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../app/redux/store";
-import { createAccount } from "../../app/redux/user/userSlice";
 import { User } from "../../models/Types";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import { registerViaGoogleAPI } from "../../services/authService";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { registerUser } from "../../services/usersService";
 
 const FormSignUp = () => {
-  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -26,16 +23,16 @@ const FormSignUp = () => {
     };
     try {
       setLoading(true);
-      await dispatch(createAccount(userData)).unwrap();
+      const user = await registerUser(userData);
       notification.success({
         message: "Registration Successful",
         description: "Please verify your email in 24 hours.",
       });
-      navigate("/verify-account", { state: { email } });
+      navigate("/verify-account", { state: { email: user?.data.email } });
     } catch (error: any) {
       notification.error({
         message: "Registration Failed",
-        description: error,
+        description: error.message || "Something went wrong!",
       });
     } finally {
       setLoading(false);
@@ -46,14 +43,7 @@ const FormSignUp = () => {
     try {
       const { credential } = credentialResponse;
       if (credential) {
-        const user: User["data"] = await registerViaGoogleAPI(
-          credential,
-          "student",
-          "",
-          "",
-          "",
-        );
-        console.log(user);
+        await registerViaGoogleAPI(credential, "student", "", "", "");
         notification.success({
           message: "Registration Successful",
           description: "You have registered successfully via Google!",
@@ -62,17 +52,16 @@ const FormSignUp = () => {
       } else {
         throw new Error("Google credential response is missing.");
       }
-    } catch (error) {
+    } catch (error: any) {
       notification.error({
         message: "Google Registration Failed",
-        description: "Your email has already exist!",
+        description: error.message,
       });
     }
   };
 
   const onError = () => {
-    console.log("Đăng nhập Google thất bại");
-    alert("Không thể đăng nhập bằng Google.");
+    alert("Cannot login with Google.");
   };
 
   return (

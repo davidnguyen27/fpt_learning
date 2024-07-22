@@ -265,11 +265,11 @@ const AppRouter = () => {
               }
             />
             <Route
-              path="/student-profile-page"
+              path="/user-profile-page"
               element={
                 <ProtectedRoute
                   element={<StudentProfilePage />}
-                  allowedRoles={["student"]}
+                  allowedRoles={["student", "instructor"]}
                 />
               }
             />
