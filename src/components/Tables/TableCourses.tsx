@@ -1,13 +1,23 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { DeleteOutlined, FormOutlined, SendOutlined } from "@ant-design/icons";
-import { Table, Spin, Modal, Input, Tag, Button, Drawer } from "antd";
+import {
+  Table,
+  Spin,
+  Modal,
+  Input,
+  Tag,
+  Button,
+  Drawer,
+  Space,
+  message,
+} from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Course, DataTransfer } from "../../models/Course";
 import useCourseData from "../../hooks/course/useCourseData";
 import useDeleteCourse from "../../hooks/course/useDeleteCourse";
 import ModalAddCourse from "../Modal/ModalAddCourse";
 import ModalEditCourse from "../Modal/ModalEditCourse";
-import { toggleCourseStatus } from "../../services/coursesService"; // Import the toggleCourseStatus function
+import { toggleCourseStatus } from "../../services/coursesService";
 
 const { Search } = Input;
 
@@ -16,7 +26,8 @@ const TableCourses: React.FC = () => {
   const [openAdd, setOpenAdd] = useState<boolean>(false);
   const [openEdit, setOpenEdit] = useState<boolean>(false);
   const [editingCourseId, setEditingCourseId] = useState<string | null>(null);
-  const [selectedCourseDetail, setSelectedCourseDetail] = useState<Course | null>(null);
+  const [selectedCourseDetail, setSelectedCourseDetail] =
+    useState<Course | null>(null);
   const [detailModalVisible, setDetailModalVisible] = useState<boolean>(false);
   const [comment, setComment] = useState<string>("");
   const [drawerVisible, setDrawerVisible] = useState<boolean>(false);
@@ -39,7 +50,7 @@ const TableCourses: React.FC = () => {
   const pageInfo = useMemo(
     () => ({
       pageNum: 1,
-      pageSize: 10,
+      pageSize: 100,
     }),
     [],
   );
@@ -66,7 +77,7 @@ const TableCourses: React.FC = () => {
         onOk: () => deleteCourse(courseId),
       });
     },
-    [deleteCourse]
+    [deleteCourse],
   );
 
   const handleEdit = useCallback((courseId: string) => {
@@ -85,33 +96,49 @@ const TableCourses: React.FC = () => {
   };
 
   const handleChangeStatus = useCallback(
-    async (courseId: string, currentStatus: string) => {
+    async (courseId: string, currentStatus: string, comment: string = "") => {
       let newStatus = "";
       if (currentStatus === "new") {
         newStatus = "waiting_approve";
       } else if (currentStatus === "waiting_approve") {
-        newStatus = "approved"; // Adjust this as necessary based on your status flow
+        newStatus = "approve";
+      } else if (currentStatus === "approve") {
+        newStatus = "active";
+      } else if (currentStatus === "active") {
+        newStatus = "inactive";
+      } else if (currentStatus === "inactive") {
+        newStatus = "active";
       }
 
       if (newStatus) {
         try {
           await toggleCourseStatus(courseId, newStatus, comment);
           refetchData();
-          setDrawerVisible(false); // Close the drawer after status change
+          setDrawerVisible(false);
+          message.success(`Course status updated to ${newStatus}`);
         } catch (error) {
           console.error("Error changing status:", error);
+          message.error("Failed to update course status");
         }
       } else {
         console.error("Invalid status change:", currentStatus, "->", newStatus);
       }
     },
-    [refetchData, comment]
+    [refetchData],
   );
 
-  const openCommentDrawer = useCallback((courseId: string) => {
-    setCurrentCourseId(courseId);
-    setDrawerVisible(true);
-  }, []);
+  const openCommentDrawer = useCallback(
+    (courseId: string, currentStatus: string) => {
+      setCurrentCourseId(courseId);
+      setDrawerVisible(true);
+      setComment(
+        currentStatus === "waiting_approve"
+          ? ""
+          : "Please provide a reason for rejection",
+      );
+    },
+    [],
+  );
 
   const closeCommentDrawer = useCallback(() => {
     setDrawerVisible(false);
@@ -122,6 +149,51 @@ const TableCourses: React.FC = () => {
     return <div>{error}</div>;
   }
 
+  const renderActionButton = (record: Course) => {
+    let buttonClass = "";
+    let buttonText = "";
+    let buttonDisabled = false;
+
+    switch (record.status) {
+      case "new":
+        buttonClass = "bg-yellow-300";
+        buttonText = "Send for Approval";
+        break;
+      case "waiting_approve":
+        buttonClass = "bg-blue-500";
+        buttonText = "Approve Course";
+        buttonDisabled = false;
+        break;
+      case "approve":
+        buttonClass = "bg-green-500";
+        buttonText = "Activate Course";
+        break;
+      case "active":
+        buttonClass = "bg-red-500";
+        buttonText = "Deactivate Course";
+        break;
+      case "inactive":
+        buttonClass = "bg-green-500";
+        buttonText = "Activate Course";
+        break;
+      default:
+        buttonDisabled = true;
+        buttonText = "Unknown Status";
+        break;
+    }
+
+    return (
+      <Button
+        type="primary"
+        className={buttonClass}
+        onClick={() => openCommentDrawer(record._id, record.status)}
+        disabled={buttonDisabled}
+      >
+        {buttonText}
+      </Button>
+    );
+  };
+
   const columns: ColumnsType<Course> = [
     {
       title: "Course Name",
@@ -129,7 +201,10 @@ const TableCourses: React.FC = () => {
       key: "name",
       width: 150,
       render: (name: string, record: Course) => (
-        <a onClick={() => handleNameClick(record)} style={{ cursor: "pointer" }}>
+        <a
+          onClick={() => handleNameClick(record)}
+          style={{ cursor: "pointer" }}
+        >
           {name}
         </a>
       ),
@@ -146,19 +221,33 @@ const TableCourses: React.FC = () => {
       key: "status",
       width: 80,
       render: (status: string) => (
-        <Tag color={status === "Active" ? "green" : "red"}>{status}</Tag>
+        <Tag
+          color={
+            status === "active"
+              ? "green"
+              : status === "approve"
+                ? "blue"
+                : status === "waiting_approve"
+                  ? "yellow"
+                  : "red"
+          }
+        >
+          {status}
+        </Tag>
       ),
     },
     {
       title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
+      render: (date: string) => new Date(date).toDateString(),
       width: 150,
     },
     {
       title: "Updated At",
       dataIndex: "updated_at",
       key: "updated_at",
+      render: (date: string) => new Date(date).toDateString(),
       width: 150,
     },
     {
@@ -166,7 +255,7 @@ const TableCourses: React.FC = () => {
       key: "action",
       width: 200,
       render: (_, record) => (
-        <div className="flex space-x-2">
+        <Space>
           <FormOutlined
             onClick={() => handleEdit(record._id)}
             className="cursor-pointer text-blue-500"
@@ -175,14 +264,8 @@ const TableCourses: React.FC = () => {
             className="cursor-pointer text-red-500"
             onClick={() => handleDelete(record._id)}
           />
-          <Button
-            type="primary"
-            onClick={() => openCommentDrawer(record._id)}
-            disabled={record.status === "waiting_approve"}
-          >
-            {record.status === "new" ? "Send for Approval" : "Waiting"}
-          </Button>
-        </div>
+          {renderActionButton(record)}
+        </Space>
       ),
     },
   ];
@@ -209,7 +292,7 @@ const TableCourses: React.FC = () => {
             columns={columns}
             dataSource={data}
             pagination={false}
-            scroll={{ x: 'max-content' }} // Ensures table scrolls horizontally if needed
+            scroll={{ x: "max-content" }}
           />
         </div>
       </Spin>
@@ -226,7 +309,7 @@ const TableCourses: React.FC = () => {
       />
       <Modal
         title="Course Details"
-        visible={detailModalVisible}
+        open={detailModalVisible}
         onOk={handleCloseDetailModal}
         onCancel={handleCloseDetailModal}
         footer={null}
@@ -252,7 +335,7 @@ const TableCourses: React.FC = () => {
         placement="right"
         closable={false}
         onClose={closeCommentDrawer}
-        visible={drawerVisible}
+        open={drawerVisible}
         width={300}
       >
         <Input.TextArea
@@ -266,7 +349,16 @@ const TableCourses: React.FC = () => {
           icon={<SendOutlined />}
           onClick={() => {
             if (currentCourseId) {
-              handleChangeStatus(currentCourseId, "new");
+              const currentCourse = data.find(
+                (course) => course._id === currentCourseId,
+              );
+              if (currentCourse) {
+                const newStatus =
+                  currentCourse.status === "waiting_approve"
+                    ? "approve"
+                    : "waiting_approve";
+                handleChangeStatus(currentCourseId, newStatus, comment);
+              }
             }
           }}
           style={{ marginTop: 16 }}

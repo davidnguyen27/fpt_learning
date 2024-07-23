@@ -114,7 +114,14 @@ const ModalEditCourse = (props: ModalEditCourseProps) => {
         </button>,
       ]}
     >
-      <Form layout="horizontal" className="mt-4" form={form} labelCol={{span: 4}} initialValues={initialValues}>
+      <Form
+        layout="horizontal"
+        className="mt-4"
+        form={form}
+        labelCol={{ span: 5 }}
+        labelAlign="left"
+        initialValues={initialValues}
+      >
         <Form.Item
           label="Course Name"
           name="name"
@@ -153,7 +160,11 @@ const ModalEditCourse = (props: ModalEditCourseProps) => {
           <Input className="text-sm" size="large" placeholder="Content" />
         </Form.Item>
 
-        <Form.Item label="Video URL" name="video_url">
+        <Form.Item
+          label="Video URL"
+          name="video_url"
+          rules={[{ required: true, message: "Video is required!" }]}
+        >
           <Input className="text-sm" size="large" placeholder="Video URL" />
         </Form.Item>
 

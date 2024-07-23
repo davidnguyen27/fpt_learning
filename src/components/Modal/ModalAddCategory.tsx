@@ -1,4 +1,4 @@
-import { Form, Input, Modal} from "antd";
+import { Form, Input, Modal } from "antd";
 import useAddCategory from "../../hooks/category/useAddCategory";
 
 interface ModalAddCategoryProps {
@@ -20,7 +20,7 @@ const ModalAddCategory = (props: ModalAddCategoryProps) => {
       form.resetFields();
       setOpen(false);
     } catch (error: any) {
-      throw new Error(error);
+      throw new Error(error.message);
     }
   };
 
@@ -50,7 +50,12 @@ const ModalAddCategory = (props: ModalAddCategoryProps) => {
         </button>,
       ]}
     >
-      <Form layout="horizontal" className="mt-4" form={form} labelCol={{span: 4}}>
+      <Form
+        layout="horizontal"
+        className="mt-4"
+        form={form}
+        labelCol={{ span: 4 }}
+      >
         <Form.Item
           label="Category Name"
           name="name"
@@ -58,7 +63,7 @@ const ModalAddCategory = (props: ModalAddCategoryProps) => {
         >
           <Input className="text-sm" size="large" placeholder="Lesson Name" />
         </Form.Item>
-        
+
         <Form.Item label="Description" name="description">
           <Input className="text-sm" size="large" placeholder="Description" />
         </Form.Item>

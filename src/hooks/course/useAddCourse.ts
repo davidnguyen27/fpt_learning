@@ -10,14 +10,13 @@ const useAddCourse = (onSuccess: () => void) => {
   const createCourse = async (courseData: Course) => {
     try {
       setLoading(true);
-      // Ensure price and discount are numbers
       courseData.price = Number(courseData.price);
       courseData.discount = Number(courseData.discount);
       await createCourseAPI(courseData);
       message.success("Course added successfully");
       onSuccess();
-    } catch (error) {
-      message.error("Failed to add course!");
+    } catch (error: any) {
+      message.error(error.message);
     } finally {
       setLoading(false);
     }

@@ -33,7 +33,12 @@ const CourseCard: React.FC = () => {
     [searchCondition, pageInfo],
   );
 
-  const { data: courses, loading, error, refetchData } = useCourseDataClient(dataTransfer);
+  const {
+    data: courses,
+    loading,
+    error,
+    refetchData,
+  } = useCourseDataClient(dataTransfer);
 
   useEffect(() => {
     refetchData();
@@ -46,13 +51,17 @@ const CourseCard: React.FC = () => {
     <>
       {courses.map((item) => (
         <article
-          key={item._id} // Use `_id` or any unique identifier
+          key={item._id}
           className="h-auto w-auto cursor-pointer rounded-md bg-slate-200 transition-transform duration-300 hover:scale-105 hover:bg-slate-300"
-          onClick={() => navigate(`/detail/${item._id}`)} // Pass unique id in route
+          onClick={() => navigate(`/detail/${item._id}`)}
         >
           <div className="p-4">
             <div>
-              <img src={item.image_url || "default-image-url"} alt={item.name} className="rounded-md" />
+              <img
+                src={item.image_url || "default-image-url"}
+                alt={item.name}
+                className="rounded-md"
+              />
             </div>
             <div className="my-3 flex justify-between">
               <div>

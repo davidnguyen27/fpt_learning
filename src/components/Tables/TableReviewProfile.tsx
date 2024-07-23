@@ -39,11 +39,12 @@ const TableReviewProfile = () => {
           keyword: "",
           role: "instructor",
           status: true,
+          is_verified: true,
           is_delete: false,
         },
         pageInfo: {
           pageNum: 1,
-          pageSize: 10,
+          pageSize: 100,
         },
       };
 

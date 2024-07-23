@@ -1,5 +1,5 @@
 import { DeleteOutlined, FormOutlined } from "@ant-design/icons";
-import { Table, Spin, Modal } from "antd";
+import { Table, Spin, Modal, Space } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { DataTransfer } from "../../models/Category";
 import useCategoriesData from "../../hooks/category/useCategoryData";
@@ -8,7 +8,6 @@ import ModalAddCategory from "../Modal/ModalAddCategory";
 import useDeleteCategory from "../../hooks/category/useDeleteCategory";
 import ModalEditCategory from "../Modal/ModalEditCategory";
 import Search from "antd/es/input/Search";
-import { formatDate } from "../../utils/formatDate";
 
 interface DataType {
   key: string;
@@ -57,7 +56,7 @@ const TableCategories = () => {
   const pageInfo = useMemo(
     () => ({
       pageNum: 1,
-      pageSize: 10000,
+      pageSize: 100,
     }),
     [],
   );
@@ -90,30 +89,30 @@ const TableCategories = () => {
       dataIndex: "created_at",
       key: "created_at",
       width: 250,
-      render: (text: string) => formatDate(text),
+      render: (date: string) => new Date(date).toLocaleString(),
     },
     {
       title: "Updated At",
       dataIndex: "updated_at",
       key: "updated_at",
       width: 250,
-      render: (text: string) => formatDate(text),
+      render: (date: string) => new Date(date).toLocaleString(),
     },
     {
       title: "Action",
       key: "action",
       width: 200,
       render: (_, record) => (
-        <>
+        <Space>
           <FormOutlined
             onClick={() => handleEdit(record.key)}
-            className="mx-6 cursor-pointer text-blue-500"
+            className="cursor-pointer text-blue-500"
           />
           <DeleteOutlined
             className="cursor-pointer text-red-500"
             onClick={() => handleDelete(record.key)}
           />
-        </>
+        </Space>
       ),
     },
   ];
