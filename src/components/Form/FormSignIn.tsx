@@ -1,4 +1,4 @@
-import { Button, Form, Input, notification, Radio } from "antd";
+import { Button, Checkbox, Form, Input, notification } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../app/context/AuthContext";
@@ -10,10 +10,15 @@ const FormSignIn = () => {
   const navigate = useNavigate();
   const authContext = useContext(AuthContext);
   const [loading, setLoading] = useState<boolean>(false);
+  const [isRemembered, setIsRemembered] = useState(false);
 
   if (!authContext) {
     throw new Error("AuthContext must be used within AuthProvider");
   }
+
+  const handleCheckboxChange = (e: any) => {
+    setIsRemembered(e.target.checked);
+  };
 
   const { user, login } = authContext;
 
@@ -126,7 +131,9 @@ const FormSignIn = () => {
           />
         </Form.Item>
         <div className="flex items-center justify-between">
-          <Radio>Remember me</Radio>
+          <Checkbox checked={isRemembered} onChange={handleCheckboxChange}>
+            Remember me
+          </Checkbox>
           <a
             href="/forgot-password"
             className="text-primary hover:text-primary-600 focus:text-primary-600 active:text-primary-700 transition duration-150 ease-in-out"
@@ -158,7 +165,7 @@ const FormSignIn = () => {
           </p>
         </div>
       </Form>
-      <div className="w-full">
+      <div className="flex items-center justify-center">
         <GoogleLogin onSuccess={handleGoogleLogin} onError={onError} />
       </div>
     </div>

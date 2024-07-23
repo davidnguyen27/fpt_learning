@@ -1,110 +1,135 @@
 import { Form, Input, Select } from "antd";
-import TextArea from "antd/es/input/TextArea";
+import { useEffect, useState } from "react";
+import { getCategoriesAPI } from "../../services/coursesService";
+import { Category } from "../../models/Category";
+import useAddCourse from "../../hooks/course/useAddCourse";
+
+const { Option } = Select;
 
 interface FormCreateCourseProp {
-  goToNextStep: () => void;
+  onSuccess: () => void;
 }
 
-const FormCreateCourse: React.FC<FormCreateCourseProp> = ({ goToNextStep }) => {
+const FormCreateCourse: React.FC<FormCreateCourseProp> = ({ onSuccess }) => {
+  const [categoriesLoading, setCategoriesLoading] = useState<boolean>(true);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [form] = Form.useForm();
+  const { createCourse } = useAddCourse(onSuccess);
+
+  // State to manage field disable status
+  const [videoDisabled, setVideoDisabled] = useState<boolean>(false);
+  const [imageDisabled, setImageDisabled] = useState<boolean>(false);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const categoriesData = await getCategoriesAPI("", 1, 10, false);
+        setCategories(categoriesData.data.pageData);
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      } finally {
+        setCategoriesLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  const handleFieldChange = (changedValues: any) => {
+    const { video_url, image_url } = changedValues;
+
+    // Toggle disable status based on field values
+    setVideoDisabled(Boolean(image_url));
+    setImageDisabled(Boolean(video_url));
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const values = await form.validateFields();
+      await createCourse(values);
+      form.resetFields();
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  };
+
   return (
     <>
-      <Form layout="vertical">
+      <Form form={form} layout="vertical" onValuesChange={handleFieldChange}>
         <div className="bg-slate-200 p-6">
           <Form.Item
-            label="Course Title *"
-            rules={[{ required: true, message: "Required!" }]}
+            label="Course Name"
+            name="name"
+            rules={[{ required: true, message: "Course Name is required!" }]}
           >
+            <Input className="text-sm" size="large" placeholder="Course Name" />
+          </Form.Item>
+          <Form.Item
+            label="Category"
+            name="category_id"
+            rules={[{ required: true, message: "Category is required!" }]}
+          >
+            <Select
+              placeholder="Select a category"
+              loading={categoriesLoading}
+              disabled={categoriesLoading}
+            >
+              {categories.map((category) => (
+                <Option key={category._id} value={category._id}>
+                  {category.name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label="Description"
+            name="description"
+            rules={[{ required: true, message: "Description is required!" }]}
+          >
+            <Input className="text-sm" size="large" placeholder="Description" />
+          </Form.Item>
+
+          <Form.Item label="Content" name="content">
+            <Input className="text-sm" size="large" placeholder="Content" />
+          </Form.Item>
+
+          <Form.Item label="Video" name="video_url" >
             <Input
               className="text-sm"
               size="large"
-              placeholder="Course title here"
+              placeholder="Video URL"
+              disabled={videoDisabled}
             />
           </Form.Item>
+
+          <Form.Item label="Image" name="image_url" >
+            <Input
+              className="text-sm"
+              size="large"
+              placeholder="Image URL"
+              disabled={imageDisabled}
+            />
+          </Form.Item>
+
           <Form.Item
-            label="Short Description *"
-            rules={[{ required: true, message: "Required!" }]}
+            label="Price"
+            name="price"
+            rules={[{ required: true, message: "Price is required!" }]}
           >
-            <TextArea rows={4} placeholder="Item description here..." />
+            <Input className="text-sm" size="large" placeholder="Price" />
           </Form.Item>
           <Form.Item
-            label="Course Description *"
-            rules={[{ required: true, message: "Required!" }]}
+            label="Discount"
+            name="discount"
+            rules={[{ required: true, message: "Discount is required!" }]}
           >
-            <TextArea rows={4} />
+            <Input className="text-sm" size="large" placeholder="Discount" />
           </Form.Item>
-          <div className="grid grid-cols-2 gap-2">
-            <Form.Item
-              label="What will students learn in your course? *"
-              rules={[{ required: true, message: "Required!" }]}
-            >
-              <TextArea rows={4} />
-            </Form.Item>
-            <Form.Item
-              label="Requirement *"
-              rules={[{ required: true, message: "Required!" }]}
-            >
-              <TextArea rows={4} />
-            </Form.Item>
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            <Form.Item label="Close Caption *">
-              <Select
-                defaultValue="Select Audio"
-                style={{ width: "100%" }}
-                options={[
-                  { value: "beginner", label: "English" },
-                  { value: "intermediate", label: "Vietnamese" },
-                  { value: "expert", label: "मानक हिन्दी" },
-                  { value: "expert", label: "Française" },
-                  { value: "expert", label: "한국어" },
-                  { value: "expert", label: "中国话" },
-                ]}
-              />
-            </Form.Item>
-            <Form.Item label="Course Category *">
-              <Select
-                defaultValue="Web Development"
-                style={{ width: "100%" }}
-                options={[
-                  { value: "beginner", label: "Business" },
-                  { value: "intermediate", label: "Graphic Design" },
-                  { value: "expert", label: "Marketing" },
-                ]}
-              />
-            </Form.Item>
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            <Form.Item label="Course level *">
-              <Select
-                defaultValue="Nothing selected"
-                style={{ width: "100%" }}
-                options={[
-                  { value: "beginner", label: "Beginner" },
-                  { value: "intermediate", label: "Intermediate" },
-                  { value: "expert", label: "Expert" },
-                ]}
-              />
-            </Form.Item>
-            <Form.Item label="Audio Language *">
-              <Select
-                defaultValue="Select Audio *"
-                style={{ width: "100%" }}
-                options={[
-                  { value: "beginner", label: "English" },
-                  { value: "intermediate", label: "Vietnamese" },
-                  { value: "expert", label: "मानक हिन्दी" },
-                  { value: "expert", label: "Française" },
-                  { value: "expert", label: "한국어" },
-                  { value: "expert", label: "中国话" },
-                ]}
-              />
-            </Form.Item>
-          </div>
         </div>
-        <div className="flex justify-end mt-6"> {/* Updated to justify-end */}
+        <div className="flex justify-end mt-6">
           <button
             className="text-white bg-red-500 px-10 py-3 hover:bg-red-600"
-            onClick={goToNextStep}
+            onClick={handleSubmit}
           >
             Submit
           </button>
