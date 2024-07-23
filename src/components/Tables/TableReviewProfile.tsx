@@ -41,7 +41,6 @@ const TableReviewProfile = () => {
           status: true,
           is_verified: true,
           is_delete: false,
-          is_verified: true,
         },
         pageInfo: {
           pageNum: 1,
