@@ -40,6 +40,7 @@ const TableReviewProfile = () => {
           role: "instructor",
           status: true,
           is_delete: false,
+          is_verified: true,
         },
         pageInfo: {
           pageNum: 1,
