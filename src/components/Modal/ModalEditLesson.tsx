@@ -103,6 +103,7 @@ const ModalEditLesson = (props: ModalEditLessonProps) => {
         layout="horizontal"
         className="mt-4"
         form={form}
+        labelCol={{span: 4}}
         initialValues={initialValues}
       >
         <Form.Item

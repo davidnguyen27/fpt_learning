@@ -46,6 +46,7 @@ export type SearchCondition = {
   keyword?: string;
   role: string;
   status: boolean;
+  is_verified: boolean;
   is_delete: boolean;
 };
 

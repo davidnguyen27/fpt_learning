@@ -72,7 +72,7 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
         </button>,
       ]}
     >
-      <Form layout="horizontal" className="mt-4" form={form}>
+      <Form layout="horizontal" className="mt-4" form={form} labelCol={{span: 4}}>
         <Form.Item
           label="Course Name"
           name="name"

@@ -32,7 +32,7 @@ const ModalCategory = (props: ModalCategoryProps) => {
       onOk={() => setOpen(false)}
       width={700}
     >
-      <Form layout="vertical" className="mt-4" form={form}>
+      <Form layout="vertical" className="mt-4" form={form} labelCol={{span: 4}}>
         <Form.Item label="Category ID" name="_id">
           <Input className="text-sm" size="large" disabled />
         </Form.Item>

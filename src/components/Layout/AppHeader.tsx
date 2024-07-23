@@ -26,7 +26,7 @@ const AppHeader: React.FC = () => {
   };
 
   const handleCreateCourseClick = () => {
-    navigate("/instructor/courses-management/create-course-step");
+    navigate("/instructor/courses-management/");
   };
 
   const handleView = () => {

@@ -56,7 +56,7 @@ const ModalCreateAcc: React.FC<ModalCreateProps> = ({
         </button>,
       ]}
     >
-      <Form layout="vertical" className="mt-4" form={form}>
+      <Form layout="vertical" className="mt-4" form={form} labelCol={{span: 4}}>
         <Form.Item
           name="email"
           label="Email"

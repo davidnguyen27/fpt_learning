@@ -8,8 +8,7 @@ import ModalAddCategory from "../Modal/ModalAddCategory";
 import useDeleteCategory from "../../hooks/category/useDeleteCategory";
 import ModalEditCategory from "../Modal/ModalEditCategory";
 import Search from "antd/es/input/Search";
-
-
+import { formatDate } from "../../utils/formatDate";
 
 interface DataType {
   key: string;
@@ -22,7 +21,9 @@ const TableCategories = () => {
   const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [openAdd, setOpenAdd] = useState<boolean>(false);
   const [openEdit, setOpenEdit] = useState<boolean>(false);
-  const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null);
+  const [editingCategoryId, setEditingCategoryId] = useState<string | null>(
+    null,
+  );
 
   const handleSearch = (value: string) => {
     setSearchKeyword(value);
@@ -56,7 +57,7 @@ const TableCategories = () => {
   const pageInfo = useMemo(
     () => ({
       pageNum: 1,
-      pageSize: 10,
+      pageSize: 10000,
     }),
     [],
   );
@@ -77,24 +78,26 @@ const TableCategories = () => {
   }
 
   const columns: ColumnsType<DataType> = [
-    
     {
       title: "Category Name",
       dataIndex: "name",
       key: "name",
+      width: 300,
     },
 
     {
       title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
-      width: 100,
+      width: 250,
+      render: (text: string) => formatDate(text),
     },
     {
       title: "Updated At",
       dataIndex: "updated_at",
       key: "updated_at",
-      width: 300,
+      width: 250,
+      render: (text: string) => formatDate(text),
     },
     {
       title: "Action",
