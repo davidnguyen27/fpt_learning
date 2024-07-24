@@ -118,11 +118,8 @@ const ModalEditCourse = (props: ModalEditCourseProps) => {
         layout="horizontal"
         className="mt-4"
         form={form}
-<<<<<<< HEAD
-=======
         labelCol={{ span: 5 }}
         labelAlign="left"
->>>>>>> 9b09d487f41f2a48fda43fb1f61a7027b677f060
         initialValues={initialValues}
       >
         <Form.Item

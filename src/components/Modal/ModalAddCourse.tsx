@@ -77,14 +77,8 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
         layout="horizontal"
         className="mt-4"
         form={form}
-<<<<<<< HEAD
-        labelCol={{ span: 6 }}
-        wrapperCol={{ span: 18 }}
-        style={{ padding: "0 20px" }} // Added padding for better spacing
-=======
         labelCol={{ span: 4 }}
         labelAlign="left"
->>>>>>> 9b09d487f41f2a48fda43fb1f61a7027b677f060
       >
         <Form.Item
           label="Name"

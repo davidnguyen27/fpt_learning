@@ -292,11 +292,7 @@ const TableCourses: React.FC = () => {
             columns={columns}
             dataSource={data}
             pagination={false}
-<<<<<<< HEAD
-            scroll={{ x: "max-content" }} // Ensures table scrolls horizontally if needed
-=======
             scroll={{ x: "max-content" }}
->>>>>>> 9b09d487f41f2a48fda43fb1f61a7027b677f060
           />
         </div>
       </Spin>
@@ -349,39 +345,43 @@ const TableCourses: React.FC = () => {
           onChange={(e) => setComment(e.target.value)}
         />
         <Button
-        type="primary"
-        icon={<SendOutlined />}
-        onClick={() => {
-          if (currentCourseId) {
-            const currentCourse = data.find(
-              (course) => course._id === currentCourseId,
-            );
-            if (currentCourse) {
-              const newStatus = (() => {
-                switch (currentCourse.status) {
-                  case "new":
-                    return "waiting_approve";
-                  case "approve":
-                    return "active";
-                  case "active":
-                    return "inactive";
-                  case "inactive":
-                    return "active";
-                  default:
-                    return null;
+          type="primary"
+          icon={<SendOutlined />}
+          onClick={() => {
+            if (currentCourseId) {
+              const currentCourse = data.find(
+                (course) => course._id === currentCourseId,
+              );
+              if (currentCourse) {
+                const newStatus = (() => {
+                  switch (currentCourse.status) {
+                    case "new":
+                      return "waiting_approve";
+                    case "approve":
+                      return "active";
+                    case "active":
+                      return "inactive";
+                    case "inactive":
+                      return "active";
+                    default:
+                      return null;
+                  }
+                })();
+                if (newStatus) {
+                  handleChangeStatus(
+                    currentCourseId,
+                    currentCourse.status,
+                    comment,
+                  );
                 }
-              })();
-              if (newStatus) {
-                handleChangeStatus(currentCourseId, currentCourse.status, comment);
               }
             }
-          }
-        }}
-        style={{ marginTop: 16 }}
-        block
-      >
-        Confirm
-      </Button>
+          }}
+          style={{ marginTop: 16 }}
+          block
+        >
+          Confirm
+        </Button>
       </Drawer>
     </>
   );
