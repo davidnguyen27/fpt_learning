@@ -1,5 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import StudentCourseCard from "./StudentCourseCard";
+import { Button, Form, Input, notification } from "antd";
+import Editor from "../../app/Editor/RichTextEditor";
+import { getUserDetail, updateUser } from "../../services/usersService";
+import { formatDate } from "../../utils/formatDate";
+import { UserData } from "../../models/Types";
 
 interface StudentProfileSubTabProps {
   activeTab: string;
@@ -10,84 +15,100 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
   activeTab,
   setActiveTab,
 }) => {
+  const [form] = Form.useForm();
+  const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
+  const userId = storedUser?.data?._id;
+
+  const fetchUserData = async () => {
+    try {
+      const token = sessionStorage.getItem("token");
+
+      if (userId && token) {
+        const userData = await getUserDetail(userId, token);
+
+        if (userData?.dob) {
+          userData.dob = formatDate(userData.dob.toString());
+        }
+
+        form.setFieldsValue(userData);
+      } else {
+        console.error("User data or token is missing in sessionStorage");
+      }
+    } catch (error: any) {
+      notification.error({
+        message: "Error",
+        description: error.message,
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  }, [form, userId]);
+
+  const handleUpdate = async (values: Partial<UserData>) => {
+    try {
+      await updateUser(userId, values);
+      notification.success({
+        message: "Success",
+        description: "User profile updated successfully",
+      });
+
+      // Fetch lại dữ liệu người dùng sau khi cập nhật thành công
+      await fetchUserData();
+    } catch (error: any) {
+      notification.error({
+        message: "Error",
+        description: error.message,
+      });
+    }
+  };
+
   const AboutTabContent = () => (
-    <div>
-      <h3 className="rounded font-semibold">Requirements</h3>
-      <ul className="ml-7 list-disc rounded text-gray-700">
-        <li>Have a computer with Internet</li>
-        <li>Be ready to learn an insane amount of awesome stuff</li>
-        <li>Prepare to build real web apps!</li>
-      </ul>
-      <h3 className="font-semibold">Description</h3>
-      <ul className="ml-4 list-disc text-gray-700">
-        <li>
-          Just updated to include Bootstrap 4.1.3! Hi! Welcome to the Web
-          Developer Bootcamp, the only course you need to learn web
-          development...
-        </li>
-      </ul>
-      <h3 className="font-semibold">Who this course is for</h3>
-      <ul className="ml-4 list-disc text-gray-700">
-        <li>
-          This course is for anyone who wants to learn about web development,
-          regardless of previous experience...
-        </li>
-      </ul>
-      <h3>What you'll learn</h3>
-      <ul className="ml-4 list-disc text-gray-700">
-        <li>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-          ultricies elit porttitor, ultrices enim a, commodo dolor...
-        </li>
-        <li>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-          ultricies elit porttitor, ultrices enim a, commodo dolor...
-        </li>
-        <li>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-          ultricies elit porttitor, ultrices enim a, commodo dolor...
-        </li>
-        <li>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-          ultricies elit porttitor, ultrices enim a, commodo dolor...
-        </li>
-        <li>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-          ultricies elit porttitor, ultrices enim a, commodo dolor...
-        </li>
-        <li>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-          ultricies elit porttitor, ultrices enim a, commodo dolor...
-        </li>
-        <li>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-          ultricies elit porttitor, ultrices enim a, commodo dolor...
-        </li>
-        <li>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-          ultricies elit porttitor, ultrices enim a, commodo dolor...
-        </li>
-        <li>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-          ultricies elit porttitor, ultrices enim a, commodo dolor...
-        </li>
-        <li>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-          ultricies elit porttitor, ultrices enim a, commodo dolor...
-        </li>
-        <li>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-          ultricies elit porttitor, ultrices enim a, commodo dolor...
-        </li>
-        <li>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-          ultricies elit porttitor, ultrices enim a, commodo dolor...
-        </li>
-        <li>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-          ultricies elit porttitor, ultrices enim a, commodo dolor...
-        </li>
-      </ul>
+    <div className="p-3">
+      <h1 className="text-2xl font-semibold">Your profile</h1>
+      <Form
+        form={form}
+        className="mt-8"
+        layout="horizontal"
+        labelCol={{ span: 2 }}
+        onFinish={handleUpdate}
+      >
+        <Form.Item
+          name="name"
+          label="Full Name"
+          rules={[{ required: true, message: "Please input your name!" }]}
+        >
+          <Input size="large" />
+        </Form.Item>
+        <Form.Item name="dob" label="Date of Birth">
+          <Input type="date" size="large" />
+        </Form.Item>
+        <Form.Item
+          name="email"
+          label="Email"
+          rules={[{ required: true, message: "Please input your email!" }]}
+        >
+          <Input size="large" placeholder="email@example.com" />
+        </Form.Item>
+        <Form.Item name="phone_number" label="Phone">
+          <Input size="large" />
+        </Form.Item>
+        <Form.Item name="avatar" label="Avatar">
+          <Input size="large" />
+        </Form.Item>
+        <Form.Item name="video" label="Video">
+          <Input size="large" placeholder="https://youtube.com" />
+        </Form.Item>
+        <Form.Item name="description" label="Description">
+          <Editor />
+        </Form.Item>
+        <Form.Item wrapperCol={{ offset: 2 }}>
+          <Button type="primary" htmlType="submit" className="float-right mt-6">
+            Update
+          </Button>
+        </Form.Item>
+      </Form>
     </div>
   );
 

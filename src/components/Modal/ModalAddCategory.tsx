@@ -1,7 +1,5 @@
-import { Form, Input, Modal } from "antd";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../app/redux/store";
-import { createCategory } from "../../app/redux/categories/categorySlice";
+import { Form, Input, Modal} from "antd";
+import useAddCategory from "../../hooks/category/useAddCategory";
 
 interface ModalAddCategoryProps {
   open: boolean;
@@ -12,34 +10,27 @@ interface ModalAddCategoryProps {
 const ModalAddCategory = (props: ModalAddCategoryProps) => {
   const { open, setOpen, onSuccess } = props;
   const [form] = Form.useForm();
-
-  const dispatch = useDispatch<AppDispatch>();
-  const { loading, error } = useSelector((state: RootState) => state.category);
-
-  const handleAddCategory = async () => {
+  const { createCategory, loading } = useAddCategory(onSuccess);
+  const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-
-      const categoryData = {
-        name: values.name,
-        description: values.description || "",
-        parent_category_id: values.parent_category_id || null,
-      };
-
-      await dispatch(createCategory(categoryData)).unwrap();
-      setOpen(false);
+      values.full_time = Number(values.full_time);
+      values.position_order = Number(values.position_order);
+      await createCategory(values);
       form.resetFields();
-      onSuccess();
-    } catch (error) {
-      console.error("Failed to add category:", error);
+      setOpen(false);
+    } catch (error: any) {
+      throw new Error(error);
     }
   };
 
   return (
     <Modal
-      title="ADD CATEGORY"
+      title="Add Category"
       open={open}
       onCancel={() => setOpen(false)}
+      onOk={handleSubmit}
+      confirmLoading={loading}
       width={700}
       footer={[
         <button
@@ -53,22 +44,21 @@ const ModalAddCategory = (props: ModalAddCategoryProps) => {
           key="submit"
           type="submit"
           className="rounded-md bg-red-500 px-4 py-1"
-          onClick={handleAddCategory}
-          disabled={loading}
+          onClick={handleSubmit}
         >
-          {loading ? "Adding..." : "Add"}
+          {loading ? "Add" : "Add..."}
         </button>,
       ]}
     >
-      {error && <div style={{ color: "red" }}>{error}</div>}
-      <Form layout="vertical" className="mt-4" form={form}>
+      <Form layout="horizontal" className="mt-4" form={form}>
         <Form.Item
           label="Category Name"
           name="name"
           rules={[{ required: true, message: "Category Name is require!" }]}
         >
-          <Input className="text-sm" size="large" placeholder="Category Name" />
+          <Input className="text-sm" size="large" placeholder="Lesson Name" />
         </Form.Item>
+        
         <Form.Item label="Description" name="description">
           <Input className="text-sm" size="large" placeholder="Description" />
         </Form.Item>

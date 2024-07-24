@@ -8,7 +8,7 @@ const useEditLesson = (onSuccess: () => void) => {
 
   const editLesson = async (
     lessonId: string,
-    lessonData: Lesson["pageData"][number],
+    lessonData: Lesson,
   ) => {
     try {
       setLoading(true);

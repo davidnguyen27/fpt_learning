@@ -1,0 +1,132 @@
+/* Sidebar Styles */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px; /* Adjust as needed */
+  height: 100%;
+  background: white;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+  transition: transform 0.3s ease;
+  transform: translateX(-100%);
+  z-index: 1000;
+}
+
+.sidebar.show {
+  transform: translateX(0);
+}
+
+/* Overlay Styles */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
+}
+
+.overlay.visible {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Mobile-Specific Styles */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.show {
+    transform: translateX(0);
+  }
+
+  .overlay {
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  .overlay.visible {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .mobile-buttons {
+    display: flex;
+    flex-direction: column;
+    margin: 16px;
+  }
+
+  .mobile-button {
+    margin-bottom: 8px;
+    width: 100%;
+  }
+  /* Sign In Button */
+  .sign-in-button {
+    background-color: #d54d43; /* Red background */
+    color: white; /* White text */
+    border: none;
+  }
+
+  /* Sign Up Button */
+  .sign-up-button {
+    background-color: #ffffff; /* White background */
+    color: #000000; /* Black text */
+    border: 1px solid #000000; /* Black border */
+  }
+
+  /* Become Instructor Button */
+  .become-instructor-button {
+    background-color: #323030; /* Gray background */
+    color: white; /* White text */
+    border: none;
+  }
+}
+
+/* Larger Screens */
+@media (min-width: 769px) {
+  .sidebar {
+    position: relative;
+    transform: translateX(0);
+  }
+
+  .overlay {
+    display: none;
+  }
+
+  .mobile-buttons {
+    display: none;
+  }
+}
+
+.ant-drawer-header {
+  background-color: #f0f2f5;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+/* Tùy chỉnh menu item */
+.ant-menu-item {
+  margin: 0 !important;
+}
+
+/* Tùy chỉnh button */
+.ant-btn {
+  height: 40px;
+  font-size: 16px;
+}
+
+/* Tùy chỉnh divider */
+.ant-divider {
+  margin: 12px 0;
+}
+
+/* Tùy chỉnh footer */
+.ant-layout-footer {
+  padding: 12px 24px;
+}

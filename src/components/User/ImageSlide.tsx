@@ -12,8 +12,8 @@ const rightArrowStyles: React.CSSProperties = {
   position: "absolute",
   top: "50%",
   transform: "translate(0, -50%)",
-  right: "32px",
-  fontSize: "45px",
+  right: "16px", // Adjusted for smaller screens
+  fontSize: "25px", // Adjusted for smaller screens
   color: "#fff",
   zIndex: 1,
   cursor: "pointer",
@@ -23,8 +23,8 @@ const leftArrowStyles: React.CSSProperties = {
   position: "absolute",
   top: "50%",
   transform: "translate(0, -50%)",
-  left: "32px",
-  fontSize: "45px",
+  left: "16px", // Adjusted for smaller screens
+  fontSize: "25px", // Adjusted for smaller screens
   color: "#fff",
   zIndex: 1,
   cursor: "pointer",
@@ -38,10 +38,11 @@ const sliderStyles: React.CSSProperties = {
 const dotsContainerStyles: React.CSSProperties = {
   display: "flex",
   justifyContent: "center",
+  marginTop: "10px",
 };
 
 const dotStyle: React.CSSProperties = {
-  margin: "0 3px",
+  margin: "0 5px",
   cursor: "pointer",
   fontSize: "20px",
 };

@@ -1,44 +1,33 @@
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Col, Row, Space, Table, Input, Select, Spin, Modal } from "antd";
-import { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
+import { DeleteOutlined, FormOutlined } from "@ant-design/icons";
+import { Table, Spin, Modal, Input, Tag } from "antd";
+import type { ColumnsType } from "antd/es/table";
+import { Course, DataTransfer } from "../../models/Course";
 import useCourseData from "../../hooks/course/useCourseData";
-import { DataTransfer, Course } from "../../models/Course";
 import useDeleteCourse from "../../hooks/course/useDeleteCourse";
-import useEditCourse from "../../hooks/course/useEditCourse";
+import ModalAddCourse from "../Modal/ModalAddCourse";
 import ModalEditCourse from "../Modal/ModalEditCourse";
-
-const { Option } = Select;
 const { Search } = Input;
 
-const TableCourses = () => {
+const TableCourses: React.FC = () => {
   const [searchKeyword, setSearchKeyword] = useState<string>("");
-  const [editingCourse, setEditingCourse] = useState<
-    Course["pageData"][number] | null
-  >(null);
+  const [openAdd, setOpenAdd] = useState<boolean>(false);
   const [openEdit, setOpenEdit] = useState<boolean>(false);
+  const [editingCourseId, setEditingCourseId] = useState<string | null>(null);
+  const [selectedCourseDetail, setSelectedCourseDetail] =
+    useState<Course | null>(null);
+  const [detailModalVisible, setDetailModalVisible] = useState<boolean>(false);
 
-  const handleSearch = (value: string) => {
+  const handleSearch = useCallback((value: string) => {
     setSearchKeyword(value);
-  };
-
-  const handleDelete = (courseId: string) => {
-    Modal.confirm({
-      title: "Bạn có chắc chắn muốn xóa khóa học này?",
-      onOk: () => deleteCourse(courseId),
-    });
-  };
-
-  const handleEdit = (course: Course["pageData"][number]) => {
-    setEditingCourse(course);
-    setOpenEdit(true);
-  };
+  }, []);
 
   const searchCondition = useMemo(
     () => ({
       keyword: searchKeyword,
       category_id: "",
       status: "",
-      is_deleted: false,
+      is_delete: false,
     }),
     [searchKeyword],
   );
@@ -61,95 +50,162 @@ const TableCourses = () => {
 
   const { data, loading, error, refetchData } = useCourseData(dataTransfer);
   const { deleteCourse } = useDeleteCourse(refetchData);
-  const { editCourse, loading: editLoading } = useEditCourse(refetchData);
+
+  const handleSuccess = useCallback(() => {
+    refetchData();
+  }, [refetchData]);
+
+  const handleDelete = useCallback(
+    (courseId: string) => {
+      Modal.confirm({
+        title: "Are you sure you want to delete this course?",
+        onOk: () => deleteCourse(courseId),
+      });
+    },
+    [deleteCourse],
+  );
+
+  const handleEdit = useCallback((courseId: string) => {
+    setEditingCourseId(courseId);
+    setOpenEdit(true);
+  }, []);
+
+  const handleNameClick = (course: Course) => {
+    setSelectedCourseDetail(course);
+    setDetailModalVisible(true);
+  };
+
+  const handleCloseDetailModal = () => {
+    setDetailModalVisible(false);
+    setSelectedCourseDetail(null);
+  };
 
   if (error) {
     return <div>{error}</div>;
   }
 
-  const columns = [
+  const columns: ColumnsType<Course> = [
     {
-      title: "No.",
-      key: "index",
-      render: (_: any, __: any, index: number) => index + 1,
-      width: 50,
+      title: "Course Name",
+      dataIndex: "name",
+      key: "name",
+      width: 150,
+      render: (name: string, record: Course) => (
+        <a
+          onClick={() => handleNameClick(record)}
+          style={{ cursor: "pointer" }}
+        >
+          {name}
+        </a>
+      ),
     },
     {
-      title: "Tên khóa học",
-      dataIndex: "course_name",
-      key: "course_name",
-    },
-    {
-      title: "Tên danh mục",
+      title: "Category Name",
       dataIndex: "category_name",
       key: "category_name",
-      width: 400,
+      width: 100,
     },
     {
-      title: "Ngày tạo",
-      dataIndex: "created_at",
-      key: "created_at",
-    },
-    {
-      title: "Trạng thái",
+      title: "Status",
       dataIndex: "status",
       key: "status",
+      width: 80,
+      render: (status: string) => (
+        <Tag color={status === "Active" ? "green" : "red"}>{status}</Tag>
+      ),
     },
     {
-      title: "Thao tác",
-      key: "actions",
-      render: (_: any, record: any) => (
-        <Space size="middle">
-          <EditOutlined onClick={() => handleEdit(record)} />
+      title: "Created At",
+      dataIndex: "created_at",
+      key: "created_at",
+      width: 150,
+    },
+    {
+      title: "Updated At",
+      dataIndex: "updated_at",
+      key: "updated_at",
+      width: 150,
+    },
+    {
+      title: "Action",
+      key: "action",
+      width: 120,
+      render: (_, record) => (
+        <div className="flex space-x-2">
+          <FormOutlined
+            onClick={() => handleEdit(record._id)}
+            className="cursor-pointer text-blue-500"
+          />
           <DeleteOutlined
             className="cursor-pointer text-red-500"
             onClick={() => handleDelete(record._id)}
           />
-        </Space>
+        </div>
       ),
-      width: 100,
     },
   ];
 
   return (
-    <div>
-      <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
-        <Col>
-          <Search
-            onSearch={handleSearch}
-            placeholder="Tìm kiếm theo tên khóa học"
-            enterButton
-            style={{ width: 300 }}
-          />
-        </Col>
-        <Col>
-          <Select
-            placeholder="Lọc theo trạng thái"
-            allowClear
-            style={{ width: 200 }}
-          >
-            <Option value="Active">Hoạt động</Option>
-            <Option value="Inactive">Không hoạt động</Option>
-          </Select>
-        </Col>
-      </Row>
+    <>
+      <div className="my-3 flex flex-wrap items-center justify-between gap-2">
+        <Search
+          onSearch={handleSearch}
+          placeholder="Search by keyword"
+          allowClear
+          className="w-full md:w-1/3"
+        />
+        <button
+          onClick={() => setOpenAdd(true)}
+          className="rounded-lg bg-red-500 px-5 py-2 text-sm font-medium text-white hover:bg-red-600"
+        >
+          Add Course
+        </button>
+      </div>
       <Spin spinning={loading}>
-        <Table
-          className="my-5 rounded-none"
-          dataSource={data}
-          columns={columns}
-        />
+        <div className="overflow-x-auto">
+          <Table
+            columns={columns}
+            dataSource={data}
+            pagination={false}
+            scroll={{ x: "max-content" }} // Ensures table scrolls horizontally if needed
+          />
+        </div>
       </Spin>
-      {editingCourse && (
-        <ModalEditCourse
-          open={openEdit}
-          setOpen={setOpenEdit}
-          course={editingCourse}
-          editCourse={editCourse}
-          editLoading={editLoading}
-        />
-      )}
-    </div>
+      <ModalAddCourse
+        open={openAdd}
+        setOpen={setOpenAdd}
+        onSuccess={handleSuccess}
+      />
+      <ModalEditCourse
+        open={openEdit}
+        setOpen={setOpenEdit}
+        courseId={editingCourseId}
+        onSuccess={handleSuccess}
+      />
+      <Modal
+        title="Course Details"
+        visible={detailModalVisible}
+        onOk={handleCloseDetailModal}
+        onCancel={handleCloseDetailModal}
+        footer={null}
+      >
+        {selectedCourseDetail && (
+          <div>
+            <p>Name: {selectedCourseDetail.name}</p>
+            <p>Category: {selectedCourseDetail.category_name}</p>
+            <p>Status: {selectedCourseDetail.status}</p>
+            <p>Created At: {selectedCourseDetail.created_at}</p>
+            <p>Updated At: {selectedCourseDetail.updated_at}</p>
+            <p>Description: {selectedCourseDetail.description}</p>
+            <p>Video URL: {selectedCourseDetail.video_url}</p>
+            <p>Image URL: {selectedCourseDetail.image_url}</p>
+            <p>Price: {selectedCourseDetail.price}</p>
+            <p>Discount: {selectedCourseDetail.discount}</p>
+            <p>Content: {selectedCourseDetail.content}</p>
+          </div>
+        )}
+      </Modal>
+    </>
   );
 };
 

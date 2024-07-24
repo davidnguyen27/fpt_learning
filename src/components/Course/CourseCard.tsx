@@ -1,37 +1,65 @@
-import { useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../app/redux/store";
-import { fetchCourses } from "../../app/redux/courses/courseSlice";
+import { DataTransfer } from "../../models/Course";
+import useCourseData from "../../hooks/course/useCourseData";
 
 const CourseCard: React.FC = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
+  const [searchKeyword] = useState<string>("");
 
-  const { course, loading, error } = useSelector(
-    (state: RootState) => state.course,
+  const searchCondition = useMemo(
+    () => ({
+      keyword: searchKeyword,
+      category_id: "",
+      status: "",
+      is_delete: false,
+    }),
+    [searchKeyword],
   );
 
+  const pageInfo = useMemo(
+    () => ({
+      pageNum: 1,
+      pageSize: 10,
+    }),
+    [],
+  );
+
+  const dataTransfer: DataTransfer = useMemo(
+    () => ({
+      searchCondition,
+      pageInfo,
+    }),
+    [searchCondition, pageInfo],
+  );
+
+  const {
+    data: courses,
+    loading,
+    error,
+    refetchData,
+  } = useCourseData(dataTransfer);
+
   useEffect(() => {
-    dispatch(fetchCourses());
-  }, [dispatch]);
+    refetchData();
+  }, [refetchData]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
     <>
-      {course.map((item) => (
+      {courses.map((item) => (
         <article
-          key={item.id}
+          key={item._id} // Use `_id` or any unique identifier
           className="h-auto w-auto cursor-pointer rounded-md bg-slate-200 transition-transform duration-300 hover:scale-105 hover:bg-slate-300"
-          onClick={() => navigate("/detail")}
+          onClick={() => navigate(`/detail/${item._id}`)} // Pass unique id in route
         >
           <div className="p-4">
             <div>
               <img
-                src={item.image}
-                alt={item.courseName}
+                src={item.image_url || "default-image-url"}
+                alt={item.name}
                 className="rounded-md"
               />
             </div>
@@ -43,13 +71,13 @@ const CourseCard: React.FC = () => {
                 <i className="fa-solid fa-ellipsis-vertical cursor-pointer hover:text-amber-500"></i>
               </div>
             </div>
-            <h3 className="font-semibold">{item.courseName}</h3>
+            <h3 className="font-semibold">{item.name}</h3>
             <div className="my-2">
-              <span className="text-xs font-light">{item.categoryName}</span>
+              <span className="text-xs font-light">{item.category_name}</span>
             </div>
             <div className="flex items-center justify-between">
               <p className="text-xs">
-                By <span className="font-medium">{item.instructorName}</span>
+                By <span className="font-medium">{item.user_name}</span>
               </p>
               <i className="fa-solid fa-cart-plus ml-14 cursor-pointer"></i>
               <span>${item.price}</span>

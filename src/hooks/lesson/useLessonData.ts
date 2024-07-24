@@ -3,14 +3,13 @@ import { getLessonsAPI } from "../../services/lessonService";
 import { DataTransfer } from "../../models/Lesson";
 
 interface DataType {
-  session_id: string;
   key: string;
-  session_name: string;
-  course_name: string;
-  position_order: number;
   name: string;
-  video_url: string;
+  course_name: string;
+  session_name: string;
+  lesson_type: string;
   full_time: number;
+  position_order: number;
 }
 
 const useLessonsData = (dataTransfer: DataTransfer) => {
@@ -28,12 +27,11 @@ const useLessonsData = (dataTransfer: DataTransfer) => {
       const lessons = await getLessonsAPI(dataTransfer);
       const groupedData: DataType[] = lessons.map((lesson) => ({
         key: lesson._id,
-        session_id: lesson.session_id,
         session_name: lesson.session_name,
         course_name: lesson.course_name,
         position_order: lesson.position_order,
+        lesson_type: lesson.lesson_type,
         name: lesson.name,
-        video_url: lesson.video_url,
         full_time: lesson.full_time,
       }));
       setData(groupedData);

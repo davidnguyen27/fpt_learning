@@ -1,25 +1,19 @@
 export type Course = {
-  pageData: {
     _id: string;
     name: string;
     category_id: string;
+    description: string;
     user_id: string;
+    content: string;
     status: string;
-    video_url: string;
-    image_url: string;
+    video_url: string | null;
+    image_url: string | null;
     price: number;
     discount: number;
     created_at: string;
     updated_at: string;
     user_name: string;
     category_name: string;
-  }[];
-  pageInfo: {
-    pageNum: number;
-    pageSize: number;
-    totalItems: number;
-    totalPages: number;
-  };
 };
 
 export type DataTransfer = {
@@ -27,18 +21,10 @@ export type DataTransfer = {
     keyword: string;
     category_id: string;
     status: string;
-    is_deleted: boolean;
+    is_delete: boolean;
   };
   pageInfo: {
     pageNum: number;
     pageSize: number;
   };
-};
-
-export type DataType = {
-  keyword: string;
-  course_name: string;
-  category_name: string;
-  created_at: string;
-  status: string;
 };

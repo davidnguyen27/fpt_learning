@@ -1,34 +1,79 @@
-import { Form, Input, Modal } from "antd";
-import { useEffect } from "react";
-import { Category } from "../../models/Category/index";
+// ModalEditLesson.tsx
+import { Form, Input, Modal, message } from "antd";
+import { useEffect, useState } from "react";
+import { getCategoryAPI } from "../../services/categoryService";
+import useEditCategory from "../../hooks/category/useEditCategory";
+
+
 
 interface ModalEditCategoryProps {
   open: boolean;
   setOpen: (open: boolean) => void;
-  currentCategory: Partial<Category["pageData"][number]> | null;
-  onSubmit: (values: Partial<Category["pageData"][number]>) => void;
+  categoryId: string | null;
+  onSuccess: () => void;
 }
 
 const ModalEditCategory = (props: ModalEditCategoryProps) => {
-  const { open, setOpen, currentCategory, onSubmit } = props;
+  const { open, setOpen, categoryId, onSuccess } = props;
   const [form] = Form.useForm();
+  const { editCategory, loading } = useEditCategory(onSuccess);
+  const [initialValues, setInitialValues] = useState<any>({});
 
   useEffect(() => {
-    if (currentCategory) {
-      form.setFieldsValue(currentCategory);
-    }
-  }, [currentCategory, form]);
+    if (categoryId) {
+      getCategoryAPI(categoryId)
+        .then((data) => {
+          console.log(data);
+          if (data) {
+            const categoryData = {
+              name: data.name,
+              id: data._id,
+              description: data.description,
 
-  const handleSubmit = (values: Partial<Category["pageData"][number]>) => {
-    onSubmit(values);
-    setOpen(false);
+            };
+            setInitialValues(categoryData);
+            form.setFieldsValue(categoryData);
+          } else {
+            message.error("No category found with the given ID");
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          message.error("Failed to fetch category data");
+        });
+    } else {
+      form.resetFields();
+      setInitialValues({});
+    }
+  }, [categoryId, form]);
+
+  useEffect(() => {
+    if (open && categoryId) {
+      form.resetFields();
+      form.setFieldsValue(initialValues);
+    }
+  }, [initialValues, open, form, categoryId]);
+
+  const handleEdit = async () => {
+    try {
+      const values = await form.validateFields();
+      if (categoryId) {
+        await editCategory(categoryId, values);
+        form.resetFields();
+        setOpen(false);
+      }
+    } catch (error) {
+      message.error("Failed to update category");
+    }
   };
 
   return (
     <Modal
-      title="EDIT CATEGORY"
+      title="Edit category"
       open={open}
-      onCancel={() => setOpen(false)} // Sử dụng onCancel để đóng modal
+      onCancel={() => setOpen(false)}
+      onOk={handleEdit}
+      confirmLoading={loading}
       width={700}
       footer={[
         <button
@@ -42,19 +87,19 @@ const ModalEditCategory = (props: ModalEditCategoryProps) => {
           key="submit"
           type="submit"
           className="rounded-md bg-red-500 px-4 py-1"
-          onClick={() => form.submit()}
+          onClick={handleEdit}
         >
-          Edit
+          {loading ? "Saving..." : "Edit"}
         </button>,
       ]}
     >
       <Form
-        form={form}
-        onFinish={handleSubmit}
-        layout="vertical"
+        layout="horizontal"
         className="mt-4"
+        form={form}
+        initialValues={initialValues}
       >
-        <Form.Item
+                <Form.Item
           label="Category Name"
           name="name"
           rules={[{ required: true, message: "Category Name is require!" }]}

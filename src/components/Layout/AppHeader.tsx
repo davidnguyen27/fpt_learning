@@ -1,20 +1,27 @@
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSider } from "../../app/context/SiderContext";
 import { Badge, Button, Dropdown, MenuProps, Space } from "antd";
 import {
   ShoppingCartOutlined,
   MailOutlined,
   BellOutlined,
+  ContactsOutlined,
+  AreaChartOutlined,
+  RetweetOutlined,
+  LogoutOutlined,
+  MenuOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "../../app/context/AuthContext";
+import "../../styles/header.css";
+import "../../styles/sider.css";
+import AppSider from "./AppSider";
 
 const AppHeader: React.FC = () => {
-  const { toggleSider } = useSider();
+  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const navigate = useNavigate();
   const { logout } = useAuth();
 
   const storedUser: any = sessionStorage.getItem("user");
-
   const user = JSON.parse(storedUser);
 
   const handleLogout = () => {
@@ -27,19 +34,19 @@ const AppHeader: React.FC = () => {
   };
 
   const handleView = () => {
-    if (user.data.role === "admin") {
+    if (user?.data.role === "admin") {
       navigate("/admin-profile-page");
-    } else if (user.data.role === "instructor") {
-      navigate("/instructor-profile-page");
+    } else if (user?.data.role === "instructor") {
+      navigate("/user-profile-page");
     } else {
-      navigate("/student-profile-page");
+      navigate("/user-profile-page");
     }
   };
 
   const handleManagement = () => {
-    if (user.data.role === "admin") {
+    if (user?.data.role === "admin") {
       navigate("/admin/dashboard");
-    } else if (user?.role === "instructor") {
+    } else if (user?.data.role === "instructor") {
       navigate("/instructor/dashboard");
     } else {
       navigate("/student-course-list-page");
@@ -47,7 +54,7 @@ const AppHeader: React.FC = () => {
   };
 
   const handleShoppingCart = () => {
-    if (user.data.role === "student") {
+    if (user?.data.role === "student") {
       navigate("/cart");
     }
   };
@@ -55,13 +62,20 @@ const AppHeader: React.FC = () => {
   const items: MenuProps["items"] = [
     {
       key: "0",
-      label: <a onClick={handleView}>Profile</a>,
+      label: (
+        <a onClick={handleView}>
+          <ContactsOutlined /> Profile
+        </a>
+      ),
     },
     {
       key: "1",
       label: (
         <a onClick={handleManagement}>
-          {user?.role === "admin" || "instructor" ? "Dashboard" : "My Course"}
+          <AreaChartOutlined />{" "}
+          {user?.data.role === "admin" || "instructor"
+            ? "Dashboard"
+            : "My Course"}
         </a>
       ),
     },
@@ -79,20 +93,32 @@ const AppHeader: React.FC = () => {
     },
     {
       key: "5",
-      label: <a href="/feedback">Send Feedback</a>,
+      label: (
+        <a href="/user/change-password">
+          <RetweetOutlined /> Change Password
+        </a>
+      ),
     },
     {
       key: "6",
-      label: <a onClick={handleLogout}>Logout</a>,
+      label: (
+        <a onClick={handleLogout}>
+          <LogoutOutlined /> Logout
+        </a>
+      ),
     },
   ];
+
+  const toggleSidebar = () => {
+    setIsSidebarVisible(!isSidebarVisible);
+  };
 
   return (
     <>
       <div className="wrapper-50">
         <div className="styles-x-axis">
-          <div className="menu-bar" onClick={toggleSider}>
-            <i className="fa-solid fa-bars"></i>
+          <div className="menu-bar" onClick={toggleSidebar}>
+            <MenuOutlined style={{ fontSize: "24px" }} />
           </div>
           <a href="/" className="logo-box">
             <img
@@ -112,7 +138,7 @@ const AppHeader: React.FC = () => {
         </div>
       </div>
       <div className="styles-x-axis w-1/2 justify-end gap-5">
-        {user?.role === "instructor" ? (
+        {user?.data.role === "instructor" ? (
           <Button
             type="primary"
             danger
@@ -124,7 +150,7 @@ const AppHeader: React.FC = () => {
         ) : null}
         {user ? (
           <>
-            {user.role === "student" && (
+            {user?.data.role === "student" && (
               <Badge count={1}>
                 <ShoppingCartOutlined
                   style={{ fontSize: "1.5em" }}
@@ -132,7 +158,7 @@ const AppHeader: React.FC = () => {
                 />
               </Badge>
             )}
-            {user.role === "instructor" && (
+            {user?.data.role === "instructor" && (
               <Badge count={1}>
                 <ShoppingCartOutlined
                   style={{ fontSize: "1.5em" }}
@@ -150,7 +176,7 @@ const AppHeader: React.FC = () => {
               <a className="mr-9 flex" onClick={(e) => e.preventDefault()}>
                 <Space>
                   <img
-                    src={user.image}
+                    src={user.data.avatar}
                     className="h-12 w-12 rounded-full"
                     alt=""
                   />
@@ -159,7 +185,7 @@ const AppHeader: React.FC = () => {
             </Dropdown>
           </>
         ) : (
-          <div className="mr-4">
+          <div className="hide-on-mobile mr-4">
             <Button
               type="primary"
               className="mr-4 bg-red-500"
@@ -181,9 +207,17 @@ const AppHeader: React.FC = () => {
             >
               Sign Up
             </Button>
+            <Button
+              className="mr-4 border-slate-900 bg-slate-900 text-white"
+              type="primary"
+              onClick={() => navigate("/sign-up-instructor")}
+            >
+              Become an Instructor
+            </Button>
           </div>
         )}
       </div>
+      <AppSider isVisible={isSidebarVisible} onClose={toggleSidebar} />
     </>
   );
 };

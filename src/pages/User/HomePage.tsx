@@ -6,38 +6,39 @@ import {
 } from "../../components";
 import MainLayout from "../../components/Layout/MainLayout";
 import ImageSlider from "../../components/User/ImageSlide";
+import "../../styles/homepage.css";
 
 const HomePage: React.FC = () => {
   const slides = [
     {
-      url: "https://imgur.com/gallery/with-bit-of-timing-luck-i-was-able-to-get-this-shot-last-year-6Dnzkbs",
+      url: "https://fschool.fpt.edu.vn/wp-content/uploads/2024/07/2anh-bia-bai-dang-web.jpg",
       title: "beach",
     },
     {
-      url: "https://imgur.com/gallery/lonely-clould-sN9Up6P",
+      url: "https://fschool.fpt.edu.vn/wp-content/uploads/2024/07/anh-bia-bai-dang-web-2.jpg",
       title: "boat",
     },
     {
-      url: "https://imgur.com/gallery/with-bit-of-timing-luck-i-was-able-to-get-this-shot-last-year-6Dnzkbs",
+      url: "https://fschool.fpt.edu.vn/wp-content/uploads/2024/06/433527687_848563273952132_4550113571092770589_n.jpg",
       title: "forest",
     },
     {
-      url: "https://imgur.com/gallery/with-bit-of-timing-luck-i-was-able-to-get-this-shot-last-year-6Dnzkbs",
+      url: "https://fschool.fpt.edu.vn/wp-content/uploads/2022/04/ANH_4165-2048x1365.png",
       title: "city",
     },
     {
-      url: "https://imgur.com/gallery/with-bit-of-timing-luck-i-was-able-to-get-this-shot-last-year-6Dnzkbs",
+      url: "https://fschool.fpt.edu.vn/wp-content/uploads/2022/04/Image3.png",
       title: "italy",
     },
   ];
   const containerStyles: React.CSSProperties = {
-    width: "800px",
-    height: "100px",
+    width: "100%",
+    height: "400px",
     margin: "0 auto",
   };
   return (
     <MainLayout>
-      <div style={containerStyles}>
+      <div className="image-slider-container" style={containerStyles}>
         <ImageSlider slides={slides} />
       </div>
       <section className="mt-10">

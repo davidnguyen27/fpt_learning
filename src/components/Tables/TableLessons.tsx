@@ -1,6 +1,5 @@
 import { DeleteOutlined, FormOutlined } from "@ant-design/icons";
-import { Table, Spin, message, Modal } from "antd";
-import type { ColumnsType } from "antd/es/table";
+import { Table, Spin, Modal } from "antd";
 import { DataTransfer } from "../../models/Lesson";
 import useLessonsData from "../../hooks/lesson/useLessonData";
 import Search from "antd/es/input/Search";
@@ -8,16 +7,16 @@ import { useState, useMemo } from "react";
 import ModalAddLesson from "../Modal/ModalAddLesson";
 import useDeleteLesson from "../../hooks/lesson/useDeleteLesson";
 import ModalEditLesson from "../Modal/ModalEditLesson";
+import type { ColumnsType } from "antd/es/table";
 
 interface DataType {
   key: string;
-  session_id: string;
-  session_name: string;
-  course_name: string;
-  position_order: number;
   name: string;
-  video_url: string;
+  course_name: string;
+  session_name: string;
+  lesson_type: string;
   full_time: number;
+  position_order: number;
 }
 
 const TableLessons = () => {
@@ -31,7 +30,6 @@ const TableLessons = () => {
   };
 
   const handleSuccess = () => {
-    message.success("Lesson added successfully");
     refetchData();
   };
 
@@ -84,69 +82,36 @@ const TableLessons = () => {
 
   const columns: ColumnsType<DataType> = [
     {
-      title: "Session",
-      dataIndex: "session_name",
-      key: "session_name",
-      onCell: (record, rowIndex) => {
-        if (
-          rowIndex === undefined ||
-          rowIndex === 0 ||
-          record.session_id !== data[rowIndex - 1]?.session_id
-        ) {
-          let rowSpan = 1;
-          for (let i = (rowIndex ?? 0) + 1; i < data.length; i++) {
-            if (data[i].session_id !== record.session_id) break;
-            rowSpan++;
-          }
-          return { rowSpan };
-        } else {
-          return { rowSpan: 0 };
-        }
-      },
-    },
-    {
-      title: "Course",
-      dataIndex: "course_name",
-      key: "course_name",
-      width: 300,
-      onCell: (record, rowIndex) => {
-        if (
-          rowIndex === undefined ||
-          rowIndex === 0 ||
-          record.course_name !== data[rowIndex - 1]?.course_name
-        ) {
-          let rowSpan = 1;
-          for (let i = (rowIndex ?? 0) + 1; i < data.length; i++) {
-            if (data[i].course_name !== record.course_name) break;
-            rowSpan++;
-          }
-          return { rowSpan };
-        } else {
-          return { rowSpan: 0 };
-        }
-      },
-    },
-    {
       title: "Lesson Name",
       dataIndex: "name",
       key: "name",
     },
     {
-      title: "Order",
-      dataIndex: "position_order",
-      key: "position_order",
-      width: 100,
+      title: "Course Name",
+      dataIndex: "course_name",
+      key: "course_name",
     },
     {
-      title: "Video (url)",
-      dataIndex: "video_url",
-      key: "video_url",
-      width: 300,
+      title: "Session Name",
+      dataIndex: "session_name",
+      key: "session_name",
+    },
+    {
+      title: "Lesson Type",
+      dataIndex: "lesson_type",
+      key: "lesson_type",
+      width: 100,
     },
     {
       title: "Duration",
       dataIndex: "full_time",
       key: "full_time",
+      width: 100,
+    },
+    {
+      title: "Position Order",
+      dataIndex: "position_order",
+      key: "position_order",
       width: 100,
     },
     {

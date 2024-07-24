@@ -19,7 +19,7 @@ const Tiny: React.FC = () => {
         onInit={(_, editor) => {
           setText(editor.getContent({ format: "text" }));
         }}
-        initialValue=""
+        initialValue={text}
         value={value}
         init={{
           plugins:

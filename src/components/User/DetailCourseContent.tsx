@@ -8,8 +8,9 @@ const DetailCourseContent = () => {
     <div>
       <CourseBox
         courseData={{
-          title: "Course Tittle",
-          description: "Course Description",
+          title: "The Web Developer Bootcamp",
+          description:
+            "The only course you need to learn web development - HTML, CSS, JS, Node, and More!",
         }}
       />
       <CourseSubTab

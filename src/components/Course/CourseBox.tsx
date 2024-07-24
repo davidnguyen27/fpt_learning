@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import coursethumbnail from "../../assets/coursethumbnail.jpg";
-import coursevideo from "../../assets/coursevideo.mp4";
 import { CourseBoxProps } from "../../models/Types";
 
 const CourseBox: React.FC<CourseBoxProps> = ({ courseData }) => {
@@ -62,7 +61,10 @@ const CourseBox: React.FC<CourseBoxProps> = ({ courseData }) => {
             </span>
             <div className="inline-block transform overflow-hidden rounded-lg bg-white text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
               <video width="100%" controls>
-                <source src={coursevideo} type="video/mp4" />
+                <source
+                  src="https://youtu.be/wxxszUSs4Kk?si=Wptf4xdyVWEvu2vj"
+                  type="video/mp4"
+                />
                 Your browser does not support the video tag.
               </video>
               <button
