@@ -128,10 +128,10 @@ const TableSessions: React.FC = () => {
       ),
     },
     {
-      title: "Course Id",
-      dataIndex: "course_id",
-      key: "course_id",
-      width: 100,
+      title: "Course Name",
+      dataIndex: "course_name",
+      key: "course_name",
+      width: 200,
     },
     {
       title: "Created At",
@@ -156,7 +156,7 @@ const TableSessions: React.FC = () => {
     {
       title: "Action",
       key: "action",
-      width: 120,
+      width: 100,
       render: (_, record: Session) => (
         <div className="flex space-x-2">
           <FormOutlined

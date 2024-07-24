@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Form, Input, Modal, Select } from "antd";
+import { Form, Input, Modal, Select, Button, Spin } from "antd";
 import useAddLesson from "../../hooks/lesson/useAddLesson";
 import { getCoursesAPI, getSessionsAPI } from "../../services/lessonService";
 import { Course } from "../../models/Course";
@@ -63,6 +63,10 @@ const ModalAddLesson = (props: ModalAddLessonProps) => {
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
+      // Ensure position_order is set to 99 if left empty
+      if (!values.position_order) {
+        values.position_order = 99;
+      }
       await createLesson(values);
       form.resetFields();
       setOpen(false);
@@ -71,33 +75,52 @@ const ModalAddLesson = (props: ModalAddLessonProps) => {
     }
   };
 
+  const handleCancel = () => {
+    form.resetFields();
+    setOpen(false);
+  };
+
+  const validateNumber = (_: any, value: string) => {
+    if (value && isNaN(Number(value))) {
+      return Promise.reject(new Error("Position Order must be a valid number!"));
+    }
+    return Promise.resolve();
+  };
+
   return (
     <Modal
       title="Add Lesson"
       open={open}
-      onCancel={() => setOpen(false)}
+      onCancel={handleCancel}
       onOk={handleSubmit}
       confirmLoading={loading}
       width={700}
       footer={[
-        <button
+        <Button
           key="cancel"
-          className="mr-3 rounded-md bg-zinc-300 px-4 py-1"
-          onClick={() => setOpen(false)}
+          className="mr-3"
+          onClick={handleCancel}
         >
           Cancel
-        </button>,
-        <button
+        </Button>,
+        <Button
           key="submit"
-          type="submit"
+          type="primary"
+          loading={loading}
           className="rounded-md bg-red-500 px-4 py-1"
           onClick={handleSubmit}
         >
-          {loading ? "Adding..." : "Add"}
-        </button>,
+          {loading ? <Spin size="small" /> : "Add"}
+        </Button>,
       ]}
     >
-      <Form layout="horizontal" className="mt-4" form={form} labelCol={{span: 4}}>
+      <Form
+        layout="horizontal"
+        className="mt-4"
+        form={form}
+        labelCol={{ span: 5 }}
+        initialValues={{ position_order: 99 }}
+      >
         <Form.Item
           label="Lesson Name"
           name="name"
@@ -187,7 +210,11 @@ const ModalAddLesson = (props: ModalAddLessonProps) => {
           </Form.Item>
         )}
 
-        <Form.Item label="Position Order" name="position_order">
+        <Form.Item
+          label="Position Order"
+          name="position_order"
+          rules={[{ validator: validateNumber }]}
+        >
           <Input className="text-sm" size="large" placeholder="99" />
         </Form.Item>
 

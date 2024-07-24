@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Form, Input, Modal, Select } from "antd";
+import { Form, Input, Modal, Select, Button } from "antd";
 import useAddCourse from "../../hooks/course/useAddCourse";
 import { getCategoriesAPI } from "../../services/coursesService";
 import { Category } from "../../models/Category";
@@ -46,33 +46,67 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
     }
   };
 
+  const handleCancel = () => {
+    form.resetFields();
+    setOpen(false);
+  };
+
+  const validateMediaUrl = () => {
+    const videoUrl = form.getFieldValue("video_url");
+    const imageUrl = form.getFieldValue("image_url");
+    const isValidUrl = (url: string) => {
+      try {
+        new URL(url);
+        return true;
+      } catch {
+        return false;
+      }
+    };
+
+    if (!videoUrl && !imageUrl) {
+      return Promise.reject(new Error("Either video URL or image URL is required!"));
+    }
+    if ((videoUrl && !isValidUrl(videoUrl)) || (imageUrl && !isValidUrl(imageUrl))) {
+      return Promise.reject(new Error("Please enter a valid URL!"));
+    }
+    return Promise.resolve();
+  };
+
+  const validateNumber = (_: any, value: string) => {
+    if (!value || isNaN(Number(value))) {
+      return Promise.reject(new Error("Please enter a valid number!"));
+    }
+    return Promise.resolve();
+  };
+
   return (
     <Modal
       title="Add Course"
       open={open}
-      onCancel={() => setOpen(false)}
+      onCancel={handleCancel}
       onOk={handleSubmit}
       confirmLoading={loading}
       width={700}
       footer={[
-        <button
+        <Button
           key="cancel"
-          className="mr-3 rounded-md bg-zinc-300 px-4 py-1"
-          onClick={() => setOpen(false)}
+          className="mr-3"
+          onClick={handleCancel}
         >
           Cancel
-        </button>,
-        <button
+        </Button>,
+        <Button
           key="submit"
-          type="submit"
+          type="primary"
           className="rounded-md bg-red-500 px-4 py-1"
+          loading={loading} // This will show a loading spinner inside the button
           onClick={handleSubmit}
         >
-          {loading ? "Adding..." : "Add"}
-        </button>,
+          Add
+        </Button>,
       ]}
     >
-      <Form layout="horizontal" className="mt-4" form={form} labelCol={{span: 4}}>
+      <Form layout="horizontal" className="mt-4" form={form} labelCol={{ span: 5 }}>
         <Form.Item
           label="Course Name"
           name="name"
@@ -111,18 +145,26 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
           <Input className="text-sm" size="large" placeholder="Content" />
         </Form.Item>
 
-        <Form.Item label="Video" name="video_url">
+        <Form.Item
+          label="Video"
+          name="video_url"
+          rules={[{ validator: validateMediaUrl }]}
+        >
           <Input className="text-sm" size="large" placeholder="Video URL" />
         </Form.Item>
         
-        <Form.Item label="Image" name="image_url">
+        <Form.Item
+          label="Image"
+          name="image_url"
+          rules={[{ validator: validateMediaUrl }]}
+        >
           <Input className="text-sm" size="large" placeholder="Image URL" />
         </Form.Item>
 
         <Form.Item
           label="Price"
           name="price"
-          rules={[{ required: true, message: "Price is required!" }]}
+          rules={[{ required: true, message: "Price is required!" }, { validator: validateNumber }]}
         >
           <Input className="text-sm" size="large" placeholder="Price" />
         </Form.Item>
@@ -130,7 +172,7 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
         <Form.Item
           label="Discount"
           name="discount"
-          rules={[{ required: true, message: "Discount is required!" }]}
+          rules={[{ required: true, message: "Discount is required!" }, { validator: validateNumber }]}
         >
           <Input className="text-sm" size="large" placeholder="Discount" />
         </Form.Item>

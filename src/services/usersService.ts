@@ -154,7 +154,7 @@ export const updateUser = async (
 
 //---------------------------------------------------------------------------------------------
 
-//-------------------------------- Update  User (Admin) ---------------------------------------
+//-------------------------------- Change Status User (Admin) ---------------------------------------
 export const toggleUserStatus = async (
   user_id: string,
   status: boolean,

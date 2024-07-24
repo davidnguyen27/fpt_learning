@@ -90,7 +90,9 @@ const TableCourses: React.FC = () => {
       if (currentStatus === "new") {
         newStatus = "waiting_approve";
       } else if (currentStatus === "waiting_approve") {
-        newStatus = "approved"; // Adjust this as necessary based on your status flow
+        newStatus = "approve"; // Adjust this as necessary based on your status flow
+      } else if (currentStatus === "approve") {
+        newStatus = "active";
       }
 
       if (newStatus) {
@@ -122,6 +124,12 @@ const TableCourses: React.FC = () => {
     return <div>{error}</div>;
   }
 
+  const getYouTubeEmbedUrl = (url: string) => {
+    const videoId = url.split("v=")[1];
+    const ampersandPosition = videoId.indexOf("&");
+    return ampersandPosition !== -1 ? videoId.substring(0, ampersandPosition) : videoId;
+  };
+
   const columns: ColumnsType<Course> = [
     {
       title: "Course Name",
@@ -138,7 +146,7 @@ const TableCourses: React.FC = () => {
       title: "Category Name",
       dataIndex: "category_name",
       key: "category_name",
-      width: 100,
+      width: 150,
     },
     {
       title: "Status",
@@ -154,12 +162,14 @@ const TableCourses: React.FC = () => {
       dataIndex: "created_at",
       key: "created_at",
       width: 150,
+      render: (date: string) => new Date(date).toLocaleString(),
     },
     {
       title: "Updated At",
       dataIndex: "updated_at",
       key: "updated_at",
       width: 150,
+      render: (date: string) => new Date(date).toLocaleString(),
     },
     {
       title: "Action",
@@ -180,7 +190,11 @@ const TableCourses: React.FC = () => {
             onClick={() => openCommentDrawer(record._id)}
             disabled={record.status === "waiting_approve"}
           >
-            {record.status === "new" ? "Send for Approval" : "Waiting"}
+            {record.status === "new"
+              ? "Send for Approval"
+              : record.status === "approve"
+              ? "Activate"
+              : "Waiting"}
           </Button>
         </div>
       ),
@@ -232,18 +246,42 @@ const TableCourses: React.FC = () => {
         footer={null}
       >
         {selectedCourseDetail && (
-          <div>
-            <p>Name: {selectedCourseDetail.name}</p>
-            <p>Category: {selectedCourseDetail.category_name}</p>
-            <p>Status: {selectedCourseDetail.status}</p>
-            <p>Created At: {selectedCourseDetail.created_at}</p>
-            <p>Updated At: {selectedCourseDetail.updated_at}</p>
-            <p>Description: {selectedCourseDetail.description}</p>
-            <p>Video URL: {selectedCourseDetail.video_url}</p>
-            <p>Image URL: {selectedCourseDetail.image_url}</p>
-            <p>Price: {selectedCourseDetail.price}</p>
-            <p>Discount: {selectedCourseDetail.discount}</p>
-            <p>Content: {selectedCourseDetail.content}</p>
+          <div className="flex">
+            <div>
+              <p>Name: {selectedCourseDetail.name}</p>
+              <p>Category: {selectedCourseDetail.category_name}</p>
+              <p>Status: {selectedCourseDetail.status}</p>
+              <p>Created At: {new Date(selectedCourseDetail.created_at).toLocaleString()}</p>
+              <p>Updated At: {new Date(selectedCourseDetail.updated_at).toLocaleString()}</p>
+              <p>Description: {selectedCourseDetail.description}</p>
+              <p>Price: {selectedCourseDetail.price}</p>
+              <p>Discount: {selectedCourseDetail.discount}</p>
+              <p>Content: {selectedCourseDetail.content}</p>
+            </div>
+            <div className="ml-4">
+              {selectedCourseDetail.video_url && (
+                <div className="mb-2">
+                  <a href={selectedCourseDetail.video_url} target="_blank" rel="noopener noreferrer">
+                    Video URL
+                  </a>
+                  <iframe
+                    src={`https://www.youtube.com/embed/${getYouTubeEmbedUrl(selectedCourseDetail.video_url)}`}
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="w-full mt-2"
+                  ></iframe>
+                </div>
+              )}
+              {selectedCourseDetail.image_url && (
+                <div>
+                  <a href={selectedCourseDetail.image_url} target="_blank" rel="noopener noreferrer">
+                    Image URL
+                  </a>
+                  <img src={selectedCourseDetail.image_url} alt="Course" className="w-full mt-2" />
+                </div>
+              )}
+            </div>
           </div>
         )}
       </Modal>
@@ -266,7 +304,7 @@ const TableCourses: React.FC = () => {
           icon={<SendOutlined />}
           onClick={() => {
             if (currentCourseId) {
-              handleChangeStatus(currentCourseId, "new");
+              handleChangeStatus(currentCourseId, selectedCourseDetail?.status || "new");
             }
           }}
           style={{ marginTop: 16 }}

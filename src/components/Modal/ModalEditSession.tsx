@@ -22,13 +22,15 @@ const ModalEditSession = (props: ModalEditSessionProps) => {
   const [coursesLoading, setCoursesLoading] = useState<boolean>(true);
   const [initialValues, setInitialValues] = useState<any>({});
 
+  // Fetch courses on component mount
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const categoriesData = await getCoursesAPI("", 1, 10, false);
-        setCourses(categoriesData.data.pageData);
+        const response = await getCoursesAPI("", 1, 10, false);
+        setCourses(response.data.pageData);
       } catch (error) {
         console.error("Failed to fetch courses:", error);
+        message.error("Failed to fetch courses");
       } finally {
         setCoursesLoading(false);
       }
@@ -37,40 +39,42 @@ const ModalEditSession = (props: ModalEditSessionProps) => {
     fetchCourses();
   }, []);
 
+  // Fetch session data when sessionId changes
   useEffect(() => {
     if (sessionId) {
-      getSessionAPI(sessionId)
-        .then((data) => {
-          if (data) {
-            const sessionData = {
-              name: data.name,
-              course_id: data.course_id,
-              description: data.description,
-              position_order: data.position_order,
-            };
-            setInitialValues(sessionData);
-            form.setFieldsValue(sessionData);
-          } else {
-            message.error("No session found with the given ID");
-          }
-        })
-        .catch((error) => {
-          console.error(error);
+      const fetchSession = async () => {
+        try {
+          const sessionData = await getSessionAPI(sessionId);
+          const sessionValues = {
+            name: sessionData.name,
+            course_id: sessionData.course_id,
+            description: sessionData.description,
+            position_order: sessionData.position_order,
+          };
+          setInitialValues(sessionValues);
+          form.setFieldsValue(sessionValues);
+        } catch (error) {
+          console.error("Failed to fetch session data:", error);
           message.error("Failed to fetch session data");
-        });
+        }
+      };
+
+      fetchSession();
     } else {
       form.resetFields();
       setInitialValues({});
     }
   }, [sessionId, form]);
 
+  // Reset form fields when modal opens
   useEffect(() => {
-    if (open && sessionId) {
+    if (open) {
       form.resetFields();
       form.setFieldsValue(initialValues);
     }
-  }, [initialValues, open, form, sessionId]);
+  }, [open, initialValues, form]);
 
+  // Handle form submission
   const handleEdit = async () => {
     try {
       const values = await form.validateFields();
@@ -78,9 +82,10 @@ const ModalEditSession = (props: ModalEditSessionProps) => {
         await editSession(sessionId, values);
         form.resetFields();
         setOpen(false);
+        message.success("Session updated successfully");
       }
     } catch (error) {
-      message.error("Failed to update course");
+      message.error("Failed to update session");
     }
   };
 
@@ -125,7 +130,7 @@ const ModalEditSession = (props: ModalEditSessionProps) => {
           rules={[{ required: true, message: "Course is required!" }]}
         >
           <Select
-            placeholder="Select a category"
+            placeholder="Select a course"
             loading={coursesLoading}
             disabled={coursesLoading}
           >

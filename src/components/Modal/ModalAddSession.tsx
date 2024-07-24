@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { Form, Input, Modal, Select } from "antd";
+import { Form, Input, Modal, Select, Button } from "antd";
 import useAddSession from "../../hooks/session/useAddSession";
 import { getCoursesAPI } from "../../services/sessionService";
-import { Course } from "../../models/Course"
+import { Course } from "../../models/Course";
 
 const { Option } = Select;
 
@@ -46,37 +46,56 @@ const ModalAddSession = (props: ModalAddSessionProps) => {
     }
   };
 
+  const handleCancel = () => {
+    form.resetFields();
+    setOpen(false);
+  };
+
+  const validateNumber = (_: any, value: string) => {
+    if (value && isNaN(Number(value))) {
+      return Promise.reject(new Error("Position Order must be a valid number!"));
+    }
+    return Promise.resolve();
+  };
+
   return (
     <Modal
       title="Add Session"
       open={open}
-      onCancel={() => setOpen(false)}
+      onCancel={handleCancel}
       onOk={handleSubmit}
       confirmLoading={loading}
       width={700}
       footer={[
-        <button
+        <Button
           key="cancel"
-          className="mr-3 rounded-md bg-zinc-300 px-4 py-1"
-          onClick={() => setOpen(false)}
+          className="mr-3"
+          onClick={handleCancel}
         >
           Cancel
-        </button>,
-        <button
+        </Button>,
+        <Button
           key="submit"
-          type="submit"
+          type="primary"
+          loading={loading}
           className="rounded-md bg-red-500 px-4 py-1"
           onClick={handleSubmit}
         >
           {loading ? "Adding..." : "Add"}
-        </button>,
+        </Button>,
       ]}
     >
-      <Form layout="horizontal" className="mt-4" form={form} labelCol={{span: 4}}>
+      <Form
+        layout="horizontal"
+        className="mt-4"
+        form={form}
+        labelCol={{ span: 5 }}
+        initialValues={{ position_order: 99 }}
+      >
         <Form.Item
           label="Session Name"
           name="name"
-          rules={[{ required: true, message: "Course Name is required!" }]}
+          rules={[{ required: true, message: "Session Name is required!" }]}
         >
           <Input className="text-sm" size="large" placeholder="Session Name" />
         </Form.Item>
@@ -103,7 +122,11 @@ const ModalAddSession = (props: ModalAddSessionProps) => {
           <Input className="text-sm" size="large" placeholder="" />
         </Form.Item>
 
-        <Form.Item label="Position Order" name="position_order">
+        <Form.Item
+          label="Position Order"
+          name="position_order"
+          rules={[{ validator: validateNumber }]}
+        >
           <Input className="text-sm" size="large" placeholder="99" />
         </Form.Item>
       </Form>

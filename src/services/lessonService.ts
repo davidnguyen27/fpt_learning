@@ -32,14 +32,15 @@ export const getLessonAPI = async (lessonId: string) => {
     });
 
     const lessonData: Lesson = res.data.data;
-    if (!lessonData) throw new Error("Not found lessonData");
+    if (!lessonData) throw new Error("Not found sessionData");
 
     return lessonData;
   } catch (error: any) {
     console.error("API fetch error:", error);
-    throw new Error("Failed to fetch lesson data");
+    throw new Error("Failed to fetch session data");
   }
 };
+
 
 export const createLessonAPI = async (
   lessonData: Partial<Lesson>,
@@ -99,6 +100,40 @@ export const deleteLessonAPI = async (lessonId: string) => {
   }
 };
 
+export const getSessionsAPI = async (
+  keyword: string,
+  pageNum: number,
+  pageSize: number,
+  is_delete: boolean,
+) => {
+  try {
+    const token = sessionStorage.getItem("token");
+    console.log("token", token);
+    if (!token) throw new Error("Cannot get token!");
+
+    const res = await axios.post(
+      `${APILink}/api/session/search`,
+      {
+        searchCondition: { keyword, is_delete },
+        pageInfo: { pageNum, pageSize },
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    
+    console.log("res", res.data);
+    return res.data;
+
+  } catch (error: any) {
+    console.error("API Error:", error);
+    throw new Error(error.message || "An error occurred while fetching sessions");
+  }
+};
+
 export const getCoursesAPI = async (
   keyword: string,
   pageNum: number,
@@ -133,37 +168,5 @@ export const getCoursesAPI = async (
   }
 };
 
-export const getSessionsAPI = async (
-  keyword: string,
-  pageNum: number,
-  pageSize: number,
-  is_delete: boolean,
-) => {
-  try {
-    const token = sessionStorage.getItem("token");
-    console.log("token", token);
-    if (!token) throw new Error("Cannot get token!");
 
-    const res = await axios.post(
-      `${APILink}/api/session/search`,
-      {
-        searchCondition: { keyword, is_delete },
-        pageInfo: { pageNum, pageSize },
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    
-    console.log("res", res.data);
-    return res.data;
-
-  } catch (error: any) {
-    console.error("API Error:", error);
-    throw new Error(error.message || "An error occurred while fetching sessions");
-  }
-};
 
