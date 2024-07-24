@@ -132,7 +132,7 @@ const AppSider: React.FC<AppSiderProps> = ({ isVisible, onClose }) => {
           className="flex-grow"
           items={items}
         />
-        <div className="px-4 py-6">
+        <div className="mobile-buttons px-4 py-6">
           <Divider className="my-4" />
           <div className="space-y-3">
             <Button

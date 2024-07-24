@@ -110,7 +110,7 @@ const ModalEditSession = (props: ModalEditSessionProps) => {
         </button>,
       ]}
     >
-      <Form layout="horizontal" className="mt-4" form={form} initialValues={initialValues}>
+      <Form layout="horizontal" className="mt-4" form={form} labelCol={{span: 4}} initialValues={initialValues}>
         <Form.Item
           label="Session Name"
           name="name"

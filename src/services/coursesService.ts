@@ -2,9 +2,7 @@ import axios from "axios";
 import { Course, DataTransfer } from "../models/Course";
 import { APILink } from "../const/linkAPI";
 
-export const getCoursesAPI = async (
-  dataTransfer: DataTransfer,
-): Promise<Course[]> => {
+export const getCoursesAPI = async (dataTransfer: DataTransfer) => {
   try {
     const token = sessionStorage.getItem("token");
     if (!token) throw new Error("Cannot get token!");
@@ -16,7 +14,9 @@ export const getCoursesAPI = async (
     });
     return res.data.data.pageData;
   } catch (error: any) {
-    throw new Error(error.message);
+    if (error.response && error.response.data && error.response.data.message) {
+      return error.response.data.message;
+    }
   }
 };
 
@@ -36,8 +36,9 @@ export const getCourseAPI = async (courseId: string) => {
 
     return courseData;
   } catch (error: any) {
-    console.error("API fetch error:", error);
-    throw new Error("Failed to fetch category data");
+    if (error.response && error.response.data && error.response.data.message) {
+      return error.response.data.message;
+    }
   }
 };
 
@@ -53,14 +54,16 @@ export const createCourseAPI = async (courseData: Partial<Course>) => {
     });
     return res.data;
   } catch (error: any) {
-    throw new Error(error);
+    if (error.response && error.response.data && error.response.data.message) {
+      return error.response.data.message;
+    }
   }
 };
 
 export const editCourseAPI = async (
   courseId: string,
   courseData: Partial<Course>,
-): Promise<Course> => {
+) => {
   try {
     const token = sessionStorage.getItem("token");
     if (!token) throw new Error("Cannot get token!");
@@ -77,7 +80,9 @@ export const editCourseAPI = async (
     );
     return { ...res.data.data, _id: courseId };
   } catch (error: any) {
-    throw new Error(error);
+    if (error.response && error.response.data && error.response.data.message) {
+      return error.response.data.message;
+    }
   }
 };
 
@@ -97,7 +102,6 @@ export const deleteCourseAPI = async (courseId: string) => {
   }
 };
 
-
 export const getCategoriesAPI = async (
   keyword: string,
   pageNum: number,
@@ -106,7 +110,6 @@ export const getCategoriesAPI = async (
 ) => {
   try {
     const token = sessionStorage.getItem("token");
-    console.log("token", token);
     if (!token) throw new Error("Cannot get token!");
 
     const res = await axios.post(
@@ -120,15 +123,55 @@ export const getCategoriesAPI = async (
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     );
-    
-    console.log("res", res.data);
-    return res.data;
 
+    return res.data;
   } catch (error: any) {
     console.error("API Error:", error);
-    throw new Error(error.message || "An error occurred while fetching categories");
+    throw new Error(
+      error.message || "An error occurred while fetching categories",
+    );
   }
 };
 
+//-------------------------------- Change Status Course (Instructor) ---------------------------------------
+export const toggleCourseStatus = async (
+  course_id: string,
+  new_status: string,
+  comment: string = "",
+): Promise<void> => {
+  const token = sessionStorage.getItem("token");
+  const url = `${APILink}/api/course/change-status`;
+
+  try {
+    await axios.put(
+      url,
+      { course_id, new_status, comment },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+  } catch (error: any) {
+    if (error.response && error.response.data && error.response.data.message) {
+      return error.response.data.message;
+    }
+  }
+};
+
+export const getCoursesClientAPI = async (
+  dataTransfer: DataTransfer,
+): Promise<Course[]> => {
+  try {
+    const res = await axios.post(
+      `${APILink}/api/client/course/search`,
+      dataTransfer,
+    );
+    return res.data.data.pageData;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};

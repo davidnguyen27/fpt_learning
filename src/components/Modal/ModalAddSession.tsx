@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Form, Input, Modal, Select } from "antd";
 import useAddSession from "../../hooks/session/useAddSession";
 import { getCoursesAPI } from "../../services/sessionService";
-import { Course } from "../../models/Course"
+import { Course } from "../../models/Course";
 
 const { Option } = Select;
 
@@ -72,9 +72,15 @@ const ModalAddSession = (props: ModalAddSessionProps) => {
         </button>,
       ]}
     >
-      <Form layout="horizontal" className="mt-4" form={form}>
+      <Form
+        layout="horizontal"
+        className="mt-4"
+        form={form}
+        labelCol={{ span: 4 }}
+        labelAlign="left"
+      >
         <Form.Item
-          label="Session Name"
+          label="Name"
           name="name"
           rules={[{ required: true, message: "Course Name is required!" }]}
         >
@@ -103,7 +109,7 @@ const ModalAddSession = (props: ModalAddSessionProps) => {
           <Input className="text-sm" size="large" placeholder="" />
         </Form.Item>
 
-        <Form.Item label="Position Order" name="position_order">
+        <Form.Item label="Order" name="position_order">
           <Input className="text-sm" size="large" placeholder="99" />
         </Form.Item>
       </Form>

@@ -136,7 +136,7 @@ const FormSignUp = () => {
           </Button>
         </Form.Item>
       </Form>
-      <div className="mb-4 w-full">
+      <div className="mb-4 w-full flex items-center justify-center">
         <GoogleLogin onSuccess={onSuccess} onError={onError} />
       </div>
     </>

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DataTransfer } from "../../models/Course";
-import useCourseData from "../../hooks/course/useCourseData";
+import useCourseDataClient from "../../hooks/course/useCourseDataClient";
 
 const CourseCard: React.FC = () => {
   const navigate = useNavigate();
@@ -38,7 +38,7 @@ const CourseCard: React.FC = () => {
     loading,
     error,
     refetchData,
-  } = useCourseData(dataTransfer);
+  } = useCourseDataClient(dataTransfer);
 
   useEffect(() => {
     refetchData();
@@ -51,9 +51,9 @@ const CourseCard: React.FC = () => {
     <>
       {courses.map((item) => (
         <article
-          key={item._id} // Use `_id` or any unique identifier
+          key={item._id}
           className="h-auto w-auto cursor-pointer rounded-md bg-slate-200 transition-transform duration-300 hover:scale-105 hover:bg-slate-300"
-          onClick={() => navigate(`/detail/${item._id}`)} // Pass unique id in route
+          onClick={() => navigate(`/detail/${item._id}`)}
         >
           <div className="p-4">
             <div>

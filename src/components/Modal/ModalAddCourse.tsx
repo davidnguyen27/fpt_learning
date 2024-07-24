@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Form, Input, Modal, Select } from "antd";
+import { Form, Input, message, Modal, Select } from "antd";
 import useAddCourse from "../../hooks/course/useAddCourse";
 import { getCategoriesAPI } from "../../services/coursesService";
 import { Category } from "../../models/Category";
@@ -26,8 +26,8 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
       try {
         const categoriesData = await getCategoriesAPI("", 1, 10, false);
         setCategories(categoriesData.data.pageData);
-      } catch (error) {
-        console.error("Failed to fetch categories:", error);
+      } catch (error: any) {
+        throw new Error(error.message);
       } finally {
         setCategoriesLoading(false);
       }
@@ -43,7 +43,7 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
       form.resetFields();
       setOpen(false);
     } catch (error: any) {
-      throw new Error(error);
+      message.error(error.message);
     }
   };
 
@@ -77,12 +77,17 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
         layout="horizontal"
         className="mt-4"
         form={form}
+<<<<<<< HEAD
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 18 }}
         style={{ padding: "0 20px" }} // Added padding for better spacing
+=======
+        labelCol={{ span: 4 }}
+        labelAlign="left"
+>>>>>>> 9b09d487f41f2a48fda43fb1f61a7027b677f060
       >
         <Form.Item
-          label="Course Name"
+          label="Name"
           name="name"
           rules={[{ required: true, message: "Course Name is required!" }]}
         >
@@ -115,7 +120,11 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
           <Input className="text-sm" size="large" placeholder="Content" />
         </Form.Item>
 
-        <Form.Item label="Video" name="video_url">
+        <Form.Item
+          label="Video"
+          name="video_url"
+          rules={[{ required: true, message: "Video is required!" }]}
+        >
           <Input className="text-sm" size="large" placeholder="Video URL" />
         </Form.Item>
 
@@ -128,7 +137,12 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
           name="price"
           rules={[{ required: true, message: "Price is required!" }]}
         >
-          <Input className="text-sm" size="large" placeholder="Price" />
+          <Input
+            type="number"
+            className="text-sm"
+            size="large"
+            placeholder="Price"
+          />
         </Form.Item>
 
         <Form.Item
@@ -136,7 +150,12 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
           name="discount"
           rules={[{ required: true, message: "Discount is required!" }]}
         >
-          <Input className="text-sm" size="large" placeholder="Discount" />
+          <Input
+            type="number"
+            className="text-sm"
+            size="large"
+            placeholder="Discount"
+          />
         </Form.Item>
       </Form>
     </Modal>
