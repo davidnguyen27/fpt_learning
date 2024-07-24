@@ -345,27 +345,39 @@ const TableCourses: React.FC = () => {
           onChange={(e) => setComment(e.target.value)}
         />
         <Button
-          type="primary"
-          icon={<SendOutlined />}
-          onClick={() => {
-            if (currentCourseId) {
-              const currentCourse = data.find(
-                (course) => course._id === currentCourseId,
-              );
-              if (currentCourse) {
-                const newStatus =
-                  currentCourse.status === "waiting_approve"
-                    ? "approve"
-                    : "waiting_approve";
-                handleChangeStatus(currentCourseId, newStatus, comment);
+        type="primary"
+        icon={<SendOutlined />}
+        onClick={() => {
+          if (currentCourseId) {
+            const currentCourse = data.find(
+              (course) => course._id === currentCourseId,
+            );
+            if (currentCourse) {
+              const newStatus = (() => {
+                switch (currentCourse.status) {
+                  case "new":
+                    return "waiting_approve";
+                  case "approve":
+                    return "active";
+                  case "active":
+                    return "inactive";
+                  case "inactive":
+                    return "active";
+                  default:
+                    return null;
+                }
+              })();
+              if (newStatus) {
+                handleChangeStatus(currentCourseId, currentCourse.status, comment);
               }
             }
-          }}
-          style={{ marginTop: 16 }}
-          block
-        >
-          Confirm
-        </Button>
+          }
+        }}
+        style={{ marginTop: 16 }}
+        block
+      >
+        Confirm
+      </Button>
       </Drawer>
     </>
   );
