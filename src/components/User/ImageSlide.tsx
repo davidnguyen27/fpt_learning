@@ -1,4 +1,4 @@
-import React, { useState, FC } from "react";
+import React, { useState, useEffect, FC } from "react";
 
 const slideStyles: React.CSSProperties = {
   width: "100%",
@@ -73,6 +73,11 @@ const ImageSlider: FC<ImageSliderProps> = ({ slides }) => {
   const goToSlide = (slideIndex: number) => {
     setCurrentIndex(slideIndex);
   };
+
+  useEffect(() => {
+    const interval = setInterval(goToNext, 5000);
+    return () => clearInterval(interval);
+  }, [currentIndex]);
 
   const slideStylesWidthBackground: React.CSSProperties = {
     ...slideStyles,

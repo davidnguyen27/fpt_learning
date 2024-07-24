@@ -3,8 +3,8 @@ import "../../styles/tiny.css";
 import { Editor } from "@tinymce/tinymce-react";
 
 const Tiny: React.FC = () => {
-  const [text, setText] = useState<string>("");
-  const [value, setValue] = useState<string>("<p>TinyMCE editor text</p>");
+  const [_, setText] = useState<string>("");
+  const [value, setValue] = useState<string>("");
   console.log("VALUE =>", value);
   console.log("TEXT =>", value);
 
@@ -19,7 +19,7 @@ const Tiny: React.FC = () => {
         onInit={(_, editor) => {
           setText(editor.getContent({ format: "text" }));
         }}
-        initialValue={text}
+        initialValue=""
         value={value}
         init={{
           plugins:
