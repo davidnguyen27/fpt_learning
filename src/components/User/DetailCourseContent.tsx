@@ -1,24 +1,23 @@
-import { useState } from "react";
+import { useParams } from "react-router-dom";
 import CourseBox from "../Course/CourseBox";
 import CourseSubTab from "../Course/CourseSubTab";
+import { useState } from "react";
+import useCourseDetailClient from "../../hooks/course/useCourseDetailClient";
 
 const DetailCourseContent = () => {
-  const [activeTab, setActiveTab] = useState("about");
+  const { _id } = useParams();
+  const [activeTab, setActiveTab] = useState<string>("about");
+
+  const { course } = useCourseDetailClient(_id as string);
+
   return (
     <div>
-      <CourseBox
-        courseData={{
-          title: "The Web Developer Bootcamp",
-          description:
-            "The only course you need to learn web development - HTML, CSS, JS, Node, and More!",
-        }}
-      />
+      {_id && <CourseBox _id={_id} />}
       <CourseSubTab
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        courseData={{
-          content: ["Course Content 1", "Course Content 2"],
-        }}
+        onSelectedCourse={() => {}}
+        sessions={course?.session_list ?? []}
       />
     </div>
   );
