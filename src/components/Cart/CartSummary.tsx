@@ -1,16 +1,17 @@
+import { Button } from "antd";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
 interface CartSummaryProps {
-  total: number;
-  originalPrice: number;
-  discountPrice: number;
+  price_paid: number;
+  price: number;
+  discount: number;
 }
 
 const CartSummary: React.FC<CartSummaryProps> = ({
-  total,
-  originalPrice,
-  discountPrice,
+  price_paid,
+  price,
+  discount,
 }) => {
   const navigate = useNavigate();
   return (
@@ -28,26 +29,28 @@ const CartSummary: React.FC<CartSummaryProps> = ({
         ></span>
       </div>
       <div className="mt-2 flex justify-between font-semibold">
-        <span>Original Price</span>
-        <span className="text-black">${originalPrice}</span>
+        <span>Price</span>
+        <span className="text-black">${price}</span>
       </div>
       <hr className="mt-6" />
       <div className="mt-2 flex justify-between">
-        <span>Discount Price</span>
-        <span className="font-semibold text-gray-500">${discountPrice}</span>
+        <span>Discount</span>
+        <span className="font-semibold text-gray-500">${discount}</span>
       </div>
       <hr className="mt-6" />
       <div className="mt-2 flex justify-between font-bold">
         <span>Total</span>
-        <span className="text-black">${total}</span>
+        <span className="text-black">${price_paid}</span>
       </div>
       <hr className="mt-6" />
-      <button
-        className="mx-auto mt-4 block rounded bg-[#ef4444] px-14 py-2 text-white transition hover:bg-black hover:text-white"
+      <Button
+        type="primary"
+        danger
+        style={{ display: "block", width: "100%", marginTop: "16px" }}
         onClick={() => navigate("/checkout")}
       >
         Check Out Now
-      </button>
+      </Button>
     </div>
   );
 };

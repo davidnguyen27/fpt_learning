@@ -135,6 +135,7 @@ export type HelpSubTabProps = {
 export type CourseBoxProps = {
   courseData: {
     title: String;
+    description: string;
   };
 };
 

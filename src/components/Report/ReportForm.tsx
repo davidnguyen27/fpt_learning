@@ -1,3 +1,4 @@
+import Tiny from "../../app/Editor/RichTextEditor";
 import { Button, Flex, Form, Input, Select } from "antd";
 
 const ReportForm = () => {
@@ -37,12 +38,16 @@ const ReportForm = () => {
       </Form.Item>
 
       <Form.Item
-        name="description"
-        label="Description"
-        rules={[{ required: true, message: "Required!" }]}
-      >
-        <Input.TextArea rows={4} />
-      </Form.Item>
+          label="Description"
+          name="description"
+          valuePropName="value"
+          getValueFromEvent={(e: any) => e.target.getContent()}
+        >
+          <Tiny
+            value={form.getFieldValue('description') || ''}
+            onChange={(value: any) => form.setFieldsValue({ description: value })}
+          />
+        </Form.Item>
 
       <Form.Item name="file" label="Image">
         <Input type="file" />

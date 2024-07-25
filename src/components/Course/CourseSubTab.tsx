@@ -3,7 +3,7 @@ import { CourseSubTabProps } from "../../models/Types";
 import TableReviews from "../Tables/TableReviews";
 import { MenuUnfoldOutlined, PlayCircleOutlined } from "@ant-design/icons";
 
-const CourseSubTab: React.FC<CourseSubTabProps> = ({
+const   CourseSubTab: React.FC<CourseSubTabProps> = ({
   activeTab,
   setActiveTab,
   sessions,

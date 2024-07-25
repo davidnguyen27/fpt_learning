@@ -1,60 +1,119 @@
-import React from "react";
+import React, { useState } from "react";
+import { CartData } from "../../models/Cart";
+import { deleteCartAPI } from "../../services/cartService";
+import { Modal, notification } from "antd";
+import { DeleteOutlined } from "@ant-design/icons"; 
 
 interface CartItemProps {
-  item: {
-    id: number;
-    name: string;
-    price: number;
-    quantity: number;
-    image: string;
-    discount: number;
-    title?: string;
-    author?: string;
-  };
-  onRemove: (id: number) => void;
+  item: CartData;
+  onRemove: (id: string) => void;
+  isSelected: boolean;
+  onSelect: (id: string, selected: boolean) => void;
 }
 
-const CartItem: React.FC<CartItemProps> = ({ item, onRemove }) => {
-  const currentPrice = item.price - item.discount;
+const CartItem: React.FC<CartItemProps> = ({
+  item,
+  onRemove,
+  isSelected,
+  onSelect,
+}) => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const showDeleteConfirm = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = async () => {
+    setLoading(true);
+    try {
+      await deleteCartAPI(item._id);
+      onRemove(item._id);
+      notification.success({
+        message: "Success",
+        description: "The item has been successfully removed from the cart.",
+      });
+    } catch (error: any) {
+      console.error("Error deleting item:", error.message);
+      notification.error({
+        message: "Error",
+        description: `Failed to remove the item: ${error.message || "An error occurred"}`,
+      });
+    } finally {
+      setLoading(false);
+      setIsModalVisible(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onSelect(item._id, e.target.checked);
+  };
+
+  const price = item.price;
+  const discount = item.discount;
+  const price_paid = discount ? price - (price * discount) / 100 : price;
+
+  const priceColor = discount ? "#ef4444" : "inherit"; 
+
 
   return (
-    <div className="max-w-sm w-full sm:max-w-md lg:max-w-lg xl:max-w-xl mx-auto mb-6">
-      <div className="bg-white shadow-md rounded-lg overflow-hidden">
-        <div className="p-4 relative flex items-center justify-between">
-          <img
-            src={item.image}
-            alt={item.name}
-            className="w-32 h-24 object-cover rounded-md"
+    <div className="mb-4">
+      <div className="overflow-hidden rounded-lg bg-white shadow-md">
+        <div className="relative m-4 flex items-center justify-between p-4">
+          <input
+            type="checkbox"
+            checked={isSelected}
+            onChange={handleCheckboxChange}
+            className="mr-4"
           />
-          <div className="flex flex-col ml-4 flex-grow">
+          <div className="ml-4 flex flex-grow flex-col">
             <div>
-              <span className="font-bold text-lg">{item.name}</span>
+              <span className="text-lg font-bold">{item.course_name}</span>
               <br />
-              <span className="text-gray-500 text-sm">{item.title}</span>
+              <span className="text-sm text-gray-500">
+                Cart no: {item.cart_no}
+              </span>
             </div>
-            <div className="flex items-center text-gray-500 text-sm">
+            <div className="flex items-center text-sm text-gray-500">
               <span className="mr-1">By</span>
-              <span className="text-black font-semibold">{item.author}</span>
+              <span className="font-semibold text-[#0ea5e9]">
+                {item.instructor_name}
+              </span>
             </div>
           </div>
-          <div className="absolute top-0 right-3">
-            <div
-              className="p-0 text-black cursor-pointer"
-              onClick={() => onRemove(item.id)}
-            >
-              x
+          <div className="flex items-end justify-between">
+            <div className="mr-4 flex-col">
+              <div className="text-sm font-bold text-black">
+                <span style={{ color: priceColor }}>
+                  $ {price_paid.toLocaleString("US")}
+                </span>
+              </div>
+              {discount > 0 && (
+                <div className="text-sm text-gray-500 line-through">
+                  $ {price.toLocaleString("US")}
+                </div>
+              )}
             </div>
-          </div>
-          <div className="flex flex-col items-end">
-            <div className="text-black font-semibold text-sm">
-              ${currentPrice}
-            </div>
-            <div className="text-gray-500 text-sm line-through">
-              ${item.price}
+            <div className="cursor-pointer p-0 text-black">
+              <DeleteOutlined onClick={showDeleteConfirm} />
             </div>
           </div>
         </div>
       </div>
+
+      <Modal
+        title="Confirm Deletion"
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        confirmLoading={loading}
+      >
+        <p>Are you sure you want to remove this course from your cart?</p>
+      </Modal>
     </div>
   );
 };

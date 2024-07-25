@@ -4,6 +4,7 @@ import useAddLesson from "../../hooks/lesson/useAddLesson";
 import { getCoursesAPI, getSessionsAPI } from "../../services/lessonService";
 import { Course } from "../../models/Course";
 import { Session } from "../../models/Session";
+import Tiny from "../../app/Editor/RichTextEditor";
 
 const { Option } = Select;
 
@@ -47,7 +48,9 @@ const ModalAddLesson = (props: ModalAddLessonProps) => {
     try {
       const sessionsData = await getSessionsAPI("", 1, 10, false);
       setSessions(
-        sessionsData.data.pageData.filter((session: Session) => session.course_id === courseId)
+        sessionsData.data.pageData.filter(
+          (session: Session) => session.course_id === courseId,
+        ),
       );
     } catch (error) {
       console.error("Failed to fetch sessions:", error);
@@ -97,7 +100,12 @@ const ModalAddLesson = (props: ModalAddLessonProps) => {
         </button>,
       ]}
     >
-      <Form layout="horizontal" className="mt-4" form={form} labelCol={{span: 4}}>
+      <Form
+        layout="horizontal"
+        className="mt-4"
+        form={form}
+        labelCol={{ span: 4 }}
+      >
         <Form.Item
           label="Lesson Name"
           name="name"
@@ -148,7 +156,10 @@ const ModalAddLesson = (props: ModalAddLessonProps) => {
           name="lesson_type"
           rules={[{ required: true, message: "Lesson Type is required!" }]}
         >
-          <Select placeholder="Select lesson type" onChange={handleLessonTypeChange}>
+          <Select
+            placeholder="Select lesson type"
+            onChange={handleLessonTypeChange}
+          >
             {lessonTypes.map((type) => (
               <Option key={type} value={type}>
                 {type}
@@ -159,19 +170,28 @@ const ModalAddLesson = (props: ModalAddLessonProps) => {
 
         {lessonType === "text" && (
           <Form.Item
-            label="Description"
-            name="description"
-            rules={[{ required: true, message: "Description is required for text lessons!" }]}
-          >
-            <Input.TextArea className="text-sm" size="large" placeholder="Description" />
-          </Form.Item>
+          label="Description"
+          name="description"
+          valuePropName="value"
+          getValueFromEvent={(e: any) => e.target.getContent()}
+        >
+          <Tiny
+            value={form.getFieldValue('description') || ''}
+            onChange={(value: any) => form.setFieldsValue({ description: value })}
+          />
+        </Form.Item>
         )}
 
         {lessonType === "video" && (
           <Form.Item
             label="Video URL"
             name="video_url"
-            rules={[{ required: true, message: "Video URL is required for video lessons!" }]}
+            rules={[
+              {
+                required: true,
+                message: "Video URL is required for video lessons!",
+              },
+            ]}
           >
             <Input className="text-sm" size="large" placeholder="Video URL" />
           </Form.Item>
@@ -181,7 +201,12 @@ const ModalAddLesson = (props: ModalAddLessonProps) => {
           <Form.Item
             label="Image URL"
             name="image_url"
-            rules={[{ required: true, message: "Image URL is required for image lessons!" }]}
+            rules={[
+              {
+                required: true,
+                message: "Image URL is required for image lessons!",
+              },
+            ]}
           >
             <Input className="text-sm" size="large" placeholder="Image URL" />
           </Form.Item>
