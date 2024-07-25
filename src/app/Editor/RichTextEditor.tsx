@@ -1,32 +1,24 @@
-import React, { useState } from "react";
-import "../../styles/tiny.css";
-import { Editor } from "@tinymce/tinymce-react";
+import React from 'react';
+import { Editor as TinyMCEEditor } from '@tinymce/tinymce-react';
 
-const Tiny: React.FC = () => {
-  const [_, setText] = useState<string>("");
-  const [value, setValue] = useState<string>("");
-  console.log("VALUE =>", value);
-  console.log("TEXT =>", value);
+interface TinyProps {
+  value: string;
+  onChange: (value: string) => void;
+}
 
+const Tiny: React.FC<TinyProps> = ({ value, onChange }) => {
   return (
-    <>
-      <Editor
-        apiKey="jy9r72cwdxztqu455s7iqbdqwobpeuunkn9usspjm9xrq9c7"
-        onEditorChange={(newValue, editor) => {
-          setValue(newValue);
-          setText(editor.getContent({ format: "text" }));
-        }}
-        onInit={(_, editor) => {
-          setText(editor.getContent({ format: "text" }));
-        }}
-        initialValue=""
-        value={value}
-        init={{
-          plugins:
-            "a11ychecker advcode advlist advtable anchor autocorrect autolink autoresize autosave casechange charmap checklist code codesample directionality editimage emoticons export footnotes formatpainter fullscreen help image importcss inlinecss insertdatetime link linkchecker lists media mediaembed mentions mergetags nonbreaking pagebreak pageembed permanentpen powerpaste preview quickbars save searchreplace table tableofcontents template tinydrive tinymcespellchecker typography visualblocks visualchars wordcount",
-        }}
-      />
-    </>
+    <TinyMCEEditor
+      apiKey="r4zdxf0q255xlsgca1moadaxj819duv82ifg52bdfkbl6v6l" // Add your TinyMCE API key here
+      value={value}
+      init={{
+        height: 300,
+        menubar: false,
+        plugins: 'link image code',
+        toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code',
+      }}
+      onEditorChange={onChange} // Directly pass the value to onChange
+    />
   );
 };
 

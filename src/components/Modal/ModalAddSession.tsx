@@ -3,6 +3,7 @@ import { Form, Input, Modal, Select } from "antd";
 import useAddSession from "../../hooks/session/useAddSession";
 import { getCoursesAPI } from "../../services/sessionService";
 import { Course } from "../../models/Course";
+import Tiny from "../../app/Editor/RichTextEditor";
 
 const { Option } = Select;
 
@@ -105,8 +106,16 @@ const ModalAddSession = (props: ModalAddSessionProps) => {
           </Select>
         </Form.Item>
 
-        <Form.Item label="Description" name="description">
-          <Input className="text-sm" size="large" placeholder="" />
+        <Form.Item
+          label="Description"
+          name="description"
+          valuePropName="value"
+          getValueFromEvent={(e: any) => e.target.getContent()}
+        >
+          <Tiny
+            value={form.getFieldValue('description') || ''}
+            onChange={(value: any) => form.setFieldsValue({ description: value })}
+          />
         </Form.Item>
 
         <Form.Item label="Order" name="position_order">

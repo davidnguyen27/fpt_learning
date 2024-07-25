@@ -54,7 +54,7 @@ const AppHeader: React.FC = () => {
   };
 
   const handleShoppingCart = () => {
-    if (user?.data.role === "student") {
+    if (user?.data.role === "student" || user?.data.role === "instructor") {
       navigate("/cart");
     }
   };
@@ -123,7 +123,7 @@ const AppHeader: React.FC = () => {
           <a href="/" className="logo-box">
             <img
               src="https://upload.wikimedia.org/wikipedia/commons/0/00/Fsalancuoi.png?fbclid=IwY2xjawEL70VleHRuA2FlbQIxMAABHSOH1DvZhDz6HyNm9B8B9vVnR5FTMc5fxIMyse-0EmMcywet3F9FpHImTg_aem_2GEmB71ukmiXD33DVhV5xw"
-              alt="FPT Education"
+              alt="FSA Education"
             />
           </a>
           <div className="styles-x-axis search-box">

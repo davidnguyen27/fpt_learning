@@ -1,5 +1,6 @@
 import { Form, Input, Modal } from "antd";
 import useAddCategory from "../../hooks/category/useAddCategory";
+import Tiny from "../../app/Editor/RichTextEditor";
 
 interface ModalAddCategoryProps {
   open: boolean;
@@ -64,8 +65,16 @@ const ModalAddCategory = (props: ModalAddCategoryProps) => {
           <Input className="text-sm" size="large" placeholder="Lesson Name" />
         </Form.Item>
 
-        <Form.Item label="Description" name="description">
-          <Input className="text-sm" size="large" placeholder="Description" />
+        <Form.Item
+          label="Description"
+          name="description"
+          valuePropName="value"
+          getValueFromEvent={(e: any) => e.target.getContent()}
+        >
+          <Tiny
+            value={form.getFieldValue('description') || ''}
+            onChange={(value: any) => form.setFieldsValue({ description: value })}
+          />
         </Form.Item>
       </Form>
     </Modal>

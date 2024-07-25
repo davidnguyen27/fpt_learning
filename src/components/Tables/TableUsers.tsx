@@ -347,7 +347,7 @@ const TableUsers: React.FC = () => {
             <Option value="student">Student</Option>
           </Select>
           <Select
-            style={{ width: 150 }}
+            style={{ width: 150, marginRight: 16 }}
             placeholder="Select status"
             onChange={handleStatusFilterChange}
             value={statusFilter}

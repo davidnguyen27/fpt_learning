@@ -5,6 +5,7 @@ import { getCoursesAPI, getSessionsAPI } from "../../services/lessonService";
 import { Course } from "../../models/Course";
 import { Session } from "../../models/Session";
 import Editor from "../../app/Editor/RichTextEditor";
+import Tiny from "../../app/Editor/RichTextEditor";
 
 const { Option } = Select;
 
@@ -170,17 +171,16 @@ const ModalAddLesson = (props: ModalAddLessonProps) => {
 
         {lessonType === "text" && (
           <Form.Item
-            label="Description"
-            name="description"
-            rules={[
-              {
-                required: true,
-                message: "Description is required for text lessons!",
-              },
-            ]}
-          >
-            <Editor />
-          </Form.Item>
+          label="Description"
+          name="description"
+          valuePropName="value"
+          getValueFromEvent={(e: any) => e.target.getContent()}
+        >
+          <Tiny
+            value={form.getFieldValue('description') || ''}
+            onChange={(value: any) => form.setFieldsValue({ description: value })}
+          />
+        </Form.Item>
         )}
 
         {lessonType === "video" && (

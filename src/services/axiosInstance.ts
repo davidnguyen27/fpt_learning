@@ -1,5 +1,4 @@
 import axios from 'axios';
-
 import { APILink } from '../const/linkAPI';
 import { ROUTER_URL } from '../const/router.const';
 import { LOCAL_STORAGE } from '../const/local.storage.const';
@@ -20,13 +19,12 @@ export const getState = (store: any) => {
     return store.getState();
 }
 
-
 axiosInstance.interceptors.request.use(
     (config) => {
         const user: any = getItemInLocalStorage(LOCAL_STORAGE.ACCOUNT_ADMIN);
         if (config.headers === undefined) config.headers;
         if (user) config.headers['Authorization'] = `Bearer ${user.access_token}`;
-        return config;
+        return config.data;
     },
     // (err) => {
     //     return handleErrorByToast(err);

@@ -3,7 +3,7 @@ import { Form, Input, message, Modal, Select } from "antd";
 import useAddCourse from "../../hooks/course/useAddCourse";
 import { getCategoriesAPI } from "../../services/coursesService";
 import { Category } from "../../models/Category";
-import Editor from "../../app/Editor/RichTextEditor";
+import Tiny from "../../app/Editor/RichTextEditor";
 
 const { Option } = Select;
 
@@ -106,8 +106,16 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
           </Select>
         </Form.Item>
 
-        <Form.Item label="Description" name="description">
-          <Editor />
+        <Form.Item
+          label="Description"
+          name="description"
+          valuePropName="value"
+          getValueFromEvent={(e: any) => e.target.getContent()}
+        >
+          <Tiny
+            value={form.getFieldValue('description') || ''}
+            onChange={(value: any) => form.setFieldsValue({ description: value })}
+          />
         </Form.Item>
 
         <Form.Item label="Content" name="content">
