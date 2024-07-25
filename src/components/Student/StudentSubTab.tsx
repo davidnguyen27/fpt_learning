@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import StudentCourseCard from "./StudentCourseCard";
 import { Button, Form, Input, notification } from "antd";
-import Editor from "../../app/Editor/RichTextEditor";
 import { getUserDetail, updateUser } from "../../services/usersService";
 import { formatDate } from "../../utils/formatDate";
 import { UserData } from "../../models/Types";
+import Tiny from "../../app/Editor/RichTextEditor";
 
 interface StudentProfileSubTabProps {
   activeTab: string;
@@ -100,8 +100,16 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
         <Form.Item name="video" label="Video">
           <Input size="large" placeholder="https://youtube.com" />
         </Form.Item>
-        <Form.Item name="description" label="Description">
-          <Editor />
+        <Form.Item
+          label="Description"
+          name="description"
+          valuePropName="value"
+          getValueFromEvent={(e: any) => e.target.getContent()}
+        >
+          <Tiny
+            value={form.getFieldValue('description') || ''}
+            onChange={(value: any) => form.setFieldsValue({ description: value })}
+          />
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 2 }}>
           <Button type="primary" htmlType="submit" className="float-right mt-6">

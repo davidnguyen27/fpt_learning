@@ -4,7 +4,6 @@ import useAddLesson from "../../hooks/lesson/useAddLesson";
 import { getCoursesAPI, getSessionsAPI } from "../../services/lessonService";
 import { Course } from "../../models/Course";
 import { Session } from "../../models/Session";
-import Editor from "../../app/Editor/RichTextEditor";
 import Tiny from "../../app/Editor/RichTextEditor";
 
 const { Option } = Select;

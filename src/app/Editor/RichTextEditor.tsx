@@ -9,7 +9,7 @@ interface TinyProps {
 const Tiny: React.FC<TinyProps> = ({ value, onChange }) => {
   return (
     <TinyMCEEditor
-      apiKey="r4zdxf0q255xlsgca1moadaxj819duv82ifg52bdfkbl6v6l" // Add your TinyMCE API key here
+      apiKey="r4zdxf0q255xlsgca1moadaxj819duv82ifg52bdfkbl6v6l"
       value={value}
       init={{
         height: 300,
@@ -17,7 +17,7 @@ const Tiny: React.FC<TinyProps> = ({ value, onChange }) => {
         plugins: 'link image code',
         toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code',
       }}
-      onEditorChange={onChange} // Directly pass the value to onChange
+      onEditorChange={onChange}
     />
   );
 };
