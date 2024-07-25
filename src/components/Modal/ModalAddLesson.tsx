@@ -58,11 +58,25 @@ const ModalAddLesson = (props: ModalAddLessonProps) => {
 
   const handleLessonTypeChange = (value: string) => {
     setLessonType(value);
+    // Reset fields of other lesson types
+    if (value === "text") {
+      form.setFieldsValue({ video_url: "", image_url: "" });
+    } else if (value === "video") {
+      form.setFieldsValue({ description: "", image_url: "" });
+    } else if (value === "image") {
+      form.setFieldsValue({ description: "", video_url: "" });
+    }
   };
 
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
+      
+      // Ensure all fields are included with default values
+      values.description = values.description || "";
+      values.video_url = values.video_url || "";
+      values.image_url = values.image_url || "";
+      
       // Ensure position_order is set to 99 if left empty
       if (!values.position_order) {
         values.position_order = 99;

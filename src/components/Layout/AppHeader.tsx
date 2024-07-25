@@ -26,7 +26,7 @@ const AppHeader: React.FC = () => {
   };
 
   const handleCreateCourseClick = () => {
-    navigate("/instructor/courses-management/create-course-step");
+    navigate("/instructor/courses-management/");
   };
 
   const handleView = () => {
@@ -114,7 +114,7 @@ const AppHeader: React.FC = () => {
           </div>
           <a href="/" className="logo-box">
             <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/FPT_Education_logo.svg/2560px-FPT_Education_logo.svg.png"
+              src="https://upload.wikimedia.org/wikipedia/commons/0/00/Fsalancuoi.png?fbclid=IwY2xjawEL70VleHRuA2FlbQIxMAABHSOH1DvZhDz6HyNm9B8B9vVnR5FTMc5fxIMyse-0EmMcywet3F9FpHImTg_aem_2GEmB71ukmiXD33DVhV5xw"
               alt="FPT Education"
             />
           </a>

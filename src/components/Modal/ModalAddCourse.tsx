@@ -25,15 +25,15 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
       try {
         const categoriesData = await getCategoriesAPI("", 1, 10, false);
         setCategories(categoriesData.data.pageData);
-      } catch (error) {
-        console.error("Failed to fetch categories:", error);
+      } catch (error: any) {
+        throw new Error(error.message);
       } finally {
         setCategoriesLoading(false);
       }
     };
 
     fetchCategories();
-  }, []); 
+  }, []);
 
   const handleSubmit = async () => {
     try {
@@ -44,6 +44,7 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
     } catch (error: any) {
       throw new Error(error);
     }
+    return Promise.resolve();
   };
 
   const handleCancel = () => {
@@ -106,9 +107,15 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
         </Button>,
       ]}
     >
-      <Form layout="horizontal" className="mt-4" form={form} labelCol={{ span: 5 }}>
+      <Form
+        layout="horizontal"
+        className="mt-4"
+        form={form}
+        labelCol={{ span: 5 }}
+        labelAlign="left"
+      >
         <Form.Item
-          label="Course Name"
+          label="Name"
           name="name"
           rules={[{ required: true, message: "Course Name is required!" }]}
         >
@@ -140,7 +147,7 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
         >
           <Input className="text-sm" size="large" placeholder="Description" />
         </Form.Item>
-        
+
         <Form.Item label="Content" name="content">
           <Input className="text-sm" size="large" placeholder="Content" />
         </Form.Item>
@@ -166,7 +173,12 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
           name="price"
           rules={[{ required: true, message: "Price is required!" }, { validator: validateNumber }]}
         >
-          <Input className="text-sm" size="large" placeholder="Price" />
+          <Input
+            type="number"
+            className="text-sm"
+            size="large"
+            placeholder="Price"
+          />
         </Form.Item>
 
         <Form.Item
@@ -174,9 +186,13 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
           name="discount"
           rules={[{ required: true, message: "Discount is required!" }, { validator: validateNumber }]}
         >
-          <Input className="text-sm" size="large" placeholder="Discount" />
+          <Input
+            type="number"
+            className="text-sm"
+            size="large"
+            placeholder="Discount"
+          />
         </Form.Item>
-
       </Form>
     </Modal>
   );

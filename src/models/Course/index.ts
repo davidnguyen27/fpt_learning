@@ -10,8 +10,8 @@ export type Course = {
     image_url: string | null;
     price: number;
     discount: number;
-    created_at: string;
-    updated_at: string;
+    created_at: Date;
+    updated_at: Date;
     user_name: string;
     category_name: string;
 };

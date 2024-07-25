@@ -131,20 +131,22 @@ const RegisterInstructorPage: React.FC = () => {
 
   return (
     <div
-      className="flex min-h-screen w-full items-center justify-center"
+      className="flex h-screen w-full items-center justify-center bg-slate-300"
       style={{
         backgroundImage: `url(${signUp})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      <div className="w-full max-w-md rounded bg-white p-8 shadow-md">
+      <div className="w-full max-w-2xl rounded bg-white p-8 shadow-md">
         <h2 className="mb-6 text-center text-xl font-bold">
           Register with Instructor
         </h2>
         <Form
           form={form}
           name="register"
+          labelCol={{ span: 6 }}
+          wrapperCol={{ span: 20 }}
           onFinish={onFinish}
           initialValues={{ remember: true }}
           layout="horizontal"
@@ -248,7 +250,7 @@ const RegisterInstructorPage: React.FC = () => {
             </Button>
           </Form.Item>
         </Form>
-        <div className="mb-4 w-full text-center">
+        <div className="mb-4 w-full flex items-center justify-center">
           <GoogleLogin onSuccess={onSuccess} onError={onError} />
         </div>
         <p className="text-center text-sm">

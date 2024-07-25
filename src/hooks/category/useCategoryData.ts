@@ -3,11 +3,10 @@ import { getCategoriesAPI } from "../../services/categoryService";
 import { DataTransfer } from "../../models/Category";
 
 interface DataType {
-    key: string;
-    name: string;
-    created_at: string;
+  key: string;
+  name: string;
+  created_at: string;
   updated_at: string;
-
 }
 
 const useCategoriesData = (dataTransfer: DataTransfer) => {
@@ -23,16 +22,17 @@ const useCategoriesData = (dataTransfer: DataTransfer) => {
     setLoading(true);
     try {
       const categories = await getCategoriesAPI(dataTransfer);
+      console.log("fetch: ", categories);
       const groupedData: DataType[] = categories.map((category) => ({
         key: category._id,
         name: category.name,
         created_at: category.created_at,
-        updated_at: category.updated_at
+        updated_at: category.updated_at,
       }));
       setData(groupedData);
       setError(null);
-    } catch (err) {
-      setError("Failed to fetch categories.");
+    } catch (err: any) {
+      setError(err.message);
     } finally {
       setLoading(false);
     }

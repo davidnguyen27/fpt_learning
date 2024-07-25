@@ -1,7 +1,6 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useContext } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { AuthContext, AuthProvider } from "../app/context/AuthContext";
-import { useContext } from "react";
 import Loading from "../components/Loading/loading";
 import { Spin } from "antd";
 
@@ -115,6 +114,7 @@ const ProtectedRoute = ({ element, allowedRoles }: ProtectedRouteProps) => {
 
   return element;
 };
+
 
 const AppRouter = () => {
   return (

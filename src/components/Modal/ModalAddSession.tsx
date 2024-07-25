@@ -93,7 +93,7 @@ const ModalAddSession = (props: ModalAddSessionProps) => {
         initialValues={{ position_order: 99 }}
       >
         <Form.Item
-          label="Session Name"
+          label="Name"
           name="name"
           rules={[{ required: true, message: "Session Name is required!" }]}
         >

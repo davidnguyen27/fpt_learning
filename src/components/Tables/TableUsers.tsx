@@ -46,6 +46,7 @@ const TableUsers: React.FC = () => {
     total: 0,
   });
   const [currentUser, setCurrentUser] = useState<UserData | null>(null);
+  const [verificationFilter, setVerificationFilter] = useState<boolean>(true);
 
   useEffect(() => {
     fetchUsers(pagination.current, pagination.pageSize);
@@ -53,6 +54,7 @@ const TableUsers: React.FC = () => {
     searchText,
     roleFilter,
     statusFilter,
+    verificationFilter,
     pagination.current,
     pagination.pageSize,
   ]);
@@ -63,6 +65,7 @@ const TableUsers: React.FC = () => {
         keyword: searchText.trim(),
         role: roleFilter,
         status: statusFilter,
+        is_verified: verificationFilter,
         is_delete: false,
       },
       pageInfo: {
@@ -90,6 +93,10 @@ const TableUsers: React.FC = () => {
   const handleUpdate = (user: UserData) => {
     setEditedUser(user);
     setIsEditModalVisible(true);
+  };
+
+  const handleVerificationFilterChange = (value: boolean) => {
+    setVerificationFilter(value);
   };
 
   const handleUpdateConfirm = async (updatedUserData: Partial<UserData>) => {
@@ -347,6 +354,15 @@ const TableUsers: React.FC = () => {
           >
             <Option value={true}>Active</Option>
             <Option value={false}>Inactive</Option>
+          </Select>
+          <Select
+            style={{ width: 150 }}
+            placeholder="Verify status"
+            onChange={handleVerificationFilterChange}
+            value={verificationFilter}
+          >
+            <Option value={true}>Yes</Option>
+            <Option value={false}>No</Option>
           </Select>
         </div>
         <div>

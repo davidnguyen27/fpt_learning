@@ -1,5 +1,5 @@
 import { DeleteOutlined, FormOutlined } from "@ant-design/icons";
-import { Table, Spin, Modal } from "antd";
+import { Table, Spin, Modal, Space } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { DataTransfer } from "../../models/Category";
 import useCategoriesData from "../../hooks/category/useCategoryData";
@@ -8,8 +8,6 @@ import ModalAddCategory from "../Modal/ModalAddCategory";
 import useDeleteCategory from "../../hooks/category/useDeleteCategory";
 import ModalEditCategory from "../Modal/ModalEditCategory";
 import Search from "antd/es/input/Search";
-
-
 
 interface DataType {
   key: string;
@@ -22,7 +20,9 @@ const TableCategories = () => {
   const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [openAdd, setOpenAdd] = useState<boolean>(false);
   const [openEdit, setOpenEdit] = useState<boolean>(false);
-  const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null);
+  const [editingCategoryId, setEditingCategoryId] = useState<string | null>(
+    null,
+  );
 
   const handleSearch = (value: string) => {
     setSearchKeyword(value);
@@ -56,7 +56,7 @@ const TableCategories = () => {
   const pageInfo = useMemo(
     () => ({
       pageNum: 1,
-      pageSize: 10,
+      pageSize: 100,
     }),
     [],
   );
@@ -77,40 +77,42 @@ const TableCategories = () => {
   }
 
   const columns: ColumnsType<DataType> = [
-    
     {
       title: "Category Name",
       dataIndex: "name",
       key: "name",
+      width: 300,
     },
 
     {
       title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
-      width: 100,
+      width: 250,
+      render: (date: string) => new Date(date).toLocaleString(),
     },
     {
       title: "Updated At",
       dataIndex: "updated_at",
       key: "updated_at",
-      width: 300,
+      width: 250,
+      render: (date: string) => new Date(date).toLocaleString(),
     },
     {
       title: "Action",
       key: "action",
       width: 200,
       render: (_, record) => (
-        <>
+        <Space>
           <FormOutlined
             onClick={() => handleEdit(record.key)}
-            className="mx-6 cursor-pointer text-blue-500"
+            className="cursor-pointer text-blue-500"
           />
           <DeleteOutlined
             className="cursor-pointer text-red-500"
             onClick={() => handleDelete(record.key)}
           />
-        </>
+        </Space>
       ),
     },
   ];

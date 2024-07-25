@@ -4,6 +4,7 @@ import useEditLesson from "../../hooks/lesson/useEditLesson";
 import { getSessionsAPI, getLessonAPI, getCoursesAPI } from "../../services/lessonService";
 import { Session } from "../../models/Session";
 import { Course } from "../../models/Course";
+import { Lesson } from "../../models/Lesson"; // Import Lesson type
 
 const { Option } = Select;
 
@@ -21,34 +22,15 @@ const ModalEditLesson = (props: ModalEditLessonProps) => {
 
   const [sessions, setSessions] = useState<Session[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
-  const [sessionsLoading, setSessionsLoading] = useState<boolean>(true);
+  const [sessionsLoading, setSessionsLoading] = useState<boolean>(false);
   const [coursesLoading, setCoursesLoading] = useState<boolean>(true);
-  const [initialValues, setInitialValues] = useState<any>({});
+  const [lessonType, setLessonType] = useState<string>("");
+  const [currentLesson, setCurrentLesson] = useState<Lesson | null>(null); // Track current lesson
 
-  // Fetch sessions data
-  useEffect(() => {
-    const fetchSessions = async () => {
-      try {
-        const sessionsData = await getSessionsAPI("", 1, 100, false);
-        console.log("Sessions Data:", sessionsData); // Log the fetched sessions
-        setSessions(sessionsData.data.pageData);
-      } catch (error) {
-        console.error("Failed to fetch sessions:", error);
-        message.error("Failed to fetch sessions");
-      } finally {
-        setSessionsLoading(false);
-      }
-    };
-
-    fetchSessions();
-  }, []);
-
-  // Fetch courses data
   useEffect(() => {
     const fetchCourses = async () => {
       try {
         const coursesData = await getCoursesAPI("", 1, 100, false);
-        console.log("Courses Data:", coursesData); // Log the fetched courses
         setCourses(coursesData.data.pageData);
       } catch (error) {
         console.error("Failed to fetch courses:", error);
@@ -61,55 +43,82 @@ const ModalEditLesson = (props: ModalEditLessonProps) => {
     fetchCourses();
   }, []);
 
-  // Fetch lesson data
+  const fetchSessions = async (courseId: string) => {
+    if (!courseId) {
+      setSessions([]);
+      return;
+    }
+    setSessionsLoading(true);
+    try {
+      const sessionsData = await getSessionsAPI("", 1, 100, false);
+      const filteredSessions = sessionsData.data.pageData.filter((session: Session) => session.course_id === courseId);
+      setSessions(filteredSessions);
+    } catch (error) {
+      console.error("Failed to fetch sessions:", error);
+      message.error("Failed to fetch sessions");
+    } finally {
+      setSessionsLoading(false);
+    }
+  };
+
+  const handleCourseChange = (courseId: string) => {
+    form.setFieldsValue({ session_id: undefined });
+    fetchSessions(courseId);
+  };
+
   useEffect(() => {
-      if (lessonId) {
-        getLessonAPI(lessonId)
-        .then((data) => {
+    if (open && lessonId) {
+      getLessonAPI(lessonId)
+        .then((data: Lesson) => {
           if (data) {
             const lessonData = {
               name: data.name,
               course_id: data.course_id,
-              session_id: data.session_id,// Add this line if `course_id` is used
+              session_id: data.session_id,
               lesson_type: data.lesson_type,
-              description: data.description,
-              video_url: data.video_url,
-              image_url: data.image_url,
-              full_time: data.full_time,
-              position_order: data.position_order,
+              description: data.description || "",
+              video_url: data.video_url || "",
+              image_url: data.image_url || "",
+              full_time: data.full_time || 0,
+              position_order: data.position_order || 99,
             };
-            setInitialValues(lessonData);
             form.setFieldsValue(lessonData);
+            setLessonType(data.lesson_type);
+            setCurrentLesson(data); // Set current lesson with user_id
+            if (data.course_id) {
+              fetchSessions(data.course_id);
+            }
           } else {
             message.error("No lesson found with the given ID");
           }
-        }) .catch ((error)=> {
+        })
+        .catch((error) => {
           console.error("Failed to fetch lesson data:", error);
           message.error("Failed to fetch lesson data");
         });
-      } else {
-        form.resetFields();
-        setInitialValues({});
-      }
-  }, [lessonId, form]);
-
-  useEffect(() => {
-    if (open && lessonId) {
+    } else {
       form.resetFields();
-      form.setFieldsValue(initialValues);
+      setCurrentLesson(null); // Clear current lesson when modal is closed
     }
-  }, [initialValues, open, form, lessonId]);
+  }, [open, lessonId, form]);
 
   const handleEdit = async () => {
     try {
       const values = await form.validateFields();
+      values.description = values.description || "";
+      values.video_url = values.video_url || "";
+      values.image_url = values.image_url || "";
       values.full_time = Number(values.full_time);
       values.position_order = Number(values.position_order);
-      if (lessonId) {
-        await editLesson(lessonId, values);
+
+      if (lessonId && currentLesson) {
+        const lessonToUpdate = {
+          ...values,
+          user_id: currentLesson.user_id, // Use user_id from currentLesson
+        };
+        await editLesson(lessonId, lessonToUpdate);
         form.resetFields();
         setOpen(false);
-        message.success("Lesson updated successfully");
       }
     } catch (error) {
       message.error("Failed to update lesson");
@@ -121,6 +130,17 @@ const ModalEditLesson = (props: ModalEditLessonProps) => {
       return Promise.reject(new Error("Position Order must be a valid number!"));
     }
     return Promise.resolve();
+  };
+
+  const handleLessonTypeChange = (value: string) => {
+    setLessonType(value);
+    if (value === "text") {
+      form.setFieldsValue({ video_url: "", image_url: "" });
+    } else if (value === "video") {
+      form.setFieldsValue({ description: "", image_url: "" });
+    } else if (value === "image") {
+      form.setFieldsValue({ description: "", video_url: "" });
+    }
   };
 
   return (
@@ -149,7 +169,7 @@ const ModalEditLesson = (props: ModalEditLessonProps) => {
         </button>,
       ]}
     >
-      <Form layout="horizontal" className="mt-4" form={form} labelCol={{ span: 4 }} initialValues={initialValues}>
+      <Form layout="horizontal" className="mt-4" form={form} labelCol={{ span: 4 }}>
         <Form.Item
           label="Lesson Name"
           name="name"
@@ -167,6 +187,7 @@ const ModalEditLesson = (props: ModalEditLessonProps) => {
             placeholder="Select a course"
             loading={coursesLoading}
             disabled={coursesLoading}
+            onChange={handleCourseChange}
           >
             {courses.map((course) => (
               <Option key={course._id} value={course._id}>
@@ -184,7 +205,7 @@ const ModalEditLesson = (props: ModalEditLessonProps) => {
           <Select
             placeholder="Select a session"
             loading={sessionsLoading}
-            disabled={sessionsLoading}
+            disabled={!form.getFieldValue('course_id') || sessionsLoading}
           >
             {sessions.map((session) => (
               <Option key={session._id} value={session._id}>
@@ -195,58 +216,46 @@ const ModalEditLesson = (props: ModalEditLessonProps) => {
         </Form.Item>
 
         <Form.Item
-          label="Course"
-          name="course_id"
-          rules={[{ required: true, message: "Course is required!" }]}
-        >
-          <Select
-            placeholder="Select a course"
-            loading={coursesLoading}
-            disabled={coursesLoading}
-          >
-            {courses.map((course) => (
-              <Option key={course._id} value={course._id}>
-                {course.name}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
-
-        <Form.Item
           label="Lesson Type"
           name="lesson_type"
           rules={[{ required: true, message: "Lesson Type is required!" }]}
         >
-          <Select placeholder="Select lesson type">
+          <Select placeholder="Select lesson type" onChange={handleLessonTypeChange}>
             <Option value="text">Text</Option>
             <Option value="video">Video</Option>
             <Option value="image">Image</Option>
           </Select>
         </Form.Item>
 
-        <Form.Item
-          label="Description"
-          name="description"
-          rules={[{ required: true, message: "Description is required for text lessons!" }]}
-        >
-          <Input.TextArea className="text-sm" size="large" placeholder="Description" />
-        </Form.Item>
+        {lessonType === "text" && (
+          <Form.Item
+            label="Description"
+            name="description"
+            rules={[{ required: false }]}
+          >
+            <Input.TextArea className="text-sm" size="large" placeholder="Description" />
+          </Form.Item>
+        )}
 
-        <Form.Item
-          label="Video URL"
-          name="video_url"
-          rules={[{ required: true, message: "Video URL is required for video lessons!" }]}
-        >
-          <Input className="text-sm" size="large" placeholder="Video URL" />
-        </Form.Item>
+        {lessonType === "video" && (
+          <Form.Item
+            label="Video URL"
+            name="video_url"
+            rules={[{ required: false }]}
+          >
+            <Input className="text-sm" size="large" placeholder="Video URL" />
+          </Form.Item>
+        )}
 
-        <Form.Item
-          label="Image URL"
-          name="image_url"
-          rules={[{ required: true, message: "Image URL is required for image lessons!" }]}
-        >
-          <Input className="text-sm" size="large" placeholder="Image URL" />
-        </Form.Item>
+        {lessonType === "image" && (
+          <Form.Item
+            label="Image URL"
+            name="image_url"
+            rules={[{ required: false }]}
+          >
+            <Input className="text-sm" size="large" placeholder="Image URL" />
+          </Form.Item>
+        )}
 
         <Form.Item
           label="Position Order"

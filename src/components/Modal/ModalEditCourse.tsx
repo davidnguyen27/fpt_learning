@@ -3,6 +3,7 @@ import { Form, Input, Modal, Select, message } from "antd";
 import useEditCourse from "../../hooks/course/useEditCourse";
 import { getCategoriesAPI, getCourseAPI } from "../../services/coursesService";
 import { Category } from "../../models/Category";
+import { RuleObject } from "antd/es/form";
 
 const { Option } = Select;
 
@@ -22,6 +23,7 @@ const ModalEditCourse = (props: ModalEditCourseProps) => {
   const [categoriesLoading, setCategoriesLoading] = useState<boolean>(true);
   const [initialValues, setInitialValues] = useState<any>({});
 
+  // Fetch categories only once when the component mounts
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -37,10 +39,12 @@ const ModalEditCourse = (props: ModalEditCourseProps) => {
     fetchCategories();
   }, []);
 
+  // Fetch course data when courseId or open changes
   useEffect(() => {
-    if (courseId) {
-      getCourseAPI(courseId)
-        .then((data) => {
+    if (open && courseId) {
+      const fetchCourseData = async () => {
+        try {
+          const data = await getCourseAPI(courseId);
           if (data) {
             const courseData = {
               name: data.name,
@@ -57,23 +61,40 @@ const ModalEditCourse = (props: ModalEditCourseProps) => {
           } else {
             message.error("No course found with the given ID");
           }
-        })
-        .catch((error) => {
+        } catch (error) {
           console.error(error);
           message.error("Failed to fetch course data");
-        });
+        }
+      };
+
+      fetchCourseData();
     } else {
       form.resetFields();
       setInitialValues({});
     }
-  }, [courseId, form]);
+  }, [open, courseId, form]);
 
-  useEffect(() => {
-    if (open && courseId) {
-      form.resetFields();
-      form.setFieldsValue(initialValues);
+  const validateMediaUrls = (_: RuleObject, value: string) => {
+    const video_url = form.getFieldValue("video_url");
+    const image_url = form.getFieldValue("image_url");
+
+    const isValidUrl = (url: string) => {
+      try {
+        new URL(url);
+        return true;
+      } catch {
+        return false;
+      }
+    };
+
+    if (!video_url && !image_url) {
+      return Promise.reject(new Error("Either video URL or image URL is required!"));
     }
-  }, [initialValues, open, form, courseId]);
+    if ((video_url && !isValidUrl(video_url)) || (image_url && !isValidUrl(image_url))) {
+      return Promise.reject(new Error("Please enter a valid URL!"));
+    }
+    return Promise.resolve();
+  };
 
   const handleEdit = async () => {
     try {
@@ -82,11 +103,13 @@ const ModalEditCourse = (props: ModalEditCourseProps) => {
         await editCourse(courseId, values);
         form.resetFields();
         setOpen(false);
+        onSuccess(); // This should trigger the refetchData in TableCourses
       }
     } catch (error) {
       message.error("Failed to update course");
     }
   };
+
 
   return (
     <Modal
@@ -114,7 +137,14 @@ const ModalEditCourse = (props: ModalEditCourseProps) => {
         </button>,
       ]}
     >
-      <Form layout="horizontal" className="mt-4" form={form} labelCol={{span: 4}} initialValues={initialValues}>
+      <Form
+        layout="horizontal"
+        className="mt-4"
+        form={form}
+        labelCol={{ span: 5 }}
+        labelAlign="left"
+        initialValues={initialValues}
+      >
         <Form.Item
           label="Course Name"
           name="name"
@@ -153,11 +183,19 @@ const ModalEditCourse = (props: ModalEditCourseProps) => {
           <Input className="text-sm" size="large" placeholder="Content" />
         </Form.Item>
 
-        <Form.Item label="Video URL" name="video_url">
+        <Form.Item
+          label="Video URL"
+          name="video_url"
+          rules={[{ validator: validateMediaUrls }]}
+        >
           <Input className="text-sm" size="large" placeholder="Video URL" />
         </Form.Item>
 
-        <Form.Item label="Image URL" name="image_url">
+        <Form.Item
+          label="Image URL"
+          name="image_url"
+          rules={[{ validator: validateMediaUrls }]}
+        >
           <Input className="text-sm" size="large" placeholder="Image URL" />
         </Form.Item>
 
@@ -166,7 +204,12 @@ const ModalEditCourse = (props: ModalEditCourseProps) => {
           name="price"
           rules={[{ required: true, message: "Price is required!" }]}
         >
-          <Input className="text-sm" size="large" placeholder="Price" />
+          <Input
+            type="number"
+            className="text-sm"
+            size="large"
+            placeholder="Price"
+          />
         </Form.Item>
 
         <Form.Item
@@ -174,7 +217,12 @@ const ModalEditCourse = (props: ModalEditCourseProps) => {
           name="discount"
           rules={[{ required: true, message: "Discount is required!" }]}
         >
-          <Input className="text-sm" size="large" placeholder="Discount" />
+          <Input
+            type="number"
+            className="text-sm"
+            size="large"
+            placeholder="Discount"
+          />
         </Form.Item>
       </Form>
     </Modal>

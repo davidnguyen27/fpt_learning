@@ -22,15 +22,14 @@ const ModalEditSession = (props: ModalEditSessionProps) => {
   const [coursesLoading, setCoursesLoading] = useState<boolean>(true);
   const [initialValues, setInitialValues] = useState<any>({});
 
-  // Fetch courses on component mount
+  // Fetch courses only once when the component mounts
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await getCoursesAPI("", 1, 10, false);
-        setCourses(response.data.pageData);
+        const categoriesData = await getCoursesAPI("", 1, 10, false);
+        setCourses(categoriesData.data.pageData);
       } catch (error) {
         console.error("Failed to fetch courses:", error);
-        message.error("Failed to fetch courses");
       } finally {
         setCoursesLoading(false);
       }
@@ -39,42 +38,44 @@ const ModalEditSession = (props: ModalEditSessionProps) => {
     fetchCourses();
   }, []);
 
-  // Fetch session data when sessionId changes
+  // Fetch session data when sessionId or modal open state changes
   useEffect(() => {
     if (sessionId) {
-      const fetchSession = async () => {
+      const fetchSessionData = async () => {
         try {
-          const sessionData = await getSessionAPI(sessionId);
-          const sessionValues = {
-            name: sessionData.name,
-            course_id: sessionData.course_id,
-            description: sessionData.description,
-            position_order: sessionData.position_order,
-          };
-          setInitialValues(sessionValues);
-          form.setFieldsValue(sessionValues);
+          const data = await getSessionAPI(sessionId);
+          if (data) {
+            const sessionData = {
+              name: data.name,
+              course_id: data.course_id,
+              description: data.description,
+              position_order: data.position_order,
+            };
+            setInitialValues(sessionData);
+            form.setFieldsValue(sessionData);
+          } else {
+            message.error("No session found with the given ID");
+          }
         } catch (error) {
-          console.error("Failed to fetch session data:", error);
+          console.error(error);
           message.error("Failed to fetch session data");
         }
       };
 
-      fetchSession();
+      fetchSessionData();
     } else {
       form.resetFields();
       setInitialValues({});
     }
-  }, [sessionId, form]);
+  }, [sessionId, form, open]);
 
-  // Reset form fields when modal opens
+  // Update form fields when initialValues change
   useEffect(() => {
     if (open) {
-      form.resetFields();
       form.setFieldsValue(initialValues);
     }
-  }, [open, initialValues, form]);
+  }, [initialValues, open, form]);
 
-  // Handle form submission
   const handleEdit = async () => {
     try {
       const values = await form.validateFields();
@@ -82,7 +83,6 @@ const ModalEditSession = (props: ModalEditSessionProps) => {
         await editSession(sessionId, values);
         form.resetFields();
         setOpen(false);
-        message.success("Session updated successfully");
       }
     } catch (error) {
       message.error("Failed to update session");
@@ -115,7 +115,7 @@ const ModalEditSession = (props: ModalEditSessionProps) => {
         </button>,
       ]}
     >
-      <Form layout="horizontal" className="mt-4" form={form} labelCol={{span: 4}} initialValues={initialValues}>
+      <Form layout="horizontal" className="mt-4" form={form} labelCol={{ span: 4 }} initialValues={initialValues}>
         <Form.Item
           label="Session Name"
           name="name"
@@ -147,7 +147,7 @@ const ModalEditSession = (props: ModalEditSessionProps) => {
           name="description"
           rules={[{ required: true, message: "Description is required!" }]}
         >
-          <Input className="text-sm" size="large" placeholder="" />
+          <Input className="text-sm" size="large" placeholder="Description" />
         </Form.Item>
 
         <Form.Item label="Position Order" name="position_order">
