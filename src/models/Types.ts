@@ -140,6 +140,7 @@ export type CourseBoxProps = {
 };
 
 export type CourseSubTabProps = {
+  _id: string;
   activeTab: string;
   setActiveTab: (tab: string) => void;
   onSelectedCourse: (id: string) => void;
