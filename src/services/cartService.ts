@@ -40,29 +40,29 @@ export const getCartsAPI = async (
     }
 };
 
-  export const editStatusCartsAPI = async (
-    status: string,
-    cartData: Partial<CartData>,
-  ): Promise<CartData> => {
-    try {
-      const token = sessionStorage.getItem("token");
-      if (!token) throw new Error("Cannot get token!");
-  
-      const res = await axios.put(
-        `${APILink}/api/cart/update-status`,
-        cartData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-      return { ...res.data.data, status: status };
-    } catch (error: any) {
-      throw new Error(error);
-    }
-  };
+export const editStatusCartsAPI = async (
+  status: string,
+  cartItems: { _id: string; cart_no: string }[]
+): Promise<void> => {
+  try {
+    const token = sessionStorage.getItem("token");
+    if (!token) throw new Error("Cannot get token!");
+
+    const payload = {
+      status,
+      items: cartItems,
+    };
+
+    await axios.put(`${APILink}/api/cart/update-status`, payload, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || error.message);
+  }
+};
 
   export const deleteCartAPI = async (cartId: string): Promise<void> => {
     try {

@@ -1,35 +1,23 @@
 import React from "react";
+import { Layout, Dropdown, Space, MenuProps, Button } from "antd";
 import { useNavigate } from "react-router-dom";
-import { Badge, Button, Dropdown, MenuProps, Space } from "antd";
-import {
-  ShoppingCartOutlined,
-  MailOutlined,
-  BellOutlined,
-  ContactsOutlined,
-  AreaChartOutlined,
-  RetweetOutlined,
-  LogoutOutlined,
-  MenuOutlined,
-} from "@ant-design/icons";
 import { useAuth } from "../../app/context/AuthContext";
-import "../../styles/header.css";
-import "../../styles/sider.css";
-import { useSider } from "../../app/context/SiderContext";
+import {
+  AreaChartOutlined,
+  ContactsOutlined,
+  LogoutOutlined,
+  RetweetOutlined,
+} from "@ant-design/icons";
 
-const AppHeader: React.FC = () => {
+const { Header } = Layout;
+
+const AppHeader2: React.FC = () => {
   const navigate = useNavigate();
-  const { logout } = useAuth();
-
-  const storedUser: any = sessionStorage.getItem("user");
-  const user = JSON.parse(storedUser);
+  const { user, logout } = useAuth();
 
   const handleLogout = () => {
     logout();
     navigate("/");
-  };
-
-  const handleCreateCourseClick = () => {
-    navigate("/instructor/courses-management/");
   };
 
   const handleView = () => {
@@ -49,12 +37,6 @@ const AppHeader: React.FC = () => {
       navigate("/instructor/dashboard");
     } else {
       navigate("/student-course-list-page");
-    }
-  };
-
-  const handleShoppingCart = () => {
-    if (user?.data.role === "student" || user?.data.role === "instructor") {
-      navigate("/cart");
     }
   };
 
@@ -108,114 +90,55 @@ const AppHeader: React.FC = () => {
     },
   ];
 
-  const { toggleSider } = useSider();
-
   return (
-    <>
-      <div className="wrapper-50">
-        <div className="styles-x-axis">
-          <div className="menu-bar" onClick={toggleSider}>
-            <MenuOutlined style={{ fontSize: "24px" }} />
-          </div>
-          <a href="/" className="logo-box">
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/0/00/Fsalancuoi.png?fbclid=IwY2xjawEL70VleHRuA2FlbQIxMAABHSOH1DvZhDz6HyNm9B8B9vVnR5FTMc5fxIMyse-0EmMcywet3F9FpHImTg_aem_2GEmB71ukmiXD33DVhV5xw"
-              alt="FSA Education"
-            />
+    <Header className={`header-2`}>
+      <button
+        className="flex h-8 w-40 items-center justify-center rounded bg-[#ef4444] text-white transition hover:bg-black hover:text-white"
+        onClick={() => navigate("/")}
+      >
+        Back to homepage
+      </button>
+
+      <img
+        className="logo-header2"
+        src="https://upload.wikimedia.org/wikipedia/commons/0/00/Fsalancuoi.png?fbclid=IwY2xjawEL70VleHRuA2FlbQIxMAABHSOH1DvZhDz6HyNm9B8B9vVnR5FTMc5fxIMyse-0EmMcywet3F9FpHImTg_aem_2GEmB71ukmiXD33DVhV5xw"
+        alt="FSA Education"
+        onClick={() => navigate("/")}
+      />
+      {user ? (
+        <Dropdown menu={{ items }}>
+          <a className="mr-9 flex" onClick={(e) => e.preventDefault()}>
+            <Space>
+              <img
+                src={user?.data.avatar}
+                className="h-12 w-12 rounded-full"
+                alt=""
+              />
+            </Space>
           </a>
-          <div className="styles-x-axis search-box">
-            <input
-              style={{ width: "100%" }}
-              type="text"
-              placeholder="Search for courses, tutorials..."
-              className="search-item"
-            />
-            <i className="fa-solid fa-magnifying-glass search-icon"></i>
-          </div>
-        </div>
-      </div>
-      <div className="styles-x-axis w-1/2 justify-end gap-5">
-        {user?.data.role === "instructor" ? (
+        </Dropdown>
+      ) : (
+        <>
           <Button
             type="primary"
+            className="bg-[#ef4444]"
             danger
-            className="my-custom-button"
-            onClick={handleCreateCourseClick}
+            onClick={() => navigate("/sign-in")}
           >
-            Create new Course
+            Sign In
           </Button>
-        ) : null}
-        {user ? (
-          <>
-            {user?.data.role === "student" && (
-              <Badge count={1}>
-                <ShoppingCartOutlined
-                  style={{ fontSize: "1.5em" }}
-                  onClick={handleShoppingCart}
-                />
-              </Badge>
-            )}
-            {user?.data.role === "instructor" && (
-              <Badge count={1}>
-                <ShoppingCartOutlined
-                  style={{ fontSize: "1.5em" }}
-                  onClick={handleShoppingCart}
-                />
-              </Badge>
-            )}
-            <Badge count={1}>
-              <MailOutlined style={{ fontSize: "1.5em", cursor: "pointer" }} />
-            </Badge>
-            <Badge count={1}>
-              <BellOutlined style={{ fontSize: "1.5em", cursor: "pointer" }} />
-            </Badge>
-            <Dropdown menu={{ items }}>
-              <a className="mr-9 flex" onClick={(e) => e.preventDefault()}>
-                <Space>
-                  <img
-                    src={user.data.avatar}
-                    className="h-12 w-12 rounded-full"
-                    alt=""
-                  />
-                </Space>
-              </a>
-            </Dropdown>
-          </>
-        ) : (
-          <div className="hide-on-mobile mr-4">
-            <Button
-              type="primary"
-              className="mr-4 bg-red-500"
-              danger
-              onClick={() => navigate("/sign-in")}
-            >
-              Sign In
-            </Button>
-            <Button
-              className="mr-4"
-              style={{
-                backgroundColor: "#f3f4f6",
-                color: "black",
-                borderColor: "black",
-              }}
-              type="primary"
-              danger
-              onClick={() => navigate("/sign-up")}
-            >
-              Sign Up
-            </Button>
-            <Button
-              className="mr-4 border-slate-900 bg-slate-900 text-white"
-              type="primary"
-              onClick={() => navigate("/sign-up-instructor")}
-            >
-              Become an Instructor
-            </Button>
-          </div>
-        )}
-      </div>
-    </>
+          <Button
+            className="mr-4 bg-[#ef4444]"
+            type="primary"
+            danger
+            onClick={() => navigate("/sign-up")}
+          >
+            Sign Up Create new Course
+          </Button>
+        </>
+      )}
+    </Header>
   );
 };
 
-export default AppHeader;
+export default AppHeader2;

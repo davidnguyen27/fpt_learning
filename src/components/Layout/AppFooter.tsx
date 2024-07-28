@@ -1,5 +1,4 @@
 import React from "react";
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
 
 const AppFooter: React.FC = () => {
   return (
@@ -127,32 +126,7 @@ const AppFooter: React.FC = () => {
             <p className="mb-4 text-xs">
               Copyright © {new Date().getFullYear()} FPT LearningHub
             </p>
-            <div className="flex space-x-4">
-              <a
-                href="#"
-                className="text-gray-400 transition duration-300 hover:text-blue-300"
-              >
-                <FaFacebook size={20} />
-              </a>
-              <a
-                href="#"
-                className="text-gray-400 transition duration-300 hover:text-blue-300"
-              >
-                <FaTwitter size={20} />
-              </a>
-              <a
-                href="#"
-                className="text-gray-400 transition duration-300 hover:text-blue-300"
-              >
-                <FaInstagram size={20} />
-              </a>
-              <a
-                href="#"
-                className="text-gray-400 transition duration-300 hover:text-blue-300"
-              >
-                <FaLinkedin size={20} />
-              </a>
-            </div>
+
           </div>
         </div>
         <div className="mt-8 border-t border-gray-700 pt-8 text-center text-gray-400">

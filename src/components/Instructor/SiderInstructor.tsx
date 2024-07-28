@@ -29,15 +29,15 @@ const SiderInstructor: React.FC<{ className?: string }> = () => {
     },
     {
       key: "3",
-      icon: <BarChartOutlined />,
-      label: "Lesson",
-      onClick: () => navigate("/instructor/lessons-management"),
-    },
-    {
-      key: "4",
       icon: <ExceptionOutlined />,
       label: "Session",
       onClick: () => navigate("/instructor/sessions-management"),
+    },
+    {
+      key: "4",
+      icon: <BarChartOutlined />,
+      label: "Lesson",
+      onClick: () => navigate("/instructor/lessons-management"),
     },
     {
       key: "5",

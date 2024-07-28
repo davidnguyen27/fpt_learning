@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
-import StudentCourseCard from "./StudentCourseCard";
 import { Button, Form, Input, notification } from "antd";
 import { getUserDetail, updateUser } from "../../services/usersService";
 import { formatDate } from "../../utils/formatDate";
 import { UserData } from "../../models/Types";
 import Tiny from "../../app/Editor/RichTextEditor";
+import StudentPurchased from "../Purchase/StudentPurchased";
 
 interface StudentProfileSubTabProps {
   activeTab: string;
@@ -54,7 +54,6 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
         description: "User profile updated successfully",
       });
 
-      // Fetch lại dữ liệu người dùng sau khi cập nhật thành công
       await fetchUserData();
     } catch (error: any) {
       notification.error({
@@ -120,24 +119,6 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
     </div>
   );
 
-  const MyCourseSubTabContent = () => (
-    <div>
-      <div className="mb-2 mt-3 flex w-full justify-between">
-        <h1 className="text-l font-semibold">Newest Courses</h1>
-        <a
-          href="/student-course-list-page"
-          className="font-light hover:text-amber-600"
-        >
-          See all
-        </a>
-      </div>
-      <div className="grid grid-cols-4 gap-3 rounded-md max-md:grid-cols-1 max-md:gap-2">
-        {Array.from({ length: 4 }).map((_, index) => (
-          <StudentCourseCard key={index} />
-        ))}
-      </div>
-    </div>
-  );
 
   return (
     <div className="mt-5">
@@ -151,15 +132,15 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
         </button>
         <button
           type="button"
-          className={`px-4 py-2 ${activeTab === "myCourse" ? "bg-gray-200" : ""}`}
-          onClick={() => setActiveTab("myCourse")}
+          className={`px-4 py-2 ${activeTab === "purchased" ? "bg-gray-200" : ""}`}
+          onClick={() => setActiveTab("purchased")}
         >
-          My Courses
+          Purchased
         </button>
       </div>
       <div>
         {activeTab === "about" && <AboutTabContent />}
-        {activeTab === "myCourse" && <MyCourseSubTabContent />}
+        {activeTab ==="purchased" && <StudentPurchased />}
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Layout } from "antd";
+import { Breadcrumb, Layout, notification } from "antd";
 import { useNavigate } from "react-router-dom";
-import { getCartsAPI } from "../../services/cartService"; 
+import { getCartsAPI, editStatusCartsAPI } from "../../services/cartService";
 import { CartData, DataTransfer } from "../../models/Cart";
 import "../../styles/index.css";
 import { AppFooter, AppHeader2, CartItem, CartSummary } from "../../components";
@@ -14,7 +14,7 @@ const Cart: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
-  const [nightMode] = useState(false);
+  const [quantities, setQuantities] = useState<{ [key: string]: number }>({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -43,6 +43,11 @@ const Cart: React.FC = () => {
       newSelected.delete(id);
       return newSelected;
     });
+    setQuantities((prevQuantities) => {
+      const newQuantities = { ...prevQuantities };
+      delete newQuantities[id];
+      return newQuantities;
+    });
   };
 
   const handleSelect = (id: string, selected: boolean) => {
@@ -57,16 +62,38 @@ const Cart: React.FC = () => {
     });
   };
 
+  const handleQuantityChange = (id: string, quantity: number) => {
+    setQuantities((prevQuantities) => ({
+      ...prevQuantities,
+      [id]: quantity,
+    }));
+  };
+
   const price = cartItems.reduce(
-    (acc, item) => acc + (selectedItems.has(item._id) ? item.price : 0),
+    (acc, item) =>
+      acc +
+      (selectedItems.has(item._id)
+        ? item.price * (quantities[item._id] || 1)
+        : 0),
     0,
   );
   const discountPercent = cartItems.reduce(
-    (acc, item) => acc + (selectedItems.has(item._id) ? item.discount : 0),
+    (acc, item) =>
+      acc +
+      (selectedItems.has(item._id)
+        ? item.discount * (quantities[item._id] || 1)
+        : 0),
     0,
   );
   const discount = (price * discountPercent) / 100;
-  const price_paid = price - discount;
+  const price_paid = cartItems.reduce(
+    (acc, item) =>
+      acc +
+      (selectedItems.has(item._id)
+        ? item.price_paid * (quantities[item._id] || 1)
+        : 0),
+    0,
+  );
 
   if (loading) {
     return (
@@ -74,12 +101,40 @@ const Cart: React.FC = () => {
         <Loading />
       </div>
     );
-  }  if (error) return <p>Error: {error}</p>;
+  }
+  if (error) return <p>Error: {error}</p>;
+
+  const handleCheckout = async () => {
+    if (selectedItems.size === 0) {
+      notification.warning({
+        message: "Warning",
+        description: "Please choose Courses that you want to check out",
+      });
+      return;
+    }
+
+    const selectedItemsWithQuantities = cartItems
+      .filter((item) => selectedItems.has(item._id))
+      .map((item) => ({
+        _id: item._id,
+        cart_no: item.cart_no,
+        quantity: quantities[item._id] || 1,
+      }));
+
+    try {
+      await editStatusCartsAPI("waiting_paid", selectedItemsWithQuantities);
+      navigate("/confirm-checkout", { state: { selectedItemsWithQuantities } });
+    } catch (error: any) {
+      notification.error({
+        message: "Error",
+        description: `Failed to update cart status: ${error.message || "An error occurred"}`,
+      });
+    }
+  };
 
   return (
-    <Layout className={nightMode ? "night-mode" : ""}>
+    <Layout>
       <AppHeader2 />
-
       <Content>
         <div className="flex min-h-screen flex-col bg-gray-100">
           <div className="bg-white" style={{ padding: "8px 0" }}>
@@ -116,15 +171,26 @@ const Cart: React.FC = () => {
                       onRemove={handleRemove}
                       isSelected={selectedItems.has(item._id)}
                       onSelect={handleSelect}
+                      onQuantityChange={handleQuantityChange}
                     />
                   ))}
                 </div>
                 <div className="h-80 rounded-lg bg-white p-4 shadow-md">
                   <CartSummary
                     price={price}
-                    discount={discount}
                     price_paid={price_paid}
+                    discount={discount}
+                    cartItems={cartItems}
+                    selectedItems={selectedItems}
+                    onRemove={handleRemove}
+                    onSelect={handleSelect}
                   />
+                  <button
+                    className="mt-4 w-full rounded bg-red-500 p-2 text-white"
+                    onClick={handleCheckout}
+                  >
+                    Check Out Now
+                  </button>
                 </div>
               </div>
             </div>

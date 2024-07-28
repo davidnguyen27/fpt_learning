@@ -13,6 +13,7 @@ export type CartData = {
   course_name: string;
   student_name: string;
   instructor_name: string;
+  price_paid: number;
 };
 
 export type DataTransfer = {

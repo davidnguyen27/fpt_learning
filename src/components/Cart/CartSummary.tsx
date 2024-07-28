@@ -1,19 +1,44 @@
-import { Button } from "antd";
-import React from "react";
+import React, { useState } from "react";
+import { Modal } from "antd";
 import { useNavigate } from "react-router-dom";
+import { CartData } from "../../models/Cart";
 
 interface CartSummaryProps {
   price_paid: number;
   price: number;
   discount: number;
+  cartItems: CartData[];
+  selectedItems: Set<string>;
+  onRemove: (id: string) => void;
+  onSelect: (id: string, selected: boolean) => void;
 }
 
 const CartSummary: React.FC<CartSummaryProps> = ({
   price_paid,
   price,
   discount,
+  cartItems,
+  selectedItems,
 }) => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const navigate = useNavigate();
+
+  // const handleCheckout = () => {
+  //   setIsModalVisible(true);
+  // };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+    navigate("/confirm-checkout");
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  
+  const selectedCartItems = cartItems.filter(item => selectedItems.has(item._id));
+
   return (
     <div className="p-4">
       <div className="relative mb-4">
@@ -43,14 +68,31 @@ const CartSummary: React.FC<CartSummaryProps> = ({
         <span className="text-black">${price_paid}</span>
       </div>
       <hr className="mt-6" />
-      <Button
+      {/* <Button
         type="primary"
         danger
         style={{ display: "block", width: "100%", marginTop: "16px" }}
-        onClick={() => navigate("/checkout")}
+        onClick={handleCheckout}
       >
         Check Out Now
-      </Button>
+      </Button> */}
+
+      <Modal
+        title="Confirm Checkout"
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <p>Are you sure you want to check out now?</p>
+        <div>
+          {selectedCartItems.map(item => (
+            <div key={item._id} className="mb-2">
+              <span>{item.course_name}</span>
+              <span className="float-right">${item.price}</span>
+            </div>
+          ))}
+        </div>
+      </Modal>
     </div>
   );
 };
