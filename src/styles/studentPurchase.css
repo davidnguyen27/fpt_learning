@@ -1,0 +1,71 @@
+.purchased-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  .purchase-item {
+    display: flex;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #fff;
+  }
+  
+  .purchase-image {
+    width: 150px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  
+  .purchase-details {
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .purchase-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .purchase-rating {
+    font-size: 1.2em;
+    color: #f4b400;
+  }
+  
+  .best-seller {
+    background-color: #e67e22;
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+  
+  .purchase-meta {
+    font-size: 0.9em;
+    color: #888;
+  }
+  
+  .purchase-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+  }
+  
+  .purchase-duration, .purchase-price, .purchased {
+    font-size: 1.1em;
+  }
+  
+  .purchased {
+    background-color: #27ae60;
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+  

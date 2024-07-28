@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Breadcrumb, Layout } from "antd";
 import { useNavigate } from "react-router-dom";
 import "../../styles/index.css";
@@ -6,11 +6,10 @@ import { AppFooter, AppHeader2, CheckOutDetail, OrderSummary, SelectPayment } fr
 const { Content, Footer } = Layout;
 
 const CheckOut: React.FC = () => {
-  const [nightMode] = useState(false);
   const navigate = useNavigate();
 
   return (
-    <Layout className={nightMode ? "night-mode" : ""}>
+    <Layout>
       <AppHeader2 />
 
       <Content>

@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import { CourseSubTabProps } from "../../models/Types";
 import {
   MenuUnfoldOutlined,
@@ -10,6 +10,10 @@ import {
 } from "@ant-design/icons";
 import { Rate } from "antd";
 import useCourseDetailClient from "../../hooks/course/useCourseDetailClient";
+import {
+  getSubscriptionBySubscriberAPI,
+  createUpdateSubscriptionAPI,
+} from "../../services/subscriptionService";
 
 const CourseSubTab: FC<CourseSubTabProps> = ({
   _id,
@@ -30,9 +34,60 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
     }
   };
 
-  const handleSubscribeClick = () => {
-    setIsSubscribed(!isSubscribed);
+  const fetchSubscription = async () => {
+    try {
+      const subscriptions = await getSubscriptionBySubscriberAPI(_id, {
+        searchCondition: {
+          keyword: "",
+          is_delete: false,
+        },
+        pageInfo: {
+          pageNum: 0,
+          pageSize: 0,
+        },
+      });
+      const isSubscribed = subscriptions.some(
+        (sub) => sub.instructor_id === course?.instructor_id,
+      );
+      setIsSubscribed(isSubscribed);
+    } catch (error) {
+      console.error("Failed to fetch subscription", error);
+    }
   };
+
+  const handleSubscribeClick = async () => {
+    try {
+      const instructor_id = course?.instructor_id;
+      if (!instructor_id) throw new Error("Instructor ID not found");
+
+      const subscriptionData = {
+        // Add other subscription details if needed
+      };
+
+      await createUpdateSubscriptionAPI(instructor_id, subscriptionData);
+      setIsSubscribed(!isSubscribed);
+      localStorage.setItem(
+        `subscribed_${instructor_id}`,
+        JSON.stringify(!isSubscribed),
+      );
+    } catch (error) {
+      console.error("Failed to subscribe/unsubscribe", error);
+    }
+  };
+
+  useEffect(() => {
+    const instructor_id = course?.instructor_id;
+    if (instructor_id) {
+      const storedSubscription = localStorage.getItem(
+        `subscribed_${instructor_id}`,
+      );
+      if (storedSubscription) {
+        setIsSubscribed(JSON.parse(storedSubscription));
+      } else {
+        fetchSubscription();
+      }
+    }
+  }, [course]);
 
   const AboutTabContent = () => (
     <div
@@ -181,6 +236,7 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
                 }`}
               >
                 {isSubscribed ? "Subscribed" : "Subscribe"}
+
               </button>
             </div>
           </div>
