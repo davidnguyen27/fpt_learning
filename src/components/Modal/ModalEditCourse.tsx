@@ -3,6 +3,7 @@ import { Form, Input, Modal, Select, message } from "antd";
 import useEditCourse from "../../hooks/course/useEditCourse";
 import { getCategoriesAPI, getCourseAPI } from "../../services/coursesService";
 import { Category } from "../../models/Category";
+import Tiny from "../../app/Editor/RichTextEditor";
 
 const { Option } = Select;
 
@@ -78,13 +79,14 @@ const ModalEditCourse = (props: ModalEditCourseProps) => {
   const handleEdit = async () => {
     try {
       const values = await form.validateFields();
+
       if (courseId) {
         await editCourse(courseId, values);
         form.resetFields();
         setOpen(false);
       }
-    } catch (error) {
-      message.error("Failed to update course");
+    } catch (error: any) {
+      message.error(error.message);
     }
   };
 
@@ -156,8 +158,15 @@ const ModalEditCourse = (props: ModalEditCourseProps) => {
           <Input className="text-sm" size="large" placeholder="Description" />
         </Form.Item>
 
-        <Form.Item label="Content" name="content">
-          <Input className="text-sm" size="large" placeholder="Content" />
+        <Form.Item
+          label="Content"
+          name="content"
+          rules={[{ required: true, message: "Content is required!" }]}
+        >
+          <Tiny
+            value={form.getFieldValue("content") || ""}
+            onChange={(value: any) => form.setFieldsValue({ content: value })}
+          />
         </Form.Item>
 
         <Form.Item

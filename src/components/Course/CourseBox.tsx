@@ -14,8 +14,6 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
   const [isCourseInCart, setIsCourseInCart] = useState<boolean>(false);
 
   useEffect(() => {
-    // Here you would typically check if the course is in the user's cart by fetching the cart data from your backend
-    // For simplicity, we're assuming the course is not in the cart initially
     setIsCourseInCart(false);
   }, [_id]);
 
@@ -64,9 +62,9 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
             alt="Course Thumbnail"
             onClick={showModal}
           />
-          <div className="absolute left-0 top-0 rounded-bl-md rounded-tr-md bg-orange-500 px-2 py-1 text-white">
+          {/* <div className="absolute left-0 top-0 rounded-bl-md rounded-tr-md bg-orange-500 px-2 py-1 text-white">
             BESTSELLER
-          </div>
+          </div> */}
           <div className="absolute bottom-0 left-0 w-full bg-black bg-opacity-50 px-2 py-1 text-center text-white">
             Preview this course
           </div>
@@ -83,6 +81,21 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
               ({course?.review_count} ratings)
             </span>
           </div>
+          <p className="my-4">By {course?.instructor_name}</p>
+          <p className="mb-4">
+            Release date:{" "}
+            {course?.created_at
+              ? new Date(course.created_at).toLocaleDateString()
+              : "N/A"}
+          </p>
+          <p className="mb-4">Category: {course?.category_name}</p>
+          <span>Price: </span>
+          <span
+            className={`${course?.discount !== 0 ? "line-through" : ""} text-gray-400`}
+          >
+            ${course?.price}
+          </span>
+          <span className="ml-3 text-red-400">${course?.price_paid}</span>
           <div className="mt-4 flex space-x-2">
             {isCourseInCart ? (
               <Link to="/cart">
@@ -95,7 +108,6 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
                 Add to cart
               </Button>
             )}
-            <Button type="primary">Buy Now</Button>
           </div>
         </div>
       </div>
@@ -116,10 +128,17 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
               aria-hidden="true"
             ></span>
             <div className="inline-block transform overflow-hidden rounded-lg bg-white text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
-              <video width="100%" controls>
-                <source src={course?.video_url} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
+              <iframe
+                width="560"
+                height="315"
+                src={course?.video_url}
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+              ></iframe>
+
               <button
                 type="button"
                 className="m-2 rounded bg-red-500 p-2 text-white"

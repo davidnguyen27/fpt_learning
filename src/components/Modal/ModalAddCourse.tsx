@@ -39,6 +39,12 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
+
+      const description = values.description;
+      if (typeof description !== "string" || description.trim() === "") {
+        throw new Error("Description must be a non-empty string");
+      }
+
       await createCourse(values);
       form.resetFields();
       setOpen(false);
@@ -109,12 +115,15 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
         <Form.Item
           label="Description"
           name="description"
-          valuePropName="value"
-          getValueFromEvent={(e: any) => e.target.getContent()}
+          // valuePropName="value"
+          // getValueFromEvent={(e: any) => e.target.getContent()}
+          rules={[{ required: true, message: "Description is required!" }]}
         >
           <Tiny
-            value={form.getFieldValue('description') || ''}
-            onChange={(value: any) => form.setFieldsValue({ description: value })}
+            value={form.getFieldValue("description") || ""}
+            onChange={(value: any) =>
+              form.setFieldsValue({ description: value })
+            }
           />
         </Form.Item>
 

@@ -143,6 +143,7 @@ export type CourseSubTabProps = {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   onSelectedCourse: (id: string) => void;
+  content: CourseDetail["content"];
   sessions: CourseDetail["session_list"];
 };
 

@@ -49,6 +49,7 @@ export type CourseDetail = {
   category_name: string;
   status: string;
   description: string;
+  content: string;
   video_url: string;
   image_url: string;
   price_paid: number;

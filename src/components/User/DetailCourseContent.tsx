@@ -17,6 +17,7 @@ const DetailCourseContent = () => {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         onSelectedCourse={() => {}}
+        content={course?.content ?? ""}
         sessions={course?.session_list ?? []}
       />
     </div>

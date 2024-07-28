@@ -23,6 +23,7 @@ const StudentDetailCourseContent = () => {
           setActiveTab={setActiveTab}
           onSelectedCourse={() => {}}
           sessions={course?.session_list ?? []}
+          content={course?.content || ""}
         />
       </div>
     </div>

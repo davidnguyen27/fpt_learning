@@ -1,37 +1,29 @@
-import React from "react";
 import { CourseSubTabProps } from "../../models/Types";
-import TableReviews from "../Tables/TableReviews";
 import { MenuUnfoldOutlined, PlayCircleOutlined } from "@ant-design/icons";
+import { Rate } from "antd";
+import { useState } from "react";
 
-const   CourseSubTab: React.FC<CourseSubTabProps> = ({
+const CourseSubTab: React.FC<CourseSubTabProps> = ({
   activeTab,
   setActiveTab,
+  content,
   sessions,
 }) => {
+  const [openSessions, setOpenSessions] = useState<string[]>([]);
+
+  const toggleSession = (sessionId: string) => {
+    if (openSessions.includes(sessionId)) {
+      setOpenSessions(openSessions.filter((id) => id !== sessionId));
+    } else {
+      setOpenSessions([...openSessions, sessionId]);
+    }
+  };
+
   const AboutTabContent = () => (
-    <div>
-      <h3 className="text-[20px] font-medium text-[#333333]">Requirement</h3>
-      <div className="space-y-3 text-[14px] font-normal text-[#686f7a]">
-        <li>Have a computer with Internet</li>
-        <li>Be ready to learn an insane amount of awesome stuff</li>
-        <li>Prepare to build real web apps!</li>
-      </div>
-      <div className="mt-7">
-        <h3 className="text-[20px] font-medium text-[#333333]">Description</h3>
-        <span className="mt-7 text-[16px] font-medium text-[#333333]">
-          Just updated to include Bootstrap 4.1.3!
-        </span>
-        <p className="mt-6 text-[14px] font-normal text-[#686f7a]">
-          Hi! Welcome to the Web Developer Bootcamp, the{" "}
-          <strong className="font-medium">
-            only course you need to learn web development.
-          </strong>{" "}
-          There are a lot of options for online developer training, but this
-          course is without a doubt the most comprehensive and effective on the
-          market. Here's why:
-        </p>
-      </div>
-    </div>
+    <div
+      className="mt-6 text-sm"
+      dangerouslySetInnerHTML={{ __html: content }}
+    />
   );
 
   const CourseContentTabContent = () => (
@@ -41,20 +33,111 @@ const   CourseSubTab: React.FC<CourseSubTabProps> = ({
           key={session._id}
           className="mt-6 rounded-md bg-slate-200 px-3 py-2"
         >
-          <span className="text-sm font-bold">
-            <MenuUnfoldOutlined />
-          </span>{" "}
-          <span>{session.name}</span>
-          <div className="px-4 py-2">
-            {session.lesson_list.map((lesson, idx) => (
-              <span key={idx} className="ml-4 block">
-                <PlayCircleOutlined /> {lesson.name}
-              </span>
-            ))}
+          <div
+            className="cursor-pointer text-sm font-bold"
+            onClick={() => toggleSession(session._id)}
+          >
+            <MenuUnfoldOutlined /> <span>{session.name}</span>
           </div>
+          {openSessions.includes(session._id) && (
+            <div className="mt-4 flex items-center justify-between">
+              <div className="px-4 py-2">
+                {session.lesson_list.map((lesson, idx) => (
+                  <div key={idx} className="ml-4 block">
+                    <PlayCircleOutlined /> {lesson.name}
+                  </div>
+                ))}
+              </div>
+              <div>{session.full_time}</div>
+            </div>
+          )}
         </div>
       ))}
     </div>
+  );
+
+  const CourseReview = () => (
+    <>
+      <div className="mt-10 bg-slate-200 p-6">
+        <h1 className="text-2xl font-semibold">Rating</h1>
+        <div className="mt-3 bg-neutral-100 p-4">
+          <span className="font-medium">4.6</span>
+          <Rate className="mx-4" defaultValue={4.6} />
+          <span className="font-medium">Course rating</span>
+        </div>
+        <div className="my-5 flex items-center justify-between space-x-4">
+          <div className="relative h-4 flex-1 overflow-hidden rounded-md bg-neutral-100">
+            <div
+              className="absolute left-0 top-0 h-full bg-red-500"
+              style={{ width: "70%" }}
+            ></div>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Rate className="my-4" allowHalf defaultValue={2.5} />
+            <span className="font-medium">70%</span>
+          </div>
+        </div>
+        <div className="my-5 flex items-center justify-between space-x-4">
+          <div className="relative h-4 flex-1 overflow-hidden rounded-md bg-neutral-100">
+            <div
+              className="absolute left-0 top-0 h-full bg-red-500"
+              style={{ width: "40%" }}
+            ></div>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Rate className="my-4" allowHalf defaultValue={2.5} />
+            <span className="font-medium">40%</span>
+          </div>
+        </div>
+        <div className="my-5 flex items-center justify-between space-x-4">
+          <div className="relative h-4 flex-1 overflow-hidden rounded-md bg-neutral-100">
+            <div
+              className="absolute left-0 top-0 h-full bg-red-500"
+              style={{ width: "5%" }}
+            ></div>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Rate className="my-4" allowHalf defaultValue={2.5} />
+            <span className="font-medium">5%</span>
+          </div>
+        </div>
+        <div className="my-5 flex items-center justify-between space-x-4">
+          <div className="relative h-4 flex-1 overflow-hidden rounded-md bg-neutral-100">
+            <div
+              className="absolute left-0 top-0 h-full bg-red-500"
+              style={{ width: "1%" }}
+            ></div>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Rate className="my-4" allowHalf defaultValue={2.5} />
+            <span className="font-medium">1%</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <h1 className="my-10 text-2xl font-semibold">Student review</h1>
+        <article className="bg-slate-200 px-6 py-3">
+          <div className="flex items-center">
+            <img
+              className="mr-3 h-10 w-10 rounded-3xl"
+              src="https://cdn-media.sforum.vn/storage/app/media/wp-content/uploads/2023/11/avatar-vo-tri-thumbnail.jpg"
+              alt=""
+            />
+            <div>
+              <span className="font-medium">John Doe</span>
+              <br />
+              <span className="text-sm font-light">2 hour ago</span>
+            </div>
+          </div>
+          <Rate className="my-4" allowHalf defaultValue={2.5} />
+          <p className="text-sm">
+            Nam gravida elit a velit rutrum, eget dapibus ex elementum. Interdum
+            et malesuada fames ac ante ipsum primis in faucibus. Fusce lacinia,
+            nunc sit amet tincidunt venenatis.
+          </p>
+        </article>
+      </div>
+    </>
   );
 
   return (
@@ -88,7 +171,7 @@ const   CourseSubTab: React.FC<CourseSubTabProps> = ({
       <div>
         {activeTab === "about" && <AboutTabContent />}
         {activeTab === "content" && <CourseContentTabContent />}
-        {activeTab === "reviews" && <TableReviews />}
+        {activeTab === "reviews" && <CourseReview />}
       </div>
     </div>
   );

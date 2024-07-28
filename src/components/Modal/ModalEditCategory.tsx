@@ -1,10 +1,7 @@
-// ModalEditLesson.tsx
 import { Form, Input, Modal, message } from "antd";
 import { useEffect, useState } from "react";
 import { getCategoryAPI } from "../../services/categoryService";
 import useEditCategory from "../../hooks/category/useEditCategory";
-
-
 
 interface ModalEditCategoryProps {
   open: boolean;
@@ -29,7 +26,6 @@ const ModalEditCategory = (props: ModalEditCategoryProps) => {
               name: data.name,
               id: data._id,
               description: data.description,
-
             };
             setInitialValues(categoryData);
             form.setFieldsValue(categoryData);
@@ -97,10 +93,10 @@ const ModalEditCategory = (props: ModalEditCategoryProps) => {
         layout="horizontal"
         className="mt-4"
         form={form}
-        labelCol={{span: 4}}
+        labelCol={{ span: 4 }}
         initialValues={initialValues}
       >
-                <Form.Item
+        <Form.Item
           label="Category Name"
           name="name"
           rules={[{ required: true, message: "Category Name is require!" }]}
