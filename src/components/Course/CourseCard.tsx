@@ -14,7 +14,7 @@ const CourseCard: React.FC = () => {
       status: "",
       is_delete: false,
     }),
-    [searchKeyword],
+    [searchKeyword]
   );
 
   const pageInfo = useMemo(
@@ -22,7 +22,7 @@ const CourseCard: React.FC = () => {
       pageNum: 1,
       pageSize: 10,
     }),
-    [],
+    []
   );
 
   const dataTransfer: DataTransfer = useMemo(
@@ -30,7 +30,7 @@ const CourseCard: React.FC = () => {
       searchCondition,
       pageInfo,
     }),
-    [searchCondition, pageInfo],
+    [searchCondition, pageInfo]
   );
 
   const {
@@ -49,7 +49,7 @@ const CourseCard: React.FC = () => {
 
   return (
     <>
-      {courses.map((item) => (
+      {courses.map((item: any) => (
         <article
           key={item._id}
           className="h-auto w-auto cursor-pointer rounded-md bg-slate-200 transition-transform duration-300 hover:scale-105 hover:bg-slate-300"
@@ -61,6 +61,7 @@ const CourseCard: React.FC = () => {
                 src={item.image_url || "default-image-url"}
                 alt={item.name}
                 className="rounded-md"
+                style={{ width: "300px", height: "200px", objectFit: "contain" }} // Ensure image content fits
               />
             </div>
             <div className="my-3 flex justify-between">
@@ -77,9 +78,12 @@ const CourseCard: React.FC = () => {
             </div>
             <div className="flex items-center justify-between">
               <p className="text-xs">
-                By <span className="font-medium">{item.user_name}</span>
+                By{" "}
+                <span className="font-medium">
+                  {item.instructor_name || "Unknown Instructor"}
+                </span>
               </p>
-              <i className="fa-solid fa-cart-plus ml-14 cursor-pointer"></i>
+              <i className="fa-solid fa-cart-plus cursor-pointer"></i>
               <span>${item.price}</span>
             </div>
           </div>

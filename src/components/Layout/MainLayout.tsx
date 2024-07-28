@@ -1,27 +1,21 @@
-
 import React from "react";
 import { Layout } from "antd";
-import Sider from "antd/es/layout/Sider";
 import { Content, Footer, Header } from "antd/es/layout/layout";
-import { useSider } from "../../app/context/SiderContext";
 import AppHeader from "./AppHeader";
 import AppFooter from "./AppFooter";
-import AppSider from "./AppSider";
 
 interface MainLayoutProps {
   children: React.ReactNode;
 }
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
-  const { collapsed } = useSider();
-
   return (
     <Layout className="flex h-screen w-screen flex-col">
       <Header className="header">
         <AppHeader />
       </Header>
       <Layout className="flex flex-1 overflow-y-auto">
-        <Sider
+        {/* <Sider
           className="sider"
           collapsed={collapsed}
           collapsedWidth={0}
@@ -31,15 +25,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           <AppSider
             className={`transition-all duration-75 ${collapsed ? "w-0" : "w-64"}`}
           />
-        </Sider>
+        </Sider> */}
         <Layout className="flex flex-1 flex-col">
           <Content className="flex-1 overflow-y-auto">
-            <div className="p-8">
-              {children}
-            </div>
+            <div className="p-4">{children}</div>
             <Footer className="footer">
-            <AppFooter />
-          </Footer>
+              <AppFooter />
+            </Footer>
           </Content>
         </Layout>
       </Layout>

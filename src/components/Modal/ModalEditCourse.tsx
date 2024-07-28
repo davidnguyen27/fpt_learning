@@ -74,7 +74,7 @@ const ModalEditCourse = (props: ModalEditCourseProps) => {
     }
   }, [open, courseId, form]);
 
-  const validateMediaUrls = (_: RuleObject, value: string) => {
+  const validateMediaUrls = (_: RuleObject) => {
     const video_url = form.getFieldValue("video_url");
     const image_url = form.getFieldValue("image_url");
 

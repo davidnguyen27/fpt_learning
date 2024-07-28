@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import StudentCourseCard from "./StudentCourseCard";
 import { Button, Form, Input, notification } from "antd";
-import TextArea from "antd/es/input/TextArea";
 import { getUserDetail, updateUser } from "../../services/usersService";
 import { formatDate } from "../../utils/formatDate";
 import { UserData } from "../../models/Types";
+import Tiny from "../../app/Editor/RichTextEditor";
 
 interface StudentProfileSubTabProps {
   activeTab: string;
@@ -16,6 +16,9 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
   setActiveTab,
 }) => {
   const [form] = Form.useForm();
+  const [editing, setEditing] = useState(false);
+  const [initialDescription, setInitialDescription] = useState<string>("");
+
   const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
   const userId = storedUser?.data?._id;
 
@@ -25,11 +28,12 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
 
       if (userId && token) {
         const userData = await getUserDetail(userId, token);
-
+        if (userData?.description) {
+          setInitialDescription(userData.description);
+        }
         if (userData?.dob) {
           userData.dob = formatDate(userData.dob.toString());
         }
-
         form.setFieldsValue(userData);
       } else {
         console.error("User data or token is missing in sessionStorage");
@@ -53,9 +57,8 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
         message: "Success",
         description: "User profile updated successfully",
       });
-
-      // Fetch lại dữ liệu người dùng sau khi cập nhật thành công
-      await fetchUserData();
+      setEditing(false); // Hide the form and show the edit button again
+      await fetchUserData(); // Refresh user data
     } catch (error: any) {
       notification.error({
         message: "Error",
@@ -67,48 +70,74 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
   const AboutTabContent = () => (
     <div className="p-3">
       <h1 className="text-2xl font-semibold">Your profile</h1>
-      <Form
-        form={form}
-        className="mt-8"
-        layout="horizontal"
-        labelCol={{ span: 2 }}
-        onFinish={handleUpdate}
-      >
-        <Form.Item
-          name="name"
-          label="Full Name"
-          rules={[{ required: true, message: "Please input your name!" }]}
-        >
-          <Input size="large" />
-        </Form.Item>
-        <Form.Item name="dob" label="Date of Birth">
-          <Input type="date" size="large" />
-        </Form.Item>
-        <Form.Item
-          name="email"
-          label="Email"
-          rules={[{ required: true, message: "Please input your email!" }]}
-        >
-          <Input size="large" placeholder="email@example.com" />
-        </Form.Item>
-        <Form.Item name="phone_number" label="Phone">
-          <Input size="large" />
-        </Form.Item>
-        <Form.Item name="avatar" label="Avatar">
-          <Input size="large" />
-        </Form.Item>
-        <Form.Item name="video" label="Video">
-          <Input size="large" placeholder="https://youtube.com" />
-        </Form.Item>
-        <Form.Item name="description" label="Description">
-          <TextArea rows={4} size="large" />
-        </Form.Item>
-        <Form.Item wrapperCol={{ offset: 2 }}>
-          <Button type="primary" htmlType="submit" className="float-right mt-6">
-            Update
+      {!editing ? (
+        <div>
+          <p><strong>Description:</strong> {initialDescription}</p>
+          <Button
+            type="primary"
+            onClick={() => setEditing(true)}
+            className="float-right mt-6"
+          >
+            Edit
           </Button>
-        </Form.Item>
-      </Form>
+        </div>
+      ) : (
+        <Form
+          form={form}
+          className="mt-8"
+          layout="horizontal"
+          labelCol={{ span: 2 }}
+          onFinish={handleUpdate}
+        >
+          <Form.Item
+            name="name"
+            label="Full Name"
+            rules={[{ required: true, message: "Please input your name!" }]}
+          >
+            <Input size="large" />
+          </Form.Item>
+          <Form.Item name="dob" label="Date of Birth">
+            <Input type="date" size="large" />
+          </Form.Item>
+          <Form.Item
+            name="email"
+            label="Email"
+            rules={[{ required: true, message: "Please input your email!" }]}
+          >
+            <Input size="large" placeholder="email@example.com" />
+          </Form.Item>
+          <Form.Item name="phone_number" label="Phone">
+            <Input size="large" />
+          </Form.Item>
+          <Form.Item name="avatar" label="Avatar">
+            <Input size="large" />
+          </Form.Item>
+          <Form.Item name="video" label="Video">
+            <Input size="large" placeholder="https://youtube.com" />
+          </Form.Item>
+          <Form.Item
+            label="Description"
+            name="description"
+          >
+            <Tiny
+              value={form.getFieldValue('description') || ''}
+              onChange={(value: string) => form.setFieldsValue({ description: value })}
+            />
+          </Form.Item>
+          <Form.Item wrapperCol={{ offset: 2 }}>
+            <Button type="primary" htmlType="submit" className="float-right mt-6">
+              Update
+            </Button>
+            <Button
+              type="default"
+              onClick={() => setEditing(false)}
+              className="float-right mt-6 mr-4"
+            >
+              Cancel
+            </Button>
+          </Form.Item>
+        </Form>
+      )}
     </div>
   );
 

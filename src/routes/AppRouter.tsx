@@ -46,6 +46,9 @@ const ReviewProfilePage = React.lazy(
 const AdminLoginPage = React.lazy(
   () => import("../pages/Admin/AdminLoginPage"),
 );
+const AdminReviewManagePage = React.lazy(
+  () => import("../pages/Admin/AdminReviewManagePage"),
+);
 
 //---------------------------------------------INSTRUCTOR----------------------------------------------
 const InstructorPage = React.lazy(
@@ -76,9 +79,9 @@ const StudentVerifyPage = React.lazy(() => import("../pages/User/VerifyPage"));
 const UserProfilePage = React.lazy(
   () => import("../pages/Student/StudentProfilePage"),
 );
-const StudentCourseDetailPage = React.lazy(
-  () => import("../pages/Student/StudentCourseDetailPage"),
-);
+// const StudentCourseDetailPage = React.lazy(
+//   () => import("../pages/Student/StudentCourseDetailPage"),
+// );
 const StudentCourseListPage = React.lazy(
   () => import("../pages/Student/StudentCourseListPage"),
 );
@@ -115,7 +118,6 @@ const ProtectedRoute = ({ element, allowedRoles }: ProtectedRouteProps) => {
   return element;
 };
 
-
 const AppRouter = () => {
   return (
     <BrowserRouter>
@@ -132,7 +134,7 @@ const AppRouter = () => {
             <Route path="/about" element={<AboutPage />} />
             <Route path="sign-in" element={<SignInPage />} />
             <Route path="sign-up" element={<SignUpPage />} />
-            <Route path="/detail" element={<DetailCoursePage />} />
+            <Route path="/detail/:_id" element={<DetailCoursePage />} />
             <Route path="/report-page" element={<ReportPage />} />
             <Route path="/help-page" element={<HelpPage />} />
             <Route path="/settings-page" element={<SettingsPage />} />
@@ -228,10 +230,19 @@ const AppRouter = () => {
                 />
               }
             />
+            <Route
+              path="/admin/reviews-management"
+              element={
+                <ProtectedRoute
+                  element={<AdminReviewManagePage />}
+                  allowedRoles={["admin"]}
+                />
+              }
+            />
             {/*------------------------------------------------------------------*/}
 
             {/*----------------------------STUDENT-------------------------------*/}
-            <Route
+            {/* <Route
               path="/view-detail"
               element={
                 <ProtectedRoute
@@ -239,7 +250,7 @@ const AppRouter = () => {
                   allowedRoles={["student"]}
                 />
               }
-            />
+            /> */}
             <Route
               path="/cart"
               element={

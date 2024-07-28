@@ -3,6 +3,7 @@ import {
   BarsOutlined,
   LineChartOutlined,
   ReadOutlined,
+  StarOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import { Divider, Menu } from "antd";
@@ -48,6 +49,12 @@ const SiderAdmin: React.FC<{ className?: string }> = () => {
       label: "Courses Request",
       onClick: () => navigate("/admin/courses-check"),
       className: "hover:rounded-none hover:bg-red-500 hover:text-white",
+    },
+    {
+      key: "6",
+      icon: <StarOutlined />,
+      label: "Reviews",
+      onClick: () => navigate("/admin/reviews-management"),
     },
   ];
 

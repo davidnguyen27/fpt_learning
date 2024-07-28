@@ -3,6 +3,7 @@ import { Form, Input, Modal, Select, Button } from "antd";
 import useAddCourse from "../../hooks/course/useAddCourse";
 import { getCategoriesAPI } from "../../services/coursesService";
 import { Category } from "../../models/Category";
+import Tiny from "../../app/Editor/RichTextEditor";
 
 const { Option } = Select;
 
@@ -26,7 +27,7 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
         const categoriesData = await getCategoriesAPI("", 1, 10, false);
         setCategories(categoriesData.data.pageData);
       } catch (error: any) {
-        throw new Error(error.message);
+        console.error("Failed to fetch categories:", error);
       } finally {
         setCategoriesLoading(false);
       }
@@ -38,13 +39,20 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
+      console.log("Form values before submission:", values); // Debugging
       await createCourse(values);
       form.resetFields();
       setOpen(false);
     } catch (error: any) {
-      throw new Error(error);
+      console.error("Submission error:", error);
+      // Display detailed validation errors
+      if (error.errorFields) {
+        error.errorFields.forEach((field: any) => {
+          console.error(`Field: ${field.name}, Error: ${field.errors}`);
+        });
+      }
+      throw new Error(error.message || "Submission failed");
     }
-    return Promise.resolve();
   };
 
   const handleCancel = () => {
@@ -52,18 +60,20 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
     setOpen(false);
   };
 
-  const validateMediaUrl = () => {
-    const videoUrl = form.getFieldValue("video_url");
-    const imageUrl = form.getFieldValue("image_url");
+  const validateMediaUrl = async (_: any) => {
     const isValidUrl = (url: string) => {
       try {
-        new URL(url);
-        return true;
+        const parsedUrl = new URL(url);
+        // Ensure it's not a base64 URL
+        return parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:';
       } catch {
         return false;
       }
     };
-
+  
+    const videoUrl = form.getFieldValue("video_url");
+    const imageUrl = form.getFieldValue("image_url");
+  
     if (!videoUrl && !imageUrl) {
       return Promise.reject(new Error("Either video URL or image URL is required!"));
     }
@@ -100,7 +110,7 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
           key="submit"
           type="primary"
           className="rounded-md bg-red-500 px-4 py-1"
-          loading={loading} // This will show a loading spinner inside the button
+          loading={loading}
           onClick={handleSubmit}
         >
           Add
@@ -145,7 +155,12 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
           name="description"
           rules={[{ required: true, message: "Description is required!" }]}
         >
-          <Input className="text-sm" size="large" placeholder="Description" />
+          <Tiny
+            value={form.getFieldValue('description') || ''}
+            onChange={(value: string) => {
+              form.setFieldsValue({ description: value || '' });
+            }}
+          />
         </Form.Item>
 
         <Form.Item label="Content" name="content">

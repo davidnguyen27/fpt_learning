@@ -1,73 +1,80 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Breadcrumb, Layout } from "antd";
 import { useNavigate } from "react-router-dom";
+import { getCartsAPI } from "../../services/cartService"; 
+import { CartData, DataTransfer } from "../../models/Cart";
 import "../../styles/index.css";
 import { AppFooter, AppHeader2, CartItem, CartSummary } from "../../components";
+import Loading from "../../components/Loading/loading";
 
 const { Content, Footer } = Layout;
 
-const initialCartItems = [
-  {
-    id: 1,
-    name: "The Web Developer Bootcamp",
-    price: 50.0,
-    quantity: 1,
-    discount: 10.0,
-    title: "Web Development | Python",
-    author: "Ko Bin Hung",
-    image:
-      "https://miro.medium.com/v2/resize:fit:2560/1*DbUarpd2cmH9fLFXEQ5oeg.jpeg",
-  },
-  {
-    id: 2,
-    name: "React For Beginners",
-    price: 20.0,
-    quantity: 1,
-    discount: 10.0,
-    title: "Web Development | React",
-    author: "Leonardo Mana",
-    image:
-      "https://wesbos.com/static/2c1ec59aaf97caa738566a34f5cea0ea/faec4/Screen-Shot-2018-02-28-at-10.13.05-AM.png",
-  },
-  {
-    id: 3,
-    name: "Typescripts",
-    price: 40.0,
-    quantity: 1,
-    discount: 10.0,
-    title: "Web Development",
-    author: "Mac",
-    image:
-      "https://media.dev.to/cdn-cgi/image/width=1080,height=1080,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fjaha71mccl3tg1ifvxsg.png",
-  },
-  {
-    id: 4,
-    name: "How to learn soft skills and build your career ?",
-    price: 50.0,
-    quantity: 1,
-    discount: 20.0,
-    title: "Soft Skills",
-    author: "Kun Aguero",
-    image:
-      "https://pharmaconnections.in/wp-content/uploads/2024/01/soft-skills-scaled-1.jpeg",
-  },
-];
-
 const Cart: React.FC = () => {
-  const [cartItems, setCartItems] = useState(initialCartItems);
+  const [cartItems, setCartItems] = useState<CartData[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
   const [nightMode] = useState(false);
   const navigate = useNavigate();
 
-  const handleRemove = (id: number) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      try {
+        const dataTransfer: DataTransfer = {
+          searchCondition: { status: "new", is_deleted: false },
+          pageInfo: { pageNum: 1, pageSize: 10 },
+        };
+        const data = await getCartsAPI(dataTransfer);
+        setCartItems(data);
+      } catch (error: any) {
+        setError(error.message || "An error occurred");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCartItems();
+  }, []);
+
+  const handleRemove = (id: string) => {
+    setCartItems((prevItems) => prevItems.filter((item) => item._id !== id));
+    setSelectedItems((prevSelected) => {
+      const newSelected = new Set(prevSelected);
+      newSelected.delete(id);
+      return newSelected;
+    });
   };
 
-  const originalPrice = cartItems.reduce(
-    (acc, item) => acc + item.price * item.quantity,
+  const handleSelect = (id: string, selected: boolean) => {
+    setSelectedItems((prevSelected) => {
+      const newSelected = new Set(prevSelected);
+      if (selected) {
+        newSelected.add(id);
+      } else {
+        newSelected.delete(id);
+      }
+      return newSelected;
+    });
+  };
+
+  const price = cartItems.reduce(
+    (acc, item) => acc + (selectedItems.has(item._id) ? item.price : 0),
     0,
   );
-  const discountPrice = cartItems.reduce((acc, item) => acc + item.discount, 0);
-  const total = originalPrice - discountPrice;
+  const discountPercent = cartItems.reduce(
+    (acc, item) => acc + (selectedItems.has(item._id) ? item.discount : 0),
+    0,
+  );
+  const discount = (price * discountPercent) / 100;
+  const price_paid = price - discount;
+
+  if (loading) {
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
+  }  if (error) return <p>Error: {error}</p>;
 
   return (
     <Layout className={nightMode ? "night-mode" : ""}>
@@ -101,20 +108,22 @@ const Cart: React.FC = () => {
           <div className="flex-grow">
             <div className="mx-auto max-w-7xl p-4">
               <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
-                <div className="rounded-lg bg-white p-4 shadow-md md:col-span-2">
+                <div className="rounded-lg md:col-span-2">
                   {cartItems.map((item) => (
                     <CartItem
-                      key={item.id}
+                      key={item._id}
                       item={item}
                       onRemove={handleRemove}
+                      isSelected={selectedItems.has(item._id)}
+                      onSelect={handleSelect}
                     />
                   ))}
                 </div>
-                <div className="h-72 rounded-lg bg-white p-4 shadow-md">
+                <div className="h-80 rounded-lg bg-white p-4 shadow-md">
                   <CartSummary
-                    originalPrice={originalPrice}
-                    discountPrice={discountPrice}
-                    total={total}
+                    price={price}
+                    discount={discount}
+                    price_paid={price_paid}
                   />
                 </div>
               </div>

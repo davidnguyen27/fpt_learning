@@ -66,9 +66,9 @@ const TableCourses: React.FC = () => {
   const { data, loading, error, refetchData } = useCourseData(dataTransfer);
   const { deleteCourse } = useDeleteCourse(refetchData);
 
-const handleSuccess = useCallback(() => {
-  refetchData(); // This should reload the data
-}, [refetchData]);
+  const handleSuccess = useCallback(() => {
+    refetchData(); // This should reload the data
+  }, [refetchData]);
 
   const handleDelete = useCallback(
     (courseId: string) => {
@@ -90,7 +90,6 @@ const handleSuccess = useCallback(() => {
     setDetailModalVisible(true);
   };
 
-  
   const handleCloseDetailModal = () => {
     setDetailModalVisible(false);
     setSelectedCourseDetail(null);
@@ -110,7 +109,7 @@ const handleSuccess = useCallback(() => {
       } else if (currentStatus === "inactive") {
         newStatus = "active";
       }
-  
+
       if (newStatus) {
         try {
           await toggleCourseStatus(courseId, newStatus, comment);
@@ -127,7 +126,6 @@ const handleSuccess = useCallback(() => {
     },
     [refetchData],
   );
-  
 
   const openCommentDrawer = useCallback(
     (courseId: string, currentStatus: string) => {
@@ -136,7 +134,7 @@ const handleSuccess = useCallback(() => {
       setComment(
         currentStatus === "waiting_approve"
           ? ""
-          : "Please provide a reason for rejection",
+          : "",
       );
     },
     [],
@@ -154,24 +152,26 @@ const handleSuccess = useCallback(() => {
   const getYouTubeEmbedUrl = (url: string) => {
     const videoId = url.split("v=")[1];
     const ampersandPosition = videoId.indexOf("&");
-    return ampersandPosition !== -1 ? videoId.substring(0, ampersandPosition) : videoId;
+    return ampersandPosition !== -1
+      ? videoId.substring(0, ampersandPosition)
+      : videoId;
   };
 
   const renderActionButton = (record: Course) => {
     let buttonClass = "";
     let buttonText = "";
     let buttonDisabled = false;
-  
+
     switch (record.status) {
       case "new":
       case "reject":
-        buttonClass = "bg-yellow-300";
+        buttonClass = "bg-yellow-300 text-gray-500";
         buttonText = "Send for Approval";
         break;
       case "waiting_approve":
         buttonClass = "bg-blue-500";
-        buttonText = "Approve Course";
-        buttonDisabled = false;
+        buttonText = "Waiting";
+        buttonDisabled = true; // Disable the button when status is "waiting_approve"
         break;
       case "approve":
         buttonClass = "bg-green-500";
@@ -190,7 +190,7 @@ const handleSuccess = useCallback(() => {
         buttonText = "Unknown Status";
         break;
     }
-  
+
     return (
       <Button
         type="primary"
@@ -202,7 +202,6 @@ const handleSuccess = useCallback(() => {
       </Button>
     );
   };
-  
 
   const columns: ColumnsType<Course> = [
     {
@@ -312,10 +311,10 @@ const handleSuccess = useCallback(() => {
         onSuccess={handleSuccess}
       />
       <ModalEditCourse
-      open={openEdit}
-      setOpen={setOpenEdit}
-      courseId={editingCourseId}
-      onSuccess={handleSuccess}
+        open={openEdit}
+        setOpen={setOpenEdit}
+        courseId={editingCourseId}
+        onSuccess={handleSuccess}
       />
       <Modal
         title="Course Details"
@@ -330,8 +329,14 @@ const handleSuccess = useCallback(() => {
               <p>Name: {selectedCourseDetail.name}</p>
               <p>Category: {selectedCourseDetail.category_name}</p>
               <p>Status: {selectedCourseDetail.status}</p>
-              <p>Created At: {new Date(selectedCourseDetail.created_at).toLocaleString()}</p>
-              <p>Updated At: {new Date(selectedCourseDetail.updated_at).toLocaleString()}</p>
+              <p>
+                Created At:{" "}
+                {new Date(selectedCourseDetail.created_at).toLocaleString()}
+              </p>
+              <p>
+                Updated At:{" "}
+                {new Date(selectedCourseDetail.updated_at).toLocaleString()}
+              </p>
               <p>Description: {selectedCourseDetail.description}</p>
               <p>Price: {selectedCourseDetail.price}</p>
               <p>Discount: {selectedCourseDetail.discount}</p>
@@ -340,7 +345,11 @@ const handleSuccess = useCallback(() => {
             <div className="ml-4">
               {selectedCourseDetail.video_url && (
                 <div className="mb-2">
-                  <a href={selectedCourseDetail.video_url} target="_blank" rel="noopener noreferrer">
+                  <a
+                    href={selectedCourseDetail.video_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     Video URL
                   </a>
                   <iframe
@@ -348,16 +357,24 @@ const handleSuccess = useCallback(() => {
                     frameBorder="0"
                     allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
-                    className="w-full mt-2"
+                    className="mt-2 w-full"
                   ></iframe>
                 </div>
               )}
               {selectedCourseDetail.image_url && (
                 <div>
-                  <a href={selectedCourseDetail.image_url} target="_blank" rel="noopener noreferrer">
+                  <a
+                    href={selectedCourseDetail.image_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     Image URL
                   </a>
-                  <img src={selectedCourseDetail.image_url} alt="Course" className="w-full mt-2" />
+                  <img
+                    src={selectedCourseDetail.image_url}
+                    alt="Course"
+                    className="mt-2 w-full"
+                  />
                 </div>
               )}
             </div>
@@ -379,41 +396,45 @@ const handleSuccess = useCallback(() => {
           onChange={(e) => setComment(e.target.value)}
         />
         <Button
-        type="primary"
-        icon={<SendOutlined />}
-        onClick={() => {
-          if (currentCourseId) {
-            const currentCourse = data.find(
-              (course) => course._id === currentCourseId,
-            );
-            if (currentCourse) {
-              const newStatus = (() => {
-                switch (currentCourse.status) {
-                  case "new":
-                    return "waiting_approve";
-                  case "approve":
-                    return "active";
-                  case "active":
-                    return "inactive";
-                  case "inactive":
-                    return "active";
-                  case "reject":
-                    return "waiting_approve";
-                  default:
-                    return null;
+          type="primary"
+          icon={<SendOutlined />}
+          onClick={() => {
+            if (currentCourseId) {
+              const currentCourse = data.find(
+                (course) => course._id === currentCourseId,
+              );
+              if (currentCourse) {
+                const newStatus = (() => {
+                  switch (currentCourse.status) {
+                    case "new":
+                      return "waiting_approve";
+                    case "approve":
+                      return "active";
+                    case "active":
+                      return "inactive";
+                    case "inactive":
+                      return "active";
+                    case "reject":
+                      return "waiting_approve";
+                    default:
+                      return null;
+                  }
+                })();
+                if (newStatus) {
+                  handleChangeStatus(
+                    currentCourseId,
+                    currentCourse.status,
+                    comment,
+                  );
                 }
-              })();
-              if (newStatus) {
-                handleChangeStatus(currentCourseId, currentCourse.status, comment);
               }
             }
-          }
-        }}
-        style={{ marginTop: 16 }}
-        block
-      >
-        Confirm
-      </Button>
+          }}
+          style={{ marginTop: 16 }}
+          block
+        >
+          Confirm
+        </Button>
       </Drawer>
     </>
   );

@@ -26,7 +26,6 @@ const StudentCourseBox: React.FC<CourseBoxProps> = ({ courseData }) => {
           <h2 className="mb-4 text-2xl font-bold text-white md:text-3xl lg:text-4xl">
             {courseData.title}
           </h2>
-          <p className="mb-4 text-white">{courseData.description}</p>
           <div className="flex w-full space-x-4">
             <button
               type="button"

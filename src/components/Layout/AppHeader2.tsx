@@ -80,8 +80,8 @@ const AppHeader2: React.FC = () => {
 
       <img
         className="logo-header2"
-        src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/FPT_Education_logo.svg/2560px-FPT_Education_logo.svg.png"
-        alt="F-Edu"
+        src="https://upload.wikimedia.org/wikipedia/commons/0/00/Fsalancuoi.png?fbclid=IwY2xjawEL70VleHRuA2FlbQIxMAABHSOH1DvZhDz6HyNm9B8B9vVnR5FTMc5fxIMyse-0EmMcywet3F9FpHImTg_aem_2GEmB71ukmiXD33DVhV5xw"
+        alt="FSA Education"
         onClick={() => navigate("/")}
       />
       {user ? (

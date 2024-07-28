@@ -74,8 +74,6 @@ export const editLessonAPI = async (
       user_id: lessonData.user_id, // Use user_id from lessonData
     };
 
-    console.log("Sending lessonData:", updatedLessonData); // Log updated lessonData
-
     const res = await axios.put(
       `${APILink}/api/lesson/${lessonId}`,
       updatedLessonData,
@@ -87,18 +85,15 @@ export const editLessonAPI = async (
       }
     );
 
-    console.log("response", res);
     return { ...res.data.data, _id: lessonId };
   } catch (error: any) {
     // Enhanced error logging
     if (error.response) {
-      console.error("API Error Response:", error.response.data);
-      console.error("API Error Status:", error.response.status);
-      console.error("API Error Headers:", error.response.headers);
+      console.error("API Request Error:", error.message);
     } else if (error.request) {
       console.error("API No Response Received:", error.request);
     } else {
-      console.error("API Request Error:", error.message);
+      
     }
     throw new Error(error.response?.data?.message || error.message || "An error occurred while updating the lesson");
   }

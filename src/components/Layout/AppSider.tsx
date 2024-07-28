@@ -1,17 +1,23 @@
 import React, { useState } from "react";
-import { Divider, Menu } from "antd";
+import { Divider, Menu, Button, Drawer } from "antd";
 import { Footer } from "antd/es/layout/layout";
 import { useNavigate } from "react-router-dom";
 import {
   AuditOutlined,
   BarsOutlined,
+  CloseOutlined,
   FlagOutlined,
   HomeOutlined,
   QuestionCircleOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
 
-const AppSider: React.FC<{ className?: string }> = () => {
+interface AppSiderProps {
+  isVisible: boolean;
+  onClose: () => void;
+}
+
+const AppSider: React.FC<AppSiderProps> = ({ isVisible, onClose }) => {
   const navigate = useNavigate();
   const [openKeys, setOpenKeys] = useState<string[]>([]);
   const [selectedKeys, setSelectedKeys] = useState<string[]>(["1"]);
@@ -107,23 +113,54 @@ const AppSider: React.FC<{ className?: string }> = () => {
   ];
 
   return (
-    <div className="flex h-full flex-col">
-      <Menu
-        mode="inline"
-        selectedKeys={selectedKeys}
-        openKeys={openKeys}
-        onOpenChange={onOpenChange}
-        onSelect={onSelect}
-        className="flex-grow bg-slate-200 text-sm"
-        items={items}
-      />
-      <Divider />
-      <Footer className="bg-slate-200 px-8 pb-4 pt-0 text-center">
-        <span className="text-xs font-normal">
-          Copyright by FPT Education @2024
-        </span>
-      </Footer>
-    </div>
+    <Drawer
+      placement="left"
+      onClose={onClose}
+      visible={isVisible}
+      width={280}
+      bodyStyle={{ padding: 0 }}
+      title="Menu"
+      closeIcon={<CloseOutlined />}
+    >
+      <div className="flex h-full flex-col">
+        <Menu
+          mode="inline"
+          selectedKeys={selectedKeys}
+          openKeys={openKeys}
+          onOpenChange={onOpenChange}
+          onSelect={onSelect}
+          className="flex-grow"
+          items={items}
+        />
+        <div className="mobile-buttons px-4 py-6">
+          <Divider className="my-4" />
+          <div className="space-y-3">
+            <Button
+              className="w-full"
+              type="primary"
+              onClick={() => navigate("/sign-in")}
+            >
+              Sign In
+            </Button>
+            <Button className="w-full" onClick={() => navigate("/sign-up")}>
+              Sign Up
+            </Button>
+            <Button
+              className="w-full"
+              type="dashed"
+              onClick={() => navigate("/sign-up-instructor")}
+            >
+              Become an Instructor
+            </Button>
+          </div>
+        </div>
+        <Footer className="bg-gray-100 px-4 py-3 text-center">
+          <span className="text-xs text-gray-600">
+            Copyright © FPT Education 2024
+          </span>
+        </Footer>
+      </div>
+    </Drawer>
   );
 };
 

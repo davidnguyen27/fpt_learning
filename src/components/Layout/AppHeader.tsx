@@ -1,5 +1,5 @@
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSider } from "../../app/context/SiderContext";
 import { Badge, Button, Dropdown, MenuProps, Space } from "antd";
 import {
   ShoppingCartOutlined,
@@ -9,11 +9,15 @@ import {
   AreaChartOutlined,
   RetweetOutlined,
   LogoutOutlined,
+  MenuOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "../../app/context/AuthContext";
+import "../../styles/header.css";
+import "../../styles/sider.css";
+import AppSider from "./AppSider";
 
 const AppHeader: React.FC = () => {
-  const { toggleSider } = useSider();
+  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const navigate = useNavigate();
   const { logout } = useAuth();
 
@@ -50,7 +54,7 @@ const AppHeader: React.FC = () => {
   };
 
   const handleShoppingCart = () => {
-    if (user?.data.role === "student") {
+    if (user?.data.role === "student" || user?.data.role === "instructor") {
       navigate("/cart");
     }
   };
@@ -105,17 +109,21 @@ const AppHeader: React.FC = () => {
     },
   ];
 
+  const toggleSidebar = () => {
+    setIsSidebarVisible(!isSidebarVisible);
+  };
+
   return (
     <>
       <div className="wrapper-50">
         <div className="styles-x-axis">
-          <div className="menu-bar" onClick={toggleSider}>
-            <i className="fa-solid fa-bars"></i>
+          <div className="menu-bar" onClick={toggleSidebar}>
+            <MenuOutlined style={{ fontSize: "24px" }} />
           </div>
           <a href="/" className="logo-box">
             <img
               src="https://upload.wikimedia.org/wikipedia/commons/0/00/Fsalancuoi.png?fbclid=IwY2xjawEL70VleHRuA2FlbQIxMAABHSOH1DvZhDz6HyNm9B8B9vVnR5FTMc5fxIMyse-0EmMcywet3F9FpHImTg_aem_2GEmB71ukmiXD33DVhV5xw"
-              alt="FPT Education"
+              alt="FSA Education"
             />
           </a>
           <div className="styles-x-axis search-box">
@@ -177,7 +185,7 @@ const AppHeader: React.FC = () => {
             </Dropdown>
           </>
         ) : (
-          <div className="mr-4">
+          <div className="hide-on-mobile mr-4">
             <Button
               type="primary"
               className="mr-4 bg-red-500"
@@ -209,6 +217,7 @@ const AppHeader: React.FC = () => {
           </div>
         )}
       </div>
+      <AppSider isVisible={isSidebarVisible} onClose={toggleSidebar} />
     </>
   );
 };

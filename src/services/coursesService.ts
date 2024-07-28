@@ -175,3 +175,14 @@ export const getCoursesClientAPI = async (
     throw new Error(error.message);
   }
 };
+
+export const getDetailClientAPI = async (_id: string) => {
+  try {
+    const response = await axios.get(`${APILink}/api/client/course/${_id}`);
+    return response.data.data;
+  } catch (error: any) {
+    if (error.response && error.response.data && error.response.data.message) {
+      return error.response.data.message;
+    }
+  }
+};

@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { CourseDetail } from "./Course";
 
 export type SiderContextType = {
   collapsed: boolean;
@@ -134,16 +135,15 @@ export type HelpSubTabProps = {
 export type CourseBoxProps = {
   courseData: {
     title: String;
-    description: String;
+    description: string;
   };
 };
 
 export type CourseSubTabProps = {
   activeTab: string;
   setActiveTab: (tab: string) => void;
-  courseData: {
-    content: string[];
-  };
+  onSelectedCourse: (id: string) => void;
+  sessions: CourseDetail["session_list"];
 };
 
 export type CourseHelpProps = {

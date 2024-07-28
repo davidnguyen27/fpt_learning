@@ -1,12 +1,14 @@
-import StudentProfileContent from "../../components/Student/StudentCourseDetailContent";
-import StudentLayout from "../../components/Layout/StudentLayout";
+// Khong dung den! *
 
-const StudentCourseDetailPage: React.FC = () => {
-  return (
-    <StudentLayout>
-      <StudentProfileContent />
-    </StudentLayout>
-  );
-};
+// import StudentProfileContent from "../../components/Student/StudentCourseDetailContent";
+// import StudentLayout from "../../components/Layout/StudentLayout";
 
-export default StudentCourseDetailPage;
+// const StudentCourseDetailPage: React.FC = () => {
+//   return (
+//     <StudentLayout>
+//       <StudentProfileContent />
+//     </StudentLayout>
+//   );
+// };
+
+// export default StudentCourseDetailPage;

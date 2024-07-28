@@ -31,19 +31,24 @@ const StudentProfileBox = () => {
 
   return (
     <div className="text-black">
-      <div className="flex flex-col items-center rounded-lg bg-gray-800 p-6 md:flex-row md:items-start">
-        <img
-          className="mr-4 h-32 w-32 cursor-pointer rounded-full border-4 border-gray-500 md:h-48 md:w-48 lg:h-64 lg:w-64"
-          src={
-            userData?.avatar ||
-            "https://i.pinimg.com/736x/18/2f/fe/182ffe44b2e0782e34370f6e21045825.jpg"
-          }
-          alt="Student Avatar"
-        />
-        <div className="flex flex-col items-center text-center md:ml-4 md:items-start md:text-left">
-          <h2 className="mb-4 text-2xl font-bold text-white md:text-3xl lg:text-4xl">
-            Hello {userData?.name || "Your Name"}
-          </h2>
+      <div className="flex flex-col rounded-lg bg-gray-800 p-6 md:flex-row md:items-center md:justify-start">
+        <div className="mb-4 flex-shrink-0 md:mb-0 md:mr-6">
+          <img
+            className="h-24 w-24 cursor-pointer rounded-full border-4 border-gray-500 md:h-36 md:w-36 lg:h-48 lg:w-48"
+            src={
+              userData?.avatar ||
+              "https://i.pinimg.com/736x/18/2f/fe/182ffe44b2e0782e34370f6e21045825.jpg"
+            }
+            alt="Student Avatar"
+          />
+        </div>
+        <div className="flex-1 border-l-4 border-white pl-6">
+          <div className="flex flex-col items-center text-center md:items-start md:text-left">
+            <h2 className="mb-2 text-4xl font-bold text-white">User Profile</h2>
+            <p className="text-lg text-white md:text-xl lg:text-2xl">
+              Hello {userData?.name || "Your Name"}
+            </p>
+          </div>
         </div>
       </div>
     </div>
