@@ -155,6 +155,8 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
           label="Description"
           name="description"
           rules={[{ required: true, message: "Description is required!" }]}
+          // valuePropName="value"
+          // getValueFromEvent={(e: any) => e.target.getContent()}
         >
           <Input className="text-sm" size="large" placeholder="Description" />
         </Form.Item>
@@ -166,7 +168,9 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
         >
           <Tiny
             value={form.getFieldValue("content") || ""}
-            onChange={(value: string) => form.setFieldsValue({ content: value })}
+            onChange={(value: string) =>
+              form.setFieldsValue({ content: value })
+            }
           />
         </Form.Item>
 

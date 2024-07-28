@@ -1,22 +1,23 @@
-import { Carousel } from "antd";
-import CourseCard from "../Course/CourseCard";
-import { responsiveItem } from "../../const/responsiveCarousel";
+// Khong dung den
+// import { Carousel } from "antd";
+// import CourseCard from "../Course/CourseCard";
+// import { responsiveItem } from "../../const/responsiveCarousel";
 
-const CarouselCourse = () => {
-  return (
-    <Carousel
-      className="custom-carousel"
-      dots={false}
-      slidesToScroll={1}
-      slidesToShow={4}
-      arrows
-      infinite
-      swipeToSlide
-      responsive={responsiveItem}
-    >
-      <CourseCard />
-    </Carousel>
-  );
-};
+// const CarouselCourse = () => {
+//   return (
+//     <Carousel
+//       className="custom-carousel"
+//       dots={false}
+//       slidesToScroll={1}
+//       slidesToShow={4}
+//       arrows
+//       infinite
+//       swipeToSlide
+//       responsive={responsiveItem}
+//     >
+//       <CourseCard />
+//     </Carousel>
+//   );
+// };
 
-export default CarouselCourse;
+// export default CarouselCourse;

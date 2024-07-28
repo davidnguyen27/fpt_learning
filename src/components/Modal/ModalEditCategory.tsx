@@ -1,4 +1,4 @@
-import { Form, Input, Modal, message } from "antd";
+import { Button, Form, Input, Modal, message } from "antd";
 import { useEffect, useState } from "react";
 import { getCategoryAPI } from "../../services/categoryService";
 import useEditCategory from "../../hooks/category/useEditCategory";
@@ -72,28 +72,26 @@ const ModalEditCategory = (props: ModalEditCategoryProps) => {
       confirmLoading={loading}
       width={700}
       footer={[
-        <button
-          key="cancel"
-          className="mr-3 rounded-md bg-zinc-300 px-4 py-1"
-          onClick={() => setOpen(false)}
-        >
+        <Button key="cancel" onClick={() => setOpen(false)}>
           Cancel
-        </button>,
-        <button
+        </Button>,
+        <Button
           key="submit"
-          type="submit"
-          className="rounded-md bg-red-500 px-4 py-1"
+          htmlType="submit"
+          type="primary"
+          loading={loading}
           onClick={handleEdit}
         >
-          {loading ? "Saving..." : "Edit"}
-        </button>,
+          Edit
+        </Button>,
       ]}
     >
       <Form
         layout="horizontal"
         className="mt-4"
         form={form}
-        labelCol={{ span: 4 }}
+        labelCol={{ span: 5 }}
+        labelAlign="left"
         initialValues={initialValues}
       >
         <Form.Item
