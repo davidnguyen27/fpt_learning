@@ -72,7 +72,7 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
   );
 
   const CourseReview = () => (
-    <>
+    <div className="grid grid-cols-2 gap-2 sm:grid-cols-1">
       <div className="mt-10 bg-slate-200 p-6">
         <h1 className="text-2xl font-semibold">Rating</h1>
         <div className="mt-3 bg-neutral-100 p-4">
@@ -152,7 +152,7 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
           </p>
         </article>
       </div>
-    </>
+    </div>
   );
 
   return (

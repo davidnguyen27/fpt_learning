@@ -43,21 +43,12 @@ const HomePage: React.FC = () => {
       </div>
       <section className="mt-10">
         <div className="mb-5 flex w-full justify-between">
-          <h1 className="text-xl font-bold">Newest Courses</h1>
+          <h1 className="text-xl font-bold">Web Development</h1>
           <a href="#" className="font-light hover:text-amber-600">
             See all
           </a>
         </div>
-        <ListCourse />
-      </section>
-      <section className="mt-10">
-        <div className="mb-5 flex w-full justify-between">
-          <h1 className="text-xl font-bold">Best Seller</h1>
-          <a href="#" className="font-light hover:text-amber-600">
-            See all
-          </a>
-        </div>
-        <ListCourse />
+        <ListCourse category_id="66827468b5436c3f43c703e7" />
       </section>
       <section className="mt-10">
         <div className="mb-5 flex w-full justify-between">
@@ -66,7 +57,7 @@ const HomePage: React.FC = () => {
             See all
           </a>
         </div>
-        <ListCourse />
+        <ListCourse category_id="668e2f4bf2c243ced095c6c0" />
       </section>
       <section className="mt-10">
         <div className="mb-5 flex w-full justify-between">
@@ -75,7 +66,16 @@ const HomePage: React.FC = () => {
             See all
           </a>
         </div>
-        <ListCourse />
+        <ListCourse category_id="66840803c2ef7156100c3f61" />
+      </section>
+      <section className="mt-10">
+        <div className="mb-5 flex w-full justify-between">
+          <h1 className="text-xl font-bold">Music</h1>
+          <a href="#" className="font-light hover:text-amber-600">
+            See all
+          </a>
+        </div>
+        <ListCourse category_id="669f294e396c0261a73f5a7a" />
       </section>
       <section className="mt-10">
         <div className="mb-5 flex w-full justify-between">
@@ -84,16 +84,16 @@ const HomePage: React.FC = () => {
             See all
           </a>
         </div>
-        <ListCourse />
+        <ListCourse category_id="668f6c0320c527aff59b0f8b" />
       </section>
       <section className="mt-10">
         <div className="mb-5 flex w-full justify-between">
-          <h1 className="text-xl font-bold">Data & Analytics</h1>
+          <h1 className="text-xl font-bold">Graphic Design</h1>
           <a href="#" className="font-light hover:text-amber-600">
             See all
           </a>
         </div>
-        <ListCourse />
+        <ListCourse category_id="668b4abf03350733f0080b9a" />
       </section>
       <Achievements />
       <section>

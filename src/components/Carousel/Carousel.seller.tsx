@@ -1,25 +1,27 @@
-import { Carousel } from "antd";
-import CourseCard from "../Course/CourseCard";
+//Khong dung
 
-import "../../styles/customCarousel.css";
+// import { Carousel } from "antd";
+// import CourseCard from "../Course/CourseCard";
 
-import { responsiveItem } from "../../const/responsiveCarousel";
+// import "../../styles/customCarousel.css";
 
-const CarouselSeller = () => {
-  return (
-    <Carousel
-      className="custom-carousel"
-      dots={false}
-      slidesToShow={4}
-      slidesToScroll={1}
-      arrows
-      infinite
-      swipeToSlide
-      responsive={responsiveItem}
-    >
-      <CourseCard />
-    </Carousel>
-  );
-};
+// import { responsiveItem } from "../../const/responsiveCarousel";
 
-export default CarouselSeller;
+// const CarouselSeller = () => {
+//   return (
+//     <Carousel
+//       className="custom-carousel"
+//       dots={false}
+//       slidesToShow={4}
+//       slidesToScroll={1}
+//       arrows
+//       infinite
+//       swipeToSlide
+//       responsive={responsiveItem}
+//     >
+//       <CourseCard />
+//     </Carousel>
+//   );
+// };
+
+// export default CarouselSeller;
