@@ -15,19 +15,15 @@ const HomePage: React.FC = () => {
       title: "beach",
     },
     {
-      url: "https://fschool.fpt.edu.vn/wp-content/uploads/2024/07/anh-bia-bai-dang-web-2.jpg",
-      title: "boat",
-    },
-    {
-      url: "https://fschool.fpt.edu.vn/wp-content/uploads/2024/06/433527687_848563273952132_4550113571092770589_n.jpg",
+      url: "https://cdn.discordapp.com/attachments/738116083764035644/1267045175562338385/image.png?ex=66a75b46&is=66a609c6&hm=f7a0012576c20d74d4fa29e89acc624ebe16bfeb59aea63c5ad38830146f7fa1&",
       title: "forest",
     },
     {
-      url: "https://fschool.fpt.edu.vn/wp-content/uploads/2022/04/ANH_4165-2048x1365.png",
+      url: "https://fschool.fpt.edu.vn/wp-content/uploads/2023/04/cover-70ty-01-1-2048x758.jpg",
       title: "city",
     },
     {
-      url: "https://fschool.fpt.edu.vn/wp-content/uploads/2022/04/Image3.png",
+      url: "https://cdn.discordapp.com/attachments/738116083764035644/1267048493592219708/image.png?ex=66a75e5d&is=66a60cdd&hm=0c0bc25f3b5436759b8674e296985c54a4242dcc5a98ffcd1e4bed51ea9e91f7&",
       title: "italy",
     },
   ];
