@@ -27,6 +27,7 @@ const RegisterInstructorPage = React.lazy(
 );
 const VerifyPage = React.lazy(() => import("../pages/User/VerifyPage"));
 const ChangePassPage = React.lazy(() => import("../pages/ChangePasswordPage"));
+const BlogPage = React.lazy(() => import("../pages/User/BlogPage"));
 
 //-----------------------------------------------ADMIN-------------------------------------------------
 const AdminPage = React.lazy(() => import("../pages/Admin/AdminPage"));
@@ -140,7 +141,8 @@ const AppRouter = () => {
             <Route path="/settings-page" element={<SettingsPage />} />
             <Route path="/forgot-password" element={<PasswordReset />} />
             <Route path="/verify-account" element={<StudentVerifyPage />} />
-            <Route
+            <Route path="/blog" element={<BlogPage />} />
+            <Route 
               path="/sign-up-instructor"
               element={<RegisterInstructorPage />}
             />
