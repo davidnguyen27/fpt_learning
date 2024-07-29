@@ -89,6 +89,7 @@ const StudentCourseListPage = React.lazy(
 const StudentSettingPage = React.lazy(
   () => import("../pages/Student/StudentSettingPage"),
 );
+const ConfirmCheckout = React.lazy(() => import("../components/Checkout/ConfirmCheckOut"))
 
 interface ProtectedRouteProps {
   element: JSX.Element;
@@ -255,6 +256,15 @@ const AppRouter = () => {
               element={
                 <ProtectedRoute
                   element={<CheckOut />}
+                  allowedRoles={["student"]}
+                />
+              }
+            />
+            <Route
+              path="/confirm-checkout"
+              element={
+                <ProtectedRoute
+                  element={<ConfirmCheckout />}
                   allowedRoles={["student"]}
                 />
               }

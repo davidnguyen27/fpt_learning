@@ -1,6 +1,5 @@
-import { Form, Input, Modal } from "antd";
+import { Button, Form, Input, Modal } from "antd";
 import useAddCategory from "../../hooks/category/useAddCategory";
-import Tiny from "../../app/Editor/RichTextEditor";
 
 interface ModalAddCategoryProps {
   open: boolean;
@@ -34,28 +33,26 @@ const ModalAddCategory = (props: ModalAddCategoryProps) => {
       confirmLoading={loading}
       width={700}
       footer={[
-        <button
-          key="cancel"
-          className="mr-3 rounded-md bg-zinc-300 px-4 py-1"
-          onClick={() => setOpen(false)}
-        >
+        <Button key="cancel" onClick={() => setOpen(false)}>
           Cancel
-        </button>,
-        <button
+        </Button>,
+        <Button
           key="submit"
-          type="submit"
-          className="rounded-md bg-red-500 px-4 py-1"
+          htmlType="submit"
+          loading={loading}
+          type="primary"
           onClick={handleSubmit}
         >
-          {loading ? "Add" : "Add..."}
-        </button>,
+          Add
+        </Button>,
       ]}
     >
       <Form
         layout="horizontal"
         className="mt-4"
         form={form}
-        labelCol={{ span: 4 }}
+        labelCol={{ span: 5 }}
+        labelAlign="left"
       >
         <Form.Item
           label="Category Name"
@@ -65,16 +62,8 @@ const ModalAddCategory = (props: ModalAddCategoryProps) => {
           <Input className="text-sm" size="large" placeholder="Lesson Name" />
         </Form.Item>
 
-        <Form.Item
-          label="Description"
-          name="description"
-          valuePropName="value"
-          getValueFromEvent={(e: any) => e.target.getContent()}
-        >
-          <Tiny
-            value={form.getFieldValue('description') || ''}
-            onChange={(value: any) => form.setFieldsValue({ description: value })}
-          />
+        <Form.Item label="Description" name="description">
+          <Input className="text-sm" size="large" placeholder="Description" />
         </Form.Item>
       </Form>
     </Modal>
