@@ -102,6 +102,8 @@ const TableCourses: React.FC = () => {
         newStatus = "waiting_approve";
       } else if (currentStatus === "waiting_approve") {
         newStatus = "approve";
+      } else if (currentStatus === "reject") {
+        newStatus = "waiting_approve";
       } else if (currentStatus === "approve") {
         newStatus = "active";
       } else if (currentStatus === "active") {
@@ -176,6 +178,10 @@ const TableCourses: React.FC = () => {
       case "approve":
         buttonClass = "bg-green-500";
         buttonText = "Activate Course";
+        break;
+      case "reject":
+        buttonClass = "bg-blue-500";
+        buttonText = "Send for Approval";
         break;
       case "active":
         buttonClass = "bg-red-500";
@@ -410,6 +416,8 @@ const TableCourses: React.FC = () => {
                       return "waiting_approve";
                     case "approve":
                       return "active";
+                    case "reject":
+                      return "waiting_approve";
                     case "active":
                       return "inactive";
                     case "inactive":

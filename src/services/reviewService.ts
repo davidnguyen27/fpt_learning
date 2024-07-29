@@ -20,31 +20,49 @@ export const getReviewsAPI = async (dataTransfer: DataTransfer) => {
     }
   };
 
-  export const editReviewAPI = async (
-    reviewId: string,
-    reviewData: Partial<Review>,
-  ) => {
+  export const createReviewAPI = async (reviewData: Partial<Review>) => {
     try {
       const token = sessionStorage.getItem("token");
       if (!token) throw new Error("Cannot get token!");
   
-      const res = await axios.put(
-        `${APILink}/api/review/${reviewId}`,
-        reviewData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+      const res = await axios.post(`${APILink}/api/review`, reviewData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      );
-      return { ...res.data.data, _id: reviewId };
+      });
+      return res.data;
     } catch (error: any) {
       if (error.response && error.response.data && error.response.data.message) {
         return error.response.data.message;
       }
     }
   };
+
+  // export const editReviewAPI = async (
+  //   reviewId: string,
+  //   reviewData: Partial<Review>,
+  // ) => {
+  //   try {
+  //     const token = sessionStorage.getItem("token");
+  //     if (!token) throw new Error("Cannot get token!");
+  
+  //     const res = await axios.put(
+  //       `${APILink}/api/review/${reviewId}`,
+  //       reviewData,
+  //       {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       },
+  //     );
+  //     return { ...res.data.data, _id: reviewId };
+  //   } catch (error: any) {
+  //     if (error.response && error.response.data && error.response.data.message) {
+  //       return error.response.data.message;
+  //     }
+  //   }
+  // };
   
   export const deleteReviewAPI = async (reviewId: string) => {
     try {

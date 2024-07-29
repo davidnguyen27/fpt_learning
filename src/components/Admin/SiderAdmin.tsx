@@ -56,6 +56,13 @@ const SiderAdmin: React.FC<{ className?: string }> = () => {
       label: "Reviews",
       onClick: () => navigate("/admin/reviews-management"),
     },
+    {
+      key: "7",
+      icon: <ReadOutlined />,
+      label: "Blogs",
+      onClick: () => navigate("/admin/blog-manage"),
+      className: "hover:rounded-none hover:bg-red-500 hover:text-white",
+    },
   ];
 
   return (

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Form, Input, Modal, Select, message } from "antd";
+import { Form, Input, Modal, Select, message, Spin } from "antd";
 import useEditSession from "../../hooks/session/useEditSession";
 import { getCoursesAPI, getSessionAPI } from "../../services/sessionService";
 import { Course } from "../../models/Course";
@@ -21,13 +21,15 @@ const ModalEditSession = (props: ModalEditSessionProps) => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [coursesLoading, setCoursesLoading] = useState<boolean>(true);
   const [initialValues, setInitialValues] = useState<any>({});
+  const [dataLoading, setDataLoading] = useState<boolean>(false);
 
   // Fetch courses only once when the component mounts
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const categoriesData = await getCoursesAPI("", 1, 10, false);
-        setCourses(categoriesData.data.pageData);
+        setCoursesLoading(true);
+        const coursesData = await getCoursesAPI("", 1, 10, false);
+        setCourses(coursesData.data.pageData);
       } catch (error) {
         console.error("Failed to fetch courses:", error);
       } finally {
@@ -40,9 +42,10 @@ const ModalEditSession = (props: ModalEditSessionProps) => {
 
   // Fetch session data when sessionId or modal open state changes
   useEffect(() => {
-    if (sessionId) {
-      const fetchSessionData = async () => {
+    const fetchSessionData = async () => {
+      if (sessionId && open) {
         try {
+          setDataLoading(true);
           const data = await getSessionAPI(sessionId);
           if (data) {
             const sessionData = {
@@ -59,22 +62,17 @@ const ModalEditSession = (props: ModalEditSessionProps) => {
         } catch (error) {
           console.error(error);
           message.error("Failed to fetch session data");
+        } finally {
+          setDataLoading(false);
         }
-      };
+      } else {
+        form.resetFields();
+        setInitialValues({});
+      }
+    };
 
-      fetchSessionData();
-    } else {
-      form.resetFields();
-      setInitialValues({});
-    }
-  }, [sessionId, form, open]);
-
-  // Update form fields when initialValues change
-  useEffect(() => {
-    if (open) {
-      form.setFieldsValue(initialValues);
-    }
-  }, [initialValues, open, form]);
+    fetchSessionData();
+  }, [sessionId, open, form]);
 
   const handleEdit = async () => {
     try {
@@ -83,6 +81,7 @@ const ModalEditSession = (props: ModalEditSessionProps) => {
         await editSession(sessionId, values);
         form.resetFields();
         setOpen(false);
+        onSuccess();
       }
     } catch (error) {
       message.error("Failed to update session");
@@ -115,45 +114,53 @@ const ModalEditSession = (props: ModalEditSessionProps) => {
         </button>,
       ]}
     >
-      <Form layout="horizontal" className="mt-4" form={form} labelCol={{ span: 4 }} initialValues={initialValues}>
-        <Form.Item
-          label="Session Name"
-          name="name"
-          rules={[{ required: true, message: "Session Name is required!" }]}
+      <Spin spinning={dataLoading || coursesLoading}>
+        <Form
+          layout="horizontal"
+          className="mt-4"
+          form={form}
+          labelCol={{ span: 4 }}
+          initialValues={initialValues}
         >
-          <Input className="text-sm" size="large" placeholder="Session Name" />
-        </Form.Item>
-
-        <Form.Item
-          label="Course"
-          name="course_id"
-          rules={[{ required: true, message: "Course is required!" }]}
-        >
-          <Select
-            placeholder="Select a course"
-            loading={coursesLoading}
-            disabled={coursesLoading}
+          <Form.Item
+            label="Session Name"
+            name="name"
+            rules={[{ required: true, message: "Session Name is required!" }]}
           >
-            {courses.map((course) => (
-              <Option key={course._id} value={course._id}>
-                {course.name}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
+            <Input className="text-sm" size="large" placeholder="Session Name" />
+          </Form.Item>
 
-        <Form.Item
-          label="Description"
-          name="description"
-          rules={[{ required: true, message: "Description is required!" }]}
-        >
-          <Input className="text-sm" size="large" placeholder="Description" />
-        </Form.Item>
+          <Form.Item
+            label="Course"
+            name="course_id"
+            rules={[{ required: true, message: "Course is required!" }]}
+          >
+            <Select
+              placeholder="Select a course"
+              loading={coursesLoading}
+              disabled={coursesLoading}
+            >
+              {courses.map((course) => (
+                <Option key={course._id} value={course._id}>
+                  {course.name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
 
-        <Form.Item label="Position Order" name="position_order">
-          <Input className="text-sm" size="large" placeholder="1-99" />
-        </Form.Item>
-      </Form>
+          <Form.Item
+            label="Description"
+            name="description"
+            rules={[{ required: true, message: "Description is required!" }]}
+          >
+            <Input className="text-sm" size="large" placeholder="Description" />
+          </Form.Item>
+
+          <Form.Item label="Position Order" name="position_order">
+            <Input className="text-sm" size="large" placeholder="1-99" />
+          </Form.Item>
+        </Form>
+      </Spin>
     </Modal>
   );
 };

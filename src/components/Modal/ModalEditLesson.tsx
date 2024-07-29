@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Form, Input, Modal, Select, message } from "antd";
+import { Form, Input, Modal, Select, message, Spin } from "antd";
 import useEditLesson from "../../hooks/lesson/useEditLesson";
 import { getSessionsAPI, getLessonAPI, getCoursesAPI } from "../../services/lessonService";
 import { Session } from "../../models/Session";
@@ -26,6 +26,7 @@ const ModalEditLesson = (props: ModalEditLessonProps) => {
   const [coursesLoading, setCoursesLoading] = useState<boolean>(true);
   const [lessonType, setLessonType] = useState<string>("");
   const [currentLesson, setCurrentLesson] = useState<Lesson | null>(null); // Track current lesson
+  const [dataLoading, setDataLoading] = useState<boolean>(false); // Overall loading state
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -68,6 +69,7 @@ const ModalEditLesson = (props: ModalEditLessonProps) => {
 
   useEffect(() => {
     if (open && lessonId) {
+      setDataLoading(true);
       getLessonAPI(lessonId)
         .then((data: Lesson) => {
           if (data) {
@@ -95,6 +97,9 @@ const ModalEditLesson = (props: ModalEditLessonProps) => {
         .catch((error) => {
           console.error("Failed to fetch lesson data:", error);
           message.error("Failed to fetch lesson data");
+        })
+        .finally(() => {
+          setDataLoading(false);
         });
     } else {
       form.resetFields();
@@ -169,110 +174,112 @@ const ModalEditLesson = (props: ModalEditLessonProps) => {
         </button>,
       ]}
     >
-      <Form layout="horizontal" className="mt-4" form={form} labelCol={{ span: 4 }}>
-        <Form.Item
-          label="Lesson Name"
-          name="name"
-          rules={[{ required: true, message: "Lesson Name is required!" }]}
-        >
-          <Input className="text-sm" size="large" placeholder="Lesson Name" />
-        </Form.Item>
-
-        <Form.Item
-          label="Course"
-          name="course_id"
-          rules={[{ required: true, message: "Course is required!" }]}
-        >
-          <Select
-            placeholder="Select a course"
-            loading={coursesLoading}
-            disabled={coursesLoading}
-            onChange={handleCourseChange}
-          >
-            {courses.map((course) => (
-              <Option key={course._id} value={course._id}>
-                {course.name}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
-
-        <Form.Item
-          label="Session"
-          name="session_id"
-          rules={[{ required: true, message: "Session is required!" }]}
-        >
-          <Select
-            placeholder="Select a session"
-            loading={sessionsLoading}
-            disabled={!form.getFieldValue('course_id') || sessionsLoading}
-          >
-            {sessions.map((session) => (
-              <Option key={session._id} value={session._id}>
-                {session.name}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
-
-        <Form.Item
-          label="Lesson Type"
-          name="lesson_type"
-          rules={[{ required: true, message: "Lesson Type is required!" }]}
-        >
-          <Select placeholder="Select lesson type" onChange={handleLessonTypeChange}>
-            <Option value="text">Text</Option>
-            <Option value="video">Video</Option>
-            <Option value="image">Image</Option>
-          </Select>
-        </Form.Item>
-
-        {lessonType === "text" && (
+      <Spin spinning={dataLoading || coursesLoading || sessionsLoading}>
+        <Form layout="horizontal" className="mt-4" form={form} labelCol={{ span: 4 }}>
           <Form.Item
-            label="Description"
-            name="description"
-            rules={[{ required: false }]}
+            label="Lesson Name"
+            name="name"
+            rules={[{ required: true, message: "Lesson Name is required!" }]}
           >
-            <Input.TextArea className="text-sm" size="large" placeholder="Description" />
+            <Input className="text-sm" size="large" placeholder="Lesson Name" />
           </Form.Item>
-        )}
 
-        {lessonType === "video" && (
           <Form.Item
-            label="Video URL"
-            name="video_url"
-            rules={[{ required: false }]}
+            label="Course"
+            name="course_id"
+            rules={[{ required: true, message: "Course is required!" }]}
           >
-            <Input className="text-sm" size="large" placeholder="Video URL" />
+            <Select
+              placeholder="Select a course"
+              loading={coursesLoading}
+              disabled={coursesLoading}
+              onChange={handleCourseChange}
+            >
+              {courses.map((course) => (
+                <Option key={course._id} value={course._id}>
+                  {course.name}
+                </Option>
+              ))}
+            </Select>
           </Form.Item>
-        )}
 
-        {lessonType === "image" && (
           <Form.Item
-            label="Image URL"
-            name="image_url"
-            rules={[{ required: false }]}
+            label="Session"
+            name="session_id"
+            rules={[{ required: true, message: "Session is required!" }]}
           >
-            <Input className="text-sm" size="large" placeholder="Image URL" />
+            <Select
+              placeholder="Select a session"
+              loading={sessionsLoading}
+              disabled={!form.getFieldValue('course_id') || sessionsLoading}
+            >
+              {sessions.map((session) => (
+                <Option key={session._id} value={session._id}>
+                  {session.name}
+                </Option>
+              ))}
+            </Select>
           </Form.Item>
-        )}
 
-        <Form.Item
-          label="Position Order"
-          name="position_order"
-          rules={[{ validator: validateNumber }]}
-        >
-          <Input className="text-sm" size="large" placeholder="99" />
-        </Form.Item>
+          <Form.Item
+            label="Lesson Type"
+            name="lesson_type"
+            rules={[{ required: true, message: "Lesson Type is required!" }]}
+          >
+            <Select placeholder="Select lesson type" onChange={handleLessonTypeChange}>
+              <Option value="text">Text</Option>
+              <Option value="video">Video</Option>
+              <Option value="image">Image</Option>
+            </Select>
+          </Form.Item>
 
-        <Form.Item
-          label="Full time"
-          name="full_time"
-          rules={[{ required: true, message: "Full time is required!" }]}
-        >
-          <Input className="text-sm" size="large" placeholder="" />
-        </Form.Item>
-      </Form>
+          {lessonType === "text" && (
+            <Form.Item
+              label="Description"
+              name="description"
+              rules={[{ required: false }]}
+            >
+              <Input.TextArea className="text-sm" size="large" placeholder="Description" />
+            </Form.Item>
+          )}
+
+          {lessonType === "video" && (
+            <Form.Item
+              label="Video URL"
+              name="video_url"
+              rules={[{ required: false }]}
+            >
+              <Input className="text-sm" size="large" placeholder="Video URL" />
+            </Form.Item>
+          )}
+
+          {lessonType === "image" && (
+            <Form.Item
+              label="Image URL"
+              name="image_url"
+              rules={[{ required: false }]}
+            >
+              <Input className="text-sm" size="large" placeholder="Image URL" />
+            </Form.Item>
+          )}
+
+          <Form.Item
+            label="Position Order"
+            name="position_order"
+            rules={[{ validator: validateNumber }]}
+          >
+            <Input className="text-sm" size="large" placeholder="99" />
+          </Form.Item>
+
+          <Form.Item
+            label="Full time"
+            name="full_time"
+            rules={[{ required: true, message: "Full time is required!" }]}
+          >
+            <Input className="text-sm" size="large" placeholder="" />
+          </Form.Item>
+        </Form>
+      </Spin>
     </Modal>
   );
 };

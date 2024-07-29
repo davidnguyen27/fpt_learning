@@ -49,6 +49,9 @@ const AdminLoginPage = React.lazy(
 const AdminReviewManagePage = React.lazy(
   () => import("../pages/Admin/AdminReviewManagePage"),
 );
+const BlogManagePage = React.lazy(
+  () => import("../pages/Admin/BlogManagePage"),
+);
 
 //---------------------------------------------INSTRUCTOR----------------------------------------------
 const InstructorPage = React.lazy(
@@ -212,15 +215,15 @@ const AppRouter = () => {
                 />
               }
             />
-            {/* <Route
-            path="/admin/blogs-management"
-            element={
-              <ProtectedRoute
-                element={<BlogManagePage />}
-                allowedRoles={["admin"]}
-              />
-            }
-          /> */}
+            <Route
+              path="/admin/blog-manage"
+              element={
+                <ProtectedRoute
+                  element={<BlogManagePage />}
+                  allowedRoles={["admin"]}
+                />
+              }
+            />
             <Route
               path="/admin/courses-check"
               element={
