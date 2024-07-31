@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import {
   MenuUnfoldOutlined,
   PlayCircleOutlined,
@@ -13,6 +13,11 @@ import ModalAddReview from "../Modal/ModalAddReview";
 import useAddReview from "../../hooks/review/useAddReview";
 import useReviewDataClient from "../../hooks/review/useReviewDataClient";
 import { CourseSubTabProps } from "../../models/Types";
+import {
+  getSubscriptionBySubscriberAPI,
+  createUpdateSubscriptionAPI,
+} from "../../services/subscriptionService";
+
 import { Review } from "../../models/Review";
 
 const CourseSubTab: FC<CourseSubTabProps> = ({
@@ -40,9 +45,46 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
     }
   };
 
-  const handleSubscribeClick = () => {
-    setIsSubscribed(!isSubscribed);
+  const fetchSubscription = async () => {
+    try {
+      const subscriptions = await getSubscriptionBySubscriberAPI(_id, {
+        searchCondition: {
+          keyword: "",
+          is_delete: false,
+        },
+        pageInfo: {
+          pageNum: 0,
+          pageSize: 0,
+        },
+      });
+      const isSubscribed = subscriptions.some(
+        (sub) => sub.instructor_id === course?.instructor_id,
+      );
+      setIsSubscribed(isSubscribed);
+    } catch (error) {
+      console.error("Failed to fetch subscription", error);
+    }
   };
+  const handleSubscribeClick = async () => {
+    try {
+      const instructor_id = course?.instructor_id;
+      if (!instructor_id) throw new Error("Instructor ID not found");
+
+      const subscriptionData = {
+        // Add other subscription details if needed
+      };
+
+      await createUpdateSubscriptionAPI(instructor_id, subscriptionData);
+      setIsSubscribed(!isSubscribed);
+      localStorage.setItem(
+        `subscribed_${instructor_id}`,
+        JSON.stringify(!isSubscribed),
+      );
+    } catch (error) {
+      console.error("Failed to subscribe/unsubscribe", error);
+    }
+  };
+
 
   const handleAddReview = (reviewData: Review) => {
     setIsModalVisible(false);
@@ -50,6 +92,21 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
       refetchData();
     });
   };
+
+  useEffect(() => {
+    const instructor_id = course?.instructor_id;
+    if (instructor_id) {
+      const storedSubscription = localStorage.getItem(
+        `subscribed_${instructor_id}`,
+      );
+      if (storedSubscription) {
+        setIsSubscribed(JSON.parse(storedSubscription));
+      } else {
+        fetchSubscription();
+      }
+    }
+  }, [course]);
+
 
   const AboutTabContent = () => (
     <div className="mt-6 text-sm" dangerouslySetInnerHTML={{ __html: content }} />

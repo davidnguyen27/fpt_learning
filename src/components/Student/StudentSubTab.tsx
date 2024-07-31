@@ -5,6 +5,7 @@ import { formatDate } from "../../utils/formatDate";
 import { UserData } from "../../models/Types";
 import Tiny from "../../app/Editor/RichTextEditor";
 import StudentPurchased from "../Purchase/StudentPurchased";
+import Subscriptions from "../../hooks/supscription/Subscriptions";
 
 interface StudentProfileSubTabProps {
   activeTab: string;
@@ -152,10 +153,18 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
         >
           Purchased
         </button>
+        <button
+          type="button"
+          className={`px-4 py-2 ${activeTab === "Supscriptions" ? "bg-gray-200" : ""}`}
+          onClick={() => setActiveTab("supscriptions")}
+        >
+          Supscriptions
+        </button>
       </div>
       <div>
         {activeTab === "about" && <AboutTabContent />}
         {activeTab ==="purchased" && <StudentPurchased />}
+        {activeTab === "supscriptions" && <Subscriptions />}
       </div>
     </div>
   );
