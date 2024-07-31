@@ -1,6 +1,7 @@
 import { configureStore, createSlice } from "@reduxjs/toolkit";
 import userReducer from "./user/userSlice";
-import paginationSlice from "./pagination/paginationSlice";
+import paginationSlice from './pagination/paginationSlice';
+import subscriptionReducer from '../redux/subscribe/subscriptionSlice';
 
 const loadingSlice = createSlice({
   name: 'loading',
@@ -18,6 +19,8 @@ export const store = configureStore({
     user: userReducer,
     loading: loadingSlice.reducer,
     pagination: paginationSlice,
+    subscription: subscriptionReducer,
+
   },
 });
 

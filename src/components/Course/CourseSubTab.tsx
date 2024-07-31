@@ -43,7 +43,7 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
     } else {
       setOpenSessions([...openSessions, sessionId]);
     }
-  };
+  }
 
   const fetchSubscription = async () => {
     try {

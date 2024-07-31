@@ -58,7 +58,7 @@ const Subscriptions: React.FC = () => {
                 </div>
               </div>
               <div className="mt-4 flex justify-between items-center">
-                <Button type="primary">Subscribed</Button>
+                <Button type="primary" danger>Subscribed</Button>
                 <Button icon={<BellOutlined />} />
               </div>
             </Card>
