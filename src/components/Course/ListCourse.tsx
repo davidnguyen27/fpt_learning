@@ -1,4 +1,6 @@
+import React from "react";
 import CourseCard from "./CourseCard";
+import "../../styles/listCourse.css"; // Import the CSS file
 
 interface ListCourseProps {
   category_id: string;
@@ -6,9 +8,7 @@ interface ListCourseProps {
 
 const ListCourse: React.FC<ListCourseProps> = ({ category_id }) => {
   return (
-    <div
-      className={`lg:grid-cols-4" grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3`}
-    >
+    <div className="course-list">
       <CourseCard category_id={category_id} />
     </div>
   );

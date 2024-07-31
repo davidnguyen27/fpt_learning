@@ -1,65 +1,55 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import useCourseDetailClient from "../../hooks/course/useCourseDetailClient";
 import { StarFilled } from "@ant-design/icons";
 import { Button, Modal, notification } from "antd";
-import { createCartAPI, getCartsAPI } from "../../services/cartService";
-import Loading from "../Loading/loading";
+import { createCartAPI } from "../../services/cartService";
 import { useAuth } from "../../app/context/AuthContext";
-import { CartData, DataTransfer } from "../../models/Cart";
+import { getDetailClientAPI } from "../../services/coursesService";
+import { CourseClient } from "../../models/Course";
+import { useDispatch } from "react-redux";
+import { startLoading, stopLoading } from "../../app/redux/loading/loadingSlice";
 
 const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
+  const dispatch = useDispatch();
   const [visible, setVisible] = useState(false);
-  const { course, loading, error } = useCourseDetailClient(_id);
-  const [isAddToCartModalVisible, setIsAddToCartModalVisible] =
-    useState<boolean>(false);
+  const [course, setCourse] = useState<CourseClient | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isAddToCartModalVisible, setIsAddToCartModalVisible] = useState<boolean>(false);
   const [buttonText, setButtonText] = useState<string>("Add to cart");
 
   const { user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const checkCourseStatus = async () => {
-      if (user && course) {
-        try {
-          const dataTransfer: DataTransfer = {
-            searchCondition: {
-              status: "",
-              is_deleted: false,
-            },
-            pageInfo: { pageNum: 1, pageSize: 10 },
-          };
-          const carts: CartData[] = await getCartsAPI(dataTransfer);
-
-          const cartItem = carts.find((cart) => cart.course_id === course._id);
-
-          if (cartItem) {
-            if (cartItem.status === "completed") {
-              setButtonText("Learn Now");
-            } else if (cartItem.status === "waiting_paid") {
-              setButtonText("Check out now");
-            } else {
-              setButtonText("In Cart");
-            }
-          } else {
-            setButtonText("Add to cart");
-          }
-        } catch (error: any) {
-          console.error("Error fetching cart status:", error.message);
-        }
+    const fetchCourseDetails = async () => {
+      try {
+        dispatch(startLoading());
+        const courseDetails = await getDetailClientAPI(_id);
+        setCourse(courseDetails);
+      } catch (error: any) {
+        setError(error.message);
+      } finally {
+        dispatch(stopLoading());
       }
     };
 
-    checkCourseStatus();
-  }, [user, course]);
+    fetchCourseDetails();
+  }, [_id]);
 
-  if (loading) {
-    return (
-      <div>
-        <Loading />
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (course) {
+      if (course.is_in_cart) {
+        if (course.is_purchased) {
+          setButtonText("Learn Now");
+        } else {
+          setButtonText("Go to cart");
+        }
+      } else {
+        setButtonText("Add to cart");
+      }
+    }
+  }, [course]);
+
   if (error) return <div>{error}</div>;
 
   const showModal = () => setVisible(true);
@@ -84,14 +74,20 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
     try {
       if (!course) throw new Error("No course data available!");
 
+      // Call API to add course to cart
       await createCartAPI({ course_id: course._id });
+
+      // Update UI state
+      setCourse((prevCourse) => prevCourse ? { ...prevCourse, is_in_cart: true } : null);
+
       notification.success({
         message: "Success",
         description: "Course added to cart successfully!",
         placement: "topRight",
       });
       setIsAddToCartModalVisible(false);
-      setButtonText("Check out now");
+
+      setButtonText("Go to cart");
     } catch (error: any) {
       notification.error({
         message: "Error",
@@ -110,8 +106,8 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
   const handleButtonClick = () => {
     if (buttonText === "Learn Now") {
       navigate(`/course/${course?._id}`);
-    } else if (buttonText === "Check out now") {
-      navigate("/confirm-checkout");
+    } else if (buttonText === "Go to cart") {
+      navigate("/cart");
     } else if (buttonText === "Add to cart") {
       showAddToCartModal();
     }
@@ -151,9 +147,7 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
           </p>
           <p className="mb-4">Category: {course?.category_name}</p>
           <span>Price: </span>
-          <span
-            className={`${course?.discount !== 0 ? "line-through" : ""} text-gray-400`}
-          >
+          <span className={`${course?.discount !== 0 ? "line-through" : ""} text-gray-400`}>
             ${course?.price}
           </span>
           <span className="ml-3 text-red-400">${course?.price_paid}</span>

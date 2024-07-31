@@ -33,7 +33,7 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
       const token = sessionStorage.getItem("token");
 
       if (userId && token) {
-        const userData = await getUserDetail(userId, token);
+        const userData = await getUserDetail(userId);
         if (userData?.description) {
           setInitialDescription(userData.description);
         }
@@ -73,7 +73,7 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
         description: "User profile updated successfully",
       });
       setEditing(false);
-      await fetchUserData(); // Refresh user data
+      await fetchUserData();
     } catch (error: any) {
       notification.error({
         message: "Error",
@@ -212,8 +212,8 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
       </div>
       <div>
         {activeTab === "about" && <AboutTabContent />}
-        {activeTab === "purchased" && <StudentPurchased />}
         {activeTab === "supscriptions" && <Subscriptions />}
+        {activeTab ==="purchased" && <StudentPurchased _id={userId || ""} />}
       </div>
     </div>
   );

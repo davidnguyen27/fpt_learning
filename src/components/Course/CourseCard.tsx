@@ -2,7 +2,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DataTransfer } from "../../models/Course";
 import useCourseDataClient from "../../hooks/course/useCourseDataClient";
-import { Rate } from "antd";
+import { Rate, Button } from "antd";
+import "../../styles/courseCard.css";
 
 interface CourseCardProps {
   category_id: string;
@@ -20,7 +21,7 @@ const CourseCard: React.FC<CourseCardProps> = (props) => {
       status: "",
       is_delete: false,
     }),
-    [searchKeyword, category_id],
+    [searchKeyword, category_id]
   );
 
   const pageInfo = useMemo(
@@ -58,35 +59,40 @@ const CourseCard: React.FC<CourseCardProps> = (props) => {
       {courses.map((item: any) => (
         <article
           key={item._id}
-          className="h-auto w-80 rounded-md bg-slate-200 transition-transform duration-300 hover:scale-105 hover:bg-slate-300"
+          className="course-card"
           onClick={() => navigate(`/detail/${item._id}`)}
         >
-          <div className="p-4">
-            <div>
-              <img
-                src={item.image_url || "default-image-url"}
-                alt={item.name}
-                className="rounded-md"
-                style={{ width: "300px", height: "200px", objectFit: "contain" }} // Ensure image content fits
-              />
+          <div className="course-card-content">
+            <img
+              src={item.image_url || "default-image-url"}
+              alt={item.name}
+              className="course-card-image"
+            />
+            <h3 className="course-card-title">{item.name}</h3>
+            <div className="course-card-category">{item.category_name}</div>
+            <div className="course-card-rating">
+              <Rate disabled value={item.average_rating} />
+              <span className="course-card-rating-value">{item.average_rating}</span>
             </div>
-            <h3 className="mt-3 cursor-pointer font-semibold">{item.name}</h3>
-            <div className="my-2">
-              <span className="text-xs font-light">{item.category_name}</span>
-            </div>
-            <Rate disabled value={item.average_rating} />{" "}
-            <span className="ml-2 text-sm font-medium">
-              {item.average_rating}
-            </span>
-            <div className="mt-2 flex items-center justify-between">
-              <p className="text-xs">
+            <div className="course-card-footer">
+              <p className="course-card-instructor">
                 By{" "}
-                <span className="text-xs font-semibold">
+                <span className="course-card-instructor-name">
                   {item.instructor_name || "Unknown Instructor"}
                 </span>
               </p>
-              <i className="fa-solid fa-cart-plus cursor-pointer hover:text-red-500"></i>
-              <span>${item.price}</span>
+              <div className="course-card-actions">
+                {item.is_purchased ? (
+                  <Button type="primary" className="course-card-button">
+                    Learn Now
+                  </Button>
+                ) : (
+                  <>
+                    <i className="fa-solid fa-cart-plus course-card-cart-icon"></i>
+                    <span className="course-card-price">${item.price}</span>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </article>
