@@ -14,7 +14,7 @@ const UserDetail: React.FC<UserDetailProps> = ({ _id, token }) => {
   useEffect(() => {
     const fetchUserDetail = async () => {
       try {
-        const userData = await getUserDetail(_id, token);
+        const userData = await getUserDetail(_id);
         if (userData) {
           setUserDetail(userData);
         } else {

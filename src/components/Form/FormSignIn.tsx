@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../app/context/AuthContext";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
-import { getCurrentLogin, loginViaGoogleAPI } from "../../services/authService";
+import { getCurrentLogin, login, loginViaGoogleAPI } from "../../services/authService";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 
 const FormSignIn = () => {
@@ -20,7 +20,7 @@ const FormSignIn = () => {
     setIsRemembered(e.target.checked);
   };
 
-  const { user, login } = authContext;
+  const { user } = authContext;
 
   useEffect(() => {
     if (user?.data) {
@@ -44,10 +44,17 @@ const FormSignIn = () => {
   const handleLogin = async (values: { email: string; password: string }) => {
     try {
       setLoading(true);
-      await login(values.email, values.password);
-      notification.success({
-        message: "Login Successful",
-      });
+      const token = await login(values.email, values.password);
+      if (token) {
+        const user = await getCurrentLogin(token);
+        if (user?.data) {
+          sessionStorage.setItem("user", JSON.stringify(user));
+          notification.success({
+            message: "Login Successful",
+          });
+          navigate("/");
+        }
+      }
     } catch (error: any) {
       notification.error({
         message: "Login Failed",

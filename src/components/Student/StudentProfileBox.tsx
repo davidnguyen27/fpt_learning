@@ -17,7 +17,7 @@ const StudentProfileBox = () => {
     try {
       const token = sessionStorage.getItem("token");
       if (token && userId) {
-        const fetchedUserData = await getUserDetail(userId, token);
+        const fetchedUserData = await getUserDetail(userId);
         if (fetchedUserData) {
           setUserData(fetchedUserData);
         } else {

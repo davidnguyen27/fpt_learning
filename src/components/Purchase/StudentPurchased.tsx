@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import { getItemsByStudent } from "../../services/purchaseService";
 import { DataTransfer, Purchase } from "../../models/Purchase";
 import Loading from "../Loading/loading";
+import useCourseDetailClient from "../../hooks/course/useCourseDetailClient";
 
-const StudentPurchased: React.FC = () => {
+const StudentPurchased: React.FC<{ _id: string }> = ({ _id }) => {
   const [purchases, setPurchases] = useState<Purchase[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const { course } = useCourseDetailClient(_id);
 
   useEffect(() => {
     const fetchPurchasedItems = async () => {
@@ -57,8 +59,8 @@ const StudentPurchased: React.FC = () => {
             className="overflow-hidden rounded-lg bg-white shadow-md transition-transform duration-300 hover:scale-105"
           >
             <img
-              src={`images/${purchase.course_name}.jpg`}
-              alt={purchase.course_name}
+              src={course?.image_url}
+              alt={"Course Image"}
               className="h-48 w-full object-cover"
             />
             <div className="p-4">

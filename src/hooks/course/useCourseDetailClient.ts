@@ -23,7 +23,7 @@ const useCourseDetailClient = (courseId: string) => {
     fetchCourseDetail();
   }, [courseId]);
 
-  return { course, loading, error };
+  return { course, loading, error, setCourse };
 };
 
 export default useCourseDetailClient;

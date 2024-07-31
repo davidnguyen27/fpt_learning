@@ -1,10 +1,8 @@
 import axios from 'axios';
 import { APILink } from '../const/linkAPI';
 import { ROUTER_URL } from '../const/router.const';
-import { LOCAL_STORAGE } from '../const/local.storage.const';
-import { getItemInLocalStorage } from '../utils/getItemInLocalStorage';
-import { store, toggleLoading } from '../app/redux/store';
-import { removeItemInLocalStorage } from '../utils/removeItemInLocalStorage';
+import { store } from '../app/redux/store';
+import { startLoading, stopLoading } from '../app/redux/loading/loadingSlice';
 
 export const axiosInstance = axios.create({
     baseURL: APILink ,
@@ -17,39 +15,44 @@ export const axiosInstance = axios.create({
 
 export const getState = (store: any) => {
     return store.getState();
-}
+};
+
 
 axiosInstance.interceptors.request.use(
     (config) => {
-        const user: any = getItemInLocalStorage(LOCAL_STORAGE.ACCOUNT_ADMIN);
+        store.dispatch(startLoading());
+        const token = sessionStorage.getItem("token");
         if (config.headers === undefined) config.headers;
-        if (user) config.headers['Authorization'] = `Bearer ${user.access_token}`;
-        return config.data;
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+          }        return config;
     },
-    // (err) => {
-    //     return handleErrorByToast(err);
-    // }
+    (err) => {
+        store.dispatch(stopLoading());
+        return handleErrorByToast(err);
+    }
 );
 
 axiosInstance.interceptors.response.use(
     (config) => {
-        store.dispatch(toggleLoading(false));
+        store.dispatch(stopLoading());
         return Promise.resolve((config));
     },
     (err) => {
+        store.dispatch(stopLoading());
         const { response } = err;
         if (response && response.status === 401) {
             setTimeout(() => {
-                removeItemInLocalStorage(LOCAL_STORAGE.ACCOUNT_ADMIN)
+                sessionStorage.removeItem('token');
                 window.location.href = ROUTER_URL.SIGN_IN;
             }, 2000);
         }
-        // return handleErrorByToast(err);
+        return handleErrorByToast(err);
     }
 )
 
-// const handleErrorByToast = (error: any) => {
-//     // const message = error.response?.data?.message ? error.response?.data?.message : error.message;
-//     store.dispatch(toggleLoading(false));
-//     return null;
-// }
+const handleErrorByToast = (error: any) => {
+    // const message = error.response?.data?.message ? error.response?.data?.message : error.message;
+    store.dispatch(stopLoading());
+    return Promise.reject(error);
+}

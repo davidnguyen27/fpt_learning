@@ -28,7 +28,7 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
       const token = sessionStorage.getItem("token");
 
       if (userId && token) {
-        const userData = await getUserDetail(userId, token);
+        const userData = await getUserDetail(userId);
         if (userData?.description) {
           setInitialDescription(userData.description);
         }
@@ -58,8 +58,8 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
         message: "Success",
         description: "User profile updated successfully",
       });
-      setEditing(false); // Hide the form and show the edit button again
-      await fetchUserData(); // Refresh user data
+      setEditing(false);
+      await fetchUserData();
     } catch (error: any) {
       notification.error({
         message: "Error",
@@ -135,7 +135,6 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
     </div>
   );
 
-
   return (
     <div className="mt-5">
       <div className="flex justify-self-end border-b-2 border-gray-200 font-semibold">
@@ -155,7 +154,7 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
         </button>
         <button
           type="button"
-          className={`px-4 py-2 ${activeTab === "Supscriptions" ? "bg-gray-200" : ""}`}
+          className={`px-4 py-2 ${activeTab === "supscriptions" ? "bg-gray-200" : ""}`}
           onClick={() => setActiveTab("supscriptions")}
         >
           Supscriptions
@@ -163,8 +162,8 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
       </div>
       <div>
         {activeTab === "about" && <AboutTabContent />}
-        {activeTab ==="purchased" && <StudentPurchased />}
         {activeTab === "supscriptions" && <Subscriptions />}
+        {activeTab ==="purchased" && <StudentPurchased _id={userId || ""} />}
       </div>
     </div>
   );
