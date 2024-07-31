@@ -1,20 +1,13 @@
-import { FC, useState, useEffect } from "react";
-import {
-  MenuUnfoldOutlined,
-  PlayCircleOutlined,
-} from "@ant-design/icons";
-import { Rate, Button } from "antd";
-import useCourseDetailClient from "../../hooks/course/useCourseDetailClient";
-import ModalAddReview from "../Modal/ModalAddReview";
-import useAddReview from "../../hooks/review/useAddReview";
-import useReviewDataClient from "../../hooks/review/useReviewDataClient";
-import { CourseSubTabProps } from "../../models/Types";
-import {
-  getSubscriptionBySubscriberAPI,
-  createUpdateSubscriptionAPI,
-} from "../../services/subscriptionService";
-
-import { Review } from "../../models/Review";
+import { FC, useState, useEffect } from 'react';
+import { Button, Rate, message } from 'antd'; 
+import { MenuUnfoldOutlined, PlayCircleOutlined } from '@ant-design/icons';
+import { CourseSubTabProps } from '../../models/Types';
+import { getSubscriptionBySubscriberAPI, createUpdateSubscriptionAPI } from '../../services/subscriptionService';
+import useCourseDetailClient from '../../hooks/course/useCourseDetailClient';
+import useAddReview from '../../hooks/review/useAddReview';
+import useReviewDataClient from '../../hooks/review/useReviewDataClient';
+import ModalAddReview from '../Modal/ModalAddReview';
+import { Review } from '../../models/Review';
 
 const CourseSubTab: FC<CourseSubTabProps> = ({
   _id,
@@ -25,62 +18,63 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
 }) => {
   const [openSessions, setOpenSessions] = useState<string[]>([]);
   const { course } = useCourseDetailClient(_id);
-  const [isSubscribed, setIsSubscribed] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const { createReview } = useAddReview(() => {
-    // Handle success callback if needed
   });
-
   const { data: reviews, loading, error, refetchData } = useReviewDataClient(_id);
 
   const toggleSession = (sessionId: string) => {
-    if (openSessions.includes(sessionId)) {
-      setOpenSessions(openSessions.filter((id) => id !== sessionId));
-    } else {
-      setOpenSessions([...openSessions, sessionId]);
-    }
-  }
+    setOpenSessions((prev) =>
+      prev.includes(sessionId)
+        ? prev.filter((id) => id !== sessionId)
+        : [...prev, sessionId]
+    );
+  };
 
   const fetchSubscription = async () => {
     try {
-      const subscriptions = await getSubscriptionBySubscriberAPI(_id, {
-        searchCondition: {
-          keyword: "",
-          is_delete: false,
-        },
-        pageInfo: {
-          pageNum: 0,
-          pageSize: 0,
-        },
-      });
+      const token = sessionStorage.getItem('token');
+      if (!token) throw new Error('Cannot get token!');
+
+      const dataTransfer = {
+        searchCondition: { keyword: '', is_delete: false },
+        pageInfo: { pageNum: 1, pageSize: 10 },
+      };
+
+      const subscriptions = await getSubscriptionBySubscriberAPI(_id, dataTransfer);
       const isSubscribed = subscriptions.some(
-        (sub) => sub.instructor_id === course?.instructor_id,
+        (sub) => sub.instructor_id === course?.instructor_id
       );
       setIsSubscribed(isSubscribed);
     } catch (error) {
-      console.error("Failed to fetch subscription", error);
+      console.error('Failed to fetch subscription', error);
     }
   };
+
   const handleSubscribeClick = async () => {
     try {
       const instructor_id = course?.instructor_id;
-      if (!instructor_id) throw new Error("Instructor ID not found");
+      if (!instructor_id) throw new Error('Instructor ID not found');
 
-      const subscriptionData = {
-        // Add other subscription details if needed
-      };
-
+      const subscriptionData = { is_subscribed: !isSubscribed, is_deleted: false };
       await createUpdateSubscriptionAPI(instructor_id, subscriptionData);
-      setIsSubscribed(!isSubscribed);
+
+      setIsSubscribed((prev) => !prev);
       localStorage.setItem(
         `subscribed_${instructor_id}`,
-        JSON.stringify(!isSubscribed),
+        JSON.stringify(!isSubscribed)
+      );
+
+      message.success(
+        isSubscribed
+          ? 'You have successfully unsubscribed.'
+          : 'You have successfully subscribed.'
       );
     } catch (error) {
-      console.error("Failed to subscribe/unsubscribe", error);
+      message.error('Failed to update subscription. Please try again.');
     }
   };
-
 
   const handleAddReview = (reviewData: Review) => {
     setIsModalVisible(false);
@@ -93,7 +87,7 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
     const instructor_id = course?.instructor_id;
     if (instructor_id) {
       const storedSubscription = localStorage.getItem(
-        `subscribed_${instructor_id}`,
+        `subscribed_${instructor_id}`
       );
       if (storedSubscription) {
         setIsSubscribed(JSON.parse(storedSubscription));
@@ -102,7 +96,6 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
       }
     }
   }, [course]);
-
 
   const AboutTabContent = () => (
     <div className="mt-6 text-sm" dangerouslySetInnerHTML={{ __html: content }} />
@@ -198,14 +191,14 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
               >
                 {course?.instructor_name || "Instructor Name Not Available"}
               </a>
-              <button
+              <Button
                 onClick={handleSubscribeClick}
                 className={`rounded-sm px-3 py-2 text-[14px] text-white ${
                   isSubscribed ? "bg-gray-600" : "bg-red-600"
                 }`}
               >
                 {isSubscribed ? "Subscribed" : "Subscribe"}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -226,7 +219,7 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
           }`}
           onClick={() => setActiveTab("content")}
         >
-          Core knowledge
+          Course Content
         </button>
         <button
           className={`text-[16px] font-medium text-black ${
@@ -234,12 +227,15 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
           }`}
           onClick={() => setActiveTab("review")}
         >
-          Review
+          Reviews
         </button>
       </div>
-      {activeTab === "about" && <AboutTabContent />}
-      {activeTab === "content" && <CourseContentTabContent />}
-      {activeTab === "review" && <CourseReview />}
+
+      <div className="p-6">
+        {activeTab === "about" && <AboutTabContent />}
+        {activeTab === "content" && <CourseContentTabContent />}
+        {activeTab === "review" && <CourseReview />}
+      </div>
     </div>
   );
 };
