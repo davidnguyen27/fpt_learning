@@ -14,6 +14,7 @@ import {
   getSubscriptionBySubscriberAPI,
   createUpdateSubscriptionAPI,
 } from "../../services/subscriptionService";
+import { formatTime } from "../../utils/formatTime";
 
 const CourseSubTab: FC<CourseSubTabProps> = ({
   _id,
@@ -26,11 +27,12 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
   const { course } = useCourseDetailClient(_id);
   const [isSubscribed, setIsSubscribed] = useState(false);
 
-  const toggleSession = (sessionId: string) => {
-    if (openSessions.includes(sessionId)) {
-      setOpenSessions(openSessions.filter((id) => id !== sessionId));
+  const toggleSession = (index: number) => {
+    const indexString = index.toString();
+    if (openSessions.includes(indexString)) {
+      setOpenSessions(openSessions.filter((id) => id !== indexString));
     } else {
-      setOpenSessions([...openSessions, sessionId]);
+      setOpenSessions([...openSessions, indexString]);
     }
   };
 
@@ -98,31 +100,38 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
 
   const CourseContentTabContent = () => (
     <div>
-      {sessions.map((session) => (
-        <div
-          key={session._id}
-          className="mt-6 rounded-md bg-slate-200 px-3 py-2"
-        >
+      {sessions.map((session, index) => {
+        const indexString = index.toString();
+        return (
           <div
-            className="cursor-pointer text-sm font-bold"
-            onClick={() => toggleSession(session._id)}
+            key={indexString}
+            className="mt-6 rounded-md bg-slate-200 px-3 py-2"
           >
-            <MenuUnfoldOutlined /> <span>{session.name}</span>
-          </div>
-          {openSessions.includes(session._id) && (
-            <div className="mt-4 flex items-center justify-between">
-              <div className="px-4 py-2">
-                {session.lesson_list.map((lesson, idx) => (
-                  <div key={idx} className="ml-4 block">
-                    <PlayCircleOutlined /> {lesson.name}
-                  </div>
-                ))}
-              </div>
-              <div>{session.full_time}</div>
+            <div
+              className="cursor-pointer text-sm font-bold"
+              onClick={() => toggleSession(index)}
+            >
+              <MenuUnfoldOutlined /> <span>{session.name}</span>
             </div>
-          )}
-        </div>
-      ))}
+            {openSessions.includes(indexString) && (
+              <div className="mt-3">
+                <div className="p-2">
+                  {session.lesson_list.map((lesson, idx) => (
+                    <>
+                      <div key={idx} className="ml-2 flex justify-between">
+                        <div>
+                          <PlayCircleOutlined /> {lesson.name}
+                        </div>
+                        <div>{formatTime(lesson.full_time)}</div>
+                      </div>
+                    </>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 
@@ -224,7 +233,7 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
             </a>
             <div className="flex flex-col">
               <a
-                href="#"
+                href={`/instructor-info/${course?.instructor_id}`}
                 className="mb-2 text-[16px] font-medium text-[#333333]"
               >
                 {course?.instructor_name || "Instructor Name Not Available"}
@@ -236,7 +245,6 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
                 }`}
               >
                 {isSubscribed ? "Subscribed" : "Subscribe"}
-
               </button>
             </div>
           </div>

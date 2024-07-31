@@ -24,7 +24,7 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
       const token = sessionStorage.getItem("token");
 
       if (userId && token) {
-        const userData = await getUserDetail(userId, token);
+        const userData = await getUserDetail(userId);
 
         if (userData?.dob) {
           userData.dob = formatDate(userData.dob.toString());
@@ -99,15 +99,12 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
         <Form.Item name="video" label="Video">
           <Input size="large" placeholder="https://youtube.com" />
         </Form.Item>
-        <Form.Item
-          label="Description"
-          name="description"
-          valuePropName="value"
-          getValueFromEvent={(e: any) => e.target.getContent()}
-        >
+        <Form.Item label="Description" name="description">
           <Tiny
-            value={form.getFieldValue('description') || ''}
-            onChange={(value: any) => form.setFieldsValue({ description: value })}
+            value={form.getFieldValue("description") || ""}
+            onChange={(value: any) =>
+              form.setFieldsValue({ description: value })
+            }
           />
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 2 }}>
@@ -118,7 +115,6 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
       </Form>
     </div>
   );
-
 
   return (
     <div className="mt-5">
@@ -140,7 +136,7 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
       </div>
       <div>
         {activeTab === "about" && <AboutTabContent />}
-        {activeTab ==="purchased" && <StudentPurchased />}
+        {activeTab === "purchased" && <StudentPurchased />}
       </div>
     </div>
   );

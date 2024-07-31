@@ -1,19 +1,18 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useCourseDetailClient from "../../hooks/course/useCourseDetailClient";
 import { StarFilled } from "@ant-design/icons";
 import { Button, Modal, notification } from "antd";
 import { createCartAPI, getCartsAPI } from "../../services/cartService";
-import Loading from "../Loading/loading";
 import { useAuth } from "../../app/context/AuthContext";
 import { CartData, DataTransfer } from "../../models/Cart";
 
 const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
   const [visible, setVisible] = useState(false);
-  const { course, loading, error } = useCourseDetailClient(_id);
+  const { course, error } = useCourseDetailClient(_id);
   const [isAddToCartModalVisible, setIsAddToCartModalVisible] =
     useState<boolean>(false);
-  const [buttonText, setButtonText] = useState<string>("Add to cart");
+  const [buttonText, setButtonText] = useState<string>();
 
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -53,13 +52,6 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
     checkCourseStatus();
   }, [user, course]);
 
-  if (loading) {
-    return (
-      <div>
-        <Loading />
-      </div>
-    );
-  }
   if (error) return <div>{error}</div>;
 
   const showModal = () => setVisible(true);
@@ -103,7 +95,7 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
 
   const handleButtonClick = () => {
     if (buttonText === "Learn Now") {
-      navigate(`/course/${course?._id}`);
+      navigate(`/learning/${course?._id}`);
     } else if (buttonText === "Check out now") {
       navigate("/confirm-checkout");
     } else if (buttonText === "Add to cart") {
@@ -200,7 +192,7 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
       )}
       <Modal
         title="Add to Cart"
-        visible={isAddToCartModalVisible}
+        open={isAddToCartModalVisible}
         onOk={handleAddToCartOk}
         onCancel={handleAddToCartCancel}
         okText="Yes"

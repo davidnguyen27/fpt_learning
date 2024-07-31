@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Badge, Button, Dropdown, MenuProps, Space } from "antd";
 import {
@@ -15,14 +15,40 @@ import { useAuth } from "../../app/context/AuthContext";
 import "../../styles/header.css";
 import "../../styles/sider.css";
 import AppSider from "./AppSider";
+import { getCartsAPI } from "../../services/cartService";
+import { DataTransfer } from "../../models/Cart";
 
-const AppHeader: React.FC = () => {
+const AppHeader = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+  const [cartItemCount, setCartItemCount] = useState<number>(0);
+
   const navigate = useNavigate();
   const { logout } = useAuth();
 
   const storedUser: any = sessionStorage.getItem("user");
   const user = JSON.parse(storedUser);
+
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      if (user) {
+        try {
+          const dataTransfer: DataTransfer = {
+            searchCondition: {
+              status: "",
+              is_deleted: false,
+            },
+            pageInfo: { pageNum: 1, pageSize: 10 },
+          };
+          const carts = await getCartsAPI(dataTransfer);
+          setCartItemCount(carts.length);
+        } catch (error) {
+          console.error("Error fetching cart items:", error);
+        }
+      }
+    };
+
+    fetchCartItems();
+  }, [user]);
 
   const handleLogout = () => {
     logout();
@@ -151,7 +177,7 @@ const AppHeader: React.FC = () => {
         {user ? (
           <>
             {user?.data.role === "student" && (
-              <Badge count={1}>
+              <Badge count={cartItemCount}>
                 <ShoppingCartOutlined
                   style={{ fontSize: "1.5em" }}
                   onClick={handleShoppingCart}
@@ -159,17 +185,17 @@ const AppHeader: React.FC = () => {
               </Badge>
             )}
             {user?.data.role === "instructor" && (
-              <Badge count={1}>
+              <Badge>
                 <ShoppingCartOutlined
                   style={{ fontSize: "1.5em" }}
                   onClick={handleShoppingCart}
                 />
               </Badge>
             )}
-            <Badge count={1}>
+            <Badge>
               <MailOutlined style={{ fontSize: "1.5em", cursor: "pointer" }} />
             </Badge>
-            <Badge count={1}>
+            <Badge>
               <BellOutlined style={{ fontSize: "1.5em", cursor: "pointer" }} />
             </Badge>
             <Dropdown menu={{ items }}>

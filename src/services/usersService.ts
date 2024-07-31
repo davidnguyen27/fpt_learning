@@ -36,13 +36,9 @@ export const getUsers = async (
 //-----------------------------------------------------------------------------------------------
 
 //------------------------------ Get User Detail ------------------------------------------------
-export const getUserDetail = async (userId: string, token: string) => {
+export const getUserDetail = async (userId: string) => {
   try {
-    const response = await axios.get(`${APILink}/api/users/${userId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axios.get(`${APILink}/api/users/${userId}`);
 
     const userData: UserData = response.data.data;
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getUserDetail } from "../../services/usersService";
 import { UserData } from "../../models/Types";
-import "../../styles/studentProfileBox.css"
+import "../../styles/studentProfileBox.css";
 
 const StudentProfileBox = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
@@ -13,7 +13,7 @@ const StudentProfileBox = () => {
     try {
       const token = sessionStorage.getItem("token");
       if (token && userId) {
-        const fetchedUserData = await getUserDetail(userId, token);
+        const fetchedUserData = await getUserDetail(userId);
         if (fetchedUserData) {
           setUserData(fetchedUserData);
         } else {
@@ -47,7 +47,7 @@ const StudentProfileBox = () => {
           <div className="profile-stats">
             <div>
               <span className="profile-stat-number">3</span> Following
-            </div> 
+            </div>
             <div>
               <span className="profile-stat-number">3</span> Followers
             </div>

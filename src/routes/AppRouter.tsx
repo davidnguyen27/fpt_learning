@@ -27,6 +27,7 @@ const RegisterInstructorPage = React.lazy(
 );
 const VerifyPage = React.lazy(() => import("../pages/User/VerifyPage"));
 const ChangePassPage = React.lazy(() => import("../pages/ChangePasswordPage"));
+const LearningPage = React.lazy(() => import("../pages/User/LearningPage"));
 
 //-----------------------------------------------ADMIN-------------------------------------------------
 const AdminPage = React.lazy(() => import("../pages/Admin/AdminPage"));
@@ -48,6 +49,9 @@ const AdminLoginPage = React.lazy(
 );
 const BlogManagePage = React.lazy(
   () => import("../pages/Admin/BlogManagePage"),
+);
+const InstructorProfilePage = React.lazy(
+  () => import("../pages/Instructor/InstructorProfilePage"),
 );
 
 //---------------------------------------------INSTRUCTOR----------------------------------------------
@@ -88,7 +92,9 @@ const StudentCourseListPage = React.lazy(
 const StudentSettingPage = React.lazy(
   () => import("../pages/Student/StudentSettingPage"),
 );
-const ConfirmCheckout = React.lazy(() => import("../components/Checkout/ConfirmCheckOut"))
+const ConfirmCheckout = React.lazy(
+  () => import("../components/Checkout/ConfirmCheckOut"),
+);
 
 interface ProtectedRouteProps {
   element: JSX.Element;
@@ -148,6 +154,10 @@ const AppRouter = () => {
             <Route path="/verify-email/:token" element={<VerifyPage />} />
             <Route path="/user/change-password" element={<ChangePassPage />} />
             <Route path="/admin-login" element={<AdminLoginPage />} />
+            <Route
+              path="/instructor-info/:instructor_id"
+              element={<InstructorProfilePage />}
+            />
 
             {/*----------------------------ADMIN---------------------------------*/}
             <Route
@@ -281,6 +291,15 @@ const AppRouter = () => {
               element={
                 <ProtectedRoute
                   element={<UserProfilePage />}
+                  allowedRoles={["student", "instructor"]}
+                />
+              }
+            />
+            <Route
+              path="/learning/:_id"
+              element={
+                <ProtectedRoute
+                  element={<LearningPage />}
                   allowedRoles={["student", "instructor"]}
                 />
               }

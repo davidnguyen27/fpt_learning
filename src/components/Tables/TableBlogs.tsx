@@ -27,7 +27,7 @@ const TableBlogs = () => {
           const parsedUser = JSON.parse(storagedUser);
           const userId = parsedUser.data._id;
 
-          const userData = (await getUserDetail(userId, token)) as UserData;
+          const userData = (await getUserDetail(userId)) as UserData;
           setCurrentUser(userData);
         } catch (error: any) {
           message.error(error.message);
