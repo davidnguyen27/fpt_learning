@@ -6,9 +6,9 @@ import { formatDate } from "../../utils/formatDate";
 import { UserData } from "../../models/Types";
 import Tiny from "../../app/Editor/RichTextEditor";
 import StudentPurchased from "../Purchase/StudentPurchased";
-import Subscriptions from "../../hooks/supscription/Subscriptions";
 import { storage } from "../../utils/firebase"; // Firebase storage import
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import SubscriptionsForSubcriber from "../../hooks/supscription/SubscriptionForSubcriber";
 
 interface StudentProfileSubTabProps {
   activeTab: string;
@@ -106,10 +106,10 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
 
   const AboutTabContent = () => (
     <div className="p-3">
-      <h1 className="text-2xl font-semibold">Your profile</h1>
+      <h1 className="text-2xl font-semibold mb-5">About Me</h1>
       {!editing ? (
         <div>
-          <p><strong>Description:</strong> {initialDescription}</p>
+            <span dangerouslySetInnerHTML={{ __html: initialDescription }} />
           <Button
             type="primary"
             onClick={() => setEditing(true)}
@@ -185,6 +185,7 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
       )}
     </div>
   );
+
   return (
     <div className="mt-5">
       <div className="flex justify-self-end border-b-2 border-gray-200 font-semibold">
@@ -204,16 +205,16 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
         </button>
         <button
           type="button"
-          className={`px-4 py-2 ${activeTab === "supscriptions" ? "bg-gray-200" : ""}`}
-          onClick={() => setActiveTab("supscriptions")}
+          className={`px-4 py-2 ${activeTab === "follower" ? "bg-gray-200" : ""}`}
+          onClick={() => setActiveTab("follower")}
         >
-          Supscriptions
+          Follower
         </button>
       </div>
       <div>
         {activeTab === "about" && <AboutTabContent />}
-        {activeTab === "supscriptions" && <Subscriptions />}
-        {activeTab ==="purchased" && <StudentPurchased _id={userId || ""} />}
+        {activeTab === "purchased" && <StudentPurchased />}
+        {activeTab === "follower" && <SubscriptionsForSubcriber />}
       </div>
     </div>
   );

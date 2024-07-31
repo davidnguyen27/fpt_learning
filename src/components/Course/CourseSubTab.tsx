@@ -1,13 +1,16 @@
-import { FC, useState, useEffect } from 'react';
-import { Button, Rate, message } from 'antd'; 
-import { MenuUnfoldOutlined, PlayCircleOutlined } from '@ant-design/icons';
-import { CourseSubTabProps } from '../../models/Types';
-import { getSubscriptionBySubscriberAPI, createUpdateSubscriptionAPI } from '../../services/subscriptionService';
-import useCourseDetailClient from '../../hooks/course/useCourseDetailClient';
-import useAddReview from '../../hooks/review/useAddReview';
-import useReviewDataClient from '../../hooks/review/useReviewDataClient';
-import ModalAddReview from '../Modal/ModalAddReview';
-import { Review } from '../../models/Review';
+import { FC, useState, useEffect } from "react";
+import { Button, Rate, message } from "antd";
+import { MenuUnfoldOutlined, PlayCircleOutlined } from "@ant-design/icons";
+import { CourseSubTabProps } from "../../models/Types";
+import {
+  getSubscriptionBySubscriberAPI,
+  createUpdateSubscriptionAPI,
+} from "../../services/subscriptionService";
+import useCourseDetailClient from "../../hooks/course/useCourseDetailClient";
+import useAddReview from "../../hooks/review/useAddReview";
+import useReviewDataClient from "../../hooks/review/useReviewDataClient";
+import ModalAddReview from "../Modal/ModalAddReview";
+import { Review } from "../../models/Review";
 
 const CourseSubTab: FC<CourseSubTabProps> = ({
   _id,
@@ -20,25 +23,21 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
   const { course } = useCourseDetailClient(_id);
   const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  const { createReview } = useAddReview(() => {
-  });
-  const { data: reviews, loading, error, refetchData } = useReviewDataClient(_id);
+  const { createReview } = useAddReview(() => {});
+  const { data: reviews, error, refetchData } = useReviewDataClient(_id);
 
   const toggleSession = (sessionId: string) => {
-    setOpenSessions((prev) =>
-      prev.includes(sessionId)
-        ? prev.filter((id) => id !== sessionId)
-        : [...prev, sessionId]
-    );
+    if (openSessions.includes(sessionId)) {
+      setOpenSessions(openSessions.filter((id) => id !== sessionId));
+    } else {
+      setOpenSessions([...openSessions, sessionId]);
+    }
   };
 
   const fetchSubscription = async () => {
     try {
-      const token = sessionStorage.getItem('token');
-      if (!token) throw new Error('Cannot get token!');
-
       const dataTransfer = {
-        searchCondition: { keyword: '', is_delete: false },
+        searchCondition: { keyword: "", is_delete: false },
         pageInfo: { pageNum: 1, pageSize: 10 },
       };
 
@@ -48,16 +47,19 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
       );
       setIsSubscribed(isSubscribed);
     } catch (error) {
-      console.error('Failed to fetch subscription', error);
+      console.error("Failed to fetch subscription", error);
     }
   };
 
   const handleSubscribeClick = async () => {
     try {
       const instructor_id = course?.instructor_id;
-      if (!instructor_id) throw new Error('Instructor ID not found');
+      if (!instructor_id) throw new Error("Instructor ID not found");
 
-      const subscriptionData = { is_subscribed: !isSubscribed, is_deleted: false };
+      const subscriptionData = {
+        is_subscribed: !isSubscribed,
+        is_deleted: false,
+      };
       await createUpdateSubscriptionAPI(instructor_id, subscriptionData);
 
       setIsSubscribed((prev) => !prev);
@@ -68,11 +70,11 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
 
       message.success(
         isSubscribed
-          ? 'You have successfully unsubscribed.'
-          : 'You have successfully subscribed.'
+          ? "You have successfully unsubscribed."
+          : "You have successfully subscribed."
       );
     } catch (error) {
-      message.error('Failed to update subscription. Please try again.');
+      message.error("Failed to update subscription. Please try again.");
     }
   };
 
@@ -86,9 +88,7 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
   useEffect(() => {
     const instructor_id = course?.instructor_id;
     if (instructor_id) {
-      const storedSubscription = localStorage.getItem(
-        `subscribed_${instructor_id}`
-      );
+      const storedSubscription = localStorage.getItem(`subscribed_${instructor_id}`);
       if (storedSubscription) {
         setIsSubscribed(JSON.parse(storedSubscription));
       } else {
@@ -105,7 +105,10 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
     <div>
       {sessions.map((session) => (
         <div key={session._id} className="mt-6 rounded-md bg-slate-200 px-3 py-2">
-          <div className="cursor-pointer text-sm font-bold" onClick={() => toggleSession(session._id)}>
+          <div
+            className="cursor-pointer text-sm font-bold"
+            onClick={() => toggleSession(session._id)}
+          >
             <MenuUnfoldOutlined /> <span>{session.name}</span>
           </div>
           {openSessions.includes(session._id) && (
@@ -127,7 +130,7 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
 
   const CourseReview = () => (
     <>
-      <div className="mt-10 bg-slate-200 p-6 rounded-lg">
+      <div className="mt-10 rounded-lg bg-slate-200 p-6">
         <h1 className="text-2xl font-semibold">Rating</h1>
         <div className="mt-3 bg-neutral-100 p-4">
           <span className="ml-2 text-lg text-yellow-500">
@@ -139,20 +142,20 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
       </div>
       <div>
         <h1 className="my-10 text-2xl font-semibold">Student Reviews</h1>
-        {loading ? (
-          <p>Loading reviews...</p>
-        ) : error ? (
+        {error ? (
           <p>{error}</p>
         ) : reviews.length === 0 ? (
           <p>No reviews available.</p>
         ) : (
           reviews.map((review) => (
-            <div key={review._id} className="mb-8 p-4 rounded-lg bg-slate-200">
-              <div className="flex items-center mb-2">
-                <span className="font-bold text-black">{review.reviewer_name}</span>
+            <div key={review._id} className="mb-8 rounded-lg bg-slate-200 p-4">
+              <div className="mb-2 flex items-center">
+                <span className="font-bold text-black">
+                  {review.reviewer_name}
+                </span>
                 <Rate disabled defaultValue={review.rating} className="ml-2" />
               </div>
-              <div className="text-sm text-gray-500 mb-2">
+              <div className="mb-2 text-sm text-gray-500">
                 {new Date(review.created_at).toLocaleDateString()}
               </div>
               <p className="font-semibold">{review.comment}</p>
@@ -160,7 +163,11 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
           ))
         )}
       </div>
-      <Button type="primary" onClick={() => setIsModalVisible(true)} className="mt-6">
+      <Button
+        type="primary"
+        onClick={() => setIsModalVisible(true)}
+        className="mt-6"
+      >
         Create Review
       </Button>
       <ModalAddReview
@@ -180,7 +187,7 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
             <a href="#">
               <img
                 src="https://scontent.fsgn2-5.fna.fbcdn.net/v/t39.30808-6/436257762_1831258874036043_7962583851360585901_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=aa7b47&_nc_eui2=AeFwSGYfZE8msByC8I97nfjowSj0rDZQ20DBKPSsNlDbQE9jTgn8CuJ0oWUNvpzlM8wnVxCPXT6LNA8QJLaMp7eP&_nc_ohc=BkqdrwZZLVAQ7kNvgEX9iPZ&_nc_ht=scontent.fsgn2-5.fna&oh=00_AYAG1xWT0LZY19MGUmWsvhnxuv6Y2Ui_WGhlPgdeNiDonQ&oe=66A7BF43"
-                className="mr-4 size-[50px]"
+                className="mr-4 size-[70px]"
                 alt="Profile"
               />
             </a>
@@ -193,9 +200,12 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
               </a>
               <Button
                 onClick={handleSubscribeClick}
-                className={`rounded-sm px-3 py-2 text-[14px] text-white ${
-                  isSubscribed ? "bg-gray-600" : "bg-red-600"
-                }`}
+                type="primary"
+                danger={isSubscribed ? false : true}
+                style={{
+                  backgroundColor: isSubscribed ? "#bfbfbf" : "#000000",
+                  color: isSubscribed ? "#000000" : "#ffffff",
+                }}
               >
                 {isSubscribed ? "Subscribed" : "Subscribe"}
               </Button>

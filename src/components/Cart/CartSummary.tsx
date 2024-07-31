@@ -23,9 +23,6 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const navigate = useNavigate();
 
-  // const handleCheckout = () => {
-  //   setIsModalVisible(true);
-  // };
 
   const handleOk = () => {
     setIsModalVisible(false);

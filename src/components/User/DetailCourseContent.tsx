@@ -7,19 +7,8 @@ const DetailCourseContent = () => {
   const { _id } = useParams<{ _id: string }>();
   const [activeTab, setActiveTab] = useState<string>("about");
 
-  // Fetch course details using custom hook
   const { course } = useCourseDetailClient(_id as string);
 
-  // if (loading) {
-  //   return (
-  //     <div>
-  //       <Loading />
-  //     </div>
-  //   );
-  // }
-  // if (error) return <p>Error: {error}</p>;
-
-  // Ensure _id is not undefined before rendering CourseSubTab
   if (!_id) {
     return <p>Course ID is missing</p>;
   }

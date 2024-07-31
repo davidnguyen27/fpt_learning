@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getUserDetail } from "../../services/usersService";
-import { getSubscriptionBySubscriberAPI, getSubscriptionByInstructorAPI } from "../../services/subscriptionService";
+import { getSubscriptionBySubscriberAPI } from "../../services/subscriptionService";
 import { UserData } from "../../models/Types";
 import "../../styles/studentProfileBox.css";
 import { Subscription } from "../../models/Subscription"; // Ensure this import is correct
@@ -8,7 +8,6 @@ import { Subscription } from "../../models/Subscription"; // Ensure this import 
 const StudentProfileBox = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [following, setFollowing] = useState<Subscription[]>([]);
-  const [followers, setFollowers] = useState<Subscription[]>([]);
   const storedUser = sessionStorage.getItem("user");
   const user = storedUser ? JSON.parse(storedUser) : null;
   const userId = user?.data?._id;
@@ -52,36 +51,14 @@ const StudentProfileBox = () => {
     }
   };
 
-  const fetchFollowers = async () => {
-    try {
-      const token = sessionStorage.getItem("token");
-      if (token && userId) {
-        const dataTransfer = {
-          searchCondition: {
-            keyword: "",
-            is_delete: false,
-          },
-          pageInfo: {
-            pageNum: 1,
-            pageSize: 10,
-          },
-        };
-        const fetchedFollowers: Subscription[] = await getSubscriptionByInstructorAPI(userId, dataTransfer);
-        setFollowers(fetchedFollowers);
-      }
-    } catch (error: any) {
-      console.error("Failed to fetch followers data:", error);
-    }
-  };
-
   useEffect(() => {
     fetchUserData();
     fetchFollowing(); // Fetch following data when the component mounts
-    fetchFollowers(); // Fetch followers data when the component mounts
   }, []);
 
   return (
     <div className="profile-container">
+      <div className="profile-cover"/>
       <div className="profile-header">
         <img
           className="profile-avatar"
@@ -93,19 +70,13 @@ const StudentProfileBox = () => {
         />
         <div className="profile-details">
           <h2 className="profile-name">{userData?.name || "Your Name"}</h2>
-          <p className="profile-tagline">Description</p>
+          {/* <p className="profile-tagline" dangerouslySetInnerHTML={{ __html: userData?.description || "" }} /> */}
           <div className="profile-stats">
             <div>
               <button className="profile-stat-button" onClick={fetchFollowing}>
-                Following
+                Following:
               </button>
-              <span className="profile-stat-number">{following.length}</span>
-            </div>
-            <div>
-              <button className="profile-stat-button" onClick={fetchFollowers}>
-                Followers
-              </button>
-              <span className="profile-stat-number">{followers.length}</span>
+              <span className="profile-stat-number ml-1">{following.length}</span>
             </div>
           </div>
         </div>

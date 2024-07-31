@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { StarFilled } from "@ant-design/icons";
-import { Button, Modal, notification } from "antd";
+import { Button, Modal, notification, Rate } from "antd";
 import { createCartAPI } from "../../services/cartService";
 import { useAuth } from "../../app/context/AuthContext";
 import { getDetailClientAPI } from "../../services/coursesService";
 import { CourseClient } from "../../models/Course";
-import { useDispatch } from "react-redux";
-import { startLoading, stopLoading } from "../../app/redux/loading/loadingSlice";
 
 const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
-  const dispatch = useDispatch();
   const [visible, setVisible] = useState(false);
   const [course, setCourse] = useState<CourseClient | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -23,13 +19,10 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
   useEffect(() => {
     const fetchCourseDetails = async () => {
       try {
-        dispatch(startLoading());
         const courseDetails = await getDetailClientAPI(_id);
         setCourse(courseDetails);
       } catch (error: any) {
         setError(error.message);
-      } finally {
-        dispatch(stopLoading());
       }
     };
 
@@ -130,22 +123,23 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
           <h2 className="text-2xl font-bold">{course?.name}</h2>
           <p className="mt-2">{course?.description}</p>
           <div className="mt-4 flex items-center">
-            <StarFilled className="text-yellow-500" />
             <span className="ml-2 text-lg text-yellow-500">
-              {course?.average_rating}
+            <Rate disabled value={course?.average_rating} />
             </span>
             <span className="ml-2 text-gray-300">
               ({course?.review_count} ratings)
             </span>
           </div>
-          <p className="my-4">By {course?.instructor_name}</p>
+          <p className="my-4">By: {course?.instructor_name}</p>
+          <p className="mb-4">Category: {course?.category_name}</p>
+
           <p className="mb-4">
             Release date:{" "}
             {course?.created_at
               ? new Date(course.created_at).toLocaleDateString()
               : "N/A"}
           </p>
-          <p className="mb-4">Category: {course?.category_name}</p>
+          <p className="mb-4">Duration: {course?.full_time} hours</p>
           <span>Price: </span>
           <span className={`${course?.discount !== 0 ? "line-through" : ""} text-gray-400`}>
             ${course?.price}

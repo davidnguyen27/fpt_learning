@@ -2,15 +2,13 @@ import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CartData } from "../../models/Cart";
 import "../../styles/index.css";
-import { Layout, Breadcrumb, Button } from "antd";
+import { Layout, Breadcrumb, Button, message } from "antd";
 import { AppFooter, AppHeader2 } from "../../components";
-import { editStatusCartsAPI } from "../../services/cartService"; // Update import
+import { editStatusCartsAPI } from "../../services/cartService";
 
 const { Content, Footer } = Layout;
 
-interface ConfirmCheckoutProps {}
-
-const ConfirmCheckout: React.FC<ConfirmCheckoutProps> = () => {
+const ConfirmCheckout: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const selectedItemsWithQuantities = location.state?.selectedItemsWithQuantities as (CartData & { quantity: number })[];
@@ -29,8 +27,13 @@ const ConfirmCheckout: React.FC<ConfirmCheckoutProps> = () => {
       const cartItems = selectedItemsWithQuantities.map(item => ({
         _id: item._id,
         cart_no: item.cart_no,
+        is_purchased: true,
       }));
-      await editStatusCartsAPI("completed", cartItems); // Ensure API updates `is_purchased`
+      await editStatusCartsAPI("completed", cartItems);
+
+      // Show success message
+      message.success("Buy course successfully, learn now");
+
       navigate("/user-profile-page");
     } catch (error: any) {
       console.error("Error proceeding to checkout:", error);

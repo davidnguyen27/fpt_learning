@@ -231,7 +231,7 @@ const AppRouter = () => {
             <Route
               path="/cart"
               element={
-                <ProtectedRoute element={<Cart />} allowedRoles={["student"]} />
+                <ProtectedRoute element={<Cart />} allowedRoles={["student", "instructor"]} />
               }
             />
             <Route
