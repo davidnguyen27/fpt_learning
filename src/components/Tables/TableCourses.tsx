@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { DeleteOutlined, FormOutlined, SendOutlined } from "@ant-design/icons";
+import { CheckOutlined, ClockCircleOutlined, DeleteOutlined, FormOutlined, PlayCircleOutlined, SendOutlined, StopOutlined, WarningOutlined } from "@ant-design/icons";
 import {
   Table,
   Spin,
@@ -10,6 +10,7 @@ import {
   Drawer,
   Space,
   message,
+  Descriptions,
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Course, DataTransfer } from "../../models/Course";
@@ -67,7 +68,7 @@ const TableCourses: React.FC = () => {
   const { deleteCourse } = useDeleteCourse(refetchData);
 
   const handleSuccess = useCallback(() => {
-    refetchData();
+    refetchData(); // This should reload the data
   }, [refetchData]);
 
   const handleDelete = useCallback(
@@ -98,7 +99,7 @@ const TableCourses: React.FC = () => {
   const handleChangeStatus = useCallback(
     async (courseId: string, currentStatus: string, comment: string = "") => {
       let newStatus = "";
-      if (currentStatus === "new") {
+      if (currentStatus === "new" || currentStatus === "reject") {
         newStatus = "waiting_approve";
       } else if (currentStatus === "waiting_approve") {
         newStatus = "approve";
@@ -136,7 +137,7 @@ const TableCourses: React.FC = () => {
       setComment(
         currentStatus === "waiting_approve"
           ? ""
-          : "Please provide a reason for rejection",
+          : "",
       );
     },
     [],
@@ -153,50 +154,63 @@ const TableCourses: React.FC = () => {
 
   const renderActionButton = (record: Course) => {
     let buttonClass = "";
-    let buttonText = "";
-    let buttonDisabled = false;
+ 
+  let buttonIcon = null;
+  let buttonDisabled = false;
 
-    switch (record.status) {
-      case "new":
-        buttonClass = "bg-yellow-300";
-        buttonText = "Send for Approval";
-        break;
-      case "waiting_approve":
-        buttonClass = "bg-blue-500";
-        buttonText = "Approve Course";
-        buttonDisabled = false;
-        break;
-      case "approve":
-        buttonClass = "bg-green-500";
-        buttonText = "Activate Course";
-        break;
-      case "reject":
-        buttonClass = "bg-blue-500";
-        buttonText = "Send for Approval";
-        break;
-      case "active":
-        buttonClass = "bg-red-500";
-        buttonText = "Deactivate Course";
-        break;
-      case "inactive":
-        buttonClass = "bg-green-500";
-        buttonText = "Activate Course";
-        break;
-      default:
-        buttonDisabled = true;
-        buttonText = "Unknown Status";
-        break;
-    }
+  switch (record.status) {
+    case "new":
+    case "reject":
+      buttonClass = "bg-yellow-300 text-gray-500";
+
+      buttonIcon = <SendOutlined />;
+      break;
+    case "waiting_approve":
+      buttonClass = "bg-gray-500";
+
+      buttonIcon = <ClockCircleOutlined />;
+      buttonDisabled = true; // Disable the button when status is "waiting_approve"
+      break;
+    case "approve":
+      buttonClass = "bg-green-500";
+
+      buttonIcon = <CheckOutlined />;
+      break;
+    case "active":
+      buttonClass = "bg-red-500";
+
+      buttonIcon = <StopOutlined />;
+      break;
+    case "inactive":
+      buttonClass = "bg-green-500";
+
+      buttonIcon = <PlayCircleOutlined />;
+      break;
+    default:
+      buttonDisabled = true;
+
+      buttonIcon = <WarningOutlined />;
+      break;
+  }
 
     return (
       <Button
-        type="primary"
-        className={buttonClass}
-        onClick={() => openCommentDrawer(record._id, record.status)}
-        disabled={buttonDisabled}
-      >
-        {buttonText}
-      </Button>
+      type="primary"
+      onClick={() => openCommentDrawer(record._id, record.status)}
+      disabled={buttonDisabled}
+      style={{
+         backgroundColor: buttonClass.includes('bg-yellow') ? '#F9D71C' : buttonClass.includes('bg-blue') ? '#1890FF' : buttonClass.includes('bg-green') ? '#52C41A' : buttonClass.includes('bg-red') ? '#F5222D' : '#D9D9D9', 
+         
+        width: 40,
+        height: 40,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+        
+    >
+      {buttonIcon}
+    </Button>
     );
   };
 
@@ -205,7 +219,7 @@ const TableCourses: React.FC = () => {
       title: "Course Name",
       dataIndex: "name",
       key: "name",
-      width: 150,
+      width: 250,
       render: (name: string, record: Course) => (
         <a
           onClick={() => handleNameClick(record)}
@@ -219,8 +233,9 @@ const TableCourses: React.FC = () => {
       title: "Category Name",
       dataIndex: "category_name",
       key: "category_name",
-      width: 100,
+      width: 150,
     },
+    
     {
       title: "Status",
       dataIndex: "status",
@@ -259,7 +274,7 @@ const TableCourses: React.FC = () => {
     {
       title: "Action",
       key: "action",
-      width: 200,
+      width: 100,
       render: (_, record) => (
         <Space>
           <FormOutlined
@@ -321,21 +336,34 @@ const TableCourses: React.FC = () => {
         footer={null}
       >
         {selectedCourseDetail && (
-          <div>
-            <p>Name: {selectedCourseDetail.name}</p>
-            <p>Category: {selectedCourseDetail.category_name}</p>
-            <p>Status: {selectedCourseDetail.status}</p>
-            <p>Created At: {selectedCourseDetail.created_at}</p>
-            <p>Updated At: {selectedCourseDetail.updated_at}</p>
-            <p>Description: {selectedCourseDetail.description}</p>
-            <p>Video URL: {selectedCourseDetail.video_url}</p>
-            <p>Image URL: {selectedCourseDetail.image_url}</p>
-            <p>Price: {selectedCourseDetail.price}</p>
-            <p>Discount: {selectedCourseDetail.discount}</p>
-            <p>Content: {selectedCourseDetail.content}</p>
-          </div>
+          <Descriptions
+            bordered
+            column={1}
+            labelStyle={{ fontWeight: 'bold' }}
+          >
+            <Descriptions.Item label="Name">{selectedCourseDetail.name}</Descriptions.Item>
+            <Descriptions.Item label="Category">{selectedCourseDetail.category_name}</Descriptions.Item>
+            <Descriptions.Item label="Status">{selectedCourseDetail.status}</Descriptions.Item>
+            <Descriptions.Item label="Created At">{new Date(selectedCourseDetail.created_at).toLocaleString()}</Descriptions.Item>
+            <Descriptions.Item label="Updated At">{new Date(selectedCourseDetail.updated_at).toLocaleString()}</Descriptions.Item>
+            <Descriptions.Item label="Price">{selectedCourseDetail.price}</Descriptions.Item>
+            <Descriptions.Item label="Discount">{selectedCourseDetail.discount}</Descriptions.Item>
+            {selectedCourseDetail.video_url && (
+              <Descriptions.Item label="Video URL">
+                <a href={selectedCourseDetail.video_url} target="_blank" rel="noopener noreferrer">
+                  Watch Video
+                </a>
+              </Descriptions.Item>
+            )}
+            {selectedCourseDetail.image_url && (
+              <Descriptions.Item label="Image">
+                <img src={selectedCourseDetail.image_url} alt="Course" style={{ maxWidth: '100%' }} />
+              </Descriptions.Item>
+            )}
+          </Descriptions>
         )}
       </Modal>
+
       <Drawer
         title="Add Comment"
         placement="right"
@@ -371,6 +399,8 @@ const TableCourses: React.FC = () => {
                       return "inactive";
                     case "inactive":
                       return "active";
+                    case "reject":
+                      return "waiting_approve";
                     default:
                       return null;
                   }

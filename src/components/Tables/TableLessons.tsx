@@ -1,13 +1,15 @@
 import { DeleteOutlined, FormOutlined } from "@ant-design/icons";
-import { Table, Spin, Modal } from "antd";
+import { Table, Spin, Modal, Input } from "antd";
 import { DataTransfer } from "../../models/Lesson";
 import useLessonsData from "../../hooks/lesson/useLessonData";
-import Search from "antd/es/input/Search";
-import { useState, useMemo } from "react";
+import { useState, useMemo} from "react";
 import ModalAddLesson from "../Modal/ModalAddLesson";
 import useDeleteLesson from "../../hooks/lesson/useDeleteLesson";
 import ModalEditLesson from "../Modal/ModalEditLesson";
 import type { ColumnsType } from "antd/es/table";
+
+const { Search } = Input;
+
 
 interface DataType {
   key: string;
@@ -25,9 +27,12 @@ const TableLessons = () => {
   const [openEdit, setOpenEdit] = useState<boolean>(false);
   const [editingLessonId, setEditingLessonId] = useState<string | null>(null);
 
+
   const handleSearch = (value: string) => {
     setSearchKeyword(value);
   };
+
+
 
   const handleSuccess = () => {
     refetchData();
@@ -142,6 +147,7 @@ const TableLessons = () => {
           allowClear
           style={{ width: 300 }}
         />
+        
         <button
           onClick={() => setOpenAdd(true)}
           className="rounded-lg bg-red-500 px-5 py-2 text-sm font-medium text-white hover:bg-red-600"

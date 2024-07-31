@@ -16,9 +16,9 @@ const StudentLayout: React.FC<MainLayoutProps> = ({ children }) => {
       </Header>
       <Layout className="flex flex-1 overflow-y-auto">
         <Layout className="flex flex-1 flex-col">
-          <Content className="flex-1 overflow-y-auto">
+          <Content className="flex-1 overflow-y-auto mt-3">
             <div className="p-4">{children}</div>
-            <Footer className="footer">
+            <Footer className="footer mt-14">
               <AppFooter />
             </Footer>
           </Content>

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { Course, DataTransfer } from "../models/Course";
 import { APILink } from "../const/linkAPI";
+import { Subscription } from "react-redux";
 
 export const getCoursesAPI = async (dataTransfer: DataTransfer) => {
   try {
@@ -184,5 +185,24 @@ export const getDetailClientAPI = async (_id: string) => {
     if (error.response && error.response.data && error.response.data.message) {
       throw new Error( error.response.data.message);
     }
+  }
+};
+
+export const createOrUpdateSubscription = async (instructor_id: string, condition: boolean) => {
+  // Determine the value of is_subscribed based on the condition
+  const is_subscribed = condition;
+
+  try {
+    const response = await axios.post<Subscription>(`${APILink}/api/subscription`, {
+      instructor_id,
+      is_subscribed
+    });
+    return response.data;
+  } catch (error: any) {
+    // Handle errors appropriately
+    if (error.response && error.response.data && error.response.data.message) {
+      return { success: false, message: error.response.data.message };
+    }
+    return { success: false, message: 'An unexpected error occurred' };
   }
 };

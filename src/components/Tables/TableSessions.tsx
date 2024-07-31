@@ -18,8 +18,7 @@ const TableSessions: React.FC = () => {
   const [openAdd, setOpenAdd] = useState<boolean>(false);
   const [openEdit, setOpenEdit] = useState<boolean>(false);
   const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
-  const [selectedSessionDetail, setSelectedSessionDetail] =
-    useState<Session | null>(null);
+  const [selectedSessionDetail, setSelectedSessionDetail] = useState<Session | null>(null);
   const [detailModalVisible, setDetailModalVisible] = useState<boolean>(false);
   const [courses, setCourses] = useState<Course[]>([]);
   const [selectedCourse, setSelectedCourse] = useState<string>("");
@@ -78,8 +77,7 @@ const TableSessions: React.FC = () => {
     error,
     refetchData,
   } = useSessionData(sessionDataTransfer);
-  const { data: fetchedCourses, refetchData: refetchCourses } =
-    useCourseData(courseDataTransfer);
+  const { data: fetchedCourses, refetchData: refetchCourses } = useCourseData(courseDataTransfer);
   const { deleteSession } = useDeleteSession(refetchData);
 
   useEffect(() => {
@@ -151,7 +149,7 @@ const TableSessions: React.FC = () => {
       title: "Course Name",
       dataIndex: "course_name",
       key: "course_name",
-      width: 150,
+      width: 200,
     },
     {
       title: "Created At",
@@ -176,7 +174,7 @@ const TableSessions: React.FC = () => {
     {
       title: "Action",
       key: "action",
-      width: 120,
+      width: 100,
       render: (_, record: Session) => (
         <div className="flex space-x-2">
           <FormOutlined
@@ -191,6 +189,34 @@ const TableSessions: React.FC = () => {
       ),
     },
   ];
+
+  const sessionDetailColumns = [
+    {
+      title: "Field",
+      dataIndex: "field",
+      key: "field",
+      render: (text: string) => <strong>{text}</strong>, // Bold font for field names
+    },
+    {
+      title: "Value",
+      dataIndex: "value",
+      key: "value",
+    },
+  ];
+
+  const sessionDetailData = useMemo(() => {
+    if (!selectedSessionDetail) return [];
+    return [
+      { field: "Name", value: selectedSessionDetail.name },
+      { field: "Course Name", value: selectedSessionDetail.course_name },
+      { field: "User ID", value: selectedSessionDetail.user_name },
+      { field: "Description", value: selectedSessionDetail.description },
+      { field: "Position Order", value: selectedSessionDetail.position_order },
+      { field: "Created At", value: new Date(selectedSessionDetail.created_at).toLocaleString() },
+      { field: "Updated At", value: new Date(selectedSessionDetail.updated_at).toLocaleString() },
+      { field: "Deleted", value: selectedSessionDetail.is_deleted ? "Yes" : "No" },
+    ];
+  }, [selectedSessionDetail]);
 
   return (
     <>
@@ -248,24 +274,14 @@ const TableSessions: React.FC = () => {
         onCancel={handleCloseDetailModal}
         footer={null}
       >
-        {selectedSessionDetail && (
-          <div>
-            <p>Name: {selectedSessionDetail.name}</p>
-            <p>Course Name: {selectedSessionDetail.course_name}</p>
-            <p>User ID: {selectedSessionDetail.user_id}</p>
-            <p>Description: {selectedSessionDetail.description}</p>
-            <p>Position Order: {selectedSessionDetail.position_order}</p>
-            <p>
-              Created At:{" "}
-              {new Date(selectedSessionDetail.created_at).toLocaleString()}
-            </p>
-            <p>
-              Updated At:{" "}
-              {new Date(selectedSessionDetail.updated_at).toLocaleString()}
-            </p>
-            <p>Deleted: {selectedSessionDetail.is_deleted ? "Yes" : "No"}</p>
-          </div>
-        )}
+        <Table
+          columns={sessionDetailColumns}
+          dataSource={sessionDetailData}
+          pagination={false}
+          rowKey="field"
+          bordered
+          size="small"
+        />
       </Modal>
     </>
   );

@@ -43,7 +43,7 @@ export const getSessionsAPI = async (
       return sessionData;
     } catch (error: any) {
       console.error("API fetch error:", error);
-      throw new Error("Failed to fetch lesson data");
+      throw new Error("Failed to fetch session data");
     }
   };
 

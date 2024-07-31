@@ -1,7 +1,8 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { Table, Spin, Input } from "antd";
-import { DataTransfer } from "../../models/Review";
+import { Space, Table, Modal, Spin, Input } from "antd";
+import { Review, DataTransfer } from "../../models/Review";
 import useReviewData from "../../hooks/review/useReviewData";
+import useDeleteReview from "../../hooks/review/useDeleteReview";
 
 const { Search } = Input;
 
@@ -16,7 +17,7 @@ const AdminReviewTable: React.FC = () => {
       () => ({
         course_id: "", // specify course_id if needed
       rating: 0,
-      is_instructor: true,
+      is_instructor: false,
       is_rating_order: false,
       is_delete: false,
       }),
@@ -39,8 +40,19 @@ const AdminReviewTable: React.FC = () => {
       [searchCondition, pageInfo],
     );
   
-    const { data, loading } = useReviewData(dataTransfer);
+    const { data, loading, refetchData } = useReviewData(dataTransfer);
+    const { deleteReview } = useDeleteReview(refetchData);
   
+  
+    const handleDelete = useCallback(
+      (reviewId: string) => {
+        Modal.confirm({
+          title: "Are you sure you want to delete this review?",
+          onOk: () => deleteReview(reviewId),
+        });
+      },
+      [deleteReview],
+    );
 
   // Define columns for the table
   const columns = [
@@ -68,7 +80,21 @@ const AdminReviewTable: React.FC = () => {
       key: "rating",
       width: 80,
     },
-    
+    {
+      title: "Action",
+      key: "action",
+      width: 100,
+      render: (_: any, record: Review) => (
+        <Space size="middle">
+          <a>
+            <i className="fa-solid fa-eye"></i>
+          </a>
+          <a onClick={() => handleDelete(record._id)}>
+            <i className="fa-solid fa-trash"></i>
+          </a>
+        </Space>
+      ),
+    },
   ];
 
   // Render table with error and loading handling

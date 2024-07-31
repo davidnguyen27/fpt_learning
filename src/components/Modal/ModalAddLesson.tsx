@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Form, Input, Modal, Select } from "antd";
+import { Form, Input, Modal, Select, Button, Spin } from "antd";
 import useAddLesson from "../../hooks/lesson/useAddLesson";
 import { getCoursesAPI, getSessionsAPI } from "../../services/lessonService";
 import { Course } from "../../models/Course";
@@ -61,169 +61,210 @@ const ModalAddLesson = (props: ModalAddLessonProps) => {
 
   const handleLessonTypeChange = (value: string) => {
     setLessonType(value);
+    // Reset fields of other lesson types
+    if (value === "text") {
+      form.setFieldsValue({ video_url: "", image_url: "" });
+    } else if (value === "video") {
+      form.setFieldsValue({ description: "", image_url: "" });
+    } else if (value === "image") {
+      form.setFieldsValue({ description: "", video_url: "" });
+    }
   };
 
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
+      
+      // Ensure all fields are included with default values
+      values.description = values.description || "";
+      values.video_url = values.video_url || "";
+      values.image_url = values.image_url || "";
+      
+      // Ensure position_order is set to 99 if left empty
+      if (!values.position_order) {
+        values.position_order = 99;
+      }
       await createLesson(values);
       form.resetFields();
       setOpen(false);
     } catch (error: any) {
+      console.error("Failed to submit lesson:", error);
       throw new Error(error);
     }
+  };
+
+  const handleCancel = () => {
+    form.resetFields();
+    setOpen(false);
+  };
+
+  const validateNumber = (_: any, value: string) => {
+    if (value && isNaN(Number(value))) {
+      return Promise.reject(new Error("Position Order must be a valid number!"));
+    }
+    return Promise.resolve();
   };
 
   return (
     <Modal
       title="Add Lesson"
       open={open}
-      onCancel={() => setOpen(false)}
+      onCancel={handleCancel}
       onOk={handleSubmit}
       confirmLoading={loading}
       width={700}
       footer={[
-        <button
+        <Button
           key="cancel"
-          className="mr-3 rounded-md bg-zinc-300 px-4 py-1"
-          onClick={() => setOpen(false)}
+          className="mr-3"
+          onClick={handleCancel}
         >
           Cancel
-        </button>,
-        <button
+        </Button>,
+        <Button
           key="submit"
-          type="submit"
+          type="primary"
+          loading={loading}
           className="rounded-md bg-red-500 px-4 py-1"
           onClick={handleSubmit}
         >
-          {loading ? "Adding..." : "Add"}
-        </button>,
+          {loading ? <Spin size="small" /> : "Add"}
+        </Button>,
       ]}
     >
-      <Form
-        layout="horizontal"
-        className="mt-4"
-        form={form}
-        labelCol={{ span: 4 }}
-      >
-        <Form.Item
-          label="Lesson Name"
-          name="name"
-          rules={[{ required: true, message: "Lesson Name is required!" }]}
+      <Spin spinning={coursesLoading || sessionsLoading}>
+        <Form
+          layout="horizontal"
+          className="mt-4"
+          form={form}
+          labelCol={{ span: 5 }}
+          initialValues={{ position_order: 99 }}
         >
-          <Input className="text-sm" size="large" placeholder="Lesson Name" />
-        </Form.Item>
-
-        <Form.Item
-          label="Course"
-          name="course_id"
-          rules={[{ required: true, message: "Course is required!" }]}
-        >
-          <Select
-            placeholder="Select a course"
-            loading={coursesLoading}
-            disabled={coursesLoading}
-            onChange={handleCourseChange}
-          >
-            {courses.map((course) => (
-              <Option key={course._id} value={course._id}>
-                {course.name}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
-
-        <Form.Item
-          label="Session"
-          name="session_id"
-          rules={[{ required: true, message: "Session is required!" }]}
-        >
-          <Select
-            placeholder="Select a session"
-            loading={sessionsLoading}
-            disabled={sessionsLoading || !form.getFieldValue("course_id")}
-          >
-            {sessions.map((session) => (
-              <Option key={session._id} value={session._id}>
-                {session.name}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
-
-        <Form.Item
-          label="Lesson Type"
-          name="lesson_type"
-          rules={[{ required: true, message: "Lesson Type is required!" }]}
-        >
-          <Select
-            placeholder="Select lesson type"
-            onChange={handleLessonTypeChange}
-          >
-            {lessonTypes.map((type) => (
-              <Option key={type} value={type}>
-                {type}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
-
-        {lessonType === "text" && (
           <Form.Item
-          label="Description"
-          name="description"
-          valuePropName="value"
-          getValueFromEvent={(e: any) => e.target.getContent()}
-        >
-          <Tiny
-            value={form.getFieldValue('description') || ''}
-            onChange={(value: any) => form.setFieldsValue({ description: value })}
-          />
-        </Form.Item>
-        )}
-
-        {lessonType === "video" && (
-          <Form.Item
-            label="Video URL"
-            name="video_url"
-            rules={[
-              {
-                required: true,
-                message: "Video URL is required for video lessons!",
-              },
-            ]}
+            label="Lesson Name"
+            name="name"
+            rules={[{ required: true, message: "Lesson Name is required!" }]}
           >
-            <Input className="text-sm" size="large" placeholder="Video URL" />
+            <Input className="text-sm" size="large" placeholder="Lesson Name" />
           </Form.Item>
-        )}
 
-        {lessonType === "image" && (
           <Form.Item
-            label="Image URL"
-            name="image_url"
-            rules={[
-              {
-                required: true,
-                message: "Image URL is required for image lessons!",
-              },
-            ]}
+            label="Course"
+            name="course_id"
+            rules={[{ required: true, message: "Course is required!" }]}
           >
-            <Input className="text-sm" size="large" placeholder="Image URL" />
+            <Select
+              placeholder="Select a course"
+              loading={coursesLoading}
+              disabled={coursesLoading}
+              onChange={handleCourseChange}
+            >
+              {courses.map((course) => (
+                <Option key={course._id} value={course._id}>
+                  {course.name}
+                </Option>
+              ))}
+            </Select>
           </Form.Item>
-        )}
 
-        <Form.Item label="Position Order" name="position_order">
-          <Input className="text-sm" size="large" placeholder="99" />
-        </Form.Item>
+          <Form.Item
+            label="Session"
+            name="session_id"
+            rules={[{ required: true, message: "Session is required!" }]}
+          >
+            <Select
+              placeholder="Select a session"
+              loading={sessionsLoading}
+              disabled={sessionsLoading || !form.getFieldValue("course_id")}
+            >
+              {sessions.map((session) => (
+                <Option key={session._id} value={session._id}>
+                  {session.name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
 
-        <Form.Item
-          label="Full time"
-          name="full_time"
-          rules={[{ required: true, message: "Full time is required!" }]}
-        >
-          <Input className="text-sm" size="large" placeholder="" />
-        </Form.Item>
-      </Form>
+          <Form.Item
+            label="Lesson Type"
+            name="lesson_type"
+            rules={[{ required: true, message: "Lesson Type is required!" }]}
+          >
+            <Select
+              placeholder="Select lesson type"
+              onChange={handleLessonTypeChange}
+            >
+              {lessonTypes.map((type) => (
+                <Option key={type} value={type}>
+                  {type}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          {lessonType === "text" && (
+            <Form.Item
+              label="Description"
+              name="description"
+              valuePropName="value"
+              getValueFromEvent={(e: any) => e.target.getContent()}
+            >
+              <Tiny
+                value={form.getFieldValue('description') || ''}
+                onChange={(value: string) => {
+                  form.setFieldsValue({ description: value || '' });
+                }}
+              />
+            </Form.Item>
+          )}
+
+          {lessonType === "video" && (
+            <Form.Item
+              label="Video URL"
+              name="video_url"
+              rules={[
+                {
+                  required: true,
+                  message: "Video URL is required for video lessons!",
+                },
+              ]}
+            >
+              <Input className="text-sm" size="large" placeholder="Video URL" />
+            </Form.Item>
+          )}
+
+          {lessonType === "image" && (
+            <Form.Item
+              label="Image URL"
+              name="image_url"
+              rules={[
+                {
+                  required: true,
+                  message: "Image URL is required for image lessons!",
+                },
+              ]}
+            >
+              <Input className="text-sm" size="large" placeholder="Image URL" />
+            </Form.Item>
+          )}
+
+          <Form.Item
+            label="Position Order"
+            name="position_order"
+            rules={[{ validator: validateNumber }]}
+          >
+            <Input className="text-sm" size="large" placeholder="99" />
+          </Form.Item>
+
+          <Form.Item
+            label="Full time"
+            name="full_time"
+            rules={[{ required: true, message: "Full time is required!" }]}
+          >
+            <Input className="text-sm" size="large" placeholder="" />
+          </Form.Item>
+        </Form>
+      </Spin>
     </Modal>
   );
 };

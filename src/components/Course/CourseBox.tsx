@@ -93,6 +93,12 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
     }
   };
 
+  const extractYoutubeVideoId = (url: string) => {
+    const regExp = /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+    const match = url.match(regExp);
+    return match ? match[1] : null;
+  };
+
   const handleButtonClick = () => {
     if (buttonText === "Learn Now") {
       navigate(`/learning/${course?._id}`);
@@ -106,12 +112,11 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
   return (
     <div className="bg-[#333333] p-4">
       <div className="flex rounded-lg p-8">
-        <div className="relative">
+        <div className="relative" onClick={showModal}>
           <img
             className="max-w-lg cursor-pointer border-4 border-white"
             src={course?.image_url || "/path/to/default-thumbnail.jpg"}
             alt="Course Thumbnail"
-            onClick={showModal}
           />
           <div className="absolute bottom-0 left-0 w-full bg-black bg-opacity-50 px-2 py-1 text-center text-white">
             Preview this course
@@ -169,9 +174,12 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
             ></span>
             <div className="inline-block transform overflow-hidden rounded-lg bg-white text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
               <iframe
+
                 width="560"
                 height="315"
-                src={course?.video_url}
+                src={`https://www.youtube.com/embed/${extractYoutubeVideoId(
+                  course.video_url
+                )}`}
                 title="YouTube video player"
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

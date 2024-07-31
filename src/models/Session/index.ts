@@ -4,6 +4,7 @@ export type Session = {
       course_id: string;
       course_name: string;
       user_id: string;
+      user_name: string;
       description: string;
       position_order: number;
       created_at: Date;

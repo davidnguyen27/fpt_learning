@@ -12,8 +12,9 @@ const useEditLesson = (onSuccess: () => void) => {
   ) => {
     try {
       setLoading(true);
+      lessonData.position_order = Number(lessonData.position_order);
+      lessonData.full_time = Number(lessonData.full_time);
       await editLessonAPI(lessonId, lessonData);
-      message.success("Lesson updated successfully");
       onSuccess();
     } catch (error) {
       message.error("Failed to update lesson");

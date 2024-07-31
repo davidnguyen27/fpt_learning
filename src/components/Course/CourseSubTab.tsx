@@ -1,5 +1,4 @@
 import { FC, useState, useEffect } from "react";
-import { CourseSubTabProps } from "../../models/Types";
 import {
   MenuUnfoldOutlined,
   PlayCircleOutlined,
@@ -8,13 +7,19 @@ import {
   DislikeOutlined,
   ShareAltOutlined,
 } from "@ant-design/icons";
-import { Rate } from "antd";
+import { Rate, Button } from "antd";
 import useCourseDetailClient from "../../hooks/course/useCourseDetailClient";
+import ModalAddReview from "../Modal/ModalAddReview";
+import useAddReview from "../../hooks/review/useAddReview";
+import useReviewDataClient from "../../hooks/review/useReviewDataClient";
+import { CourseSubTabProps } from "../../models/Types";
 import {
   getSubscriptionBySubscriberAPI,
   createUpdateSubscriptionAPI,
 } from "../../services/subscriptionService";
 import { formatTime } from "../../utils/formatTime";
+
+import { Review } from "../../models/Review";
 
 const CourseSubTab: FC<CourseSubTabProps> = ({
   _id,
@@ -26,6 +31,17 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
   const [openSessions, setOpenSessions] = useState<string[]>([]);
   const { course } = useCourseDetailClient(_id);
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const { createReview } = useAddReview(() => {
+    // Handle success callback if needed
+  });
+
+  const {
+    data: reviews,
+    loading,
+    error,
+    refetchData,
+  } = useReviewDataClient(_id);
 
   const toggleSession = (index: number) => {
     const indexString = index.toString();
@@ -56,7 +72,6 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
       console.error("Failed to fetch subscription", error);
     }
   };
-
   const handleSubscribeClick = async () => {
     try {
       const instructor_id = course?.instructor_id;
@@ -75,6 +90,13 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
     } catch (error) {
       console.error("Failed to subscribe/unsubscribe", error);
     }
+  };
+
+  const handleAddReview = (reviewData: Review) => {
+    setIsModalVisible(false);
+    createReview(reviewData).then(() => {
+      refetchData();
+    });
   };
 
   useEffect(() => {
@@ -136,87 +158,56 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
   );
 
   const CourseReview = () => (
-    <div className="grid grid-cols-2 gap-2 sm:grid-cols-1">
-      <div className="mt-10 bg-slate-200 p-6">
+    <>
+      <div className="mt-10 rounded-lg bg-slate-200 p-6">
         <h1 className="text-2xl font-semibold">Rating</h1>
         <div className="mt-3 bg-neutral-100 p-4">
-          <span className="font-medium">4.6</span>
-          <Rate className="mx-4" defaultValue={4.6} />
+          <span className="ml-2 text-lg text-yellow-500">
+            {course?.average_rating}
+          </span>
+          <Rate className="mx-4" defaultValue={course?.average_rating} />
           <span className="font-medium">Course rating</span>
-        </div>
-        <div className="my-5 flex items-center justify-between space-x-4">
-          <div className="relative h-4 flex-1 overflow-hidden rounded-md bg-neutral-100">
-            <div
-              className="absolute left-0 top-0 h-full bg-red-500"
-              style={{ width: "70%" }}
-            ></div>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Rate className="my-4" allowHalf defaultValue={2.5} />
-            <span className="font-medium">70%</span>
-          </div>
-        </div>
-        <div className="my-5 flex items-center justify-between space-x-4">
-          <div className="relative h-4 flex-1 overflow-hidden rounded-md bg-neutral-100">
-            <div
-              className="absolute left-0 top-0 h-full bg-red-500"
-              style={{ width: "40%" }}
-            ></div>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Rate className="my-4" allowHalf defaultValue={2.5} />
-            <span className="font-medium">40%</span>
-          </div>
-        </div>
-        <div className="my-5 flex items-center justify-between space-x-4">
-          <div className="relative h-4 flex-1 overflow-hidden rounded-md bg-neutral-100">
-            <div
-              className="absolute left-0 top-0 h-full bg-red-500"
-              style={{ width: "5%" }}
-            ></div>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Rate className="my-4" allowHalf defaultValue={2.5} />
-            <span className="font-medium">5%</span>
-          </div>
-        </div>
-        <div className="my-5 flex items-center justify-between space-x-4">
-          <div className="relative h-4 flex-1 overflow-hidden rounded-md bg-neutral-100">
-            <div
-              className="absolute left-0 top-0 h-full bg-red-500"
-              style={{ width: "1%" }}
-            ></div>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Rate className="my-4" allowHalf defaultValue={2.5} />
-            <span className="font-medium">1%</span>
-          </div>
         </div>
       </div>
       <div>
-        <h1 className="my-10 text-2xl font-semibold">Student review</h1>
-        <article className="bg-slate-200 px-6 py-3">
-          <div className="flex items-center">
-            <img
-              className="mr-3 h-10 w-10 rounded-3xl"
-              src="https://cdn-media.sforum.vn/storage/app/media/wp-content/uploads/2023/11/avatar-vo-tri-thumbnail.jpg"
-              alt=""
-            />
-            <div>
-              <span className="font-medium">John Doe</span>
-              <br />
-              <span className="text-sm font-light">2 hour ago</span>
+        <h1 className="my-10 text-2xl font-semibold">Student Reviews</h1>
+        {loading ? (
+          <p>Loading reviews...</p>
+        ) : error ? (
+          <p>{error}</p>
+        ) : reviews.length === 0 ? (
+          <p>No reviews available.</p>
+        ) : (
+          reviews.map((review) => (
+            <div key={review._id} className="mb-8 rounded-lg bg-slate-200 p-4">
+              <div className="mb-2 flex items-center">
+                <span className="font-bold text-black">
+                  {review.reviewer_name}
+                </span>
+                <Rate disabled defaultValue={review.rating} className="ml-2" />
+              </div>
+              <div className="mb-2 text-sm text-gray-500">
+                {new Date(review.created_at).toLocaleDateString()}
+              </div>
+              <p className="font-semibold">{review.comment}</p>
             </div>
-          </div>
-          <Rate className="my-4" allowHalf defaultValue={2.5} />
-          <p className="text-sm">
-            Nam gravida elit a velit rutrum, eget dapibus ex elementum. Interdum
-            et malesuada fames ac ante ipsum primis in faucibus. Fusce lacinia,
-            nunc sit amet tincidunt venenatis.
-          </p>
-        </article>
+          ))
+        )}
       </div>
-    </div>
+      <Button
+        type="primary"
+        onClick={() => setIsModalVisible(true)}
+        className="mt-6"
+      >
+        Create Review
+      </Button>
+      <ModalAddReview
+        visible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+        onSubmit={handleAddReview}
+        course_id={_id}
+      />
+    </>
   );
 
   return (
@@ -288,18 +279,16 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
         </button>
         <button
           className={`text-[16px] font-medium text-black ${
-            activeTab === "reviews" ? "border-b-2 border-[#ed2a26] p-2" : "p-2"
+            activeTab === "review" ? "border-b-2 border-[#ed2a26] p-2" : "p-2"
           }`}
-          onClick={() => setActiveTab("reviews")}
+          onClick={() => setActiveTab("review")}
         >
-          Reviews
+          Review
         </button>
       </div>
-      <div>
-        {activeTab === "about" && <AboutTabContent />}
-        {activeTab === "content" && <CourseContentTabContent />}
-        {activeTab === "reviews" && <CourseReview />}
-      </div>
+      {activeTab === "about" && <AboutTabContent />}
+      {activeTab === "content" && <CourseContentTabContent />}
+      {activeTab === "review" && <CourseReview />}
     </div>
   );
 };

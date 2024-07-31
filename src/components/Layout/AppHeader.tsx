@@ -179,7 +179,7 @@ const AppHeader = () => {
             {user?.data.role === "student" && (
               <Badge count={cartItemCount}>
                 <ShoppingCartOutlined
-                  style={{ fontSize: "1.5em" }}
+                  className="cursor-pointer rounded-md bg-slate-200 text-xl transition-transform duration-300 hover:scale-105 hover:bg-slate-300"
                   onClick={handleShoppingCart}
                 />
               </Badge>
@@ -187,16 +187,16 @@ const AppHeader = () => {
             {user?.data.role === "instructor" && (
               <Badge>
                 <ShoppingCartOutlined
-                  style={{ fontSize: "1.5em" }}
+                  className="cursor-pointer text-xl transition-colors duration-300 hover:text-blue-500"
                   onClick={handleShoppingCart}
                 />
               </Badge>
             )}
-            <Badge>
-              <MailOutlined style={{ fontSize: "1.5em", cursor: "pointer" }} />
+            <Badge count={1}>
+              <MailOutlined className="cursor-pointer rounded-md bg-slate-200 text-xl transition-transform duration-300 hover:scale-105 hover:bg-slate-300" />
             </Badge>
-            <Badge>
-              <BellOutlined style={{ fontSize: "1.5em", cursor: "pointer" }} />
+            <Badge count={1}>
+              <BellOutlined className="cursor-pointer rounded-md bg-slate-200 text-xl transition-transform duration-300 hover:scale-105 hover:bg-slate-300" />
             </Badge>
             <Dropdown menu={{ items }}>
               <a className="mr-9 flex" onClick={(e) => e.preventDefault()}>

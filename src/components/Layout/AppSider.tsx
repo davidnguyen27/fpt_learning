@@ -10,6 +10,7 @@ import {
   HomeOutlined,
   QuestionCircleOutlined,
   SettingOutlined,
+  SketchOutlined,
 } from "@ant-design/icons";
 
 interface AppSiderProps {
@@ -47,6 +48,9 @@ const AppSider: React.FC<AppSiderProps> = ({ isVisible, onClose }) => {
         break;
       case "11":
         navigate("/report-page");
+        break;
+      case "12":
+        navigate("/blog");
         break;
       default:
         break;
@@ -109,6 +113,11 @@ const AppSider: React.FC<AppSiderProps> = ({ isVisible, onClose }) => {
       key: "11",
       icon: <FlagOutlined />,
       label: "Report",
+    },
+    {
+      key: "12",
+      icon: <SketchOutlined />,
+      label: "Blog",
     },
   ];
 

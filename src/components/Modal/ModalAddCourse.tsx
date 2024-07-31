@@ -27,7 +27,7 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
         const categoriesData = await getCategoriesAPI("", 1, 10, false);
         setCategories(categoriesData.data.pageData);
       } catch (error: any) {
-        throw new Error(error.message);
+        console.error("Failed to fetch categories:", error);
       } finally {
         setCategoriesLoading(false);
       }
@@ -104,14 +104,17 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
       confirmLoading={loading}
       width={700}
       footer={[
-        <Button key="cancel" className="mr-3" onClick={handleCancel}>
+        <Button
+          key="cancel"
+          className="mr-3"
+          onClick={handleCancel}
+        >
           Cancel
         </Button>,
         <Button
           key="submit"
           type="primary"
           className="rounded-md bg-red-500 px-4 py-1"
-          loading={loading} // This will show a loading spinner inside the button
           onClick={handleSubmit}
         >
           Add
@@ -155,25 +158,19 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
           label="Description"
           name="description"
           rules={[{ required: true, message: "Description is required!" }]}
-          // valuePropName="value"
-          // getValueFromEvent={(e: any) => e.target.getContent()}
         >
           <Input className="text-sm" size="large" placeholder="Description" />
         </Form.Item>
-
         <Form.Item
-          label="Content"
-          name="content"
-          rules={[{ required: true, message: "Content is required!" }]}
-        >
+        label="Content"
+        name="content">
           <Tiny
-            value={form.getFieldValue("content") || ""}
-            onChange={(value: string) =>
-              form.setFieldsValue({ content: value })
-            }
+            value={form.getFieldValue('content') || ''}
+            onChange={(value: string) => {
+              form.setFieldsValue({ content: value });
+            }}
           />
-        </Form.Item>
-
+          </Form.Item>
         <Form.Item
           label="Video"
           name="video_url"
@@ -181,7 +178,7 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
         >
           <Input className="text-sm" size="large" placeholder="Video URL" />
         </Form.Item>
-
+        
         <Form.Item
           label="Image"
           name="image_url"
@@ -193,10 +190,7 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
         <Form.Item
           label="Price"
           name="price"
-          rules={[
-            { required: true, message: "Price is required!" },
-            { validator: validateNumber },
-          ]}
+          rules={[{ required: true, message: "Price is required!" }, { validator: validateNumber }]}
         >
           <Input
             type="number"
@@ -209,10 +203,8 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
         <Form.Item
           label="Discount"
           name="discount"
-          rules={[
-            { required: true, message: "Discount is required!" },
-            { validator: validateNumber },
-          ]}
+          rules={[{ required: true, message: "Discount is required!" }, 
+            { validator: validateNumber }]}
         >
           <Input
             type="number"

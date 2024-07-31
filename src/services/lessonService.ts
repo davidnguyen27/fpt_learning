@@ -65,23 +65,42 @@ export const editLessonAPI = async (
 ): Promise<Lesson> => {
   try {
     const token = sessionStorage.getItem("token");
+
     if (!token) throw new Error("Cannot get token!");
+
+    // Ensure user_id is included in the data to be sent
+    const updatedLessonData = {
+      ...lessonData,
+      user_id: lessonData.user_id, // Use user_id from lessonData
+    };
 
     const res = await axios.put(
       `${APILink}/api/lesson/${lessonId}`,
-      lessonData,
+      updatedLessonData,
       {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-      },
+      }
     );
+
     return { ...res.data.data, _id: lessonId };
   } catch (error: any) {
-    throw new Error(error);
+    // Enhanced error logging
+    if (error.response) {
+      console.error("API Request Error:", error.message);
+    } else if (error.request) {
+      console.error("API No Response Received:", error.request);
+    } else {
+      
+    }
+    throw new Error(error.response?.data?.message || error.message || "An error occurred while updating the lesson");
   }
 };
+
+
+
 
 export const deleteLessonAPI = async (lessonId: string) => {
   try {
@@ -166,4 +185,3 @@ export const getSessionsAPI = async (
     throw new Error(error.message || "An error occurred while fetching sessions");
   }
 };
-
