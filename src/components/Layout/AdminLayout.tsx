@@ -3,9 +3,9 @@ import { Layout } from "antd";
 import Sider from "antd/es/layout/Sider";
 import { Content, Footer, Header } from "antd/es/layout/layout";
 import { useSider } from "../../app/context/SiderContext";
-import AppHeader from "./AppHeader";
 import AppFooter from "./AppFooter";
 import SiderAdmin from "../Admin/SiderAdmin";
+import AppHeaderControl from "./AppHeaderControl";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -17,7 +17,7 @@ const AdminLayout: React.FC<MainLayoutProps> = ({ children }) => {
   return (
     <Layout className="flex h-screen w-screen flex-col">
       <Header className="header">
-        <AppHeader />
+        <AppHeaderControl />
       </Header>
       <Layout className="flex flex-1 overflow-y-auto">
         <Sider

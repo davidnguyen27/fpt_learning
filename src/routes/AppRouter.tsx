@@ -2,9 +2,8 @@ import React, { Suspense, useContext } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { AuthContext, AuthProvider } from "../app/context/AuthContext";
 import Loading from "../components/Loading/loading";
-import { Spin } from "antd";
 
-//-------------------------------------------------USER------------------------------------------------
+//-----------------------------------------------USER------------------------------------------------
 const HomePage = React.lazy(() => import("../pages/User/HomePage"));
 const DetailCoursePage = React.lazy(
   () => import("../pages/User/detailCoursePage"),
@@ -82,15 +81,13 @@ const StudentVerifyPage = React.lazy(() => import("../pages/User/VerifyPage"));
 const UserProfilePage = React.lazy(
   () => import("../pages/Student/StudentProfilePage"),
 );
-// const StudentCourseDetailPage = React.lazy(
-//   () => import("../pages/Student/StudentCourseDetailPage"),
-// );
 const StudentCourseListPage = React.lazy(
   () => import("../pages/Student/StudentCourseListPage"),
 );
 const StudentSettingPage = React.lazy(
   () => import("../pages/Student/StudentSettingPage"),
 );
+const ConfirmCheckout = React.lazy(() => import("../components/Checkout/ConfirmCheckOut"))
 
 interface ProtectedRouteProps {
   element: JSX.Element;
@@ -125,13 +122,7 @@ const AppRouter = () => {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Suspense
-          fallback={
-            <Spin tip="Loading" size="large">
-              <Loading />
-            </Spin>
-          }
-        >
+        <Suspense fallback={<Loading />}>
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/about" element={<AboutPage />} />
@@ -197,15 +188,6 @@ const AppRouter = () => {
                 />
               }
             />
-            {/* <Route
-            path="/admin/feedbacks-management"
-            element={
-              <ProtectedRoute
-                element={<FeedBackManagePage />}
-                allowedRoles={["admin"]}
-              />
-            }
-          /> */}
             <Route
               path="/admin/review-profile"
               element={
@@ -242,18 +224,8 @@ const AppRouter = () => {
                 />
               }
             />
-            {/*------------------------------------------------------------------*/}
 
             {/*----------------------------STUDENT-------------------------------*/}
-            {/* <Route
-              path="/view-detail"
-              element={
-                <ProtectedRoute
-                  element={<StudentCourseDetailPage />}
-                  allowedRoles={["student"]}
-                />
-              }
-            /> */}
             <Route
               path="/cart"
               element={
@@ -265,6 +237,15 @@ const AppRouter = () => {
               element={
                 <ProtectedRoute
                   element={<CheckOut />}
+                  allowedRoles={["student"]}
+                />
+              }
+            />
+            <Route
+              path="/confirm-checkout"
+              element={
+                <ProtectedRoute
+                  element={<ConfirmCheckout />}
                   allowedRoles={["student"]}
                 />
               }
@@ -305,7 +286,6 @@ const AppRouter = () => {
                 />
               }
             />
-            {/*------------------------------------------------------------------*/}
 
             {/*---------------------------INSTRUCTOR-----------------------------*/}
             <Route
@@ -381,7 +361,6 @@ const AppRouter = () => {
               }
             />
           </Routes>
-          {/*------------------------------------------------------------------*/}
         </Suspense>
       </AuthProvider>
     </BrowserRouter>

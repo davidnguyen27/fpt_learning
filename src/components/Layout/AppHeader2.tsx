@@ -1,8 +1,14 @@
-import { Layout, Dropdown, Space, MenuProps, Button } from "antd";
 import React from "react";
+import { Layout, Dropdown, Space, MenuProps, Button } from "antd";
 import { useNavigate } from "react-router-dom";
-import "../../styles/header.css";
 import { useAuth } from "../../app/context/AuthContext";
+import {
+  AreaChartOutlined,
+  ContactsOutlined,
+  LogoutOutlined,
+  RetweetOutlined,
+} from "@ant-design/icons";
+
 const { Header } = Layout;
 
 const AppHeader2: React.FC = () => {
@@ -18,17 +24,17 @@ const AppHeader2: React.FC = () => {
     if (user?.data.role === "admin") {
       navigate("/admin-profile-page");
     } else if (user?.data.role === "instructor") {
-      navigate("/instructor-profile-page");
+      navigate("/user-profile-page");
     } else {
-      navigate("/student-profile-page");
+      navigate("/user-profile-page");
     }
   };
 
   const handleManagement = () => {
     if (user?.data.role === "admin") {
-      navigate("/admin-dashboard");
+      navigate("/admin/dashboard");
     } else if (user?.data.role === "instructor") {
-      navigate("/instructor-course-list-page");
+      navigate("/instructor/dashboard");
     } else {
       navigate("/student-course-list-page");
     }
@@ -37,19 +43,26 @@ const AppHeader2: React.FC = () => {
   const items: MenuProps["items"] = [
     {
       key: "0",
-      label: <a onClick={handleView}>Profile</a>,
+      label: (
+        <a onClick={handleView}>
+          <ContactsOutlined /> Profile
+        </a>
+      ),
     },
     {
       key: "1",
       label: (
         <a onClick={handleManagement}>
-          {user?.data.role === "admin" ? "Dashboard" : "My Course"}
+          <AreaChartOutlined />{" "}
+          {user?.data.role === "admin" || "instructor"
+            ? "Dashboard"
+            : "My Course"}
         </a>
       ),
     },
     {
       key: "2",
-      label: <a href="/paid-memberships">Paid Memberships</a>,
+      label: <a href="/paid-membership">Paid Memberships</a>,
     },
     {
       key: "3",
@@ -61,11 +74,19 @@ const AppHeader2: React.FC = () => {
     },
     {
       key: "5",
-      label: <a href="/feedback">Send Feedback</a>,
+      label: (
+        <a href="/user/change-password">
+          <RetweetOutlined /> Change Password
+        </a>
+      ),
     },
     {
-      label: <a onClick={handleLogout}>Logout</a>,
       key: "6",
+      label: (
+        <a onClick={handleLogout}>
+          <LogoutOutlined /> Logout
+        </a>
+      ),
     },
   ];
 
@@ -112,7 +133,7 @@ const AppHeader2: React.FC = () => {
             danger
             onClick={() => navigate("/sign-up")}
           >
-            Sign Up
+            Sign Up Create new Course
           </Button>
         </>
       )}

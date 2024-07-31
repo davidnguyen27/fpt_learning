@@ -1,21 +1,57 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useCourseDetailClient from "../../hooks/course/useCourseDetailClient";
 import { StarFilled } from "@ant-design/icons";
 import { Button, Modal, notification } from "antd";
-import { createCartAPI } from "../../services/cartService";
+import { createCartAPI, getCartsAPI } from "../../services/cartService";
 import Loading from "../Loading/loading";
+import { useAuth } from "../../app/context/AuthContext";
+import { CartData, DataTransfer } from "../../models/Cart";
 
 const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
   const [visible, setVisible] = useState(false);
   const { course, loading, error } = useCourseDetailClient(_id);
   const [isAddToCartModalVisible, setIsAddToCartModalVisible] =
     useState<boolean>(false);
-  const [isCourseInCart, setIsCourseInCart] = useState<boolean>(false);
+  const [buttonText, setButtonText] = useState<string>("Add to cart");
+
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    setIsCourseInCart(false);
-  }, [_id]);
+    const checkCourseStatus = async () => {
+      if (user && course) {
+        try {
+          const dataTransfer: DataTransfer = {
+            searchCondition: {
+              status: "",
+              is_deleted: false,
+            },
+            pageInfo: { pageNum: 1, pageSize: 10 },
+          };
+          const carts: CartData[] = await getCartsAPI(dataTransfer);
+
+          const cartItem = carts.find((cart) => cart.course_id === course._id);
+
+          if (cartItem) {
+            if (cartItem.status === "completed") {
+              setButtonText("Learn Now");
+            } else if (cartItem.status === "waiting_paid") {
+              setButtonText("Check out now");
+            } else {
+              setButtonText("In Cart");
+            }
+          } else {
+            setButtonText("Add to cart");
+          }
+        } catch (error: any) {
+          console.error("Error fetching cart status:", error.message);
+        }
+      }
+    };
+
+    checkCourseStatus();
+  }, [user, course]);
 
   if (loading) {
     return (
@@ -29,8 +65,21 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
   const showModal = () => setVisible(true);
   const handleOk = () => setVisible(false);
 
-  const showAddToCartModal = () => setIsAddToCartModalVisible(true);
+  const showAddToCartModal = () => {
+    if (!user) {
+      notification.info({
+        message: "Please login",
+        description: "Please login to add this course to cart.",
+        placement: "topRight",
+      });
+      navigate("/sign-in");
+    } else {
+      setIsAddToCartModalVisible(true);
+    }
+  };
+
   const handleAddToCartCancel = () => setIsAddToCartModalVisible(false);
+
   const handleAddToCartOk = async () => {
     try {
       if (!course) throw new Error("No course data available!");
@@ -42,7 +91,7 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
         placement: "topRight",
       });
       setIsAddToCartModalVisible(false);
-      setIsCourseInCart(true);
+      setButtonText("Check out now");
     } catch (error: any) {
       notification.error({
         message: "Error",
@@ -58,6 +107,16 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
     return match ? match[1] : null;
   };
 
+  const handleButtonClick = () => {
+    if (buttonText === "Learn Now") {
+      navigate(`/course/${course?._id}`);
+    } else if (buttonText === "Check out now") {
+      navigate("/confirm-checkout");
+    } else if (buttonText === "Add to cart") {
+      showAddToCartModal();
+    }
+  };
+
   return (
     <div className="bg-[#333333] p-4">
       <div className="flex rounded-lg p-8">
@@ -67,9 +126,6 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
             src={course?.image_url || "/path/to/default-thumbnail.jpg"}
             alt="Course Thumbnail"
           />
-          {/* <div className="absolute left-0 top-0 rounded-bl-md rounded-tr-md bg-orange-500 px-2 py-1 text-white">
-            BESTSELLER
-          </div> */}
           <div className="absolute bottom-0 left-0 w-full bg-black bg-opacity-50 px-2 py-1 text-center text-white">
             Preview this course
           </div>
@@ -102,17 +158,9 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
           </span>
           <span className="ml-3 text-red-400">${course?.price_paid}</span>
           <div className="mt-4 flex space-x-2">
-            {isCourseInCart ? (
-              <Link to="/cart">
-                <Button type="primary" danger>
-                  Go to cart
-                </Button>
-              </Link>
-            ) : (
-              <Button type="primary" danger onClick={showAddToCartModal}>
-                Add to cart
-              </Button>
-            )}
+            <Button type="primary" danger onClick={handleButtonClick}>
+              {buttonText}
+            </Button>
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Badge, Button, Dropdown, MenuProps, Space } from "antd";
 import {
@@ -14,10 +14,9 @@ import {
 import { useAuth } from "../../app/context/AuthContext";
 import "../../styles/header.css";
 import "../../styles/sider.css";
-import AppSider from "./AppSider";
+import { useSider } from "../../app/context/SiderContext";
 
 const AppHeader: React.FC = () => {
-  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const navigate = useNavigate();
   const { logout } = useAuth();
 
@@ -109,15 +108,13 @@ const AppHeader: React.FC = () => {
     },
   ];
 
-  const toggleSidebar = () => {
-    setIsSidebarVisible(!isSidebarVisible);
-  };
+  const { toggleSider } = useSider();
 
   return (
     <>
       <div className="wrapper-50">
         <div className="styles-x-axis">
-          <div className="menu-bar" onClick={toggleSidebar}>
+          <div className="menu-bar" onClick={toggleSider}>
             <MenuOutlined style={{ fontSize: "24px" }} />
           </div>
           <a href="/" className="logo-box">
@@ -151,7 +148,7 @@ const AppHeader: React.FC = () => {
         {user ? (
           <>
             {user?.data.role === "student" && (
-              <Badge>
+              <Badge count={1}>
                 <ShoppingCartOutlined
                   style={{ fontSize: "1.5em" }}
                   onClick={handleShoppingCart}
@@ -159,17 +156,17 @@ const AppHeader: React.FC = () => {
               </Badge>
             )}
             {user?.data.role === "instructor" && (
-              <Badge>
+              <Badge count={1}>
                 <ShoppingCartOutlined
                   style={{ fontSize: "1.5em" }}
                   onClick={handleShoppingCart}
                 />
               </Badge>
             )}
-            <Badge>
+            <Badge count={1}>
               <MailOutlined style={{ fontSize: "1.5em", cursor: "pointer" }} />
             </Badge>
-            <Badge >
+            <Badge count={1}>
               <BellOutlined style={{ fontSize: "1.5em", cursor: "pointer" }} />
             </Badge>
             <Dropdown menu={{ items }}>
@@ -217,7 +214,6 @@ const AppHeader: React.FC = () => {
           </div>
         )}
       </div>
-      <AppSider isVisible={isSidebarVisible} onClose={toggleSidebar} />
     </>
   );
 };

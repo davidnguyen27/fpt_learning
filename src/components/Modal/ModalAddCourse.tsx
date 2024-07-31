@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Form, Input, Modal, Select, Button } from "antd";
+import { Form, Input, Modal, Select, Button, notification } from "antd";
 import useAddCourse from "../../hooks/course/useAddCourse";
 import { getCategoriesAPI } from "../../services/coursesService";
 import { Category } from "../../models/Category";
@@ -49,15 +49,12 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
       form.resetFields();
       setOpen(false);
     } catch (error: any) {
-      console.error("Submission error:", error);
-      // Display detailed validation errors
-      if (error.errorFields) {
-        error.errorFields.forEach((field: any) => {
-          console.error(`Field: ${field.name}, Error: ${field.errors}`);
-        });
-      }
-      throw new Error(error.message || "Submission failed");
+      notification.error({
+        message: "Error",
+        description: `Failed to add course: ${error.message}`,
+      });
     }
+    return Promise.resolve();
   };
 
   const handleCancel = () => {
@@ -65,24 +62,27 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
     setOpen(false);
   };
 
-  const validateMediaUrl = async (_: any) => {
+  const validateMediaUrl = () => {
+    const videoUrl = form.getFieldValue("video_url");
+    const imageUrl = form.getFieldValue("image_url");
     const isValidUrl = (url: string) => {
       try {
-        const parsedUrl = new URL(url);
-        // Ensure it's not a base64 URL
-        return parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:';
+        new URL(url);
+        return true;
       } catch {
         return false;
       }
     };
-  
-    const videoUrl = form.getFieldValue("video_url");
-    const imageUrl = form.getFieldValue("image_url");
-  
+
     if (!videoUrl && !imageUrl) {
-      return Promise.reject(new Error("Either video URL or image URL is required!"));
+      return Promise.reject(
+        new Error("Either video URL or image URL is required!"),
+      );
     }
-    if ((videoUrl && !isValidUrl(videoUrl)) || (imageUrl && !isValidUrl(imageUrl))) {
+    if (
+      (videoUrl && !isValidUrl(videoUrl)) ||
+      (imageUrl && !isValidUrl(imageUrl))
+    ) {
       return Promise.reject(new Error("Please enter a valid URL!"));
     }
     return Promise.resolve();
@@ -115,7 +115,6 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
           key="submit"
           type="primary"
           className="rounded-md bg-red-500 px-4 py-1"
-          loading={loading}
           onClick={handleSubmit}
         >
           Add
@@ -160,18 +159,18 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
           name="description"
           rules={[{ required: true, message: "Description is required!" }]}
         >
+          <Input className="text-sm" size="large" placeholder="Description" />
+        </Form.Item>
+        <Form.Item
+        label="Content"
+        name="content">
           <Tiny
-            value={form.getFieldValue('description') || ''}
+            value={form.getFieldValue('content') || ''}
             onChange={(value: string) => {
-              form.setFieldsValue({ description: value });
+              form.setFieldsValue({ content: value });
             }}
           />
-        </Form.Item>
-
-        <Form.Item label="Content" name="content">
-          <Input className="text-sm" size="large" placeholder="Content" />
-        </Form.Item>
-
+          </Form.Item>
         <Form.Item
           label="Video"
           name="video_url"
@@ -204,7 +203,8 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
         <Form.Item
           label="Discount"
           name="discount"
-          rules={[{ required: true, message: "Discount is required!" }, { validator: validateNumber }]}
+          rules={[{ required: true, message: "Discount is required!" }, 
+            { validator: validateNumber }]}
         >
           <Input
             type="number"

@@ -4,18 +4,23 @@ import { DataTransfer } from "../../models/Course";
 import useCourseDataClient from "../../hooks/course/useCourseDataClient";
 import { Rate } from "antd";
 
-const CourseCard: React.FC = () => {
+interface CourseCardProps {
+  category_id: string;
+}
+
+const CourseCard: React.FC<CourseCardProps> = (props) => {
+  const { category_id } = props;
   const navigate = useNavigate();
   const [searchKeyword] = useState<string>("");
 
   const searchCondition = useMemo(
     () => ({
       keyword: searchKeyword,
-      category_id: "",
+      category_id,
       status: "",
       is_delete: false,
     }),
-    [searchKeyword]
+    [searchKeyword, category_id],
   );
 
   const pageInfo = useMemo(

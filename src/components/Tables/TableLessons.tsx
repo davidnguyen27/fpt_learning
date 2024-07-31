@@ -1,16 +1,15 @@
 import { DeleteOutlined, FormOutlined } from "@ant-design/icons";
-import { Table, Spin, Modal, Select, Input } from "antd";
+import { Table, Spin, Modal, Input } from "antd";
 import { DataTransfer } from "../../models/Lesson";
 import useLessonsData from "../../hooks/lesson/useLessonData";
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo} from "react";
 import ModalAddLesson from "../Modal/ModalAddLesson";
 import useDeleteLesson from "../../hooks/lesson/useDeleteLesson";
 import ModalEditLesson from "../Modal/ModalEditLesson";
 import type { ColumnsType } from "antd/es/table";
-import { Course } from "../../models/Course";
 
 const { Search } = Input;
-const { Option } = Select;
+
 
 interface DataType {
   key: string;
@@ -27,16 +26,13 @@ const TableLessons = () => {
   const [openAdd, setOpenAdd] = useState<boolean>(false);
   const [openEdit, setOpenEdit] = useState<boolean>(false);
   const [editingLessonId, setEditingLessonId] = useState<string | null>(null);
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [selectedCourse, setSelectedCourse] = useState<string>("");
+
 
   const handleSearch = (value: string) => {
     setSearchKeyword(value);
   };
 
-  const handleCourseChange = useCallback((value: string) => {
-    setSelectedCourse(value);
-  }, []);
+
 
   const handleSuccess = () => {
     refetchData();
@@ -151,18 +147,7 @@ const TableLessons = () => {
           allowClear
           style={{ width: 300 }}
         />
-        <Select
-          onChange={handleCourseChange}
-          placeholder="Filter by course"
-          allowClear
-          className="w-full md:w-1/3"
-        >
-          {courses.map((course) => (
-            <Option key={course._id} value={course._id}>
-              {course.name}
-            </Option>
-          ))}
-        </Select>
+        
         <button
           onClick={() => setOpenAdd(true)}
           className="rounded-lg bg-red-500 px-5 py-2 text-sm font-medium text-white hover:bg-red-600"
