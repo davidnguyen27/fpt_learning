@@ -2,10 +2,6 @@ import { FC, useState, useEffect } from "react";
 import {
   MenuUnfoldOutlined,
   PlayCircleOutlined,
-  EyeOutlined,
-  LikeOutlined,
-  DislikeOutlined,
-  ShareAltOutlined,
 } from "@ant-design/icons";
 import { Rate, Button } from "antd";
 import useCourseDetailClient from "../../hooks/course/useCourseDetailClient";
@@ -210,24 +206,6 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
               >
                 {isSubscribed ? "Subscribed" : "Subscribe"}
               </button>
-            </div>
-          </div>
-          <div className="mr-[200px] flex gap-1">
-            <div className="flex flex-col items-center rounded-sm border px-5 py-3">
-              <EyeOutlined className="size-[18px]" />
-              <span className="mt-[5px]">1452</span>
-            </div>
-            <div className="flex flex-col items-center rounded-sm border px-5 py-3">
-              <LikeOutlined className="size-[18px]" />
-              <span className="mt-[5px]">100</span>
-            </div>
-            <div className="flex flex-col items-center rounded-sm border px-5 py-3">
-              <DislikeOutlined className="size-[18px]" />
-              <span className="mt-[5px]">20</span>
-            </div>
-            <div className="flex flex-col items-center rounded-sm border px-5 py-3">
-              <ShareAltOutlined className="size-[18px]" />
-              <span className="mt-[5px]">9</span>
             </div>
           </div>
         </div>

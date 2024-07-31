@@ -43,31 +43,31 @@ const Subscriptions: React.FC = () => {
     <div className="p-6 max-w-4xl mx-auto">
       <Title level={2} className="text-center mb-6">Subscriptions</Title>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {loading ? (
-          <div className="flex justify-center items-center w-full">
-            <Spin size="large" />
-          </div>
-        ) : subscriptions.length > 0 ? (
-          subscriptions.map((subscription) => (
-            <Card key={subscription.id} className="shadow-lg">
-              <div className="flex items-center">
-                <Avatar src={subscription.set} size={64} />
-                <div className="ml-4">
-                  <Title level={4}>{subscription.instructor_name}</Title>
-                  <Text>{subscription.name}</Text>
-                </div>
-              </div>
-              <div className="mt-4 flex justify-between items-center">
-                <Button type="primary" danger>Subscribed</Button>
-                <Button icon={<BellOutlined />} />
-              </div>
-            </Card>
-          ))
-        ) : (
-          <div className="text-center w-full">
-            <Text>No subscriptions found.</Text>
-          </div>
-        )}
+      {loading ? (
+  <div className="flex justify-center items-center w-full">
+    <Spin size="large" />
+  </div>
+) : subscriptions.length > 0 ? (
+  subscriptions.map((subscription) => (
+    <Card key={subscription.id} className="shadow-lg">
+      <div className="flex items-center">
+        <Avatar src={subscription.avatar_url} size={64} />
+        <div className="ml-4">
+          <Title level={4}>{subscription.instructor_name}</Title>
+          <Text>{subscription.name}</Text>
+        </div>
+      </div>
+      <div className="mt-4 flex justify-between items-center">
+        <Button type="primary" danger>Subscribed</Button>
+        <Button icon={<BellOutlined />} />
+      </div>
+    </Card>
+  ))
+) : (
+  <div className="text-center w-full">
+    <Text>No subscriptions found.</Text>
+  </div>
+)}
       </div>
     </div>
   );
