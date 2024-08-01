@@ -10,7 +10,8 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
   const [visible, setVisible] = useState(false);
   const [course, setCourse] = useState<CourseClient | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [isAddToCartModalVisible, setIsAddToCartModalVisible] = useState<boolean>(false);
+  const [isAddToCartModalVisible, setIsAddToCartModalVisible] =
+    useState<boolean>(false);
   const [buttonText, setButtonText] = useState<string>("Add to cart");
 
   const { user } = useAuth();
@@ -71,7 +72,9 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
       await createCartAPI({ course_id: course._id });
 
       // Update UI state
-      setCourse((prevCourse) => prevCourse ? { ...prevCourse, is_in_cart: true } : null);
+      setCourse((prevCourse) =>
+        prevCourse ? { ...prevCourse, is_in_cart: true } : null,
+      );
 
       notification.success({
         message: "Success",
@@ -91,7 +94,8 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
   };
 
   const extractYoutubeVideoId = (url: string) => {
-    const regExp = /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+    const regExp =
+      /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
     const match = url.match(regExp);
     return match ? match[1] : null;
   };
@@ -108,10 +112,13 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
 
   return (
     <div className="bg-[#333333] p-4">
-      <div className="flex rounded-lg p-8">
-        <div className="relative" onClick={showModal}>
+      <div className="flex flex-col rounded-lg p-4 md:flex-row md:p-8">
+        <div
+          className="relative mb-4 w-full md:mb-0 md:w-1/2 lg:w-1/3"
+          onClick={showModal}
+        >
           <img
-            className="max-w-lg cursor-pointer border-4 border-white"
+            className="w-full cursor-pointer border-4 border-white object-cover"
             src={course?.image_url || "/path/to/default-thumbnail.jpg"}
             alt="Course Thumbnail"
           />
@@ -119,39 +126,59 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
             Preview this course
           </div>
         </div>
-        <div className="ml-4 text-white">
-          <h2 className="text-2xl font-bold">{course?.name}</h2>
-          <p className="mt-2">{course?.description}</p>
+        <div className="ml-0 text-white md:ml-4 md:w-1/2 lg:w-2/3">
+          <h2 className="text-xl font-bold md:text-2xl">{course?.name}</h2>
+          <p className="mt-2 text-sm md:text-base">{course?.description}</p>
           <div className="mt-4 flex items-center">
-            <span className="ml-2 text-lg text-yellow-500">
-            <Rate disabled value={course?.average_rating} />
-            </span>
-            <span className="ml-2 text-gray-300">
+            <Rate
+              disabled
+              value={course?.average_rating}
+              className="text-sm md:text-base"
+            />
+            <span className="ml-2 text-sm text-gray-300 md:text-base">
               ({course?.review_count} ratings)
             </span>
           </div>
-          <p className="my-4">By: {course?.instructor_name}</p>
-          <p className="mb-4">Category: {course?.category_name}</p>
-
-          <p className="mb-4">
+          <p className="my-2 text-sm md:my-4 md:text-base">
+            By: {course?.instructor_name}
+          </p>
+          <p className="mb-2 text-sm md:mb-4 md:text-base">
+            Category: {course?.category_name}
+          </p>
+          <p className="mb-2 text-sm md:mb-4 md:text-base">
             Release date:{" "}
             {course?.created_at
               ? new Date(course.created_at).toLocaleDateString()
               : "N/A"}
           </p>
-          <p className="mb-4">Duration: {course?.full_time} hours</p>
-          <span>Price: </span>
-          <span className={`${course?.discount !== 0 ? "line-through" : ""} text-gray-400`}>
-            ${course?.price}
-          </span>
-          <span className="ml-3 text-red-400">${course?.price_paid}</span>
+          <p className="mb-2 text-sm md:mb-4 md:text-base">
+            Duration: {course?.full_time} hours
+          </p>
+          <div className="mb-4">
+            <span className="text-sm md:text-base">Price: </span>
+            <span
+              className={`${course?.discount !== 0 ? "line-through" : ""} text-sm text-gray-400 md:text-base`}
+            >
+              ${course?.price}
+            </span>
+            <span className="ml-3 text-sm text-red-400 md:text-base">
+              ${course?.price_paid}
+            </span>
+          </div>
           <div className="mt-4 flex space-x-2">
-            <Button type="primary" danger onClick={handleButtonClick}>
+            <Button
+              type="primary"
+              danger
+              onClick={handleButtonClick}
+              className="text-sm md:text-base"
+            >
               {buttonText}
             </Button>
           </div>
         </div>
       </div>
+
+      {/* Modal for video preview */}
       {visible && course?.video_url && (
         <div
           className="fixed inset-0 z-10 overflow-y-auto"
@@ -169,20 +196,17 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
               aria-hidden="true"
             ></span>
             <div className="inline-block transform overflow-hidden rounded-lg bg-white text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
-              <iframe
-
-                width="560"
-                height="315"
-                src={`https://www.youtube.com/embed/${extractYoutubeVideoId(
-                  course.video_url
-                )}`}
-                title="YouTube video player"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerPolicy="strict-origin-when-cross-origin"
-                allowFullScreen
-              ></iframe>
-
+              <div className="aspect-w-16 aspect-h-9">
+                <iframe
+                  className="w-full"
+                  src={`https://www.youtube.com/embed/${extractYoutubeVideoId(course.video_url)}`}
+                  title="YouTube video player"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
+                ></iframe>
+              </div>
               <button
                 type="button"
                 className="m-2 rounded bg-red-500 p-2 text-white"
@@ -194,6 +218,8 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
           </div>
         </div>
       )}
+
+      {/* Modal for adding to cart */}
       <Modal
         title="Add to Cart"
         visible={isAddToCartModalVisible}

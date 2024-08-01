@@ -2,6 +2,8 @@ import React, { Suspense, useContext } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { AuthContext, AuthProvider } from "../app/context/AuthContext";
 import Loading from "../components/Loading/loading";
+import SearchResultsPage from "../pages/User/SearchResultsPage";
+import CategoryCoursesPage from "../pages/User/CategoryCoursesPage";
 
 //-----------------------------------------------USER------------------------------------------------
 const HomePage = React.lazy(() => import("../pages/User/HomePage"));
@@ -88,7 +90,9 @@ const StudentCourseListPage = React.lazy(
 const StudentSettingPage = React.lazy(
   () => import("../pages/Student/StudentSettingPage"),
 );
-const ConfirmCheckout = React.lazy(() => import("../components/Checkout/ConfirmCheckOut"))
+const ConfirmCheckout = React.lazy(
+  () => import("../components/Checkout/ConfirmCheckOut"),
+);
 
 interface ProtectedRouteProps {
   element: JSX.Element;
@@ -126,6 +130,11 @@ const AppRouter = () => {
         <Suspense fallback={<Loading />}>
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/search" element={<SearchResultsPage />} />;
+            <Route
+              path="/category/:categoryId"
+              element={<CategoryCoursesPage />}
+            />
             <Route path="/about" element={<AboutPage />} />
             <Route path="sign-in" element={<SignInPage />} />
             <Route path="sign-up" element={<SignUpPage />} />
@@ -136,14 +145,13 @@ const AppRouter = () => {
             <Route path="/forgot-password" element={<PasswordReset />} />
             <Route path="/verify-account" element={<StudentVerifyPage />} />
             <Route path="/blog" element={<BlogPage />} />
-            <Route 
+            <Route
               path="/sign-up-instructor"
               element={<RegisterInstructorPage />}
             />
             <Route path="/verify-email/:token" element={<VerifyPage />} />
             <Route path="/user/change-password" element={<ChangePassPage />} />
             <Route path="/admin-login" element={<AdminLoginPage />} />
-
             {/*----------------------------ADMIN---------------------------------*/}
             <Route
               path="/admin/dashboard"
@@ -226,12 +234,14 @@ const AppRouter = () => {
                 />
               }
             />
-
             {/*----------------------------STUDENT-------------------------------*/}
             <Route
               path="/cart"
               element={
-                <ProtectedRoute element={<Cart />} allowedRoles={["student", "instructor"]} />
+                <ProtectedRoute
+                  element={<Cart />}
+                  allowedRoles={["student", "instructor"]}
+                />
               }
             />
             <Route
@@ -288,7 +298,6 @@ const AppRouter = () => {
                 />
               }
             />
-
             {/*---------------------------INSTRUCTOR-----------------------------*/}
             <Route
               path="/instructor/dashboard"
