@@ -13,7 +13,7 @@ export const getCoursesAPI = async (dataTransfer: DataTransfer) => {
   }
 };
 
-export const getCourseAPI = async (courseId: string) => {
+export const getCourseDetailAPI = async (courseId: string) => {
   try {
     const res = await axiosInstance.get(`/api/course/${courseId}`);
     const courseData: Course = res.data.data;
