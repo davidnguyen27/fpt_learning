@@ -2,7 +2,7 @@ import React from "react";
 
 const AppFooter: React.FC = () => {
   return (
-    <footer className="bg-gradient-to-r from-gray-800 to-gray-900 py-12 text-white">
+    <footer className="py-6 text-white">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-4 gap-8 text-sm max-md:grid-cols-2 md:gap-12">
           <div>
@@ -124,9 +124,8 @@ const AppFooter: React.FC = () => {
               className="mb-4 rounded-lg shadow-lg"
             />
             <p className="mb-4 text-xs">
-              Copyright © {new Date().getFullYear()} FPT LearningHub
+              Copyright © {new Date().getFullYear()} FSA Education
             </p>
-
           </div>
         </div>
         <div className="mt-8 border-t border-gray-700 pt-8 text-center text-gray-400">

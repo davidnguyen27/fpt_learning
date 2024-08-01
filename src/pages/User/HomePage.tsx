@@ -7,24 +7,21 @@ import {
 import MainLayout from "../../components/Layout/MainLayout";
 import ImageSlider from "../../components/User/ImageSlide";
 import "../../styles/homepage.css";
+import { Link } from "react-router-dom";
 
 const HomePage: React.FC = () => {
   const slides = [
     {
-      url: "https://fschool.fpt.edu.vn/wp-content/uploads/2024/07/2anh-bia-bai-dang-web.jpg",
+      url: "https://cdn.discordapp.com/attachments/739929914609762425/1267295057216798840/WORKOUT_2.png?ex=66ac387e&is=66aae6fe&hm=d2749e0ab546e2d201fcc5733f916ceff37cb433db25b0f8497fe5d6f5e0abae&",
       title: "beach",
     },
     {
-      url: "https://cdn.discordapp.com/attachments/738116083764035644/1267045175562338385/image.png?ex=66a75b46&is=66a609c6&hm=f7a0012576c20d74d4fa29e89acc624ebe16bfeb59aea63c5ad38830146f7fa1&",
+      url: "https://cdn.discordapp.com/attachments/739929914609762425/1267295056528937083/WORKOUT_3.png?ex=66ac387e&is=66aae6fe&hm=8c85027b59044740bd08c50b933da0a423f1cffc00aae64d3208a77bad825e1a&",
       title: "forest",
     },
     {
-      url: "https://fschool.fpt.edu.vn/wp-content/uploads/2023/04/cover-70ty-01-1-2048x758.jpg",
+      url: "https://cdn.discordapp.com/attachments/739929914609762425/1267295058416373823/WORKOUT.png?ex=66ac387f&is=66aae6ff&hm=67440e2373d21ccc85a961129a95c4055b7f88e492004227d606488078912551&",
       title: "city",
-    },
-    {
-      url: "https://cdn.discordapp.com/attachments/738116083764035644/1267048493592219708/image.png?ex=66a75e5d&is=66a60cdd&hm=0c0bc25f3b5436759b8674e296985c54a4242dcc5a98ffcd1e4bed51ea9e91f7&",
-      title: "italy",
     },
   ];
   const containerStyles: React.CSSProperties = {
@@ -40,54 +37,72 @@ const HomePage: React.FC = () => {
       <section className="mt-10">
         <div className="mb-5 flex w-full justify-between">
           <h1 className="text-xl font-bold">Web Development</h1>
-          <a href="#" className="font-light hover:text-amber-600">
+          <Link
+            to="/category/66827468b5436c3f43c703e7"
+            className="font-light hover:text-amber-600"
+          >
             See all
-          </a>
+          </Link>
         </div>
         <ListCourse category_id="66827468b5436c3f43c703e7" />
       </section>
       <section className="mt-10">
         <div className="mb-5 flex w-full justify-between">
           <h1 className="text-xl font-bold">Information Technology</h1>
-          <a href="#" className="font-light hover:text-amber-600">
+          <Link
+            to="/category/668e2f4bf2c243ced095c6c0"
+            className="font-light hover:text-amber-600"
+          >
             See all
-          </a>
+          </Link>
         </div>
         <ListCourse category_id="668e2f4bf2c243ced095c6c0" />
       </section>
       <section className="mt-10">
         <div className="mb-5 flex w-full justify-between">
           <h1 className="text-xl font-bold">Business</h1>
-          <a href="#" className="font-light hover:text-amber-600">
+          <Link
+            to="/category/66840803c2ef7156100c3f61"
+            className="font-light hover:text-amber-600"
+          >
             See all
-          </a>
+          </Link>
         </div>
         <ListCourse category_id="66840803c2ef7156100c3f61" />
       </section>
       <section className="mt-10">
         <div className="mb-5 flex w-full justify-between">
           <h1 className="text-xl font-bold">Music</h1>
-          <a href="#" className="font-light hover:text-amber-600">
+          <Link
+            to="/category/669f294e396c0261a73f5a7a"
+            className="font-light hover:text-amber-600"
+          >
             See all
-          </a>
+          </Link>
         </div>
         <ListCourse category_id="669f294e396c0261a73f5a7a" />
       </section>
       <section className="mt-10">
         <div className="mb-5 flex w-full justify-between">
           <h1 className="text-xl font-bold">Marketing</h1>
-          <a href="#" className="font-light hover:text-amber-600">
+          <Link
+            to="/category/668f6c0320c527aff59b0f8b"
+            className="font-light hover:text-amber-600"
+          >
             See all
-          </a>
+          </Link>
         </div>
         <ListCourse category_id="668f6c0320c527aff59b0f8b" />
       </section>
       <section className="mt-10">
         <div className="mb-5 flex w-full justify-between">
           <h1 className="text-xl font-bold">Graphic Design</h1>
-          <a href="#" className="font-light hover:text-amber-600">
+          <Link
+            to="/category/668b4abf03350733f0080b9a"
+            className="font-light hover:text-amber-600"
+          >
             See all
-          </a>
+          </Link>
         </div>
         <ListCourse category_id="668b4abf03350733f0080b9a" />
       </section>

@@ -24,6 +24,13 @@ const AppHeader: React.FC = () => {
   const storedUser: any = sessionStorage.getItem("user");
   const user = JSON.parse(storedUser);
 
+  const [searchKeyword, setSearchKeyword] = useState("");
+
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    navigate(`/search?keyword=${encodeURIComponent(searchKeyword)}`);
+  };
+
   const handleLogout = () => {
     logout();
     navigate("/");
@@ -127,12 +134,18 @@ const AppHeader: React.FC = () => {
             />
           </a>
           <div className="styles-x-axis search-box">
-            <input
-              style={{ width: "100%" }}
-              type="text"
-              placeholder="Search for courses, tutorials..."
-              className="search-item"
-            />
+            <form onSubmit={handleSearch}>
+              <input
+                style={{ width: "200%" }}
+                type="text"
+                placeholder="Search for courses, tutorials..."
+                className="search-item"
+                value={searchKeyword}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setSearchKeyword(e.target.value)
+                }
+              />
+            </form>
             <i className="fa-solid fa-magnifying-glass search-icon"></i>
           </div>
         </div>
@@ -153,7 +166,7 @@ const AppHeader: React.FC = () => {
             {user?.data.role === "student" && (
               <Badge>
                 <ShoppingCartOutlined
-                  className="text-xl cursor-pointer rounded-md bg-slate-200 transition-transform duration-300 hover:scale-105 hover:bg-slate-300"
+                  className="cursor-pointer rounded-md bg-slate-200 text-xl transition-transform duration-300 hover:scale-105 hover:bg-slate-300"
                   onClick={handleShoppingCart}
                 />
               </Badge>
@@ -161,16 +174,16 @@ const AppHeader: React.FC = () => {
             {user?.data.role === "instructor" && (
               <Badge>
                 <ShoppingCartOutlined
-                  className="text-xl cursor-pointer hover:text-blue-500 transition-colors duration-300"
+                  className="cursor-pointer text-xl transition-colors duration-300 hover:text-blue-500"
                   onClick={handleShoppingCart}
                 />
               </Badge>
             )}
-            <Badge count={99}>
-              <MailOutlined className="text-xl cursor-pointer rounded-md bg-slate-200 transition-transform duration-300 hover:scale-105 hover:bg-slate-300" />
+            <Badge count={1}>
+              <MailOutlined className="cursor-pointer rounded-md bg-slate-200 text-xl transition-transform duration-300 hover:scale-105 hover:bg-slate-300" />
             </Badge>
-            <Badge count={99}>
-              <BellOutlined className="text-xl cursor-pointer rounded-md bg-slate-200 transition-transform duration-300 hover:scale-105 hover:bg-slate-300" />
+            <Badge count={1}>
+              <BellOutlined className="cursor-pointer rounded-md bg-slate-200 text-xl transition-transform duration-300 hover:scale-105 hover:bg-slate-300" />
             </Badge>
             <Dropdown menu={{ items }}>
               <a className="mr-9 flex" onClick={(e) => e.preventDefault()}>
