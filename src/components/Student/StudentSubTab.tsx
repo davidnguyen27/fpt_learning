@@ -11,6 +11,7 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import SubscriptionsForSubcriber from "../Subscription/SubscriptionsForSubcriber";
 import Loading from "../Loading/loading";
 import { useAuth } from "../../app/context/AuthContext";
+import SubscriptionsForInstructor from "../Subscription/SubscriptionsForInstructor";
 
 interface StudentProfileSubTabProps {
   activeTab: string;
@@ -30,7 +31,7 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
   const [loading, setLoading] = useState<boolean>(true);
   const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
   const userId = storedUser?.data?._id;
-  const userRole = getRole(); // Get the user's role from the context
+  const userRole = getRole(); 
 
   const fetchUserData = async () => {
     try {
@@ -240,7 +241,7 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
         {activeTab === "about" && <AboutTabContent />}
         {activeTab === "purchased" && <StudentPurchased />}
         {activeTab === "following" && <SubscriptionsForSubcriber />}
-        {activeTab === "follower" && userRole === "instructor" && "Chưa làm"}
+        {activeTab === "follower" && userRole === "instructor" && <SubscriptionsForInstructor />}
       </div>
     </div>
   );

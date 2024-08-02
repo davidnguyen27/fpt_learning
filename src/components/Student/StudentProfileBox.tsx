@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
 import { getUserDetail } from "../../services/usersService";
-import { getSubscriptionBySubscriberAPI } from "../../services/subscriptionService";
+import { getSubscriptionByInstructorAPI, getSubscriptionBySubscriberAPI } from "../../services/subscriptionService";
 import { UserData } from "../../models/Types";
 import "../../styles/studentProfileBox.css";
-import { Subscription } from "../../models/Subscription"; // Ensure this import is correct
+import { Subscription } from "../../models/Subscription"; 
 
 const StudentProfileBox = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [following, setFollowing] = useState<Subscription[]>([]);
+  const [followers, setFollowers] = useState<Subscription[]>([]);
   const storedUser = sessionStorage.getItem("user");
   const user = storedUser ? JSON.parse(storedUser) : null;
   const userId = user?.data?._id;
+  const userRole = user?.data?.role; 
 
   const fetchUserData = async () => {
     try {
@@ -51,9 +53,32 @@ const StudentProfileBox = () => {
     }
   };
 
+  const fetchFollowers = async () => {
+    try {
+      const token = sessionStorage.getItem("token");
+      if (token && userId) {
+        const dataTransfer = {
+          searchCondition: {
+            keyword: "",
+            is_delete: false,
+          },
+          pageInfo: {
+            pageNum: 1,
+            pageSize: 10,
+          },
+        };
+        const fetchFollower: Subscription[] = await getSubscriptionByInstructorAPI(userId, dataTransfer);
+        setFollowers(fetchFollower);
+      }
+    } catch (error: any) {
+      console.error("Failed to fetch following data:", error);
+    }
+  };
+
   useEffect(() => {
     fetchUserData();
-    fetchFollowing(); // Fetch following data when the component mounts
+    fetchFollowing(); 
+    fetchFollowers();
   }, []);
 
   return (
@@ -78,6 +103,14 @@ const StudentProfileBox = () => {
               </button>
               <span className="profile-stat-number ml-1">{following.length}</span>
             </div>
+            {userRole === "instructor" && (
+              <div>
+                <button className="profile-stat-button" onClick={fetchFollowers}>
+                  Followers:
+                </button>
+                <span className="profile-stat-number ml-1">{followers.length}</span>
+              </div>
+            )}
           </div>
         </div>
       </div>

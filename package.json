@@ -23,6 +23,7 @@
     "@tinymce/tinymce-vue": "^6.0.1",
     "antd": "^5.17.4",
     "axios": "^1.7.2",
+    "f": "^1.4.0",
     "firebase": "^10.12.4",
     "framer-motion": "^11.3.8",
     "hero-slider": "^3.2.1",
