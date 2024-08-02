@@ -160,7 +160,7 @@ const Cart: React.FC = () => {
                   <img
                     src="/empty_cart.png"
                     alt="Empty Cart"
-                    className="w-64 h-64 mb-4"
+                    className="mb-4 h-64 w-64"
                   />
 
                   <p className="text-xl">
@@ -210,13 +210,7 @@ const Cart: React.FC = () => {
           </div>
         </div>
       </Content>
-      <Footer
-        style={{
-          textAlign: "center",
-          width: "100%",
-          padding: "24px 0",
-        }}
-      >
+      <Footer className="footer">
         <AppFooter />
       </Footer>
     </Layout>

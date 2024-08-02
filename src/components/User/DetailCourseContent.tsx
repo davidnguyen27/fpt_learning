@@ -6,7 +6,6 @@ import CourseSubTab from "../Course/CourseSubTab";
 const DetailCourseContent = () => {
   const { _id } = useParams<{ _id: string }>();
   const [activeTab, setActiveTab] = useState<string>("about");
-
   const { course } = useCourseDetailClient(_id as string);
 
   if (!_id) {

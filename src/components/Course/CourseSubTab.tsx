@@ -11,6 +11,7 @@ import useAddReview from "../../hooks/review/useAddReview";
 import useReviewDataClient from "../../hooks/review/useReviewDataClient";
 import ModalAddReview from "../Modal/ModalAddReview";
 import { Review } from "../../models/Review";
+import Loading from "../Loading/loading";
 
 const CourseSubTab: FC<CourseSubTabProps> = ({
   _id,
@@ -20,9 +21,10 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
   sessions,
 }) => {
   const [openSessions, setOpenSessions] = useState<string[]>([]);
-  const { course } = useCourseDetailClient(_id);
   const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<Boolean>(false);
+  const { course } = useCourseDetailClient(_id);
   const { createReview } = useAddReview(() => {});
   const { data: reviews, error, refetchData } = useReviewDataClient(_id);
 
@@ -41,13 +43,18 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
         pageInfo: { pageNum: 1, pageSize: 10 },
       };
 
-      const subscriptions = await getSubscriptionBySubscriberAPI(_id, dataTransfer);
+      const subscriptions = await getSubscriptionBySubscriberAPI(
+        _id,
+        dataTransfer,
+      );
       const isSubscribed = subscriptions.some(
-        (sub) => sub.instructor_id === course?.instructor_id
+        (sub) => sub.instructor_id === course?.instructor_id,
       );
       setIsSubscribed(isSubscribed);
     } catch (error) {
       console.error("Failed to fetch subscription", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -55,26 +62,25 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
     try {
       const instructor_id = course?.instructor_id;
       if (!instructor_id) throw new Error("Instructor ID not found");
-
       const subscriptionData = {
         is_subscribed: !isSubscribed,
         is_deleted: false,
       };
       await createUpdateSubscriptionAPI(instructor_id, subscriptionData);
-
       setIsSubscribed((prev) => !prev);
-      localStorage.setItem(
+      sessionStorage.setItem(
         `subscribed_${instructor_id}`,
-        JSON.stringify(!isSubscribed)
+        JSON.stringify(!isSubscribed),
       );
-
       message.success(
         isSubscribed
           ? "You have successfully unsubscribed."
-          : "You have successfully subscribed."
+          : "You have successfully subscribed.",
       );
     } catch (error) {
       message.error("Failed to update subscription. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -85,10 +91,15 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
     });
   };
 
+  if (isLoading) {
+    return <Loading />;
+  }
   useEffect(() => {
     const instructor_id = course?.instructor_id;
     if (instructor_id) {
-      const storedSubscription = localStorage.getItem(`subscribed_${instructor_id}`);
+      const storedSubscription = sessionStorage.getItem(
+        `subscribed_${instructor_id}`,
+      );
       if (storedSubscription) {
         setIsSubscribed(JSON.parse(storedSubscription));
       } else {
@@ -98,13 +109,19 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
   }, [course]);
 
   const AboutTabContent = () => (
-    <div className="mt-6 text-sm" dangerouslySetInnerHTML={{ __html: content }} />
+    <div
+      className="mt-6 text-sm"
+      dangerouslySetInnerHTML={{ __html: content }}
+    />
   );
 
   const CourseContentTabContent = () => (
     <div>
       {sessions.map((session) => (
-        <div key={session._id} className="mt-6 rounded-md bg-slate-200 px-3 py-2">
+        <div
+          key={session._id}
+          className="mt-6 rounded-md bg-slate-200 px-3 py-2"
+        >
           <div
             className="cursor-pointer text-sm font-bold"
             onClick={() => toggleSession(session._id)}

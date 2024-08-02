@@ -69,8 +69,8 @@ const CategoryCoursesPage: React.FC = () => {
   return (
     <MainLayout>
       <div className="container mx-auto px-4 py-8">
-        <h1 className="mb-6 text-3xl font-bold">
-          Courses in Category: {categoryName}
+        <h1 className="mb-6 text-2xl font-bold">
+        Courses in {categoryName} Category:
         </h1>
         {courses && courses.length > 0 ? (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">

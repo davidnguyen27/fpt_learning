@@ -11,6 +11,7 @@ export type AuthContextType = {
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   setUser: (user: User) => void;
+  getRole: () => string | null;
 };
 
 // User

@@ -3,20 +3,19 @@ import { Layout } from "antd";
 import { Content, Footer, Header } from "antd/es/layout/layout";
 import AppFooter from "./AppFooter";
 import AppHeader from "./AppHeader";
-import { useSelector } from "react-redux";
-import { RootState } from "../../app/redux/store";
-import Loading from "../Loading/loading";
+import AppSider from "./AppSider";
 
 interface MainLayoutProps {
   children: React.ReactNode;
 }
 
 const StudentLayout: React.FC<MainLayoutProps> = ({ children }) => {
-  const isLoading = useSelector((state: RootState) => state.loading.isLoading);
 
   return (
     <Layout className="flex h-screen w-screen flex-col">
-      {isLoading && <Loading />}
+      <AppSider isVisible={false} onClose={function (): void {
+        throw new Error("Function not implemented.");
+      } }/>
       <Header className="header">
         <AppHeader />
       </Header>

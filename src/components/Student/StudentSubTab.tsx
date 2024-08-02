@@ -6,9 +6,11 @@ import { formatDate } from "../../utils/formatDate";
 import { UserData } from "../../models/Types";
 import Tiny from "../../app/Editor/RichTextEditor";
 import StudentPurchased from "../Purchase/StudentPurchased";
-import { storage } from "../../utils/firebase"; // Firebase storage import
+import { storage } from "../../utils/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import SubscriptionsForSubcriber from "../../hooks/supscription/SubscriptionForSubcriber";
+import SubscriptionsForSubcriber from "../Subscription/SubscriptionsForSubcriber";
+import Loading from "../Loading/loading";
+import { useAuth } from "../../app/context/AuthContext";
 
 interface StudentProfileSubTabProps {
   activeTab: string;
@@ -19,14 +21,16 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
   activeTab,
   setActiveTab,
 }) => {
+  const { user, getRole } = useAuth();
   const [form] = Form.useForm();
   const [editing, setEditing] = useState(false);
   const [initialDescription, setInitialDescription] = useState<string>("");
   const [avatarUrl, setAvatarUrl] = useState<string>("");
   const [previewVisible, setPreviewVisible] = useState<boolean>(false);
-
+  const [loading, setLoading] = useState<boolean>(true);
   const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
   const userId = storedUser?.data?._id;
+  const userRole = getRole(); // Get the user's role from the context
 
   const fetchUserData = async () => {
     try {
@@ -52,6 +56,8 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
         message: "Error",
         description: error.message,
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -61,12 +67,10 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
 
   const handleUpdate = async (values: Partial<UserData>) => {
     try {
-      // Upload avatar nếu có file mới
       let updatedValues = { ...values };
       if (avatarUrl) {
         updatedValues.avatar = avatarUrl;
       }
-
       await updateUser(userId, updatedValues);
       notification.success({
         message: "Success",
@@ -79,6 +83,8 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
         message: "Error",
         description: error.message,
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -97,6 +103,8 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
         message: "Upload Failed",
         description: "Unable to upload avatar. Please try again.",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -104,6 +112,43 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
     setPreviewVisible(true);
   };
 
+  if (loading) return <div><Loading/></div>;
+
+  const renderTabs = () => (
+    <>
+      <button
+        type="button"
+        className={`px-4 py-2 ${activeTab === "about" ? "bg-gray-200" : ""}`}
+        onClick={() => setActiveTab("about")}
+      >
+        About
+      </button>
+      <button
+        type="button"
+        className={`px-4 py-2 ${activeTab === "purchased" ? "bg-gray-200" : ""}`}
+        onClick={() => setActiveTab("purchased")}
+      >
+        Purchased
+      </button>
+      <button
+        type="button"
+        className={`px-4 py-2 ${activeTab === "following" ? "bg-gray-200" : ""}`}
+        onClick={() => setActiveTab("following")}
+      >
+        Following
+      </button>
+      {userRole === "instructor" && (
+        <button
+          type="button"
+          className={`px-4 py-2 ${activeTab === "follower" ? "bg-gray-200" : ""}`}
+          onClick={() => setActiveTab("follower")}
+        >
+          Followers
+        </button>
+      )}
+    </>
+  );
+  
   const AboutTabContent = () => (
     <div className="p-3">
       <h1 className="text-2xl font-semibold mb-5">About Me</h1>
@@ -189,32 +234,13 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
   return (
     <div className="mt-5">
       <div className="flex justify-self-end border-b-2 border-gray-200 font-semibold">
-        <button
-          type="button"
-          className={`px-4 py-2 ${activeTab === "about" ? "bg-gray-200" : ""}`}
-          onClick={() => setActiveTab("about")}
-        >
-          About
-        </button>
-        <button
-          type="button"
-          className={`px-4 py-2 ${activeTab === "purchased" ? "bg-gray-200" : ""}`}
-          onClick={() => setActiveTab("purchased")}
-        >
-          Purchased
-        </button>
-        <button
-          type="button"
-          className={`px-4 py-2 ${activeTab === "follower" ? "bg-gray-200" : ""}`}
-          onClick={() => setActiveTab("follower")}
-        >
-          Follower
-        </button>
+        {renderTabs()}
       </div>
       <div>
         {activeTab === "about" && <AboutTabContent />}
         {activeTab === "purchased" && <StudentPurchased />}
-        {activeTab === "follower" && <SubscriptionsForSubcriber />}
+        {activeTab === "following" && <SubscriptionsForSubcriber />}
+        {activeTab === "follower" && userRole === "instructor" && "Chưa làm"}
       </div>
     </div>
   );

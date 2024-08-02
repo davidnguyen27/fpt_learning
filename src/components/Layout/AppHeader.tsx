@@ -56,7 +56,7 @@ const AppHeader: React.FC = () => {
     } else if (user?.data.role === "instructor") {
       navigate("/instructor/dashboard");
     } else {
-      navigate("/student-course-list-page");
+      navigate("/student/dashboard");
     }
   };
 
@@ -138,7 +138,7 @@ const AppHeader: React.FC = () => {
               <input
                 style={{ width: "200%" }}
                 type="text"
-                placeholder="Search for courses, tutorials..."
+                placeholder="Search for courses"
                 className="search-item"
                 value={searchKeyword}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>

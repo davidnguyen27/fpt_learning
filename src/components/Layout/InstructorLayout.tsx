@@ -5,9 +5,6 @@ import { Content, Footer, Header } from "antd/es/layout/layout";
 import { useSider } from "../../app/context/SiderContext";
 import AppFooter from "./AppFooter";
 import SiderInstructor from "../Instructor/SiderInstructor";
-import { useSelector } from "react-redux";
-import { RootState } from "../../app/redux/store";
-import Loading from "../Loading/loading";
 import AppHeader from "./AppHeader";
 
 interface MainLayoutProps {
@@ -16,11 +13,9 @@ interface MainLayoutProps {
 
 const InstructorLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const { collapsed } = useSider();
-  const isLoading = useSelector((state: RootState) => state.loading.isLoading);
 
   return (
     <Layout className="flex h-screen w-screen flex-col">
-      {isLoading && (<Loading />)}
       <Header className="header">
         <AppHeader />
       </Header>

@@ -1,34 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Modal, notification, Rate } from "antd";
 import { createCartAPI } from "../../services/cartService";
 import { useAuth } from "../../app/context/AuthContext";
-import { getDetailClientAPI } from "../../services/coursesService";
-import { CourseClient } from "../../models/Course";
+import useCourseDetailClient from "../../hooks/course/useCourseDetailClient";
+import Loading from "../Loading/loading";
 
 const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
-  const [visible, setVisible] = useState(false);
-  const [course, setCourse] = useState<CourseClient | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const { course, loading, error, setCourse } = useCourseDetailClient(_id);
   const [isAddToCartModalVisible, setIsAddToCartModalVisible] =
     useState<boolean>(false);
   const [buttonText, setButtonText] = useState<string>("Add to cart");
+  const [visible, setVisible] = useState(false);
 
   const { user } = useAuth();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchCourseDetails = async () => {
-      try {
-        const courseDetails = await getDetailClientAPI(_id);
-        setCourse(courseDetails);
-      } catch (error: any) {
-        setError(error.message);
-      }
-    };
-
-    fetchCourseDetails();
-  }, [_id]);
 
   useEffect(() => {
     if (course) {
@@ -44,6 +30,7 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
     }
   }, [course]);
 
+  if (loading) return <div><Loading/></div>;
   if (error) return <div>{error}</div>;
 
   const showModal = () => setVisible(true);
@@ -114,11 +101,11 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
     <div className="bg-[#333333] p-4">
       <div className="flex flex-col rounded-lg p-4 md:flex-row md:p-8">
         <div
-          className="relative mb-4 w-full md:mb-0 md:w-1/2 lg:w-1/3"
+          className="relative mb-4 w-full md:mb-0 md:w-1/2 lg:w-1/3 cursor-pointer"
           onClick={showModal}
         >
           <img
-            className="w-full cursor-pointer border-4 border-white object-cover"
+            className="w-full border-4 border-white object-cover"
             src={course?.image_url || "/path/to/default-thumbnail.jpg"}
             alt="Course Thumbnail"
           />
@@ -157,7 +144,9 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
           <div className="mb-4">
             <span className="text-sm md:text-base">Price: </span>
             <span
-              className={`${course?.discount !== 0 ? "line-through" : ""} text-sm text-gray-400 md:text-base`}
+              className={`${
+                course?.discount !== 0 ? "line-through" : ""
+              } text-sm text-gray-400 md:text-base`}
             >
               ${course?.price}
             </span>

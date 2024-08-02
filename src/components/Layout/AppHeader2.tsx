@@ -37,7 +37,7 @@ const AppHeader2: React.FC = () => {
     } else if (user?.data.role === "instructor") {
       navigate("/instructor/dashboard");
     } else {
-      navigate("/student-course-list-page");
+      navigate("/student/dashboard");
     }
   };
 

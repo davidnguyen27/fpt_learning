@@ -24,11 +24,13 @@ const HomePage: React.FC = () => {
       title: "city",
     },
   ];
+
   const containerStyles: React.CSSProperties = {
     width: "100%",
     height: "400px",
     margin: "0 auto",
   };
+
   return (
     <MainLayout>
       <div className="image-slider-container" style={containerStyles}>
@@ -39,7 +41,7 @@ const HomePage: React.FC = () => {
           <h1 className="text-xl font-bold">Web Development</h1>
           <Link
             to="/category/66827468b5436c3f43c703e7"
-            className="font-light hover:text-amber-600"
+            className="font-medium text-gray-500 hover:text-black"
           >
             See all
           </Link>
@@ -51,7 +53,7 @@ const HomePage: React.FC = () => {
           <h1 className="text-xl font-bold">Information Technology</h1>
           <Link
             to="/category/668e2f4bf2c243ced095c6c0"
-            className="font-light hover:text-amber-600"
+            className="font-medium text-gray-500 hover:text-black"
           >
             See all
           </Link>
@@ -63,7 +65,7 @@ const HomePage: React.FC = () => {
           <h1 className="text-xl font-bold">Business</h1>
           <Link
             to="/category/66840803c2ef7156100c3f61"
-            className="font-light hover:text-amber-600"
+            className="font-medium text-gray-500 hover:text-black"
           >
             See all
           </Link>
@@ -75,7 +77,7 @@ const HomePage: React.FC = () => {
           <h1 className="text-xl font-bold">Music</h1>
           <Link
             to="/category/669f294e396c0261a73f5a7a"
-            className="font-light hover:text-amber-600"
+            className="font-medium text-gray-500 hover:text-black"
           >
             See all
           </Link>
@@ -87,7 +89,7 @@ const HomePage: React.FC = () => {
           <h1 className="text-xl font-bold">Marketing</h1>
           <Link
             to="/category/668f6c0320c527aff59b0f8b"
-            className="font-light hover:text-amber-600"
+            className="font-medium text-gray-500 hover:text-black"
           >
             See all
           </Link>
@@ -99,7 +101,7 @@ const HomePage: React.FC = () => {
           <h1 className="text-xl font-bold">Graphic Design</h1>
           <Link
             to="/category/668b4abf03350733f0080b9a"
-            className="font-light hover:text-amber-600"
+            className="font-medium text-gray-500 hover:text-black"
           >
             See all
           </Link>
@@ -110,7 +112,7 @@ const HomePage: React.FC = () => {
       <section>
         <div className="mb-5 flex w-full justify-between">
           <h1 className="text-xl font-bold">Popular Instructors</h1>
-          <a href="#" className="font-light hover:text-amber-600">
+          <a href="#" className="font-medium text-gray-500 hover:text-black">
             See all
           </a>
         </div>
