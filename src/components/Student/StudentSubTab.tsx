@@ -21,7 +21,7 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
   activeTab,
   setActiveTab,
 }) => {
-  const { user, getRole } = useAuth();
+  const { getRole } = useAuth();
   const [form] = Form.useForm();
   const [editing, setEditing] = useState(false);
   const [initialDescription, setInitialDescription] = useState<string>("");
