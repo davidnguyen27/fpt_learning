@@ -1,18 +1,10 @@
-import axios from "axios";
-import { Course, DataTransfer } from "../models/Course";
-import { APILink } from "../const/linkAPI";
-import { Subscription } from "react-redux";
+import { Course, CourseClient, DataTransfer } from "../models/Course";
+import { Subscription } from "../models/Subscription";
+import { axiosInstance } from "./axiosInstance"; // Use axiosInstance
 
 export const getCoursesAPI = async (dataTransfer: DataTransfer) => {
   try {
-    const token = sessionStorage.getItem("token");
-    if (!token) throw new Error("Cannot get token!");
-
-    const res = await axios.post(`${APILink}/api/course/search`, dataTransfer, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const res = await axiosInstance.post("/api/course/search", dataTransfer);
     return res.data.data.pageData;
   } catch (error: any) {
     if (error.response && error.response.data && error.response.data.message) {
@@ -23,18 +15,9 @@ export const getCoursesAPI = async (dataTransfer: DataTransfer) => {
 
 export const getCourseAPI = async (courseId: string) => {
   try {
-    const token = sessionStorage.getItem("token");
-    if (!token) throw new Error("Cannot get token!");
-
-    const res = await axios.get(`${APILink}/api/course/${courseId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
+    const res = await axiosInstance.get(`/api/course/${courseId}`);
     const courseData: Course = res.data.data;
     if (!courseData) throw new Error("Not found course");
-
     return courseData;
   } catch (error: any) {
     if (error.response && error.response.data && error.response.data.message) {
@@ -45,14 +28,7 @@ export const getCourseAPI = async (courseId: string) => {
 
 export const createCourseAPI = async (courseData: Partial<Course>) => {
   try {
-    const token = sessionStorage.getItem("token");
-    if (!token) throw new Error("Cannot get token!");
-
-    const res = await axios.post(`${APILink}/api/course`, courseData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const res = await axiosInstance.post("/api/course", courseData);
     return res.data;
   } catch (error: any) {
     if (error.response && error.response.data && error.response.data.message) {
@@ -66,18 +42,9 @@ export const editCourseAPI = async (
   courseData: Partial<Course>,
 ) => {
   try {
-    const token = sessionStorage.getItem("token");
-    if (!token) throw new Error("Cannot get token!");
-
-    const res = await axios.put(
-      `${APILink}/api/course/${courseId}`,
+    const res = await axiosInstance.put(
+      `/api/course/${courseId}`,
       courseData,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      },
     );
     return { ...res.data.data, _id: courseId };
   } catch (error: any) {
@@ -89,14 +56,7 @@ export const editCourseAPI = async (
 
 export const deleteCourseAPI = async (courseId: string) => {
   try {
-    const token = sessionStorage.getItem("token");
-    if (!token) throw new Error("Cannot get token!");
-
-    const res = await axios.delete(`${APILink}/api/course/${courseId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const res = await axiosInstance.delete(`/api/course/${courseId}`);
     return res.data;
   } catch (error: any) {
     throw new Error(error);
@@ -110,22 +70,10 @@ export const getCategoriesAPI = async (
   is_delete: boolean,
 ) => {
   try {
-    const token = sessionStorage.getItem("token");
-    if (!token) throw new Error("Cannot get token!");
-
-    const res = await axios.post(
-      `${APILink}/api/category/search`,
-      {
-        searchCondition: { keyword, is_delete },
-        pageInfo: { pageNum, pageSize },
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    );
+    const res = await axiosInstance.post("/api/category/search", {
+      searchCondition: { keyword, is_delete },
+      pageInfo: { pageNum, pageSize },
+    });
 
     return res.data;
   } catch (error: any) {
@@ -136,26 +84,17 @@ export const getCategoriesAPI = async (
   }
 };
 
-//-------------------------------- Change Status Course (Instructor) ---------------------------------------
 export const toggleCourseStatus = async (
   course_id: string,
   new_status: string,
   comment: string = "",
 ): Promise<void> => {
-  const token = sessionStorage.getItem("token");
-  const url = `${APILink}/api/course/change-status`;
-
   try {
-    await axios.put(
-      url,
-      { course_id, new_status, comment },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    );
+    await axiosInstance.put("/api/course/change-status", {
+      course_id,
+      new_status,
+      comment,
+    });
   } catch (error: any) {
     if (error.response && error.response.data && error.response.data.message) {
       return error.response.data.message;
@@ -165,10 +104,10 @@ export const toggleCourseStatus = async (
 
 export const getCoursesClientAPI = async (
   dataTransfer: DataTransfer,
-): Promise<Course[]> => {
+): Promise<CourseClient[]> => {
   try {
-    const res = await axios.post(
-      `${APILink}/api/client/course/search`,
+    const res = await axiosInstance.post(
+      "/api/client/course/search",
       dataTransfer,
     );
     return res.data.data.pageData;
@@ -179,7 +118,7 @@ export const getCoursesClientAPI = async (
 
 export const getDetailClientAPI = async (_id: string) => {
   try {
-    const response = await axios.get(`${APILink}/api/client/course/${_id}`);
+    const response = await axiosInstance.get(`/api/client/course/${_id}`);
     return response.data.data;
   } catch (error: any) {
     if (error.response && error.response.data && error.response.data.message) {
@@ -188,21 +127,25 @@ export const getDetailClientAPI = async (_id: string) => {
   }
 };
 
-export const createOrUpdateSubscription = async (instructor_id: string, condition: boolean) => {
-  // Determine the value of is_subscribed based on the condition
+export const createOrUpdateSubscription = async (
+  instructor_id: string,
+  condition: boolean,
+) => {
   const is_subscribed = condition;
 
   try {
-    const response = await axios.post<Subscription>(`${APILink}/api/subscription`, {
-      instructor_id,
-      is_subscribed
-    });
+    const response = await axiosInstance.post<Subscription>(
+      "/api/subscription",
+      {
+        instructor_id,
+        is_subscribed,
+      },
+    );
     return response.data;
   } catch (error: any) {
-    // Handle errors appropriately
     if (error.response && error.response.data && error.response.data.message) {
       return { success: false, message: error.response.data.message };
     }
-    return { success: false, message: 'An unexpected error occurred' };
+    return { success: false, message: "An unexpected error occurred" };
   }
 };

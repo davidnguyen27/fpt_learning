@@ -30,7 +30,7 @@ const ConfirmCheckout: React.FC<ConfirmCheckoutProps> = () => {
         _id: item._id,
         cart_no: item.cart_no,
       }));
-      await editStatusCartsAPI("completed", cartItems);
+      await editStatusCartsAPI("completed", cartItems); // Ensure API updates `is_purchased`
       navigate("/user-profile-page");
     } catch (error: any) {
       console.error("Error proceeding to checkout:", error);

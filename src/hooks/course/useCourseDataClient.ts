@@ -1,10 +1,10 @@
 import { useEffect, useState, useCallback } from "react";
 import { getCoursesClientAPI } from "../../services/coursesService";
-import { Course, DataTransfer } from "../../models/Course";
+import { CourseClient, DataTransfer } from "../../models/Course";
 
 const useCourseDataClient = (dataTransfer: DataTransfer) => {
   const [loading, setLoading] = useState<boolean>(true);
-  const [data, setData] = useState<Course[]>([]);
+  const [data, setData] = useState<CourseClient[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const fetchCourses = useCallback(async () => {
