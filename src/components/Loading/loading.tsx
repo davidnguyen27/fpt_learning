@@ -1,9 +1,10 @@
 import React from "react";
 import { Spin } from "antd";
 import { useSelector } from "react-redux";
+import { RootState } from "../../app/redux/store";
 
 const Loading: React.FC = () => {
-  const isLoading = useSelector((state: any) => state.loading.isLoading);
+  const isLoading = useSelector((state: RootState) => state.loading.isLoading);
 
   return (
     <>

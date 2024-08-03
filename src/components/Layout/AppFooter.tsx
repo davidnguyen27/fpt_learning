@@ -122,7 +122,7 @@ const AppFooter = () => {
               className="mb-4 rounded-lg shadow-lg"
             />
             <p className="mb-4 text-xs">
-              Copyright © {new Date().getFullYear()} FPT LearningHub
+              Copyright © {new Date().getFullYear()} FSA Education
             </p>
           </div>
         </div>

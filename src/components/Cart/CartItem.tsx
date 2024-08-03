@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { CartData } from "../../models/Cart";
 import { deleteCartAPI } from "../../services/cartService";
-import { Modal, notification} from "antd";
+import { Modal, notification, Tag } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 
 interface CartItemProps {
@@ -76,20 +76,29 @@ const CartItem: React.FC<CartItemProps> = ({
             <div>
               <span className="text-lg font-bold">{item.course_name}</span>
               <br />
-              <span className="text-sm text-gray-500">Cart no: {item.cart_no}</span>
+              <span className="text-sm text-gray-500 mr-5">
+                Cart no: {item.cart_no}
+              </span>
+              <Tag color={item.status === "new" ? "green" : "volcano"}>{item.status}</Tag>
             </div>
             <div className="flex items-center text-sm text-gray-500">
               <span className="mr-1">By</span>
-              <span className="font-semibold text-[#0ea5e9]">{item.instructor_name}</span>
+              <span className="font-semibold text-[#0ea5e9]">
+                {item.instructor_name}
+              </span>
             </div>
           </div>
           <div className="flex items-end justify-between">
             <div className="mr-4 flex-col">
               <div className="text-sm font-bold text-black">
-                <span style={{ color: priceColor }}>$ {price_paid.toLocaleString("US")}</span>
+                <span style={{ color: priceColor }}>
+                  $ {price_paid.toLocaleString("US")}
+                </span>
               </div>
               {discount > 0 && (
-                <div className="text-sm text-gray-500 line-through">$ {price.toLocaleString("US")}</div>
+                <div className="text-sm text-gray-500 line-through">
+                  $ {price.toLocaleString("US")}
+                </div>
               )}
             </div>
             <div className="cursor-pointer p-0 text-black">

@@ -1,7 +1,7 @@
 import { Layout } from "antd";
 import { Content, Footer, Header } from "antd/es/layout/layout";
 import AppFooter from "./AppFooter";
-import AppHeader from "./AppHeaderControl";
+import AppHeader from "./AppHeader";
 
 interface MainLayoutProps {
   children: React.ReactNode;

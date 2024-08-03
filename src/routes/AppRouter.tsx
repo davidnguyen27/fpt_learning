@@ -1,7 +1,6 @@
 import React, { Suspense, useContext } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { AuthContext, AuthProvider } from "../app/context/AuthContext";
-import Loading from "../components/Loading/loading";
 
 //-------------------------------------------------USER------------------------------------------------
 const HomePage = React.lazy(() => import("../pages/User/HomePage"));
@@ -27,6 +26,13 @@ const RegisterInstructorPage = React.lazy(
 const VerifyPage = React.lazy(() => import("../pages/User/VerifyPage"));
 const ChangePassPage = React.lazy(() => import("../pages/ChangePasswordPage"));
 const LearningPage = React.lazy(() => import("../pages/User/LearningPage"));
+const BlogPage = React.lazy(() => import("../pages/User/BlogPage"));
+const SearchResultsPage = React.lazy(
+  () => import("../pages/User/SearchResultsPage"),
+);
+const CategoryCoursesPage = React.lazy(
+  () => import("../pages/User/CategoryCoursesPage"),
+);
 
 //-----------------------------------------------ADMIN-------------------------------------------------
 const AdminPage = React.lazy(() => import("../pages/Admin/AdminPage"));
@@ -87,11 +93,8 @@ const StudentVerifyPage = React.lazy(() => import("../pages/User/VerifyPage"));
 const UserProfilePage = React.lazy(
   () => import("../pages/Student/StudentProfilePage"),
 );
-// const StudentCourseDetailPage = React.lazy(
-//   () => import("../pages/Student/StudentCourseDetailPage"),
-// );
-const StudentCourseListPage = React.lazy(
-  () => import("../pages/Student/StudentCourseListPage"),
+const StudentDashboard = React.lazy(
+  () => import("../pages/Student/StudentDashboard"),
 );
 const StudentSettingPage = React.lazy(
   () => import("../pages/Student/StudentSettingPage"),
@@ -133,9 +136,14 @@ const AppRouter = () => {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Suspense fallback={<Loading />}>
+        <Suspense fallback={""}>
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/search" element={<SearchResultsPage />} />;
+            <Route
+              path="/category/:categoryId"
+              element={<CategoryCoursesPage />}
+            />
             <Route path="/about" element={<AboutPage />} />
             <Route path="sign-in" element={<SignInPage />} />
             <Route path="sign-up" element={<SignUpPage />} />
@@ -145,6 +153,7 @@ const AppRouter = () => {
             <Route path="/settings-page" element={<SettingsPage />} />
             <Route path="/forgot-password" element={<PasswordReset />} />
             <Route path="/verify-account" element={<StudentVerifyPage />} />
+            <Route path="/blog" element={<BlogPage />} />
             <Route
               path="/sign-up-instructor"
               element={<RegisterInstructorPage />}
@@ -156,7 +165,6 @@ const AppRouter = () => {
               path="/instructor-info/:instructor_id"
               element={<InstructorProfilePage />}
             />
-
             {/*----------------------------ADMIN---------------------------------*/}
             <Route
               path="/admin/dashboard"
@@ -239,8 +247,15 @@ const AppRouter = () => {
                 />
               }
             />
-            {/*------------------------------------------------------------------*/}
-
+            {/* <Route
+              path="/admin/reviews-management"
+              element={
+                <ProtectedRoute
+                  element={<AdminReviewManagePage />}
+                  allowedRoles={["admin"]}
+                />
+              }
+            /> */}
             {/*----------------------------STUDENT-------------------------------*/}
             {/* <Route
               path="/view-detail"
@@ -254,7 +269,10 @@ const AppRouter = () => {
             <Route
               path="/cart"
               element={
-                <ProtectedRoute element={<Cart />} allowedRoles={["student"]} />
+                <ProtectedRoute
+                  element={<Cart />}
+                  allowedRoles={["student", "instructor"]}
+                />
               }
             />
             <Route
@@ -262,7 +280,7 @@ const AppRouter = () => {
               element={
                 <ProtectedRoute
                   element={<CheckOut />}
-                  allowedRoles={["student"]}
+                  allowedRoles={["student", "instructor"]}
                 />
               }
             />
@@ -271,7 +289,7 @@ const AppRouter = () => {
               element={
                 <ProtectedRoute
                   element={<ConfirmCheckout />}
-                  allowedRoles={["student"]}
+                  allowedRoles={["student", "instructor"]}
                 />
               }
             />
@@ -303,10 +321,10 @@ const AppRouter = () => {
               }
             />
             <Route
-              path="/student-course-list-page"
+              path="/student/dashboard"
               element={
                 <ProtectedRoute
-                  element={<StudentCourseListPage />}
+                  element={<StudentDashboard />}
                   allowedRoles={["student"]}
                 />
               }
@@ -321,7 +339,6 @@ const AppRouter = () => {
               }
             />
             {/*------------------------------------------------------------------*/}
-
             {/*---------------------------INSTRUCTOR-----------------------------*/}
             <Route
               path="/instructor/dashboard"

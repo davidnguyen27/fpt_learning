@@ -1,20 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Layout, notification } from "antd";
+import { Breadcrumb, Button, Layout, notification } from "antd";
 import { useNavigate } from "react-router-dom";
 import { getCartsAPI, editStatusCartsAPI } from "../../services/cartService";
 import { CartData, DataTransfer } from "../../models/Cart";
 import "../../styles/index.css";
 import { AppFooter, AppHeader2, CartItem, CartSummary } from "../../components";
 import Loading from "../../components/Loading/loading";
+import { useSelector } from "react-redux";
+import { RootState } from "../../app/redux/store";
 
 const { Content, Footer } = Layout;
 
 const Cart: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartData[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
   const [quantities, setQuantities] = useState<{ [key: string]: number }>({});
+  const isLoading = useSelector((state: RootState) => state.loading.isLoading);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,8 +30,6 @@ const Cart: React.FC = () => {
         setCartItems(data);
       } catch (error: any) {
         setError(error.message || "An error occurred");
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -95,13 +95,6 @@ const Cart: React.FC = () => {
     0,
   );
 
-  if (loading) {
-    return (
-      <div>
-        <Loading />
-      </div>
-    );
-  }
   if (error) return <p>Error: {error}</p>;
 
   const handleCheckout = async () => {
@@ -116,8 +109,7 @@ const Cart: React.FC = () => {
     const selectedItemsWithQuantities = cartItems
       .filter((item) => selectedItems.has(item._id))
       .map((item) => ({
-        _id: item._id,
-        cart_no: item.cart_no,
+        ...item,
         quantity: quantities[item._id] || 1,
       }));
 
@@ -127,13 +119,14 @@ const Cart: React.FC = () => {
     } catch (error: any) {
       notification.error({
         message: "Error",
-        description: `Failed to update cart status: ${error.message || "An error occurred"}`,
+        description: `Failed to check out cart: ${error.message || "An error occurred"}`,
       });
     }
   };
 
   return (
     <Layout>
+      {isLoading && <Loading />}
       <AppHeader2 />
       <Content>
         <div className="flex min-h-screen flex-col bg-gray-100">
@@ -162,49 +155,62 @@ const Cart: React.FC = () => {
           </div>
           <div className="flex-grow">
             <div className="mx-auto max-w-7xl p-4">
-              <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
-                <div className="rounded-lg md:col-span-2">
-                  {cartItems.map((item) => (
-                    <CartItem
-                      key={item._id}
-                      item={item}
-                      onRemove={handleRemove}
-                      isSelected={selectedItems.has(item._id)}
-                      onSelect={handleSelect}
-                      onQuantityChange={handleQuantityChange}
-                    />
-                  ))}
-                </div>
-                <div className="h-80 rounded-lg bg-white p-4 shadow-md">
-                  <CartSummary
-                    price={price}
-                    price_paid={price_paid}
-                    discount={discount}
-                    cartItems={cartItems}
-                    selectedItems={selectedItems}
-                    onRemove={handleRemove}
-                    onSelect={handleSelect}
+              {cartItems.length === 0 ? (
+                <div className="flex flex-col items-center justify-center">
+                  <img
+                    src="/empty_cart.png"
+                    alt="Empty Cart"
+                    className="mb-4 h-64 w-64"
                   />
-                  <button
-                    className="mt-4 w-full rounded bg-red-500 p-2 text-white"
-                    onClick={handleCheckout}
+
+                  <p className="text-xl">
+                    Your cart is empty, continue shopping to start a course!
+                  </p>
+                  <Button
+                    className="mt-4 rounded bg-red-500 p-2 text-white"
+                    onClick={() => navigate("/")}
                   >
-                    Check Out Now
-                  </button>
+                    Continue Shopping
+                  </Button>
                 </div>
-              </div>
+              ) : (
+                <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
+                  <div className="rounded-lg md:col-span-2">
+                    {cartItems.map((item) => (
+                      <CartItem
+                        key={item._id}
+                        item={item}
+                        onRemove={handleRemove}
+                        isSelected={selectedItems.has(item._id)}
+                        onSelect={handleSelect}
+                        onQuantityChange={handleQuantityChange}
+                      />
+                    ))}
+                  </div>
+                  <div className="h-80 rounded-lg bg-white p-4 shadow-md">
+                    <CartSummary
+                      price={price}
+                      price_paid={price_paid}
+                      discount={discount}
+                      cartItems={cartItems}
+                      selectedItems={selectedItems}
+                      onRemove={handleRemove}
+                      onSelect={handleSelect}
+                    />
+                    <button
+                      className="mt-4 w-full rounded bg-red-500 p-2 text-white"
+                      onClick={handleCheckout}
+                    >
+                      Check Out Now
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </Content>
-      <Footer
-        style={{
-          backgroundColor: "black",
-          textAlign: "center",
-          width: "100%",
-          padding: "24px 0",
-        }}
-      >
+      <Footer className="footer">
         <AppFooter />
       </Footer>
     </Layout>

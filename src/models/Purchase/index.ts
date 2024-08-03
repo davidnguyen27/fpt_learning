@@ -13,8 +13,8 @@ export type Purchase = {
     student_name: string;
     instructor_id: string;
     instructor_name: string;
-    create_at: Date;
-    update_at: Date;
+    created_at: Date;
+    updated_at: Date;
     is_deleted: boolean;
 };
 

@@ -1,25 +1,17 @@
 import { FC, useState, useEffect } from "react";
-import {
-  MenuUnfoldOutlined,
-  PlayCircleOutlined,
-  EyeOutlined,
-  LikeOutlined,
-  DislikeOutlined,
-  ShareAltOutlined,
-} from "@ant-design/icons";
-import { Rate, Button } from "antd";
-import useCourseDetailClient from "../../hooks/course/useCourseDetailClient";
-import ModalAddReview from "../Modal/ModalAddReview";
-import useAddReview from "../../hooks/review/useAddReview";
-import useReviewDataClient from "../../hooks/review/useReviewDataClient";
+import { Button, Rate, message } from "antd";
+import { MenuUnfoldOutlined, PlayCircleOutlined } from "@ant-design/icons";
 import { CourseSubTabProps } from "../../models/Types";
 import {
   getSubscriptionBySubscriberAPI,
   createUpdateSubscriptionAPI,
 } from "../../services/subscriptionService";
-import { formatTime } from "../../utils/formatTime";
-
+import useCourseDetailClient from "../../hooks/course/useCourseDetailClient";
+import useAddReview from "../../hooks/review/useAddReview";
+import useReviewDataClient from "../../hooks/review/useReviewDataClient";
+import ModalAddReview from "../Modal/ModalAddReview";
 import { Review } from "../../models/Review";
+import Loading from "../Loading/loading";
 
 const CourseSubTab: FC<CourseSubTabProps> = ({
   _id,
@@ -29,66 +21,66 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
   sessions,
 }) => {
   const [openSessions, setOpenSessions] = useState<string[]>([]);
+  const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<Boolean>(false);
   const { course } = useCourseDetailClient(_id);
-  const [isSubscribed, setIsSubscribed] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const { createReview } = useAddReview(() => {
-    // Handle success callback if needed
-  });
+  const { createReview } = useAddReview(() => {});
+  const { data: reviews, error, refetchData } = useReviewDataClient(_id);
 
-  const {
-    data: reviews,
-    loading,
-    error,
-    refetchData,
-  } = useReviewDataClient(_id);
-
-  const toggleSession = (index: number) => {
-    const indexString = index.toString();
-    if (openSessions.includes(indexString)) {
-      setOpenSessions(openSessions.filter((id) => id !== indexString));
+  const toggleSession = (sessionId: string) => {
+    if (openSessions.includes(sessionId)) {
+      setOpenSessions(openSessions.filter((id) => id !== sessionId));
     } else {
-      setOpenSessions([...openSessions, indexString]);
+      setOpenSessions([...openSessions, sessionId]);
     }
   };
 
   const fetchSubscription = async () => {
     try {
-      const subscriptions = await getSubscriptionBySubscriberAPI(_id, {
-        searchCondition: {
-          keyword: "",
-          is_delete: false,
-        },
-        pageInfo: {
-          pageNum: 0,
-          pageSize: 0,
-        },
-      });
+      const dataTransfer = {
+        searchCondition: { keyword: "", is_delete: false },
+        pageInfo: { pageNum: 1, pageSize: 10 },
+      };
+
+      const subscriptions = await getSubscriptionBySubscriberAPI(
+        _id,
+        dataTransfer,
+      );
       const isSubscribed = subscriptions.some(
         (sub) => sub.instructor_id === course?.instructor_id,
       );
       setIsSubscribed(isSubscribed);
     } catch (error) {
       console.error("Failed to fetch subscription", error);
+    } finally {
+      setIsLoading(false);
     }
   };
+
   const handleSubscribeClick = async () => {
     try {
       const instructor_id = course?.instructor_id;
       if (!instructor_id) throw new Error("Instructor ID not found");
-
       const subscriptionData = {
-        // Add other subscription details if needed
+        is_subscribed: !isSubscribed,
+        is_deleted: false,
       };
-
       await createUpdateSubscriptionAPI(instructor_id, subscriptionData);
-      setIsSubscribed(!isSubscribed);
-      localStorage.setItem(
+      setIsSubscribed((prev) => !prev);
+      sessionStorage.setItem(
         `subscribed_${instructor_id}`,
         JSON.stringify(!isSubscribed),
       );
+      message.success(
+        isSubscribed
+          ? "You have successfully unsubscribed."
+          : "You have successfully subscribed.",
+      );
     } catch (error) {
-      console.error("Failed to subscribe/unsubscribe", error);
+      message.error("Failed to update subscription. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -99,10 +91,13 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
     });
   };
 
+  if (isLoading) {
+    return <Loading />;
+  }
   useEffect(() => {
     const instructor_id = course?.instructor_id;
     if (instructor_id) {
-      const storedSubscription = localStorage.getItem(
+      const storedSubscription = sessionStorage.getItem(
         `subscribed_${instructor_id}`,
       );
       if (storedSubscription) {
@@ -122,38 +117,31 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
 
   const CourseContentTabContent = () => (
     <div>
-      {sessions.map((session, index) => {
-        const indexString = index.toString();
-        return (
+      {sessions.map((session) => (
+        <div
+          key={session._id}
+          className="mt-6 rounded-md bg-slate-200 px-3 py-2"
+        >
           <div
-            key={indexString}
-            className="mt-6 rounded-md bg-slate-200 px-3 py-2"
+            className="cursor-pointer text-sm font-bold"
+            onClick={() => toggleSession(session._id)}
           >
-            <div
-              className="cursor-pointer text-sm font-bold"
-              onClick={() => toggleSession(index)}
-            >
-              <MenuUnfoldOutlined /> <span>{session.name}</span>
-            </div>
-            {openSessions.includes(indexString) && (
-              <div className="mt-3">
-                <div className="p-2">
-                  {session.lesson_list.map((lesson, idx) => (
-                    <>
-                      <div key={idx} className="ml-2 flex justify-between">
-                        <div>
-                          <PlayCircleOutlined /> {lesson.name}
-                        </div>
-                        <div>{formatTime(lesson.full_time)}</div>
-                      </div>
-                    </>
-                  ))}
-                </div>
-              </div>
-            )}
+            <MenuUnfoldOutlined /> <span>{session.name}</span>
           </div>
-        );
-      })}
+          {openSessions.includes(session._id) && (
+            <div className="mt-4 flex items-center justify-between">
+              <div className="px-4 py-2">
+                {session.lesson_list.map((lesson, idx) => (
+                  <div key={idx} className="ml-4 block">
+                    <PlayCircleOutlined /> {lesson.name}
+                  </div>
+                ))}
+              </div>
+              <div>{session.full_time}</div>
+            </div>
+          )}
+        </div>
+      ))}
     </div>
   );
 
@@ -171,9 +159,7 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
       </div>
       <div>
         <h1 className="my-10 text-2xl font-semibold">Student Reviews</h1>
-        {loading ? (
-          <p>Loading reviews...</p>
-        ) : error ? (
+        {error ? (
           <p>{error}</p>
         ) : reviews.length === 0 ? (
           <p>No reviews available.</p>
@@ -218,43 +204,28 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
             <a href="#">
               <img
                 src="https://scontent.fsgn2-5.fna.fbcdn.net/v/t39.30808-6/436257762_1831258874036043_7962583851360585901_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=aa7b47&_nc_eui2=AeFwSGYfZE8msByC8I97nfjowSj0rDZQ20DBKPSsNlDbQE9jTgn8CuJ0oWUNvpzlM8wnVxCPXT6LNA8QJLaMp7eP&_nc_ohc=BkqdrwZZLVAQ7kNvgEX9iPZ&_nc_ht=scontent.fsgn2-5.fna&oh=00_AYAG1xWT0LZY19MGUmWsvhnxuv6Y2Ui_WGhlPgdeNiDonQ&oe=66A7BF43"
-                className="mr-4 size-[50px]"
+                className="mr-4 size-[70px]"
                 alt="Profile"
               />
             </a>
             <div className="flex flex-col">
               <a
-                href={`/instructor-info/${course?.instructor_id}`}
+                href="#"
                 className="mb-2 text-[16px] font-medium text-[#333333]"
               >
                 {course?.instructor_name || "Instructor Name Not Available"}
               </a>
-              <button
+              <Button
                 onClick={handleSubscribeClick}
-                className={`rounded-sm px-3 py-2 text-[14px] text-white ${
-                  isSubscribed ? "bg-gray-600" : "bg-red-600"
-                }`}
+                type="primary"
+                danger={isSubscribed ? false : true}
+                style={{
+                  backgroundColor: isSubscribed ? "#bfbfbf" : "#000000",
+                  color: isSubscribed ? "#000000" : "#ffffff",
+                }}
               >
                 {isSubscribed ? "Subscribed" : "Subscribe"}
-              </button>
-            </div>
-          </div>
-          <div className="mr-[200px] flex gap-1">
-            <div className="flex flex-col items-center rounded-sm border px-5 py-3">
-              <EyeOutlined className="size-[18px]" />
-              <span className="mt-[5px]">1452</span>
-            </div>
-            <div className="flex flex-col items-center rounded-sm border px-5 py-3">
-              <LikeOutlined className="size-[18px]" />
-              <span className="mt-[5px]">100</span>
-            </div>
-            <div className="flex flex-col items-center rounded-sm border px-5 py-3">
-              <DislikeOutlined className="size-[18px]" />
-              <span className="mt-[5px]">20</span>
-            </div>
-            <div className="flex flex-col items-center rounded-sm border px-5 py-3">
-              <ShareAltOutlined className="size-[18px]" />
-              <span className="mt-[5px]">9</span>
+              </Button>
             </div>
           </div>
         </div>
@@ -275,7 +246,7 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
           }`}
           onClick={() => setActiveTab("content")}
         >
-          Core knowledge
+          Course Content
         </button>
         <button
           className={`text-[16px] font-medium text-black ${
@@ -283,12 +254,15 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
           }`}
           onClick={() => setActiveTab("review")}
         >
-          Review
+          Reviews
         </button>
       </div>
-      {activeTab === "about" && <AboutTabContent />}
-      {activeTab === "content" && <CourseContentTabContent />}
-      {activeTab === "review" && <CourseReview />}
+
+      <div className="p-6">
+        {activeTab === "about" && <AboutTabContent />}
+        {activeTab === "content" && <CourseContentTabContent />}
+        {activeTab === "review" && <CourseReview />}
+      </div>
     </div>
   );
 };

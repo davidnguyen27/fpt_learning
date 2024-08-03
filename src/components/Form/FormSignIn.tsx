@@ -16,30 +16,11 @@ const FormSignIn = () => {
     throw new Error("AuthContext must be used within AuthProvider");
   }
 
+  const { user, setUser } = authContext;
+
   const handleCheckboxChange = (e: any) => {
     setIsRemembered(e.target.checked);
   };
-
-  const { user } = authContext;
-
-  useEffect(() => {
-    if (user?.data) {
-      switch (user.data.role) {
-        case "admin":
-          navigate("/admin/dashboard");
-          break;
-        case "instructor":
-          navigate("/instructor/dashboard");
-          break;
-        case "student":
-          navigate("/");
-          break;
-        default:
-          console.log("Unknown role!");
-          break;
-      }
-    }
-  }, [user, navigate]);
 
   const handleLogin = async (values: { email: string; password: string }) => {
     try {
@@ -48,11 +29,11 @@ const FormSignIn = () => {
       if (token) {
         const user = await getCurrentLogin(token);
         if (user?.data) {
+          setUser(user); // Store user data in the context
           sessionStorage.setItem("user", JSON.stringify(user));
           notification.success({
             message: "Login Successful",
           });
-          navigate("/");
         }
       }
     } catch (error: any) {
@@ -78,11 +59,11 @@ const FormSignIn = () => {
       if (token) {
         const user = await getCurrentLogin(token);
         if (user?.data) {
+          setUser(user); // Store user data in the context
           sessionStorage.setItem("user", JSON.stringify(user));
           notification.success({
             message: "Login Successful",
           });
-          navigate("/");
         }
       }
     } catch (error: any) {
@@ -101,6 +82,25 @@ const FormSignIn = () => {
       description: "Unable to log in with Google.",
     });
   };
+
+  useEffect(() => {
+    if (user?.data) {
+      switch (user.data.role) {
+        case "admin":
+          navigate("/admin/dashboard");
+          break;
+        case "instructor":
+          navigate("/instructor/dashboard");
+          break;
+        case "student":
+          navigate("/");
+          break;
+        default:
+          console.log("Unknown role!");
+          break;
+      }
+    }
+  }, [user, navigate]);
 
   return (
     <div className="relative">

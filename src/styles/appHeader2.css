@@ -1,0 +1,30 @@
+.header-2 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px; /* Adjust padding as needed */
+  }
+  
+  .header-content {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .logo-header2 {
+    cursor: pointer;
+    margin: 0 auto; /* Center the logo */
+  }
+  
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .header-buttons {
+    display: flex;
+    align-items: center;
+  }
+  

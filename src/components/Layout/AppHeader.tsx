@@ -52,6 +52,12 @@ const AppHeader = () => {
 
     fetchCartItems();
   }, [user]);
+  const [searchKeyword, setSearchKeyword] = useState("");
+
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    navigate(`/search?keyword=${encodeURIComponent(searchKeyword)}`);
+  };
 
   const handleLogout = () => {
     logout();
@@ -78,7 +84,7 @@ const AppHeader = () => {
     } else if (user?.data.role === "instructor") {
       navigate("/instructor/dashboard");
     } else {
-      navigate("/student-course-list-page");
+      navigate("/student/dashboard");
     }
   };
 
@@ -156,12 +162,18 @@ const AppHeader = () => {
             />
           </a>
           <div className="styles-x-axis search-box">
-            <input
-              style={{ width: "100%" }}
-              type="text"
-              placeholder="Search for courses, tutorials..."
-              className="search-item"
-            />
+            <form onSubmit={handleSearch}>
+              <input
+                style={{ width: "200%" }}
+                type="text"
+                placeholder="Search for courses"
+                className="search-item"
+                value={searchKeyword}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setSearchKeyword(e.target.value)
+                }
+              />
+            </form>
             <i className="fa-solid fa-magnifying-glass search-icon"></i>
           </div>
         </div>

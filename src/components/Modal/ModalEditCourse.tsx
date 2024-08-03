@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Form, Input, Modal, Select, message, Spin } from "antd";
 import useEditCourse from "../../hooks/course/useEditCourse";
-import { getCategoriesAPI, getCourseAPI } from "../../services/coursesService";
+import { getCategoriesAPI, getCourseDetailAPI } from "../../services/coursesService";
 import { Category } from "../../models/Category";
 import { RuleObject } from "antd/es/form";
 import Tiny from "../../app/Editor/RichTextEditor";
@@ -47,7 +47,7 @@ const ModalEditCourse = (props: ModalEditCourseProps) => {
       if (open && courseId) {
         setDataLoading(true);
         try {
-          const data = await getCourseAPI(courseId);
+          const data = await getCourseDetailAPI(courseId);
           if (data) {
             const courseData = {
               name: data.name,

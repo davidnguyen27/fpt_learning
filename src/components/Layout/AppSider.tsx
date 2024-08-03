@@ -43,6 +43,24 @@ const AppSider: React.FC<AppSiderProps> = ({ isVisible, onClose }) => {
       case "2":
         navigate("/about");
         break;
+      case "3":
+        navigate("/category/66827468b5436c3f43c703e7");
+        break;
+      case "4":
+        navigate("/category/668e2f4bf2c243ced095c6c0");
+        break;
+      case "5":
+        navigate("/category/66840803c2ef7156100c3f61");
+        break;
+      case "6":
+        navigate("/category/669f294e396c0261a73f5a7a");
+        break;
+      case "7":
+        navigate("/category/668f6c0320c527aff59b0f8b");
+        break;
+      case "8":
+        navigate("/category/668b4abf03350733f0080b9a");
+        break;
       case "9":
         navigate("/settings-page");
         break;

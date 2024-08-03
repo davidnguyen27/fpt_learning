@@ -34,23 +34,19 @@ section h1::after {
   position: absolute;
   left: 0;
   bottom: 0;
-  width: 50px;
+  width: 70px;
   height: 3px;
-  background-color: #f3a847;
+  background-color: #f5222d;
 }
 
 /* Styles cho link "See all" */
 section a {
   font-size: 16px;
-  color: #f3a847;
+  color: #f5222d;
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
-section a:hover {
-  color: #d48806;
-  text-decoration: underline;
-}
 
 /* Styles cho ListCourse component */
 .list-course-container {
@@ -105,14 +101,14 @@ section a:hover {
 }
 
 .course-rating .stars {
-  color: #f3a847;
+  color: #f5222d;
   margin-right: 5px;
 }
 
 .course-price {
   font-size: 16px;
   font-weight: 700;
-  color: #f3a847;
+  color: #f5222d;
 }
 
 /* Responsive adjustments */

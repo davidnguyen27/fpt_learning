@@ -34,8 +34,11 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(null);
   };
 
+  const getRole = () => {
+    return user?.data.role || null;
+  };
   return (
-    <AuthContext.Provider value={{ user, login, logout, setUser }}>
+    <AuthContext.Provider value={{ user, login, logout, setUser, getRole }}>
       {children}
     </AuthContext.Provider>
   );
