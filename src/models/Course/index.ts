@@ -14,6 +14,8 @@ export type Course = {
   updated_at: string;
   user_name: string;
   category_name: string;
+  session_count: number;
+  lesson_count: number;
 };
 
 export type CourseClient = {
@@ -92,3 +94,31 @@ export type DataTransfer = {
     pageSize: number;
   };
 };
+
+export type CourseSearchResponse = {
+  success: boolean;
+  data: {
+    pageData: Course[];
+    pageInfo: {
+      pageNum: number;
+      pageSize: number;
+      totalItems: number;
+      totalPages: number;
+    };
+  };
+};
+
+export type CourseDetailResponse = {
+  success: boolean;
+  data: {
+    pageData: CourseDetail[];
+    PageInfo: {
+      pageNum: number;
+      pageSize: number;
+      totalItems: number;
+      totalPages: number;
+    }
+  }
+};
+
+

@@ -1,27 +1,54 @@
-import { Table, Tag, Tooltip } from "antd";
+import { Table, Tag, Tooltip, Input, Spin, Pagination, Select } from "antd";
 import { usePurchases } from "../../hooks/purchase/usePurchase";
 import { DataTransfer } from "../../models/Purchase";
 import { PlusSquareOutlined } from "@ant-design/icons";
 import { useCreatePayout } from "../../hooks/payout/useCreatePayout";
-import { useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../app/redux/store";
+import { setPageNum, setPageSize } from "../../app/redux/pagination/paginationSlice";
+import { ColumnsType } from "antd/es/table";
+
+const { Search } = Input;
+const { Option } = Select;
 
 const TablePurchase = () => {
+  const dispatch = useDispatch();
+  const { pageNum, pageSize } = useSelector(
+    (state: RootState) => state.pagination,
+  );
+  const [searchKeyword, setSearchKeyword] = useState<string>("");
+  const [statusFilter, setStatusFilter] = useState<string>("");
+
+  const handleSearch = useCallback((value: string) => {
+    setSearchKeyword(value);
+  }, []);
+
+  const handleStatusChange = (value: string) => {
+    setStatusFilter(value);
+  };
+
   const dataTransfer = useMemo(
     (): DataTransfer => ({
       searchCondition: {
-        purchase_no: "",
+        purchase_no: searchKeyword,
         cart_no: "",
         course_id: "",
-        status: "",
+        status: statusFilter,
         is_deleted: false,
       },
       pageInfo: {
-        pageNum: 1,
-        pageSize: 100,
+        pageNum,
+        pageSize,
       },
     }),
-    [],
+    [searchKeyword, statusFilter, pageNum, pageSize],
   );
+
+  const handlePageChange = (page: number, newPageSize: number) => {
+    dispatch(setPageNum(page));
+    dispatch(setPageSize(newPageSize));
+  };
 
   const handleCreatePayout = async (
     instructor_id: string,
@@ -34,7 +61,18 @@ const TablePurchase = () => {
   const { data, loading, fetchData } = usePurchases(dataTransfer);
   const { createPayout } = useCreatePayout();
 
-  const columns = [
+  const dataWithIndex = data?.map((item, index) => ({
+    ...item,
+    index: (pageNum - 1) * pageSize + index + 1,
+  }));
+
+  const columns: ColumnsType<{ index: number }> = [
+    {
+      title: "No.",
+      dataIndex: "index",
+      key: "index",
+      width: 50,
+    },
     {
       title: "Purchase No",
       dataIndex: "purchase_no",
@@ -103,13 +141,46 @@ const TablePurchase = () => {
   ];
 
   return (
-    <Table
-      className="my-5"
-      columns={columns}
-      dataSource={data}
-      loading={loading}
-      rowKey="_id"
-    />
+    <>
+      <div className="my-3 flex items-center gap-2">
+        <Search
+          onSearch={handleSearch}
+          placeholder="Search by Purchase No"
+          allowClear
+          className="w-64"
+        />
+        <Select
+          placeholder="Filter by Status"
+          allowClear
+          className="w-64"
+          onChange={handleStatusChange}
+          value={statusFilter}
+        >
+          <Option value="">All</Option>
+          <Option value="new">New</Option>
+          <Option value="request_paid">Request Paid</Option>
+          <Option value="completed">Completed</Option>
+        </Select>
+      </div>
+      <Spin spinning={loading}>
+        <Table
+          className="my-5"
+          columns={columns}
+          dataSource={dataWithIndex}
+          pagination={false}
+          rowKey="_id"
+          scroll={{ x: "max-content" }}
+          />
+        <Pagination
+          current={pageNum}
+          pageSize={pageSize}
+          total={10}
+          onChange={handlePageChange}
+          style={{ marginTop: 16, textAlign: "right", justifyContent: "end" }}
+          showSizeChanger
+        />
+      </Spin>
+    </>
   );
 };
 

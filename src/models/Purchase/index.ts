@@ -31,3 +31,16 @@ export type DataTransfer = {
         pageSize: number;
     };
 };
+
+export type PurchaseSearchResponse = {
+    success: boolean;
+    data: {
+      pageData: Purchase[];
+      pageInfo: {
+        pageNum: number;
+        pageSize: number;
+        totalItems: number;
+        totalPages: number;
+      };
+    };
+  };

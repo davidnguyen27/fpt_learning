@@ -9,7 +9,7 @@ const CoursesManagePage = () => {
   return (
     <InstructorLayout>
       <section>
-        <h1 className="text-xl font-bold">Courses Management</h1>
+        <h1 className="mb-6 text-xl font-bold">Courses Management</h1>
       </section>
       <TableCourses />
     </InstructorLayout>

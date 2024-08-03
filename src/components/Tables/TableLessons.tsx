@@ -1,15 +1,20 @@
 import { DeleteOutlined, FormOutlined } from "@ant-design/icons";
-import { Table, Spin, Modal, Input } from "antd";
+import { Table, Spin, Modal, Input, Pagination, Tooltip, Button } from "antd";
 import { DataTransfer } from "../../models/Lesson";
 import useLessonsData from "../../hooks/lesson/useLessonData";
-import { useState, useMemo} from "react";
+import { useState, useMemo } from "react";
 import ModalAddLesson from "../Modal/ModalAddLesson";
 import useDeleteLesson from "../../hooks/lesson/useDeleteLesson";
 import ModalEditLesson from "../Modal/ModalEditLesson";
 import type { ColumnsType } from "antd/es/table";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../app/redux/store";
+import {
+  setPageNum,
+  setPageSize,
+} from "../../app/redux/pagination/paginationSlice";
 
 const { Search } = Input;
-
 
 interface DataType {
   key: string;
@@ -22,17 +27,23 @@ interface DataType {
 }
 
 const TableLessons = () => {
+  const dispatch = useDispatch();
+  const { pageNum, pageSize } = useSelector(
+    (state: RootState) => state.pagination,
+  );
   const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [openAdd, setOpenAdd] = useState<boolean>(false);
   const [openEdit, setOpenEdit] = useState<boolean>(false);
   const [editingLessonId, setEditingLessonId] = useState<string | null>(null);
 
-
   const handleSearch = (value: string) => {
     setSearchKeyword(value);
   };
 
-
+  const handlePageChange = (page: number, newPageSize: number) => {
+    dispatch(setPageNum(page));
+    dispatch(setPageSize(newPageSize));
+  };
 
   const handleSuccess = () => {
     refetchData();
@@ -64,10 +75,10 @@ const TableLessons = () => {
 
   const pageInfo = useMemo(
     () => ({
-      pageNum: 1,
-      pageSize: 10,
+      pageNum,
+      pageSize,
     }),
-    [],
+    [pageNum, pageSize],
   );
 
   const dataTransfer: DataTransfer = useMemo(
@@ -85,7 +96,18 @@ const TableLessons = () => {
     return <div>{error}</div>;
   }
 
-  const columns: ColumnsType<DataType> = [
+  // Add index to dataSource
+  const dataWithIndex = data?.map((item, index) => ({
+    ...item,
+    index: (pageNum - 1) * pageSize + index + 1,
+  }));
+  const columns: ColumnsType<DataType & { index: number }> = [
+    {
+      title: "No.",
+      dataIndex: "index",
+      key: "index",
+      width: 50,
+    },
     {
       title: "Lesson Name",
       dataIndex: "name",
@@ -122,17 +144,21 @@ const TableLessons = () => {
     {
       title: "Action",
       key: "action",
-      width: 200,
+      width: 110,
       render: (_, record) => (
         <>
-          <FormOutlined
-            onClick={() => handleEdit(record.key)}
-            className="mx-6 cursor-pointer text-blue-500"
-          />
-          <DeleteOutlined
-            className="cursor-pointer text-red-500"
-            onClick={() => handleDelete(record.key)}
-          />
+          <Tooltip title="Edit Lesson">
+            <FormOutlined
+              onClick={() => handleEdit(record.key)}
+              className="cursor-pointer text-blue-500"
+            />
+          </Tooltip>
+          <Tooltip title="Delete Lesson">
+            <DeleteOutlined
+              className="ml-3 cursor-pointer text-red-500"
+              onClick={() => handleDelete(record.key)}
+            />
+          </Tooltip>
         </>
       ),
     },
@@ -145,18 +171,32 @@ const TableLessons = () => {
           onSearch={handleSearch}
           placeholder="Search by keyword"
           allowClear
-          style={{ width: 300 }}
+          style={{ width: 256 }}
         />
-        
-        <button
+
+        <Button
+          type="primary"
+          danger
           onClick={() => setOpenAdd(true)}
-          className="rounded-lg bg-red-500 px-5 py-2 text-sm font-medium text-white hover:bg-red-600"
+          className="px-5 py-2"
         >
           Add Lesson
-        </button>
+        </Button>
       </div>
       <Spin spinning={loading}>
-        <Table columns={columns} dataSource={data} />
+        <Table
+          columns={columns}
+          dataSource={dataWithIndex}
+          pagination={false}
+        />
+        <Pagination
+          current={pageNum}
+          pageSize={pageSize}
+          total={20}
+          onChange={handlePageChange}
+          style={{ marginTop: 16, textAlign: "right", justifyContent: "end" }}
+          showSizeChanger
+        />
       </Spin>
       <ModalAddLesson
         open={openAdd}
