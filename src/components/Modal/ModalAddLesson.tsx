@@ -74,12 +74,12 @@ const ModalAddLesson = (props: ModalAddLessonProps) => {
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-      
+
       // Ensure all fields are included with default values
       values.description = values.description || "";
       values.video_url = values.video_url || "";
       values.image_url = values.image_url || "";
-      
+
       // Ensure position_order is set to 99 if left empty
       if (!values.position_order) {
         values.position_order = 99;
@@ -100,7 +100,9 @@ const ModalAddLesson = (props: ModalAddLessonProps) => {
 
   const validateNumber = (_: any, value: string) => {
     if (value && isNaN(Number(value))) {
-      return Promise.reject(new Error("Position Order must be a valid number!"));
+      return Promise.reject(
+        new Error("Position Order must be a valid number!"),
+      );
     }
     return Promise.resolve();
   };
@@ -114,11 +116,7 @@ const ModalAddLesson = (props: ModalAddLessonProps) => {
       confirmLoading={loading}
       width={700}
       footer={[
-        <Button
-          key="cancel"
-          className="mr-3"
-          onClick={handleCancel}
-        >
+        <Button key="cancel" className="mr-3" onClick={handleCancel}>
           Cancel
         </Button>,
         <Button
@@ -203,16 +201,11 @@ const ModalAddLesson = (props: ModalAddLessonProps) => {
           </Form.Item>
 
           {lessonType === "text" && (
-            <Form.Item
-              label="Description"
-              name="description"
-              valuePropName="value"
-              getValueFromEvent={(e: any) => e.target.getContent()}
-            >
+            <Form.Item label="Description" name="description">
               <Tiny
-                value={form.getFieldValue('description') || ''}
+                value={form.getFieldValue("description") || ""}
                 onChange={(value: string) => {
-                  form.setFieldsValue({ description: value || '' });
+                  form.setFieldsValue({ description: value || "" });
                 }}
               />
             </Form.Item>

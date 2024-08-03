@@ -2,7 +2,7 @@ import React, { Suspense, useContext } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { AuthContext, AuthProvider } from "../app/context/AuthContext";
 
-//-----------------------------------------------USER------------------------------------------------
+//-------------------------------------------------USER------------------------------------------------
 const HomePage = React.lazy(() => import("../pages/User/HomePage"));
 const DetailCoursePage = React.lazy(
   () => import("../pages/User/detailCoursePage"),
@@ -25,9 +25,14 @@ const RegisterInstructorPage = React.lazy(
 );
 const VerifyPage = React.lazy(() => import("../pages/User/VerifyPage"));
 const ChangePassPage = React.lazy(() => import("../pages/ChangePasswordPage"));
+const LearningPage = React.lazy(() => import("../pages/User/LearningPage"));
 const BlogPage = React.lazy(() => import("../pages/User/BlogPage"));
-const SearchResultsPage = React.lazy(() => import("../pages/User/SearchResultsPage"));
-const CategoryCoursesPage = React.lazy(() => import("../pages/User/CategoryCoursesPage"));
+const SearchResultsPage = React.lazy(
+  () => import("../pages/User/SearchResultsPage"),
+);
+const CategoryCoursesPage = React.lazy(
+  () => import("../pages/User/CategoryCoursesPage"),
+);
 
 //-----------------------------------------------ADMIN-------------------------------------------------
 const AdminPage = React.lazy(() => import("../pages/Admin/AdminPage"));
@@ -47,11 +52,14 @@ const ReviewProfilePage = React.lazy(
 const AdminLoginPage = React.lazy(
   () => import("../pages/Admin/AdminLoginPage"),
 );
-const AdminReviewManagePage = React.lazy(
-  () => import("../pages/Admin/AdminReviewManagePage"),
-);
 const BlogManagePage = React.lazy(
   () => import("../pages/Admin/BlogManagePage"),
+);
+const InstructorProfilePage = React.lazy(
+  () => import("../pages/Instructor/InstructorProfilePage"),
+);
+const PayoutManagement = React.lazy(
+  () => import("../pages/Admin/PayoutManagePage"),
 );
 
 //---------------------------------------------INSTRUCTOR----------------------------------------------
@@ -76,7 +84,9 @@ const ReviewManagePage = React.lazy(
 const PayoutManagePage = React.lazy(
   () => import("../pages/Instructor/PayoutManagePage"),
 );
-const EarningPage = React.lazy(() => import("../pages/Instructor/EarningPage"));
+const PurchasePage = React.lazy(
+  () => import("../pages/Instructor/PurchasePage"),
+);
 
 //-----------------------------------------------STUDENT-----------------------------------------------
 const StudentVerifyPage = React.lazy(() => import("../pages/User/VerifyPage"));
@@ -151,6 +161,10 @@ const AppRouter = () => {
             <Route path="/verify-email/:token" element={<VerifyPage />} />
             <Route path="/user/change-password" element={<ChangePassPage />} />
             <Route path="/admin-login" element={<AdminLoginPage />} />
+            <Route
+              path="/instructor-info/:instructor_id"
+              element={<InstructorProfilePage />}
+            />
             {/*----------------------------ADMIN---------------------------------*/}
             <Route
               path="/admin/dashboard"
@@ -198,6 +212,15 @@ const AppRouter = () => {
               }
             />
             <Route
+              path="/admin/payout-management"
+              element={
+                <ProtectedRoute
+                  element={<PayoutManagement />}
+                  allowedRoles={["admin"]}
+                />
+              }
+            />
+            <Route
               path="/admin/review-profile"
               element={
                 <ProtectedRoute
@@ -224,7 +247,7 @@ const AppRouter = () => {
                 />
               }
             />
-            <Route
+            {/* <Route
               path="/admin/reviews-management"
               element={
                 <ProtectedRoute
@@ -232,14 +255,23 @@ const AppRouter = () => {
                   allowedRoles={["admin"]}
                 />
               }
-            />
+            /> */}
             {/*----------------------------STUDENT-------------------------------*/}
+            {/* <Route
+              path="/view-detail"
+              element={
+                <ProtectedRoute
+                  element={<StudentCourseDetailPage />}
+                  allowedRoles={["student"]}
+                />
+              }
+            /> */}
             <Route
               path="/cart"
               element={
                 <ProtectedRoute
                   element={<Cart />}
-                  allowedRoles={["student" , "instructor"]}
+                  allowedRoles={["student", "instructor"]}
                 />
               }
             />
@@ -248,7 +280,7 @@ const AppRouter = () => {
               element={
                 <ProtectedRoute
                   element={<CheckOut />}
-                  allowedRoles={["student" , "instructor"]}
+                  allowedRoles={["student", "instructor"]}
                 />
               }
             />
@@ -257,7 +289,7 @@ const AppRouter = () => {
               element={
                 <ProtectedRoute
                   element={<ConfirmCheckout />}
-                  allowedRoles={["student" , "instructor"]}
+                  allowedRoles={["student", "instructor"]}
                 />
               }
             />
@@ -280,6 +312,15 @@ const AppRouter = () => {
               }
             />
             <Route
+              path="/learning/:_id"
+              element={
+                <ProtectedRoute
+                  element={<LearningPage />}
+                  allowedRoles={["student", "instructor"]}
+                />
+              }
+            />
+            <Route
               path="/student/dashboard"
               element={
                 <ProtectedRoute
@@ -297,6 +338,7 @@ const AppRouter = () => {
                 />
               }
             />
+            {/*------------------------------------------------------------------*/}
             {/*---------------------------INSTRUCTOR-----------------------------*/}
             <Route
               path="/instructor/dashboard"
@@ -353,10 +395,10 @@ const AppRouter = () => {
               }
             />
             <Route
-              path="/instructor/earning-management"
+              path="/instructor/purchase-management"
               element={
                 <ProtectedRoute
-                  element={<EarningPage />}
+                  element={<PurchasePage />}
                   allowedRoles={["instructor"]}
                 />
               }
@@ -371,6 +413,7 @@ const AppRouter = () => {
               }
             />
           </Routes>
+          {/*------------------------------------------------------------------*/}
         </Suspense>
       </AuthProvider>
     </BrowserRouter>

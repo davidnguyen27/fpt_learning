@@ -6,7 +6,10 @@ export const getLessonsAPI = async (
   dataTransfer: DataTransfer,
 ): Promise<Lesson[]> => {
   try {
-    const res = await axiosInstance.post(`${APILink}/api/lesson/search`, dataTransfer);
+    const res = await axiosInstance.post(
+      `${APILink}/api/lesson/search`,
+      dataTransfer,
+    );
     return res.data.data.pageData;
   } catch (error: any) {
     throw new Error(error.message);
@@ -25,9 +28,7 @@ export const getLessonAPI = async (lessonId: string) => {
   }
 };
 
-export const createLessonAPI = async (
-  lessonData: Partial<Lesson>,
-) => {
+export const createLessonAPI = async (lessonData: Partial<Lesson>) => {
   try {
     const res = await axiosInstance.post(`${APILink}/api/lesson`, lessonData);
     return res.data;
@@ -43,19 +44,19 @@ export const editLessonAPI = async (
   try {
     const updatedLessonData = {
       ...lessonData,
-      user_id: lessonData.user_id, 
+      user_id: lessonData.user_id,
     };
-    const res = await axiosInstance.put(`${APILink}/api/lesson/${lessonId}`, updatedLessonData);
+    const res = await axiosInstance.put(
+      `${APILink}/api/lesson/${lessonId}`,
+      updatedLessonData,
+    );
     return { ...res.data.data, _id: lessonId };
   } catch (error: any) {
-    if (error.response) {
-      console.error("API Request Error:", error.message);
-    } else if (error.request) {
-      console.error("API No Response Received:", error.request);
-    } else {
-      
-    }
-    throw new Error(error.response?.data?.message || error.message || "An error occurred while updating the lesson");
+    throw new Error(
+      error.response?.data?.message ||
+        error.message ||
+        "An error occurred while updating the lesson",
+    );
   }
 };
 
@@ -75,17 +76,16 @@ export const getCoursesAPI = async (
   is_delete: boolean,
 ) => {
   try {
-    const res = await axiosInstance.post(
-      `${APILink}/api/course/search`,
-      {
-        searchCondition: { keyword, is_delete },
-        pageInfo: { pageNum, pageSize },
-      });
-    console.log("res", res.data);
+    const res = await axiosInstance.post(`${APILink}/api/course/search`, {
+      searchCondition: { keyword, is_delete },
+      pageInfo: { pageNum, pageSize },
+    });
     return res.data;
   } catch (error: any) {
     console.error("API Error:", error);
-    throw new Error(error.message || "An error occurred while fetching courses");
+    throw new Error(
+      error.message || "An error occurred while fetching courses",
+    );
   }
 };
 
@@ -96,16 +96,14 @@ export const getSessionsAPI = async (
   is_delete: boolean,
 ) => {
   try {
-    const res = await axiosInstance.post(
-      `${APILink}/api/session/search`,
-      {
-        searchCondition: { keyword, is_delete },
-        pageInfo: { pageNum, pageSize },
-      });
-    console.log("res", res.data);
+    const res = await axiosInstance.post(`${APILink}/api/session/search`, {
+      searchCondition: { keyword, is_delete },
+      pageInfo: { pageNum, pageSize },
+    });
     return res.data;
   } catch (error: any) {
-    console.error("API Error:", error);
-    throw new Error(error.message || "An error occurred while fetching sessions");
+    throw new Error(
+      error.message || "An error occurred while fetching sessions",
+    );
   }
 };

@@ -12,6 +12,8 @@ import {
   SettingOutlined,
   SketchOutlined,
 } from "@ant-design/icons";
+import useCategoriesClient from "../../hooks/category/useCategoriesClient";
+import { Category } from "../../models/Category";
 
 interface AppSiderProps {
   isVisible: boolean;
@@ -20,6 +22,7 @@ interface AppSiderProps {
 
 const AppSider: React.FC<AppSiderProps> = ({ isVisible, onClose }) => {
   const navigate = useNavigate();
+  const { categories } = useCategoriesClient();
   const [openKeys, setOpenKeys] = useState<string[]>([]);
   const [selectedKeys, setSelectedKeys] = useState<string[]>(["1"]);
 
@@ -90,32 +93,10 @@ const AppSider: React.FC<AppSiderProps> = ({ isVisible, onClose }) => {
       key: "sub1",
       icon: <BarsOutlined />,
       label: "Categories",
-      children: [
-        {
-          key: "3",
-          label: "Web Development",
-        },
-        {
-          key: "4",
-          label: "Information Technology",
-        },
-        {
-          key: "5",
-          label: "Business",
-        },
-        {
-          key: "6",
-          label: "Music",
-        },
-        {
-          key: "7",
-          label: "Marketing",
-        },
-        {
-          key: "8",
-          label: "Graphic Design",
-        },
-      ],
+      children: categories.map((category: Category) => ({
+        key: category._id,
+        label: category.name,
+      })),
     },
     {
       key: "9",
@@ -143,7 +124,7 @@ const AppSider: React.FC<AppSiderProps> = ({ isVisible, onClose }) => {
     <Drawer
       placement="left"
       onClose={onClose}
-      visible={isVisible}
+      open={isVisible}
       width={280}
       bodyStyle={{ padding: 0 }}
       title="Menu"

@@ -122,7 +122,7 @@ export const getDetailClientAPI = async (_id: string) => {
     return response.data.data;
   } catch (error: any) {
     if (error.response && error.response.data && error.response.data.message) {
-      return error.response.data.message;
+      throw new Error( error.response.data.message);
     }
   }
 };

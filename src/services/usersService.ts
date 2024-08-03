@@ -154,7 +154,10 @@ export const createUserAPI = async (userData: Partial<User["data"]>) => {
   try {
     console.log("Sending user data to create:", userData);
 
-    const res = await axiosInstance.post(`${APILink}/api/users/create`, userData);
+    const res = await axiosInstance.post(
+      `${APILink}/api/users/create`,
+      userData,
+    );
 
     console.log("User created successfully:", res.data.data);
     return res.data.data;
@@ -168,10 +171,10 @@ export const changeRoleAPI = async (
   role: string,
 ): Promise<User> => {
   try {
-    const res = await axiosInstance.put(
-      `${APILink}/api/users/change-role`,
-      { user_id: userId, role: role },
-    );
+    const res = await axiosInstance.put(`${APILink}/api/users/change-role`, {
+      user_id: userId,
+      role: role,
+    });
     console.log(res.data.data);
     return res.data;
   } catch (error: any) {

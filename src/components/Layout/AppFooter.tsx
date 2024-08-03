@@ -1,6 +1,4 @@
-import React from "react";
-
-const AppFooter: React.FC = () => {
+const AppFooter = () => {
   return (
     <footer className="py-6 text-white">
       <div className="container mx-auto px-4">

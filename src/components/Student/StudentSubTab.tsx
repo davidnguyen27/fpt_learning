@@ -31,7 +31,7 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
   const [loading, setLoading] = useState<boolean>(true);
   const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
   const userId = storedUser?.data?._id;
-  const userRole = getRole(); 
+  const userRole = getRole();
 
   const fetchUserData = async () => {
     try {
@@ -113,7 +113,12 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
     setPreviewVisible(true);
   };
 
-  if (loading) return <div><Loading/></div>;
+  if (loading)
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
 
   const renderTabs = () => (
     <>
@@ -149,13 +154,13 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
       )}
     </>
   );
-  
+
   const AboutTabContent = () => (
     <div className="p-3">
-      <h1 className="text-2xl font-semibold mb-5">About Me</h1>
+      <h1 className="mb-5 text-2xl font-semibold">About Me</h1>
       {!editing ? (
         <div>
-            <span dangerouslySetInnerHTML={{ __html: initialDescription }} />
+          <span dangerouslySetInnerHTML={{ __html: initialDescription }} />
           <Button
             type="primary"
             onClick={() => setEditing(true)}
@@ -196,9 +201,19 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
             </Upload>
             {avatarUrl && (
               <>
-                <img src={avatarUrl} alt="avatar" width="100" onClick={handlePreview} style={{ cursor: 'pointer' }} />
-                <Modal visible={previewVisible} footer={null} onCancel={() => setPreviewVisible(false)}>
-                  <img alt="avatar" style={{ width: '100%' }} src={avatarUrl} />
+                <img
+                  src={avatarUrl}
+                  alt="avatar"
+                  width="100"
+                  onClick={handlePreview}
+                  style={{ cursor: "pointer" }}
+                />
+                <Modal
+                  visible={previewVisible}
+                  footer={null}
+                  onCancel={() => setPreviewVisible(false)}
+                >
+                  <img alt="avatar" style={{ width: "100%" }} src={avatarUrl} />
                 </Modal>
               </>
             )}
@@ -206,23 +221,26 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
           <Form.Item name="video" label="Video">
             <Input size="large" placeholder="https://youtube.com" />
           </Form.Item>
-          <Form.Item
-            label="Description"
-            name="description"
-          >
+          <Form.Item label="Description" name="description">
             <Tiny
-              value={form.getFieldValue('description') || ''}
-              onChange={(value: string) => form.setFieldsValue({ description: value })}
+              value={form.getFieldValue("description") || ""}
+              onChange={(value: string) =>
+                form.setFieldsValue({ description: value })
+              }
             />
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 2 }}>
-            <Button type="primary" htmlType="submit" className="float-right mt-6">
+            <Button
+              type="primary"
+              htmlType="submit"
+              className="float-right mt-6"
+            >
               Update
             </Button>
             <Button
               type="default"
               onClick={() => setEditing(false)}
-              className="float-right mt-6 mr-4"
+              className="float-right mr-4 mt-6"
             >
               Cancel
             </Button>
@@ -241,7 +259,9 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
         {activeTab === "about" && <AboutTabContent />}
         {activeTab === "purchased" && <StudentPurchased />}
         {activeTab === "following" && <SubscriptionsForSubcriber />}
-        {activeTab === "follower" && userRole === "instructor" && <SubscriptionsForInstructor />}
+        {activeTab === "follower" && userRole === "instructor" && (
+          <SubscriptionsForInstructor />
+        )}
       </div>
     </div>
   );

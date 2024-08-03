@@ -62,13 +62,13 @@ export const deleteCategoryAPI = async (categoryId: string) => {
   }
 };
 
-export const getCategoriesClientAPI = async (
-  dataTransfer: DataTransfer,
-): Promise<Category[]> => {
+export const getCategoriesClientAPI = async (dataTransfer: DataTransfer) => {
   try {
     const res = await axiosInstance.post(`${APILink}/api/client/category/search`, dataTransfer);
     return res.data.data.pageData;
   } catch (error: any) {
-    throw new Error(error.message);
+    if (error.response && error.response.data && error.response.data.message) {
+      throw new Error(error.response.data.message);
+    }
   }
 };

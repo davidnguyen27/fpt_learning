@@ -21,7 +21,7 @@ const CourseCard: React.FC<CourseCardProps> = (props) => {
       status: "",
       is_delete: false,
     }),
-    [searchKeyword, category_id]
+    [searchKeyword, category_id],
   );
 
   const pageInfo = useMemo(
@@ -29,7 +29,7 @@ const CourseCard: React.FC<CourseCardProps> = (props) => {
       pageNum: 1,
       pageSize: 10,
     }),
-    []
+    [],
   );
 
   const dataTransfer: DataTransfer = useMemo(
@@ -37,7 +37,7 @@ const CourseCard: React.FC<CourseCardProps> = (props) => {
       searchCondition,
       pageInfo,
     }),
-    [searchCondition, pageInfo]
+    [searchCondition, pageInfo],
   );
 
   const {
@@ -72,7 +72,9 @@ const CourseCard: React.FC<CourseCardProps> = (props) => {
             <div className="course-card-category">{item.category_name}</div>
             <div className="course-card-rating">
               <Rate disabled value={item.average_rating} />
-              <span className="course-card-rating-value">{item.average_rating}</span>
+              <span className="course-card-rating-value">
+                {item.average_rating}
+              </span>
             </div>
             <div className="course-card-footer">
               <p className="course-card-instructor">

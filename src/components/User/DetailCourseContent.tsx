@@ -3,6 +3,7 @@ import CourseBox from "../Course/CourseBox";
 import { useState } from "react";
 import useCourseDetailClient from "../../hooks/course/useCourseDetailClient";
 import CourseSubTab from "../Course/CourseSubTab";
+
 const DetailCourseContent = () => {
   const { _id } = useParams<{ _id: string }>();
   const [activeTab, setActiveTab] = useState<string>("about");
@@ -17,13 +18,12 @@ const DetailCourseContent = () => {
       <CourseBox _id={_id} />
       {course && (
         <CourseSubTab
-          _id={_id} // Ensure _id is a string
+          _id={_id}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           onSelectedCourse={() => {}}
           content={course?.content ?? ""}
           sessions={course.session_list ?? []}
-          // onSelectedCourse={() => {}}
         />
       )}
     </div>

@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { getUserDetail } from "../../services/usersService";
-import { getSubscriptionByInstructorAPI, getSubscriptionBySubscriberAPI } from "../../services/subscriptionService";
+import {
+  getSubscriptionByInstructorAPI,
+  getSubscriptionBySubscriberAPI,
+} from "../../services/subscriptionService";
 import { UserData } from "../../models/Types";
 import "../../styles/studentProfileBox.css";
-import { Subscription } from "../../models/Subscription"; 
+import { Subscription } from "../../models/Subscription";
 
 const StudentProfileBox = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
@@ -12,7 +15,7 @@ const StudentProfileBox = () => {
   const storedUser = sessionStorage.getItem("user");
   const user = storedUser ? JSON.parse(storedUser) : null;
   const userId = user?.data?._id;
-  const userRole = user?.data?.role; 
+  const userRole = user?.data?.role;
 
   const fetchUserData = async () => {
     try {
@@ -45,7 +48,8 @@ const StudentProfileBox = () => {
             pageSize: 10,
           },
         };
-        const fetchedFollowing: Subscription[] = await getSubscriptionBySubscriberAPI(userId, dataTransfer);
+        const fetchedFollowing: Subscription[] =
+          await getSubscriptionBySubscriberAPI(userId, dataTransfer);
         setFollowing(fetchedFollowing);
       }
     } catch (error: any) {
@@ -67,7 +71,8 @@ const StudentProfileBox = () => {
             pageSize: 10,
           },
         };
-        const fetchFollower: Subscription[] = await getSubscriptionByInstructorAPI(userId, dataTransfer);
+        const fetchFollower: Subscription[] =
+          await getSubscriptionByInstructorAPI(userId, dataTransfer);
         setFollowers(fetchFollower);
       }
     } catch (error: any) {
@@ -77,13 +82,13 @@ const StudentProfileBox = () => {
 
   useEffect(() => {
     fetchUserData();
-    fetchFollowing(); 
+    fetchFollowing();
     fetchFollowers();
   }, []);
 
   return (
     <div className="profile-container">
-      <div className="profile-cover"/>
+      <div className="profile-cover" />
       <div className="profile-header">
         <img
           className="profile-avatar"
@@ -101,14 +106,21 @@ const StudentProfileBox = () => {
               <button className="profile-stat-button" onClick={fetchFollowing}>
                 Following:
               </button>
-              <span className="profile-stat-number ml-1">{following.length}</span>
+              <span className="profile-stat-number ml-1">
+                {following.length}
+              </span>
             </div>
             {userRole === "instructor" && (
               <div>
-                <button className="profile-stat-button" onClick={fetchFollowers}>
+                <button
+                  className="profile-stat-button"
+                  onClick={fetchFollowers}
+                >
                   Followers:
                 </button>
-                <span className="profile-stat-number ml-1">{followers.length}</span>
+                <span className="profile-stat-number ml-1">
+                  {followers.length}
+                </span>
               </div>
             )}
           </div>

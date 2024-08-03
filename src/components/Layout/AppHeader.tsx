@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Badge, Button, Dropdown, MenuProps, Space } from "antd";
 import {
@@ -10,20 +10,48 @@ import {
   RetweetOutlined,
   LogoutOutlined,
   MenuOutlined,
+  LoginOutlined,
+  UserOutlined,
+  CheckSquareOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "../../app/context/AuthContext";
 import "../../styles/header.css";
 import "../../styles/sider.css";
 import AppSider from "./AppSider";
+import { getCartsAPI } from "../../services/cartService";
+import { DataTransfer } from "../../models/Cart";
 
-const AppHeader: React.FC = () => {
+const AppHeader = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+  const [cartItemCount, setCartItemCount] = useState<number>(0);
+
   const navigate = useNavigate();
   const { logout } = useAuth();
 
   const storedUser: any = sessionStorage.getItem("user");
   const user = JSON.parse(storedUser);
 
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      if (user) {
+        try {
+          const dataTransfer: DataTransfer = {
+            searchCondition: {
+              status: "",
+              is_deleted: false,
+            },
+            pageInfo: { pageNum: 1, pageSize: 10 },
+          };
+          const carts = await getCartsAPI(dataTransfer);
+          setCartItemCount(carts.length);
+        } catch (error) {
+          console.error("Error fetching cart items:", error);
+        }
+      }
+    };
+
+    fetchCartItems();
+  }, [user]);
   const [searchKeyword, setSearchKeyword] = useState("");
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
@@ -164,7 +192,7 @@ const AppHeader: React.FC = () => {
         {user ? (
           <>
             {user?.data.role === "student" && (
-              <Badge>
+              <Badge count={cartItemCount}>
                 <ShoppingCartOutlined
                   className="cursor-pointer rounded-md bg-slate-200 text-xl transition-transform duration-300 hover:scale-105 hover:bg-slate-300"
                   onClick={handleShoppingCart}
@@ -205,7 +233,7 @@ const AppHeader: React.FC = () => {
               danger
               onClick={() => navigate("/sign-in")}
             >
-              Sign In
+              <LoginOutlined /> Sign In
             </Button>
             <Button
               className="mr-4"
@@ -218,14 +246,14 @@ const AppHeader: React.FC = () => {
               danger
               onClick={() => navigate("/sign-up")}
             >
-              Sign Up
+              <UserOutlined /> Sign Up
             </Button>
             <Button
               className="mr-4 border-slate-900 bg-slate-900 text-white"
               type="primary"
               onClick={() => navigate("/sign-up-instructor")}
             >
-              Become an Instructor
+              <CheckSquareOutlined /> Become an Instructor
             </Button>
           </div>
         )}

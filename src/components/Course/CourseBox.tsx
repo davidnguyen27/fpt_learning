@@ -5,6 +5,7 @@ import { createCartAPI } from "../../services/cartService";
 import { useAuth } from "../../app/context/AuthContext";
 import useCourseDetailClient from "../../hooks/course/useCourseDetailClient";
 import Loading from "../Loading/loading";
+import { extractYoutubeVideoId } from "../../utils/extractYoutube";
 
 const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
   const { course, loading, error, setCourse } = useCourseDetailClient(_id);
@@ -30,7 +31,12 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
     }
   }, [course]);
 
-  if (loading) return <div><Loading/></div>;
+  if (loading)
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
   if (error) return <div>{error}</div>;
 
   const showModal = () => setVisible(true);
@@ -80,16 +86,9 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
     }
   };
 
-  const extractYoutubeVideoId = (url: string) => {
-    const regExp =
-      /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-    const match = url.match(regExp);
-    return match ? match[1] : null;
-  };
-
   const handleButtonClick = () => {
     if (buttonText === "Learn Now") {
-      navigate(`/course/${course?._id}`);
+      navigate(`/learning/${course?._id}`);
     } else if (buttonText === "Go to cart") {
       navigate("/cart");
     } else if (buttonText === "Add to cart") {
@@ -101,7 +100,7 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
     <div className="bg-[#333333] p-4">
       <div className="flex flex-col rounded-lg p-4 md:flex-row md:p-8">
         <div
-          className="relative mb-4 w-full md:mb-0 md:w-1/2 lg:w-1/3 cursor-pointer"
+          className="relative mb-4 w-full cursor-pointer md:mb-0 md:w-1/2 lg:w-1/3"
           onClick={showModal}
         >
           <img
@@ -211,7 +210,7 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
       {/* Modal for adding to cart */}
       <Modal
         title="Add to Cart"
-        visible={isAddToCartModalVisible}
+        open={isAddToCartModalVisible}
         onOk={handleAddToCartOk}
         onCancel={handleAddToCartCancel}
         okText="Yes"

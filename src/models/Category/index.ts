@@ -1,12 +1,11 @@
-
 export type Category = {
-      _id: string;
-      name: string;
-      description?: string;
-      user_id: string;
-      created_at: string;
-      updated_at: string;
-      is_deleted: boolean;
+  _id: string;
+  name: string;
+  description?: string;
+  user_id: string;
+  created_at: string;
+  updated_at: string;
+  is_deleted: boolean;
 };
 
 export type DataTransfer = {
