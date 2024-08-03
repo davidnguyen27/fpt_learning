@@ -41,9 +41,7 @@ export const getLessonAPI = async (lessonId: string) => {
   }
 };
 
-export const createLessonAPI = async (
-  lessonData: Partial<Lesson>,
-) => {
+export const createLessonAPI = async (lessonData: Partial<Lesson>) => {
   try {
     const token = sessionStorage.getItem("token");
     if (!token) throw new Error("Cannot get token!");
@@ -82,7 +80,7 @@ export const editLessonAPI = async (
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     );
 
     return { ...res.data.data, _id: lessonId };
@@ -93,14 +91,14 @@ export const editLessonAPI = async (
     } else if (error.request) {
       console.error("API No Response Received:", error.request);
     } else {
-      
     }
-    throw new Error(error.response?.data?.message || error.message || "An error occurred while updating the lesson");
+    throw new Error(
+      error.response?.data?.message ||
+        error.message ||
+        "An error occurred while updating the lesson",
+    );
   }
 };
-
-
-
 
 export const deleteLessonAPI = async (lessonId: string) => {
   try {
@@ -126,7 +124,6 @@ export const getCoursesAPI = async (
 ) => {
   try {
     const token = sessionStorage.getItem("token");
-    console.log("token", token);
     if (!token) throw new Error("Cannot get token!");
 
     const res = await axios.post(
@@ -140,15 +137,15 @@ export const getCoursesAPI = async (
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     );
-    
-    console.log("res", res.data);
-    return res.data;
 
+    return res.data;
   } catch (error: any) {
     console.error("API Error:", error);
-    throw new Error(error.message || "An error occurred while fetching courses");
+    throw new Error(
+      error.message || "An error occurred while fetching courses",
+    );
   }
 };
 
@@ -174,14 +171,15 @@ export const getSessionsAPI = async (
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     );
-    
+
     console.log("res", res.data);
     return res.data;
-
   } catch (error: any) {
     console.error("API Error:", error);
-    throw new Error(error.message || "An error occurred while fetching sessions");
+    throw new Error(
+      error.message || "An error occurred while fetching sessions",
+    );
   }
 };

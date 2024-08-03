@@ -49,8 +49,8 @@ const SiderInstructor: React.FC<{ className?: string }> = () => {
     {
       key: "6",
       icon: <DollarOutlined />,
-      label: "Earning",
-      onClick: () => navigate("/instructor/earning-management"),
+      label: "Purchase",
+      onClick: () => navigate("/instructor/purchase-management"),
     },
     {
       key: "7",

@@ -2,7 +2,6 @@ import React, { Suspense, useContext } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { AuthContext, AuthProvider } from "../app/context/AuthContext";
 import Loading from "../components/Loading/loading";
-import { Spin } from "antd";
 
 //-------------------------------------------------USER------------------------------------------------
 const HomePage = React.lazy(() => import("../pages/User/HomePage"));
@@ -53,6 +52,9 @@ const BlogManagePage = React.lazy(
 const InstructorProfilePage = React.lazy(
   () => import("../pages/Instructor/InstructorProfilePage"),
 );
+const PayoutManagement = React.lazy(
+  () => import("../pages/Admin/PayoutManagePage"),
+);
 
 //---------------------------------------------INSTRUCTOR----------------------------------------------
 const InstructorPage = React.lazy(
@@ -76,7 +78,9 @@ const ReviewManagePage = React.lazy(
 const PayoutManagePage = React.lazy(
   () => import("../pages/Instructor/PayoutManagePage"),
 );
-const EarningPage = React.lazy(() => import("../pages/Instructor/EarningPage"));
+const PurchasePage = React.lazy(
+  () => import("../pages/Instructor/PurchasePage"),
+);
 
 //-----------------------------------------------STUDENT-----------------------------------------------
 const StudentVerifyPage = React.lazy(() => import("../pages/User/VerifyPage"));
@@ -129,13 +133,7 @@ const AppRouter = () => {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Suspense
-          fallback={
-            <Spin tip="Loading" size="large">
-              <Loading />
-            </Spin>
-          }
-        >
+        <Suspense fallback={<Loading />}>
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/about" element={<AboutPage />} />
@@ -205,15 +203,15 @@ const AppRouter = () => {
                 />
               }
             />
-            {/* <Route
-            path="/admin/feedbacks-management"
-            element={
-              <ProtectedRoute
-                element={<FeedBackManagePage />}
-                allowedRoles={["admin"]}
-              />
-            }
-          /> */}
+            <Route
+              path="/admin/payout-management"
+              element={
+                <ProtectedRoute
+                  element={<PayoutManagement />}
+                  allowedRoles={["admin"]}
+                />
+              }
+            />
             <Route
               path="/admin/review-profile"
               element={
@@ -380,10 +378,10 @@ const AppRouter = () => {
               }
             />
             <Route
-              path="/instructor/earning-management"
+              path="/instructor/purchase-management"
               element={
                 <ProtectedRoute
-                  element={<EarningPage />}
+                  element={<PurchasePage />}
                   allowedRoles={["instructor"]}
                 />
               }

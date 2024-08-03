@@ -11,6 +11,7 @@ import {
   startLoading,
   stopLoading,
 } from "../../app/redux/loading/loadingSlice";
+import { extractYoutubeVideoId } from "../../utils/extractYoutube";
 
 const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
   const dispatch = useDispatch();
@@ -103,16 +104,9 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
     }
   };
 
-  const extractYoutubeVideoId = (url: string) => {
-    const regExp =
-      /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-    const match = url.match(regExp);
-    return match ? match[1] : null;
-  };
-
   const handleButtonClick = () => {
     if (buttonText === "Learn Now") {
-      navigate(`/course/${course?._id}`);
+      navigate(`/learning/${course?._id}`);
     } else if (buttonText === "Go to cart") {
       navigate("/cart");
     } else if (buttonText === "Add to cart") {

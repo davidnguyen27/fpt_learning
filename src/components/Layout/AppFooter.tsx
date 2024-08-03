@@ -1,8 +1,6 @@
-import React from "react";
-
-const AppFooter: React.FC = () => {
+const AppFooter = () => {
   return (
-    <footer className="bg-gradient-to-r from-gray-800 to-gray-900 py-12 text-white">
+    <footer className="py-6 text-white">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-4 gap-8 text-sm max-md:grid-cols-2 md:gap-12">
           <div>
@@ -126,7 +124,6 @@ const AppFooter: React.FC = () => {
             <p className="mb-4 text-xs">
               Copyright © {new Date().getFullYear()} FPT LearningHub
             </p>
-
           </div>
         </div>
         <div className="mt-8 border-t border-gray-700 pt-8 text-center text-gray-400">

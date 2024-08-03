@@ -53,8 +53,8 @@ const SiderAdmin: React.FC<{ className?: string }> = () => {
     {
       key: "6",
       icon: <StarOutlined />,
-      label: "Reviews",
-      onClick: () => navigate("/admin/reviews-management"),
+      label: "Payout Manange",
+      onClick: () => navigate("/admin/payout-management"),
     },
     {
       key: "7",

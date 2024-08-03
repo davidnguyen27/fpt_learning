@@ -10,6 +10,9 @@ import {
   RetweetOutlined,
   LogoutOutlined,
   MenuOutlined,
+  LoginOutlined,
+  UserOutlined,
+  CheckSquareOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "../../app/context/AuthContext";
 import "../../styles/header.css";
@@ -218,7 +221,7 @@ const AppHeader = () => {
               danger
               onClick={() => navigate("/sign-in")}
             >
-              Sign In
+              <LoginOutlined /> Sign In
             </Button>
             <Button
               className="mr-4"
@@ -231,14 +234,14 @@ const AppHeader = () => {
               danger
               onClick={() => navigate("/sign-up")}
             >
-              Sign Up
+              <UserOutlined /> Sign Up
             </Button>
             <Button
               className="mr-4 border-slate-900 bg-slate-900 text-white"
               type="primary"
               onClick={() => navigate("/sign-up-instructor")}
             >
-              Become an Instructor
+              <CheckSquareOutlined /> Become an Instructor
             </Button>
           </div>
         )}

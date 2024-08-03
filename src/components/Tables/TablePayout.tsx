@@ -1,58 +1,104 @@
-import { Divider } from "antd";
+import { Button, Table, Tag } from "antd";
+import { useMemo } from "react";
+import { DataTransfer, Payout } from "../../models/Payout";
+import { ColumnsType } from "antd/es/table";
+import usePayoutsData from "../../hooks/payout/usePayoutsData";
+import useChangeStatusInstructor from "../../hooks/payout/useChangeStatusInstructor";
 
 const TablePayout = () => {
+  const dataTransfer = useMemo(
+    (): DataTransfer => ({
+      searchCondition: {
+        payout_no: "",
+        instructor_id: "",
+        status: "",
+        is_instructor: false,
+        is_delete: false,
+      },
+      pageInfo: {
+        pageNum: 1,
+        pageSize: 100,
+      },
+    }),
+    [],
+  );
+
+  const { data, loading, fetchData } = usePayoutsData(dataTransfer);
+  const { handleRequestPayout } = useChangeStatusInstructor(fetchData);
+
+  const columns: ColumnsType<Payout> = [
+    {
+      title: "Payout No",
+      dataIndex: "payout_no",
+      key: "payout_no",
+    },
+    {
+      title: "Balance Origin ($)",
+      dataIndex: "balance_origin",
+      key: "balance_origin",
+    },
+    {
+      title: "Balance Instructor Paid ($)",
+      dataIndex: "balance_instructor_paid",
+      key: "balance_instructor_paid",
+    },
+    {
+      title: "Balance Instructor Received ($)",
+      dataIndex: "balance_instructor_received",
+      key: "balance_instructor_received",
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status: string) => {
+        let color;
+        switch (status.toLowerCase()) {
+          case "new" || "reject":
+            color = "volcano";
+            break;
+          case "request_payout":
+            color = "geekblue";
+            break;
+          case "completed":
+            color = "green";
+            break;
+          default:
+            color = "geekblue";
+        }
+        return <Tag color={color}>{status}</Tag>;
+      },
+    },
+    {
+      title: "Created At",
+      dataIndex: "created_at",
+      key: "created_at",
+      render: (text: string) => new Date(text).toLocaleDateString(),
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (_, record) =>
+        record.status.toLowerCase() === "completed" ? null : (
+          <Button
+            type="primary"
+            onClick={() => handleRequestPayout(record._id)}
+            disabled={record.status.toLowerCase() === "request_payout"}
+          >
+            Request Payout
+          </Button>
+        ),
+    },
+  ];
+
   return (
-    <div className="grid grid-cols-2 gap-2">
-      <div className="bg-slate-200">
-        <div className="w-full px-6 py-3">
-          <h3 className="text-sm font-medium">Next payout</h3>
-          <Divider />
-          <h2 className="text-xl font-semibold">$4568.50</h2>
-          <p className="text-xs font-light">via Payoneer</p>
-          <Divider />
-          <p className="text-xs">
-            Your payout will be processed on April 15, 2020
-          </p>
-        </div>
-      </div>
-      <table className="w-full table-fixed bg-slate-200">
-        <thead>
-          <tr className="bg-stone-900 text-white">
-            <th className="py-3 font-normal">Amount</th>
-            <th className="py-3 font-normal">Payout Method</th>
-            <th className="py-3 font-normal">Date Processed</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr className="text-center">
-            <td>$2550.54</td>
-            <td>Payoneer</td>
-            <td>15 Mar 2020</td>
-          </tr>
-          <tr className="text-center">
-            <td>$1950.14</td>
-            <td>Payoneer</td>
-            <td>15 Feb 2020</td>
-          </tr>
-        </tbody>
-      </table>
-      <div>
-        <div className="w-full bg-slate-200 px-6 py-3">
-          <h3 className="text-sm font-medium">Payout Account</h3>
-          <Divider />
-          <div>
-            <img src="../../../public/image/ZaloPay_Logo.png" alt="" />
-            <p>
-              <span className="text-gray-500">Added: </span>01 Mar 2020
-            </p>
-          </div>
-          <Divider />
-          <button className="rounded-md bg-[#ff4d4f] px-4 py-3">
-            Add Account
-          </button>
-        </div>
-      </div>
-    </div>
+    <Table
+      className="my-5"
+      columns={columns}
+      dataSource={Array.isArray(data) ? data : []}
+      loading={loading}
+      rowKey="_id"
+    />
   );
 };
 

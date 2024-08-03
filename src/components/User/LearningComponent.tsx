@@ -6,7 +6,11 @@ import {
   UpOutlined,
 } from "@ant-design/icons";
 import { CourseDetail } from "../../models/Course";
+import { Lesson } from "../../models/Lesson";
 import { getDetailClientAPI } from "../../services/coursesService";
+import { formatTime } from "../../utils/formatTime";
+import LessonContent from "./LessonContent";
+import Loading from "../Loading/loading";
 
 interface LearningComponentProps {
   courseId: string;
@@ -17,13 +21,13 @@ const LearningComponent: React.FC<LearningComponentProps> = ({ courseId }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
 
   useEffect(() => {
     const fetchCourseDetails = async () => {
       setLoading(true);
       try {
         const courseDetail = await getDetailClientAPI(courseId);
-        console.log("Course Detail:", courseDetail);
         setCourse(courseDetail);
       } catch (err) {
         setError("Failed to fetch course details.");
@@ -39,42 +43,46 @@ const LearningComponent: React.FC<LearningComponentProps> = ({ courseId }) => {
     setActiveIndex(index === activeIndex ? null : index);
   };
 
-  if (loading) return <div>Loading...</div>;
+  const handleLessonClick = (lesson: Lesson) => {
+    setSelectedLesson(lesson);
+  };
+
+  if (loading)
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
   if (error) return <div>{error}</div>;
 
   return (
     <div className="flex min-h-screen bg-gray-100">
       <div className="flex-1 bg-white p-8 shadow-lg">
-        <div className="video-container">
-          <video className="h-auto w-full" controls>
-            <source
-              src={course?.video_url || "video-placeholder.mp4"}
-              type="video/mp4"
-            />
-            Your browser does not support the video tag.
-          </video>
-        </div>
+        {selectedLesson && <LessonContent lessonId={selectedLesson._id} />}
         <div className="mt-6">
           <h1 className="mb-4 text-3xl font-bold">{course?.name}</h1>
-          <div className="mb-2 flex items-center">
-            <PlayCircleOutlined className="mr-2 text-2xl" />
-            <h2 className="text-xl">{course?.category_name}</h2>
+          <div className="mb-2">
+            <p className="text-sm">{course?.category_name}</p>
+            <p className="text-base">{course?.description}</p>
           </div>
-          <p className="text-gray-700">{course?.content}</p>
+          <div
+            className="text-grey-400 mt-6"
+            dangerouslySetInnerHTML={{ __html: course?.content || "" }}
+          />
         </div>
       </div>
 
-      <div className="w-96 overflow-auto bg-gray-800 p-6 text-white">
-        <h3 className="mb-4 text-lg font-semibold">Content</h3>
+      <div className="w-96 overflow-auto bg-slate-200 p-6">
+        <h3 className="mb-4 text-xl font-semibold">Content knowledge</h3>
         {course?.is_purchased ? (
           <ul>
-            {course.session_list.map((session, index) => (
+            {course?.session_list.map((session, index) => (
               <li key={session._id} className="mb-4">
                 <div
-                  className="flex cursor-pointer items-center justify-between"
+                  className="flex cursor-pointer items-center justify-between bg-slate-400 p-3"
                   onClick={() => toggleAccordion(index)}
                 >
-                  <span>{session.name}</span>
+                  <span className="text-sm">{session.name}</span>
                   <span>
                     {activeIndex === index ? <UpOutlined /> : <DownOutlined />}
                   </span>
@@ -84,11 +92,14 @@ const LearningComponent: React.FC<LearningComponentProps> = ({ courseId }) => {
                     {session.lesson_list.map((lesson) => (
                       <li
                         key={lesson._id}
-                        className="flex items-center justify-between text-sm"
+                        className="my-3 flex items-center justify-between text-[13px]"
+                        onClick={() => handleLessonClick(lesson)}
                       >
-                        <span>{lesson.name}</span>
+                        <span>
+                          <PlayCircleOutlined /> {lesson.name}
+                        </span>
                         <div className="flex items-center">
-                          <span>{lesson.full_time} mins</span>
+                          <span>{formatTime(lesson.full_time)}</span>
                           {lesson.lesson_type === "locked" && (
                             <LockOutlined className="ml-2" />
                           )}
