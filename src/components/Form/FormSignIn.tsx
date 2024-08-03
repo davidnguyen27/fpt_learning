@@ -3,7 +3,11 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../app/context/AuthContext";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
-import { getCurrentLogin, login, loginViaGoogleAPI } from "../../services/authService";
+import {
+  getCurrentLogin,
+  login,
+  loginViaGoogleAPI,
+} from "../../services/authService";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 
 const FormSignIn = () => {
@@ -104,9 +108,6 @@ const FormSignIn = () => {
 
   return (
     <div className="relative">
-      <h2 className="mb-12 text-xl font-bold text-black">
-        Welcome to FPT Education...
-      </h2>
       <Form onFinish={handleLogin}>
         <Form.Item
           name="email"

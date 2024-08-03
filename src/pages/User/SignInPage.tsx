@@ -1,19 +1,43 @@
+import { Divider } from "antd";
 import { FormSignIn } from "../../components";
 import signIn from "../../assets/Image/Image4.png";
 
 const SignInPage: React.FC = () => {
   return (
-    <div className="flex h-screen items-center">
-      <div className="h-full flex-1">
-        <img
-          src={signIn}
-          className="h-full w-full object-cover"
-          alt="Phone image"
-        />
-      </div>
-
-      <div className="mr-4 md:w-8/12 lg:ml-6 lg:w-5/12">
+    <div
+      className="flex min-h-screen w-full items-center justify-center bg-slate-300 p-4"
+      style={{
+        backgroundImage: `url(${signIn})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      <div className="w-full max-w-md space-y-4 rounded-lg bg-white p-6 sm:p-8">
+        <h2 className="text-center text-xl font-bold text-gray-900 sm:text-2xl">
+          Welcome to FPT Education
+        </h2>
+        <p className="text-center text-base text-gray-600 sm:text-lg">
+          Sign in to your account
+        </p>
         <FormSignIn />
+        <p className="text-center text-xs text-gray-500 sm:text-sm">
+          By signing in, you agree to our{" "}
+          <a className="text-black underline hover:text-red-500" href="#">
+            Terms of Use
+          </a>{" "}
+          and{" "}
+          <a className="text-black underline hover:text-red-500" href="#">
+            Privacy Policy
+          </a>
+          .
+        </p>
+        <Divider />
+        <p className="text-center text-xs sm:text-sm">
+          Don't have an account?{" "}
+          <a href="/sign-up" className="text-red-500 hover:underline">
+            Sign up
+          </a>
+        </p>
       </div>
     </div>
   );

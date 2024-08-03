@@ -4,101 +4,81 @@ import StudentIcon from "../../assets/Image/university.png";
 import CourseIcon from "../../assets/Image/book.png";
 import { Card } from "antd";
 
+const StatCard: React.FC<{
+  title: string;
+  value: string;
+  icon: string;
+  color: string;
+}> = ({ title, value, icon, color }) => (
+  <Card className={`${color} text-white shadow-lg`}>
+    <div className="flex items-center justify-between p-3 sm:p-4">
+      <div>
+        <h2 className="text-sm font-semibold sm:text-base">{title}</h2>
+        <p className="mt-2 text-lg font-bold sm:text-xl">{value}</p>
+      </div>
+      <img
+        src={icon}
+        alt={`${title} Icon`}
+        className="h-10 w-10 sm:h-12 sm:w-12"
+      />
+    </div>
+  </Card>
+);
+
+const SmallStatCard: React.FC<{
+  title: string;
+  value: string;
+  icon: string;
+}> = ({ title, value, icon }) => (
+  <Card className="bg-white shadow">
+    <div className="flex items-center justify-between p-3">
+      <div>
+        <h2 className="text-xs font-semibold text-gray-600 sm:text-sm">
+          {title}
+        </h2>
+        <p className="mt-1 text-sm font-bold text-gray-800 sm:text-base">
+          {value}
+        </p>
+      </div>
+      <img src={icon} alt={`${title} Icon`} className="h-8 w-8" />
+    </div>
+  </Card>
+);
+
 const Overview: React.FC = () => {
   return (
-    <div className="mt-4 grid grid-cols-1 gap-4">
-      <div className="grid grid-cols-3 gap-4">
-        <Card className="bg-teal-500 text-white">
-          <div className="flex items-center justify-between p-4">
-            <div>
-              <h2 className="text-xl font-semibold">Total Account Active</h2>
-              <h2 className="my-4 text-xl font-semibold">1000</h2>
-            </div>
-            <div>
-              <img src={InstructorIcon} alt="Instructor Icon" className="h-16 w-16" />
-            </div>
-          </div>
-        </Card>
-        <Card className="bg-blue-500 text-white">
-          <div className="flex items-center justify-between p-4">
-            <div>
-              <h2 className="text-xl font-semibold">Total Account Disabled</h2>
-              <h2 className="my-4 text-xl font-semibold">1000</h2>
-            </div>
-            <div>
-              <img src={StudentIcon} alt="Student Icon" className="h-16 w-16" />
-            </div>
-          </div>
-        </Card>
-        <Card className="bg-green-500 text-white">
-          <div className="flex items-center justify-between p-4">
-            <div>
-              <h2 className="text-xl font-semibold">Total Account</h2>
-              <h2 className="my-4 text-xl font-semibold">1000</h2>
-            </div>
-            <div>
-              <img src={StudentIcon} alt="Student Icon" className="h-16 w-16" />
-            </div>
-          </div>
-        </Card>
+    <div className="mt-4 space-y-6">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <StatCard
+          title="Total Account Active"
+          value="1000"
+          icon={InstructorIcon}
+          color="bg-teal-500"
+        />
+        <StatCard
+          title="Total Account Disabled"
+          value="1000"
+          icon={StudentIcon}
+          color="bg-blue-500"
+        />
+        <StatCard
+          title="Total Account"
+          value="2000"
+          icon={StudentIcon}
+          color="bg-green-500"
+        />
       </div>
 
-      <div className="grid grid-cols-5 gap-4">
-        <Card className="bg-slate-200">
-          <div className="flex items-center justify-between p-4">
-            <div>
-              <h2 className="text-sm font-semibold">Total Courses</h2>
-              <h2 className="my-2 text-sm font-semibold">1000</h2>
-            </div>
-            <div>
-              <img src={CourseIcon} alt="Course Icon" className="h-8 w-8" />
-            </div>
-          </div>
-        </Card>
-        <Card className="bg-slate-200">
-          <div className="flex items-center justify-between p-4">
-            <div>
-              <h2 className="text-sm font-semibold">Total Reported Posts</h2>
-              <h2 className="my-2 text-sm font-semibold">1000</h2>
-            </div>
-            <div>
-              <img src={CourseIcon} alt="Reported Post Icon" className="h-8 w-8" />
-            </div>
-          </div>
-        </Card>
-        <Card className="bg-slate-200">
-          <div className="flex items-center justify-between p-4">
-            <div>
-              <h2 className="text-sm font-semibold">Profit</h2>
-              <h2 className="my-2 text-sm font-semibold">$10000</h2>
-            </div>
-            <div>
-              <img src={CourseIcon} alt="Profit Icon" className="h-8 w-8" />
-            </div>
-          </div>
-        </Card>
-        <Card className="bg-slate-200">
-          <div className="flex items-center justify-between p-4">
-            <div>
-              <h2 className="text-sm font-semibold">Total Order</h2>
-              <h2 className="my-2 text-sm font-semibold">1000</h2>
-            </div>
-            <div>
-              <img src={CourseIcon} alt="Order Icon" className="h-8 w-8" />
-            </div>
-          </div>
-        </Card>
-        <Card className="bg-slate-200">
-          <div className="flex items-center justify-between p-4">
-            <div>
-              <h2 className="text-sm font-semibold">Order Cancelled</h2>
-              <h2 className="my-2 text-sm font-semibold">1000</h2>
-            </div>
-            <div>
-              <img src={CourseIcon} alt="Cancelled Order Icon" className="h-8 w-8" />
-            </div>
-          </div>
-        </Card>
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+        <SmallStatCard title="Total Courses" value="1000" icon={CourseIcon} />
+        <SmallStatCard
+          title="Total Reported Posts"
+          value="1000"
+          icon={CourseIcon}
+        />
+        <SmallStatCard title="Profit" value="$10000" icon={CourseIcon} />
+        <SmallStatCard title="Total Order" value="1000" icon={CourseIcon} />
+        <SmallStatCard title="Order Cancelled" value="1000" icon={CourseIcon} />
       </div>
     </div>
   );
