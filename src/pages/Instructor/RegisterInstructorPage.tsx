@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Input, Button, notification, Modal } from "antd";
+import { Form, Input, Button, notification, Modal, Divider } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import signUp from "../../assets/Image/background.png";
 import { registerUser } from "../../services/usersService";
@@ -131,60 +131,53 @@ const RegisterInstructorPage: React.FC = () => {
 
   return (
     <div
-      className="flex h-screen w-full items-center justify-center bg-slate-300"
+      className="flex min-h-screen w-full items-center justify-center bg-slate-300 p-4 md:p-0"
       style={{
         backgroundImage: `url(${signUp})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      <div className="w-full max-w-2xl rounded bg-white p-8 shadow-md">
-        <h2 className="mb-6 text-center text-xl font-bold">
-          Register with Instructor
+      <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-md sm:p-8">
+        <h2 className="mb-4 text-center text-xl font-bold sm:text-2xl">
+          Register as Instructor
         </h2>
         <Form
           form={form}
           name="register"
-          labelCol={{ span: 6 }}
-          wrapperCol={{ span: 20 }}
           onFinish={onFinish}
           initialValues={{ remember: true }}
-          layout="horizontal"
+          layout="vertical"
+          className="space-y-3"
         >
           <Form.Item
             name="name"
-            label="Name"
             rules={[{ required: true, message: "Please input your Name!" }]}
           >
-            <Input />
+            <Input placeholder="Name" />
           </Form.Item>
           <Form.Item
             name="email"
-            label="Email"
             rules={[{ required: true, message: "Please input your Email!" }]}
           >
-            <Input />
+            <Input placeholder="Email" />
           </Form.Item>
           <Form.Item
             name="phone_number"
-            label="Phone Number"
             rules={[
               { required: true, message: "Please input your phone number!" },
             ]}
           >
-            <Input />
+            <Input placeholder="Phone Number" />
           </Form.Item>
           <Form.Item
             name="password"
-            label="Password"
             rules={[
               { required: true, message: "Please enter the password!" },
               { min: 6, message: "Password must be at least 6 characters!" },
             ]}
           >
             <Input.Password
-              className="text-sm"
-              size="large"
               placeholder="Password"
               iconRender={(visible) =>
                 visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
@@ -193,7 +186,6 @@ const RegisterInstructorPage: React.FC = () => {
           </Form.Item>
           <Form.Item
             name="confirmPassword"
-            label="Confirm Password"
             dependencies={["password"]}
             rules={[
               { required: true, message: "You must confirm the password!" },
@@ -210,8 +202,6 @@ const RegisterInstructorPage: React.FC = () => {
             ]}
           >
             <Input.Password
-              className="text-sm"
-              size="large"
               placeholder="Confirm Password"
               iconRender={(visible) =>
                 visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
@@ -220,40 +210,43 @@ const RegisterInstructorPage: React.FC = () => {
           </Form.Item>
           <Form.Item
             name="description"
-            label="Description"
             rules={[{ required: true, message: "Description is required!" }]}
           >
-            <TextArea rows={2} />
+            <TextArea rows={2} placeholder="Description" />
           </Form.Item>
           <Form.Item
             name="video"
-            label="Video URL"
             rules={[{ required: true, message: "Video URL is required!" }]}
           >
-            <Input placeholder="https://example.com/video" />
+            <Input placeholder="Video URL: https://example.com/video" />
           </Form.Item>
           <Form.Item
             name="avatar"
-            label="Avatar"
             rules={[{ required: true, message: "Avatar is required!" }]}
           >
             <Input type="file" onChange={handleFileChange} />
           </Form.Item>
-          <Form.Item wrapperCol={{ span: 24 }}>
+          <Form.Item>
             <Button
               type="primary"
               loading={loading}
               htmlType="submit"
               className="w-full bg-[#ef4444] text-white hover:bg-[#333] hover:text-white"
             >
-              Submit
+              Register
             </Button>
           </Form.Item>
         </Form>
-        <div className="mb-4 w-full flex items-center justify-center">
+
+        <Divider plain className="my-2">
+          Or
+        </Divider>
+
+        <div className="mb-3 mt-3 flex w-full items-center justify-center">
           <GoogleLogin onSuccess={onSuccess} onError={onError} />
         </div>
-        <p className="text-center text-sm">
+
+        <p className="text-center text-xs">
           Already have an account?{" "}
           <a href="/sign-in" className="text-red-500 hover:underline">
             Sign in
@@ -266,7 +259,7 @@ const RegisterInstructorPage: React.FC = () => {
         onOk={handleModalOk}
         onCancel={handleModalCancel}
       >
-        <Form layout="vertical">
+        <Form layout="vertical" className="space-y-4">
           <Form.Item
             label="Description"
             required
