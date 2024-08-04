@@ -5,7 +5,7 @@ const BlogManagePage = () => {
   return (
     <AdminLayout>
       <section>
-        <h1 className="mb-10 text-xl font-bold">Blog Management</h1>
+        <h1 className="mb-6 text-xl font-bold">Blog Management</h1>
       </section>
       <TableBlogs />
     </AdminLayout>

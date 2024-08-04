@@ -1,32 +1,70 @@
-import { Button, Table, Tag } from "antd";
-import { useMemo } from "react";
+import { Button, Pagination, Spin, Table, Tag, Input } from "antd";
+import { useMemo, useState, useCallback, useEffect } from "react";
 import { DataTransfer, Payout } from "../../models/Payout";
 import { ColumnsType } from "antd/es/table";
 import usePayoutsData from "../../hooks/payout/usePayoutsData";
 import useChangeStatusInstructor from "../../hooks/payout/useChangeStatusInstructor";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../app/redux/store";
+import {
+  setPageNum,
+  setPageSize,
+} from "../../app/redux/pagination/paginationSlice";
+
+const { Search } = Input;
 
 const TablePayout = () => {
+  const dispatch = useDispatch();
+  const { pageNum, pageSize } = useSelector(
+    (state: RootState) => state.pagination,
+  );
+  const [searchKeyword, setSearchKeyword] = useState<string>("");
+
   const dataTransfer = useMemo(
     (): DataTransfer => ({
       searchCondition: {
-        payout_no: "",
+        payout_no: searchKeyword,
         instructor_id: "",
         status: "",
         is_instructor: false,
         is_delete: false,
       },
       pageInfo: {
-        pageNum: 1,
-        pageSize: 100,
+        pageNum,
+        pageSize,
       },
     }),
-    [],
+    [searchKeyword, pageNum, pageSize],
   );
 
   const { data, loading, fetchData } = usePayoutsData(dataTransfer);
   const { handleRequestPayout } = useChangeStatusInstructor(fetchData);
 
-  const columns: ColumnsType<Payout> = [
+  useEffect(() => {
+    fetchData(); // Fetch data when searchKeyword or pagination changes
+  }, [searchKeyword, pageNum, pageSize, fetchData]);
+
+  const handleSearch = useCallback((value: string) => {
+    setSearchKeyword(value);
+  }, []);
+
+  const handlePageChange = (page: number, newPageSize: number) => {
+    dispatch(setPageNum(page));
+    dispatch(setPageSize(newPageSize));
+  };
+
+  const dataWithIndex = data?.map((item, index) => ({
+    ...item,
+    index: (pageNum - 1) * pageSize + index + 1,
+  }));
+
+  const columns: ColumnsType<Payout & { index: number }> = [
+    {
+      title: "No.",
+      dataIndex: "index",
+      key: "index",
+      width: 50,
+    },
     {
       title: "Payout No",
       dataIndex: "payout_no",
@@ -54,7 +92,8 @@ const TablePayout = () => {
       render: (status: string) => {
         let color;
         switch (status.toLowerCase()) {
-          case "new" || "reject":
+          case "new":
+          case "reject":
             color = "volcano";
             break;
           case "request_payout":
@@ -92,13 +131,34 @@ const TablePayout = () => {
   ];
 
   return (
-    <Table
-      className="my-5"
-      columns={columns}
-      dataSource={Array.isArray(data) ? data : []}
-      loading={loading}
-      rowKey="_id"
-    />
+    <>
+      <div className="my-3 flex items-center gap-2">
+        <Search
+          onSearch={handleSearch}
+          placeholder="Search by Payout No"
+          allowClear
+          className="w-64"
+        />
+      </div>
+      <Spin spinning={loading}>
+        <Table
+          className="my-5"
+          columns={columns}
+          dataSource={dataWithIndex}
+          loading={loading}
+          rowKey="_id"
+          scroll={{ x: "max-content" }}
+        />
+      </Spin>
+      <Pagination
+        current={pageNum}
+        pageSize={pageSize}
+        total={data?.length || 0} // Update this to the actual total items count if available
+        onChange={handlePageChange}
+        style={{ marginTop: 16, textAlign: "right", justifyContent: "end" }}
+        showSizeChanger
+      />
+    </>
   );
 };
 

@@ -89,8 +89,35 @@
   }
 }
 
+@media (max-width: 1139px) {
+  .mobile-button {
+    margin-bottom: 8px;
+    width: 100%;
+  }
+  /* Sign In Button */
+  .sign-in-button {
+    background-color: #d54d43; /* Red background */
+    color: white; /* White text */
+    border: none;
+  }
+
+  /* Sign Up Button */
+  .sign-up-button {
+    background-color: #ffffff; /* White background */
+    color: #000000; /* Black text */
+    border: 1px solid #000000; /* Black border */
+  }
+
+  /* Become Instructor Button */
+  .become-instructor-button {
+    background-color: #323030; /* Gray background */
+    color: white; /* White text */
+    border: none;
+  }
+}
+
 /* Larger Screens */
-@media (min-width: 769px) {
+@media (min-width: 1139px) {
   .sidebar {
     position: relative;
     transform: translateX(0);

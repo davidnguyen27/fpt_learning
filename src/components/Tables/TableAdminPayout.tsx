@@ -1,17 +1,21 @@
-import { Button, Input, Modal, Space, Table, Tag } from "antd";
-import { useMemo } from "react";
+import { Button, Input, Modal, Space, Table, Tag, Spin } from "antd";
+import { useState, useMemo, useEffect } from "react";
 import { DataTransfer, Payout } from "../../models/Payout";
 import { ColumnsType } from "antd/es/table";
 import usePayoutsData from "../../hooks/payout/usePayoutsData";
 import useChangeStatusAdmin from "../../hooks/payout/useChangeStatusAdmin";
 
+const { Search } = Input;
+
 const TableAdminPayout = () => {
+  const [searchKeyword, setSearchKeyword] = useState<string>("");
+
   const dataTransfer = useMemo(
     (): DataTransfer => ({
       searchCondition: {
-        payout_no: "",
-        instructor_id: "",
-        status: "request_payout",
+        payout_no: searchKeyword,
+        instructor_id: searchKeyword,
+        status: "request_payout", // Default status or any initial value
         is_instructor: false,
         is_delete: false,
       },
@@ -20,7 +24,7 @@ const TableAdminPayout = () => {
         pageSize: 100,
       },
     }),
-    [],
+    [searchKeyword],
   );
 
   const { data, loading, fetchData } = usePayoutsData(dataTransfer);
@@ -34,6 +38,14 @@ const TableAdminPayout = () => {
     setComment,
     loading: statusLoading,
   } = useChangeStatusAdmin(fetchData);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const handleSearch = (value: string) => {
+    setSearchKeyword(value);
+  };
 
   const columns: ColumnsType<Payout> = [
     {
@@ -97,13 +109,23 @@ const TableAdminPayout = () => {
 
   return (
     <>
-      <Table
-        className="my-5"
-        columns={columns}
-        dataSource={Array.isArray(data) ? data : []}
-        loading={loading}
-        rowKey="_id"
-      />
+      <div className="my-3 flex items-center gap-2">
+        <Search
+          placeholder="Search by Payout No or Instructor Email"
+          onSearch={handleSearch}
+          allowClear
+          style={{ width: 300 }}
+        />
+      </div>
+      <Spin spinning={loading}>
+        <Table
+          className="my-5"
+          columns={columns}
+          dataSource={Array.isArray(data) ? data : []}
+          loading={loading}
+          rowKey="_id"
+        />
+      </Spin>
       <Modal
         title="Reject Payout"
         open={isModalVisible}

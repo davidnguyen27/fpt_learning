@@ -7,11 +7,20 @@ import {
 import { UserData } from "../../models/Types";
 import "../../styles/studentProfileBox.css";
 import { Subscription } from "../../models/Subscription";
+import { Modal } from "antd";
 
-const StudentProfileBox = () => {
+interface StudentProfileBoxProps {
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
+}
+
+const StudentProfileBox: React.FC<StudentProfileBoxProps> = ({
+  setActiveTab,
+}) => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [following, setFollowing] = useState<Subscription[]>([]);
   const [followers, setFollowers] = useState<Subscription[]>([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const storedUser = sessionStorage.getItem("user");
   const user = storedUser ? JSON.parse(storedUser) : null;
   const userId = user?.data?._id;
@@ -86,24 +95,38 @@ const StudentProfileBox = () => {
     fetchFollowers();
   }, []);
 
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
   return (
     <div className="profile-container">
       <div className="profile-cover" />
       <div className="profile-header">
-        <img
+      <img
           className="profile-avatar"
           src={
             userData?.avatar ||
             "https://scontent.fsgn2-11.fna.fbcdn.net/v/t1.30497-1/143086968_2856368904622192_1959732218791162458_n.png?_nc_cat=1&ccb=1-7&_nc_sid=136b72&_nc_eui2=AeFmkgKEy1Ar9JJGsimvdU8Pso2H55p0AlGyjYfnmnQCUe8hu2v__FYxhNmGgs0sudO-P8gX7RILwPRya2V91U_C&_nc_ohc=qj3fwGIe_3cQ7kNvgEqEV_R&_nc_ht=scontent.fsgn2-11.fna&oh=00_AYAs1Q-eCqPQb9ugh2R4iFKCJdyVcC-8pAHmy9eYIaY5qA&oe=66BBE478"
           }
           alt="Student Avatar"
+          onClick={showModal}
+          style={{ cursor: "pointer" }}
         />
         <div className="profile-details">
           <h2 className="profile-name">{userData?.name || "Your Name"}</h2>
           {/* <p className="profile-tagline" dangerouslySetInnerHTML={{ __html: userData?.description || "" }} /> */}
           <div className="profile-stats">
             <div>
-              <button className="profile-stat-button" onClick={fetchFollowing}>
+            <button
+                className="profile-stat-button"
+                onClick={() => setActiveTab('following')}
+              >
                 Following:
               </button>
               <span className="profile-stat-number ml-1">
@@ -114,10 +137,11 @@ const StudentProfileBox = () => {
               <div>
                 <button
                   className="profile-stat-button"
-                  onClick={fetchFollowers}
+                  onClick={() => setActiveTab('follower')}
                 >
                   Followers:
                 </button>
+
                 <span className="profile-stat-number ml-1">
                   {followers.length}
                 </span>
@@ -126,6 +150,18 @@ const StudentProfileBox = () => {
           </div>
         </div>
       </div>
+      <Modal
+        title="Avatar"
+        visible={isModalVisible}
+        onCancel={handleCancel}
+        footer={null}
+      >
+        <img
+          src={userData?.avatar || "https://scontent.fsgn2-11.fna.fbcdn.net/v/t1.30497-1/143086968_2856368904622192_1959732218791162458_n.png?_nc_cat=1&ccb=1-7&_nc_sid=136b72&_nc_eui2=AeFmkgKEy1Ar9JJGsimvdU8Pso2H55p0AlGyjYfnmnQCUe8hu2v__FYxhNmGgs0sudO-P8gX7RILwPRya2V91U_C&_nc_ohc=qj3fwGIe_3cQ7kNvgEqEV_R&_nc_ht=scontent.fsgn2-11.fna&oh=00_AYAs1Q-eCqPQb9ugh2R4iFKCJdyVcC-8pAHmy9eYIaY5qA&oe=66BBE478"}
+          alt="Student Avatar"
+          style={{ width: "100%" }}
+        />
+      </Modal>
     </div>
   );
 };

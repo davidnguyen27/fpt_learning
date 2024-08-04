@@ -8,7 +8,7 @@ const StudentProfileContent = () => {
   return (
     <div className="rounded-md bg-gray-300">
       <div className="rounded-md bg-gray-100">
-        <StudentProfileBox />
+      <StudentProfileBox activeTab={activeTab} setActiveTab={setActiveTab} />
         <StudentProfileSubTab
           activeTab={activeTab}
           setActiveTab={setActiveTab}

@@ -4,16 +4,15 @@ import {
   UserSearchRequest,
   UserSearchResponse,
 } from "../models/Types"; // Import types and interfaces from models/Types
-import { APILink } from "../const/linkAPI"; // Import API endpoint from const/linkAPI
 import { axiosInstance } from "./axiosInstance";
 
 //--------------------------------- Get Users (Admin) ------------------------------------------
 export const getUsers = async (
-  requestData: UserSearchRequest,
+  requestData: UserSearchRequest
 ): Promise<UserSearchResponse> => {
   try {
     const response = await axiosInstance.post(
-      `${APILink}/api/users/search`,
+      '/api/users/search',
       requestData,
     );
 
@@ -28,7 +27,7 @@ export const getUsers = async (
 //------------------------------ Get User Detail ------------------------------------------------
 export const getUserDetail = async (userId: string) => {
   try {
-    const response = await axiosInstance.get(`${APILink}/api/users/${userId}`);
+    const response = await axiosInstance.get(`/api/users/${userId}`);
 
     const userData: UserData = response.data.data;
 
@@ -44,7 +43,7 @@ export const getUserDetail = async (userId: string) => {
 //--------------------------------- Delete User (Admin) -----------------------------------------
 export const deleteUser = async (userId: string): Promise<void> => {
   try {
-    await axiosInstance.delete(`${APILink}/api/users/${userId}`, {
+    await axiosInstance.delete(`/api/users/${userId}`, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -67,7 +66,7 @@ export const createUser = async (userData: {
 }): Promise<UserData> => {
   try {
     const response = await axiosInstance.post(
-      `${APILink}/api/users/create`,
+      '/api/users/create',
       userData,
     );
 
@@ -94,7 +93,7 @@ export const createUser = async (userData: {
 export const registerUser = async (userData: Partial<User["data"]>) => {
   try {
     const res = await axiosInstance.post<User>(
-      `${APILink}/api/users`,
+      '/api/users',
       userData,
     );
     console.log(res.data);
@@ -113,7 +112,7 @@ export const updateUser = async (
 ) => {
   try {
     const response = await axiosInstance.put(
-      `${APILink}/api/users/${userId}`,
+      `/api/users/${userId}`,
       updatedUserData,
       {
         headers: {
@@ -135,7 +134,7 @@ export const toggleUserStatus = async (
   user_id: string,
   status: boolean,
 ): Promise<void> => {
-  const url = `${APILink}/api/users/change-status`;
+  const url = '/api/users/change-status';
 
   await axiosInstance.put(
     url,
@@ -155,7 +154,7 @@ export const createUserAPI = async (userData: Partial<User["data"]>) => {
     console.log("Sending user data to create:", userData);
 
     const res = await axiosInstance.post(
-      `${APILink}/api/users/create`,
+      '/api/users/create',
       userData,
     );
 
@@ -168,7 +167,7 @@ export const createUserAPI = async (userData: Partial<User["data"]>) => {
 
 export const changeRoleAPI = async (userId: string, role: string) => {
   try {
-    const res = await axiosInstance.put(`${APILink}/api/users/change-role`, {
+    const res = await axiosInstance.put('/api/users/change-role', {
       user_id: userId,
       role: role,
     });
@@ -187,7 +186,7 @@ export const reviewInstructorAPI = async (
 ) => {
   try {
     const res = await axiosInstance.put(
-      `${APILink}/api/users/review-profile-instructor`,
+      '/api/users/review-profile-instructor',
       { user_id, status, comment },
     );
 
@@ -206,7 +205,7 @@ export const changePasswordAPI = async (
 ) => {
   try {
     const res = await axiosInstance.put(
-      `${APILink}/api/users/change-password`,
+      '/api/users/change-password',
       { user_id, old_password, new_password },
     );
     return res.data;

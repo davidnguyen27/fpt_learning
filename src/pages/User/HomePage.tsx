@@ -54,7 +54,9 @@ const HomePage: React.FC = () => {
             See all
           </Link>
         </div>
-        <ListCourse category_id="66827468b5436c3f43c703e7" />
+        <div className="course-list-container">
+          <ListCourse category_id="66827468b5436c3f43c703e7" />
+        </div>
       </section>
       <section className="mx-0 mt-10">
         <div className="mb-5 flex w-full justify-between">
@@ -66,7 +68,9 @@ const HomePage: React.FC = () => {
             See all
           </Link>
         </div>
-        <ListCourse category_id="668e2f4bf2c243ced095c6c0" />
+        <div className="course-list-container">
+          <ListCourse category_id="668e2f4bf2c243ced095c6c0" />
+        </div>
       </section>
       <section className="mx-0 mt-10">
         <div className="mb-5 flex w-full justify-between">
@@ -78,7 +82,9 @@ const HomePage: React.FC = () => {
             See all
           </Link>
         </div>
-        <ListCourse category_id="66840803c2ef7156100c3f61" />
+        <div className="course-list-container">
+          <ListCourse category_id="66840803c2ef7156100c3f61" />
+        </div>
       </section>
       <section className="mx-0 mt-10">
         <div className="mb-5 flex w-full justify-between">
@@ -90,7 +96,9 @@ const HomePage: React.FC = () => {
             See all
           </Link>
         </div>
-        <ListCourse category_id="669f294e396c0261a73f5a7a" />
+        <div className="course-list-container">
+          <ListCourse category_id="669f294e396c0261a73f5a7a" />
+        </div>
       </section>
       <section className="mx-0 mt-10">
         <div className="mb-5 flex w-full justify-between">
@@ -102,7 +110,9 @@ const HomePage: React.FC = () => {
             See all
           </Link>
         </div>
-        <ListCourse category_id="668f6c0320c527aff59b0f8b" />
+        <div className="course-list-container">
+          <ListCourse category_id="668f6c0320c527aff59b0f8b" />
+        </div>
       </section>
       <section className="mx-0 mt-10">
         <div className="mb-5 flex w-full justify-between">
@@ -114,7 +124,9 @@ const HomePage: React.FC = () => {
             See all
           </Link>
         </div>
-        <ListCourse category_id="668b4abf03350733f0080b9a" />
+        <div className="course-list-container">
+          <ListCourse category_id="668b4abf03350733f0080b9a" />
+        </div>
       </section>
       <Achievements />
       <section className="mx-0">

@@ -25,3 +25,16 @@ export type Review = {
         pageSize: number;
       };
     };
+
+    export type ReviewSearchResponse = {
+      success: boolean;
+      data: {
+        pageData: Review[];
+        pageInfo: {
+          pageNum: number;
+          pageSize: number;
+          totalItems: number;
+          totalPages: number;
+        };
+      };
+    };

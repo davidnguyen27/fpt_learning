@@ -7,6 +7,8 @@ import {
   Select,
   Tag,
   Switch,
+  Spin,
+  Button,
   message,
 } from "antd";
 import { UserData, UserSearchRequest } from "../../models/Types";
@@ -26,12 +28,22 @@ import {
 } from "@ant-design/icons";
 import ModalCreateAcc from "../../components/Modal/ModalCreateAcc";
 import ModalChangeRole from "../Modal/ModalChangeRole";
-import Loading from "../Loading/loading";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../app/redux/store";
+import {
+  setPageNum,
+  setPageSize,
+  setTotalItems,
+  setTotalPages,
+} from "../../app/redux/pagination/paginationSlice";
 
 const { Search } = Input;
 const { Option } = Select;
 
 const TableUsers: React.FC = () => {
+  const dispatch = useDispatch();
+  const pagination = useSelector((state: RootState) => state.pagination);
+
   const [users, setUsers] = useState<UserData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -50,26 +62,22 @@ const TableUsers: React.FC = () => {
     null,
   );
   const [detailModalVisible, setDetailModalVisible] = useState<boolean>(false);
-  const [pagination, setPagination] = useState({
-    current: 1,
-    pageSize: 10,
-    total: 0,
-  });
   const [currentUser, setCurrentUser] = useState<UserData | null>(null);
   const [verificationFilter, setVerificationFilter] = useState<boolean>(true);
 
   useEffect(() => {
-    fetchUsers(pagination.current, pagination.pageSize);
+    fetchUsers(pagination.pageNum, pagination.pageSize);
   }, [
     searchText,
     roleFilter,
     statusFilter,
     verificationFilter,
-    pagination.current,
+    pagination.pageNum,
     pagination.pageSize,
   ]);
 
   const fetchUsers = async (page: number = 1, pageSize: number = 10) => {
+    setLoading(true);
     const requestData: UserSearchRequest = {
       searchCondition: {
         keyword: searchText.trim(),
@@ -87,12 +95,10 @@ const TableUsers: React.FC = () => {
     try {
       const response = await getUsers(requestData);
       setUsers(response.data.pageData);
-      setPagination({
-        ...pagination,
-        total: response.data.pageInfo.totalItems,
-        current: response.data.pageInfo.pageNum,
-        pageSize: response.data.pageInfo.pageSize,
-      });
+      dispatch(setTotalItems(response.data.pageInfo.totalItems));
+      dispatch(setTotalPages(response.data.pageInfo.totalPages));
+      dispatch(setPageNum(response.data.pageInfo.pageNum));
+      dispatch(setPageSize(response.data.pageInfo.pageSize));
     } catch (error) {
       setError("Failed to fetch users");
     } finally {
@@ -115,7 +121,7 @@ const TableUsers: React.FC = () => {
         const updatedUser = await updateUser(editedUser._id, updatedUserData);
         setEditedUser(null);
         setIsEditModalVisible(false);
-        fetchUsers(pagination.current, pagination.pageSize);
+        fetchUsers(pagination.pageNum, pagination.pageSize);
         console.log("Updated user:", updatedUser);
       } catch (error) {
         console.error("Failed to update user:", error);
@@ -143,7 +149,7 @@ const TableUsers: React.FC = () => {
       try {
         await deleteUser(selectedUser._id);
         setIsModalVisible(false);
-        fetchUsers(pagination.current, pagination.pageSize);
+        fetchUsers(pagination.pageNum, pagination.pageSize);
       } catch (error) {
         console.error("Failed to delete user:", error);
       }
@@ -168,11 +174,9 @@ const TableUsers: React.FC = () => {
   };
 
   const handleTableChange = (pagination: any) => {
-    setPagination({
-      ...pagination,
-      current: pagination.current,
-      pageSize: pagination.pageSize,
-    });
+    dispatch(setPageNum(pagination.current));
+    dispatch(setPageSize(pagination.pageSize));
+    fetchUsers(pagination.current, pagination.pageSize);
   };
 
   const handleCloseDetailModal = () => {
@@ -193,7 +197,7 @@ const TableUsers: React.FC = () => {
     if (chosenUser) {
       try {
         await toggleUserStatus(chosenUser._id, !chosenUser.status);
-        fetchUsers(pagination.current, pagination.pageSize);
+        fetchUsers(pagination.pageNum, pagination.pageSize);
       } catch (error) {
         console.error("Failed to update status:", error);
       } finally {
@@ -216,7 +220,7 @@ const TableUsers: React.FC = () => {
   const handleRoleChange = async (userId: string, role: string) => {
     try {
       await changeRoleAPI(userId, role);
-      fetchUsers(pagination.current, pagination.pageSize);
+      fetchUsers(pagination.pageNum, pagination.pageSize);
       message.success("Role updated successfully");
     } catch (error: any) {
       message.error(`Failed to update role: ${error.message}`);
@@ -228,7 +232,7 @@ const TableUsers: React.FC = () => {
       title: "No",
       key: "no",
       render: (_: any, __: any, index: number) => {
-        return (pagination.current - 1) * pagination.pageSize + index + 1;
+        return (pagination.pageNum - 1) * pagination.pageSize + index + 1;
       },
     },
     {
@@ -321,14 +325,6 @@ const TableUsers: React.FC = () => {
     },
   ];
 
-  if (loading) {
-    return (
-      <div>
-        <Loading />
-      </div>
-    );
-  }
-
   if (error) {
     return <div>{error}</div>;
   }
@@ -347,7 +343,7 @@ const TableUsers: React.FC = () => {
             placeholder="Search by name or email"
             allowClear
             onSearch={handleSearch}
-            style={{ width: 300, marginRight: 16 }}
+            style={{ width: 254, marginRight: 16 }}
           />
           <Select
             style={{ width: 150, marginRight: 16 }}
@@ -380,12 +376,14 @@ const TableUsers: React.FC = () => {
           </Select>
         </div>
         <div>
-          <button
-            className="rounded-lg bg-red-500 px-5 py-2 text-sm font-medium text-white hover:bg-red-600"
+          <Button
+            type="primary"
+            danger
+            className="px-5 py-2"
             onClick={() => setIsOpen(true)}
           >
             Create account
-          </button>
+          </Button>
           <ModalCreateAcc
             isOpen={isOpen}
             setIsOpen={setIsOpen}
@@ -393,18 +391,26 @@ const TableUsers: React.FC = () => {
           />
         </div>
       </div>
-      <Table
-        className="my-5 rounded-none"
-        columns={columns}
-        dataSource={users}
-        rowKey={(record) => record._id}
-        pagination={{
-          current: pagination.current,
-          pageSize: pagination.pageSize,
-          total: pagination.total,
-        }}
-        onChange={handleTableChange}
-      />
+      {loading ? (
+        <Spin
+          className="mb-12 mt-12 flex items-center justify-center"
+          spinning={loading}
+        />
+      ) : (
+        <Table
+          className="my-5 rounded-none"
+          columns={columns}
+          dataSource={users}
+          rowKey={(record) => record._id}
+          pagination={{
+            current: pagination.pageNum,
+            pageSize: pagination.pageSize,
+            total: pagination.totalItems,
+            showSizeChanger: true,
+          }}
+          onChange={handleTableChange}
+        />
+      )}
       <Modal
         title="Confirm Delete"
         visible={isModalVisible}

@@ -144,17 +144,20 @@ const AppSider: React.FC<AppSiderProps> = ({ isVisible, onClose }) => {
           <Divider className="my-4" />
           <div className="space-y-3">
             <Button
-              className="w-full"
+              className="sign-in-button w-full"
               type="primary"
               onClick={() => navigate("/sign-in")}
             >
               Sign In
             </Button>
-            <Button className="w-full" onClick={() => navigate("/sign-up")}>
+            <Button
+              className="sign-up-button w-full"
+              onClick={() => navigate("/sign-up")}
+            >
               Sign Up
             </Button>
             <Button
-              className="w-full"
+              className="become-instructor-button w-full"
               type="dashed"
               onClick={() => navigate("/sign-up-instructor")}
             >

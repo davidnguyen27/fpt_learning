@@ -32,3 +32,16 @@ export type DataTransfer = {
     pageSize: number;
   };
 };
+
+export type LessonSearchResponse = {
+  success: boolean;
+  data: {
+    pageData: Lesson[];
+    pageInfo: {
+      pageNum: number;
+      pageSize: number;
+      totalItems: number;
+      totalPages: number;
+    };
+  };
+};

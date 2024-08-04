@@ -19,3 +19,16 @@ export type DataTransfer = {
     pageSize: number;
   };
 };
+
+export type CategorySearchResponse = {
+  success: boolean;
+  data: {
+    pageData: Category[];
+    pageInfo: {
+      pageNum: number;
+      pageSize: number;
+      totalItems: number;
+      totalPages: number;
+    };
+  };
+};

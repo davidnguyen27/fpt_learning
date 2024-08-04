@@ -125,7 +125,7 @@ const TableCategories = () => {
           onSearch={handleSearch}
           placeholder="Search by keyword"
           allowClear
-          style={{ width: 300 }}
+          style={{ width: 254 }}
         />
         <button
           onClick={() => setOpenAdd(true)}

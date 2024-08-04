@@ -1,15 +1,11 @@
 import { CartData, DataTransfer } from '../models/Cart';
-import { APILink } from "../const/linkAPI";
 import { axiosInstance } from './axiosInstance';
 
 export const getCartsAPI = async (
   dataTransfer: DataTransfer,
 ): Promise<CartData[]> => {
   try {
-    const res = await axiosInstance.post(
-      `${APILink}/api/cart/search`,
-      dataTransfer,
-    );
+    const res = await axiosInstance.post('/api/cart/search', dataTransfer);
     return res.data.data.pageData;
   } catch (error: any) {
     throw new Error(error.response.data.message);
@@ -18,7 +14,7 @@ export const getCartsAPI = async (
 
 export const createCartAPI = async (cartData: Partial<CartData>) => {
   try {
-    const res = await axiosInstance.post(`${APILink}/api/cart`, cartData);
+    const res = await axiosInstance.post('/api/cart', cartData);
     return res.data;
   } catch (error: any) {
     throw new Error(error.message);
@@ -35,11 +31,7 @@ export const editStatusCartsAPI = async (
       items: cartItems,
     };
 
-    await axiosInstance.put(`${APILink}/api/cart/update-status`, payload, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    await axiosInstance.put('/api/cart/update-status', payload,);
   } catch (error: any) {
     throw new Error(error.response?.data?.message || error.message);
   }
@@ -47,11 +39,7 @@ export const editStatusCartsAPI = async (
 
 export const deleteCartAPI = async (cartId: string): Promise<void> => {
   try {
-    await axiosInstance.delete(`${APILink}/api/cart/${cartId}`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    await axiosInstance.delete(`/api/cart/${cartId}`);
   } catch (error: any) {
     if (error.response && error.response.data && error.response.data.message) {
       throw new Error(error.response.data.message);
