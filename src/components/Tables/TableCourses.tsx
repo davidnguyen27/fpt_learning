@@ -120,17 +120,19 @@ const TableCourses: React.FC = () => {
   const handleChangeStatus = useCallback(
     async (courseId: string, currentStatus: string, comment: string = "") => {
       let newStatus = "";
-      let course = data?.find(course => course._id === courseId); // Find the course data
-  
+      let course = data?.find((course) => course._id === courseId); // Find the course data
+
       if (!course) {
         message.error("Course not found.");
         return;
       }
-  
+
       if (currentStatus === "new" || currentStatus === "reject") {
         // Check if session_count and lesson_count are available
         if (course.session_count === 0 || course.lesson_count === 0) {
-          message.error("This course is not eligible to change status, please add sessions and lessons to the course.");
+          message.error(
+            "This course is not eligible to change status, please add sessions and lessons to the course.",
+          );
           return;
         }
         newStatus = "waiting_approve";
@@ -143,7 +145,7 @@ const TableCourses: React.FC = () => {
       } else if (currentStatus === "inactive") {
         newStatus = "active";
       }
-  
+
       if (newStatus) {
         try {
           await toggleCourseStatus(courseId, newStatus, comment);
@@ -159,7 +161,6 @@ const TableCourses: React.FC = () => {
     },
     [data, refetchData],
   );
-  
 
   const renderActionIcon = (record: Course) => {
     let icon = null;
@@ -189,7 +190,7 @@ const TableCourses: React.FC = () => {
       default:
         icon = <WarningOutlined style={{ color: "#D9D9D9" }} />;
         break;
-    };
+    }
 
     return (
       <div onClick={onClick} style={{ cursor: icon ? "pointer" : "default" }}>
@@ -302,9 +303,7 @@ const TableCourses: React.FC = () => {
           Add Course
         </Button>
       </div>
-      {loading ? (
-        <Spin />
-      ) : (
+      <Spin spinning={loading}>
         <Table
           dataSource={dataWithIndex}
           columns={columns}
@@ -312,7 +311,7 @@ const TableCourses: React.FC = () => {
           rowKey="_id"
           bordered
         />
-      )}
+      </Spin>
       {data && (
         <Pagination
           current={pageNum}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Badge, Button, Dropdown, MenuProps, Space } from "antd";
 import {
@@ -12,26 +12,46 @@ import {
   UserOutlined,
   CheckSquareOutlined,
   SettingOutlined,
-  PieChartOutlined,
   SignatureOutlined,
+  AreaChartOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "../../app/context/AuthContext";
 import "../../styles/header.css";
 import "../../styles/sider.css";
 import AppSider from "./AppSider";
-import useCartData from "../../hooks/cart/useCartData";
+import { DataTransfer } from "../../models/Cart";
+import { getCartsAPI } from "../../services/cartService";
+
 
 const AppHeader = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
+  const [cartItemCount, setCartItemCount] = useState<number>(0);
 
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { logout, user } = useAuth(); // Access the user from AuthContext
 
-  const storedUser: any = sessionStorage.getItem("user");
-  const user = JSON.parse(storedUser);
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      if (user) {
+        try {
+          const dataTransfer: DataTransfer = {
+            searchCondition: {
+              status: "",
+              is_deleted: false,
+            },
+            pageInfo: { pageNum: 1, pageSize: 10 },
+          };
+          const carts = await getCartsAPI(dataTransfer);
+          setCartItemCount(carts.length);
+        } catch (error) {
+          console.error("Error fetching cart items:", error);
+        }
+      }
+    };
 
-  const { cartItemCount } = useCartData(user);
+    fetchCartItems();
+  }, [user]);
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -50,8 +70,6 @@ const AppHeader = () => {
   const handleView = () => {
     if (user?.data.role === "admin") {
       navigate("/admin-profile-page");
-    } else if (user?.data.role === "instructor") {
-      navigate("/user-profile-page");
     } else {
       navigate("/user-profile-page");
     }
@@ -86,7 +104,7 @@ const AppHeader = () => {
       key: "1",
       label: (
         <a onClick={handleManagement}>
-          <PieChartOutlined />{" "}
+          <AreaChartOutlined />{" "}
           {user?.data.role === "admin" || "instructor"
             ? "Dashboard"
             : "My Course"}
@@ -253,7 +271,10 @@ const AppHeader = () => {
           </div>
         )}
       </div>
-      <AppSider isVisible={isSidebarVisible} onClose={toggleSidebar} />
+      {/* Conditionally render AppSider based on role */}
+      {user?.data.role !== "admin" &&  (
+        <AppSider isVisible={isSidebarVisible} onClose={toggleSidebar} />
+      )}
     </>
   );
 };

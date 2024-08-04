@@ -109,12 +109,14 @@ const AppHeader2: React.FC = () => {
   return (
     <Header className="header-2">
       <div className="header-content">
-        <button
-          className="flex h-8 w-40 items-center justify-center rounded bg-[#ef4444] text-white transition hover:bg-black hover:text-white"
+        <Button
+          type="primary"
+          danger
+          className="flex w-36"
           onClick={() => navigate("/")}
         >
-          Back to homepage
-        </button>
+          <p className="text-[14px]">Back to homepage</p>
+        </Button>
 
         <img
           className="logo-header2"

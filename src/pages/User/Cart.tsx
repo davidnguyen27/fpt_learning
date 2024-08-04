@@ -22,19 +22,31 @@ const Cart: React.FC = () => {
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
-        const dataTransfer: DataTransfer = {
+        const dataTransferNew: DataTransfer = {
           searchCondition: { status: "new", is_deleted: false },
           pageInfo: { pageNum: 1, pageSize: 10 },
         };
-        const data = await getCartsAPI(dataTransfer);
-        setCartItems(data);
+        const dataTransferCancel: DataTransfer = {
+          searchCondition: { status: "cancel", is_deleted: false },
+          pageInfo: { pageNum: 1, pageSize: 10 },
+        };
+        
+        // Gọi API cho cả hai trạng thái
+        const [dataNew, dataCancel] = await Promise.all([
+          getCartsAPI(dataTransferNew),
+          getCartsAPI(dataTransferCancel),
+        ]);
+        
+        // Kết hợp cả hai kết quả lại với nhau
+        setCartItems([...dataNew, ...dataCancel]);
       } catch (error: any) {
         setError(error.message || "An error occurred");
       }
     };
-
+  
     fetchCartItems();
   }, []);
+  
 
   const handleRemove = (id: string) => {
     setCartItems((prevItems) => prevItems.filter((item) => item._id !== id));
@@ -167,7 +179,9 @@ const Cart: React.FC = () => {
                     Your cart is empty, continue shopping to start a course!
                   </p>
                   <Button
-                    className="mt-4 rounded bg-red-500 p-2 text-white"
+                    type="primary"
+                    danger
+                    className="mt-4 rounded p-2"
                     onClick={() => navigate("/")}
                   >
                     Continue Shopping

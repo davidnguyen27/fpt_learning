@@ -23,13 +23,13 @@ const SubscriptionsForSubcriber: React.FC = () => {
     );
 
   return (
-    <div className="flex max-w-4xl flex-col items-center justify-center p-6">
+    <div className="">
       {subscriptions.length > 0 ? (
-        <div className="mt-4 grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="flex">
           {subscriptions.map((subscription) => (
             <Card
               key={subscription.id}
-              className="flex flex-col items-center shadow-lg"
+              className="w-64 m-4"
             >
               <div className="flex flex-col items-center">
                 <Avatar src={subscription.avatar_url} size={64} />
