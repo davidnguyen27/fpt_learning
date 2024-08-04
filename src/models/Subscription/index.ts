@@ -20,3 +20,16 @@ export type DataTransfer = {
         pageSize: number;
     };  
 };
+
+export type SubscriptionSearchResponse = {
+    success: boolean;
+    data: {
+      pageData: Subscription[];
+      pageInfo: {
+        pageNum: number;
+        pageSize: number;
+        totalItems: number;
+        totalPages: number;
+      };
+    };
+  };

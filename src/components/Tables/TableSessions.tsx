@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState, useEffect } from "react";
 import { DeleteOutlined, FormOutlined } from "@ant-design/icons";
-import { Table, Spin, Modal, Input, Select } from "antd";
+import { Table, Spin, Modal, Input, Select, Pagination, Button } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Session } from "../../models/Session";
 import { Course } from "../../models/Course";
@@ -9,16 +9,28 @@ import useCourseData from "../../hooks/course/useCourseData";
 import useDeleteSession from "../../hooks/session/useDeleteSession";
 import ModalAddSession from "../Modal/ModalAddSession";
 import ModalEditSession from "../Modal/ModalEditSession";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../app/redux/store";
+import {
+  setPageNum,
+  setPageSize,
+} from "../../app/redux/pagination/paginationSlice";
 
 const { Search } = Input;
 const { Option } = Select;
 
 const TableSessions: React.FC = () => {
+  const dispatch = useDispatch();
+  const { pageNum, pageSize } = useSelector(
+    (state: RootState) => state.pagination,
+  );
+
   const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [openAdd, setOpenAdd] = useState<boolean>(false);
   const [openEdit, setOpenEdit] = useState<boolean>(false);
   const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
-  const [selectedSessionDetail, setSelectedSessionDetail] = useState<Session | null>(null);
+  const [selectedSessionDetail, setSelectedSessionDetail] =
+    useState<Session | null>(null);
   const [detailModalVisible, setDetailModalVisible] = useState<boolean>(false);
   const [courses, setCourses] = useState<Course[]>([]);
   const [selectedCourse, setSelectedCourse] = useState<string>("");
@@ -44,10 +56,10 @@ const TableSessions: React.FC = () => {
 
   const pageInfo = useMemo(
     () => ({
-      pageNum: 1,
-      pageSize: 100,
+      pageNum,
+      pageSize,
     }),
-    [],
+    [pageNum, pageSize],
   );
 
   const sessionDataTransfer = useMemo(
@@ -75,9 +87,11 @@ const TableSessions: React.FC = () => {
     data: sessions,
     loading,
     error,
+    pageInfo: paginationInfo,
     refetchData,
   } = useSessionData(sessionDataTransfer);
-  const { data: fetchedCourses, refetchData: refetchCourses } = useCourseData(courseDataTransfer);
+  const { data: fetchedCourses, refetchData: refetchCourses } =
+    useCourseData(courseDataTransfer);
   const { deleteSession } = useDeleteSession(refetchData);
 
   useEffect(() => {
@@ -90,7 +104,7 @@ const TableSessions: React.FC = () => {
 
   useEffect(() => {
     refetchData();
-  }, [refetchData, selectedCourse, searchKeyword]);
+  }, [refetchData, selectedCourse, searchKeyword, pageNum, pageSize]);
 
   const handleSuccess = useCallback(() => {
     refetchData();
@@ -126,11 +140,23 @@ const TableSessions: React.FC = () => {
     setSelectedSessionDetail(null);
   };
 
+  const handlePageChange = (page: number, newPageSize: number) => {
+    dispatch(setPageNum(page));
+    dispatch(setPageSize(newPageSize));
+  };
+
   if (error) {
     return <div>{error}</div>;
   }
 
   const columns: ColumnsType<Session> = [
+    {
+      title: "No.",
+      dataIndex: "no",
+      key: "no",
+      width: 50,
+      render: (_, __, index) => (pageNum - 1) * pageSize + index + 1,
+    },
     {
       title: "Session Name",
       dataIndex: "name",
@@ -212,50 +238,73 @@ const TableSessions: React.FC = () => {
       { field: "User ID", value: selectedSessionDetail.user_name },
       { field: "Description", value: selectedSessionDetail.description },
       { field: "Position Order", value: selectedSessionDetail.position_order },
-      { field: "Created At", value: new Date(selectedSessionDetail.created_at).toLocaleString() },
-      { field: "Updated At", value: new Date(selectedSessionDetail.updated_at).toLocaleString() },
-      { field: "Deleted", value: selectedSessionDetail.is_deleted ? "Yes" : "No" },
+      {
+        field: "Created At",
+        value: new Date(selectedSessionDetail.created_at).toLocaleString(),
+      },
+      {
+        field: "Updated At",
+        value: new Date(selectedSessionDetail.updated_at).toLocaleString(),
+      },
+      {
+        field: "Deleted",
+        value: selectedSessionDetail.is_deleted ? "Yes" : "No",
+      },
     ];
   }, [selectedSessionDetail]);
 
   return (
     <>
-      <div className="my-3 flex flex-wrap items-center justify-between gap-2">
-        <Search
-          onSearch={handleSearch}
-          placeholder="Search by keyword"
-          allowClear
-          className="w-full md:w-1/3"
-        />
-        <Select
-          onChange={handleCourseChange}
-          placeholder="Filter by course"
-          allowClear
-          className="w-full md:w-1/3"
-        >
-          {courses.map((course) => (
-            <Option key={course._id} value={course._id}>
-              {course.name}
-            </Option>
-          ))}
-        </Select>
-        <button
+      <div className="my-3 flex items-center justify-between">
+        <div className="flex space-x-2">
+          <Search
+            onSearch={handleSearch}
+            placeholder="Search by keyword"
+            allowClear
+            className="w-64"
+          />
+          <Select
+            onChange={handleCourseChange}
+            placeholder="Filter by course"
+            allowClear
+            className="w-64"
+          >
+            {courses.map((course) => (
+              <Option key={course._id} value={course._id}>
+                {course.name}
+              </Option>
+            ))}
+          </Select>
+        </div>
+        <Button
+          type="primary"
           onClick={() => setOpenAdd(true)}
-          className="rounded-lg bg-red-500 px-5 py-2 text-sm font-medium text-white hover:bg-red-600"
+          danger
+          className="px-5 py-2"
         >
           Add Session
-        </button>
+        </Button>
       </div>
+
       <Spin spinning={loading}>
         <div className="overflow-x-auto">
           <Table
             columns={columns}
             dataSource={sessions}
-            pagination={false}
             scroll={{ x: "max-content" }}
+            pagination={false}
+            rowKey="_id"
           />
         </div>
       </Spin>
+      <Pagination
+        className="mt-4 justify-end"
+        current={pageNum}
+        pageSize={pageSize}
+        total={paginationInfo?.totalItems}
+        onChange={handlePageChange}
+        showSizeChanger
+      />
       <ModalAddSession
         open={openAdd}
         setOpen={setOpenAdd}

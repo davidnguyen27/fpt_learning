@@ -1,4 +1,3 @@
-import { APILink } from "../const/linkAPI";
 import { Subscription, DataTransfer } from "../models/Subscription";
 import { axiosInstance } from "./axiosInstance";
 
@@ -7,7 +6,7 @@ export const createUpdateSubscriptionAPI = async (
   createUpdateData: Partial<Subscription>,
 ) => {
   try {
-    const response = await axiosInstance.post(`${APILink}/api/subscription`, {
+    const response = await axiosInstance.post('/api/subscription', {
       ...createUpdateData,
       instructor_id: instructor_id,
     });
@@ -24,7 +23,7 @@ export const getSubscriptionBySubscriberAPI = async (
 ): Promise<Subscription[]> => {
   try {
     const res = await axiosInstance.post(
-      `${APILink}/api/subscription/search-for-subscriber`,
+      '/api/subscription/search-for-subscriber',
       dataTransfer,
     );
     return res.data.data.pageData;
@@ -39,7 +38,7 @@ export const getSubscriptionByInstructorAPI = async (
 ): Promise<Subscription[]> => {
   try {
     const res = await axiosInstance.post(
-      `${APILink}/api/subscription/search-for-instructor`,
+      '/api/subscription/search-for-instructor',
       dataTransfer,
     );
     return res.data.data.pageData;

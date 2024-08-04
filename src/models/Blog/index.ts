@@ -22,3 +22,16 @@ export type DataTransfer = {
     pageSize: number;
   };
 };
+
+export type BlogSearchResponse = {
+  success: boolean;
+  data: {
+    pageData: Blog[];
+    pageInfo: {
+      pageNum: number;
+      pageSize: number;
+      totalItems: number;
+      totalPages: number;
+    };
+  };
+};

@@ -186,7 +186,7 @@ const AppHeader = () => {
             className="my-custom-button"
             onClick={handleCreateCourseClick}
           >
-            Create new Course
+            Start Manage Course
           </Button>
         ) : null}
         {user ? (

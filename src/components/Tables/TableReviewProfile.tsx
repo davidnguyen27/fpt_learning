@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { EyeOutlined } from "@ant-design/icons";
-import { Button, Space, Spin, Table } from "antd";
+import { Button, Space, Spin, Table, Input, Pagination } from "antd";
 import type { TableProps } from "antd";
 import {
   UserData,
@@ -9,6 +9,10 @@ import {
 } from "../../models/Types";
 import { getUsers, reviewInstructorAPI } from "../../services/usersService";
 import ModalReviewInstructor from "../Modal/ModalReviewInstructor";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../app/redux/store";
+import { setPageNum, setPageSize } from "../../app/redux/pagination/paginationSlice";
+const { Search } = Input;
 
 interface DataType {
   key: string;
@@ -21,30 +25,35 @@ interface DataType {
 }
 
 const TableReviewProfile = () => {
+  const dispatch = useDispatch();
+  const { pageNum, pageSize } = useSelector(
+    (state: RootState) => state.pagination,
+  );
   const [users, setUsers] = useState<DataType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<UserData | null>(null);
   const [openReview, setOpenReview] = useState<boolean>(false);
+  const [searchText, setSearchText] = useState<string>("");
 
   useEffect(() => {
     fetchInstructors();
-  }, []);
+  }, [searchText]);
 
   const fetchInstructors = async () => {
     setLoading(true);
     try {
       const requestData: UserSearchRequest = {
         searchCondition: {
-          keyword: "",
+          keyword: searchText.trim(),
           role: "instructor",
           status: true,
-          is_verified: true,
+          is_verified: false,
           is_delete: false,
         },
         pageInfo: {
-          pageNum: 1,
-          pageSize: 100,
+          pageNum,
+          pageSize,
         },
       };
 
@@ -69,12 +78,21 @@ const TableReviewProfile = () => {
     }
   };
 
+  const handlePageChange = (page: number, newPageSize: number) => {
+    dispatch(setPageNum(page));
+    dispatch(setPageSize(newPageSize));
+  };
+
   const handleOpenReview = (userId: string) => {
     const user: any = users.find((user) => user._id === userId);
     if (user) {
       setSelected(user);
       setOpenReview(true);
     }
+  };
+
+  const handleSearch = (value: string) => {
+    setSearchText(value);
   };
 
   const handleApprove = async (userId: string) => {
@@ -158,21 +176,49 @@ const TableReviewProfile = () => {
     },
   ];
 
-  if (loading) {
-    return <Spin tip="Loading">Loading...</Spin>;
-  }
-
   if (error) {
     return <div>{error}</div>;
   }
 
   return (
     <>
-      <Table
-        className="my-5 rounded-none"
-        columns={columns}
-        dataSource={users}
-      />
+      <div
+        style={{
+          marginBottom: 16,
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Search
+            placeholder="Search by name or email"
+            allowClear
+            onSearch={handleSearch}
+            style={{ width: 254}}
+          />
+        </div>
+      </div>
+      {loading ? (
+        <Spin
+          className="mb-12 mt-12 flex items-center justify-center"
+          spinning={loading}
+        />
+      ) : (
+        <Table
+          className="my-5 rounded-none"
+          columns={columns}
+          dataSource={users}
+          pagination={false}
+        />
+      )}
+      <Pagination
+          current={pageNum}
+          pageSize={pageSize}
+          total={10}
+          onChange={handlePageChange}
+          style={{ marginTop: 16, textAlign: "right", justifyContent: "end" }}
+          showSizeChanger
+        />
       <ModalReviewInstructor
         open={openReview}
         setOpen={setOpenReview}

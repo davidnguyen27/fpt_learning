@@ -5,7 +5,7 @@ const ReviewManagePage = () => {
   return (
     <InstructorLayout>
       <section>
-        <h1 className="text-xl font-bold">Review Management</h1>
+        <h1 className="mb-6 text-xl font-bold">Review Management</h1>
       </section>
       <TableReviews />
     </InstructorLayout>

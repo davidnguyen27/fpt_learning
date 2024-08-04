@@ -8,11 +8,13 @@ const useDeleteReview = (onSuccess: () => void) => {
   const deleteReview = async (reviewId: string) => {
     try {
       setLoading(true);
+      console.log("Deleting review with ID:", reviewId); // Debug line
       await deleteReviewAPI(reviewId);
-      message.success("Session deleted successfully");
-      onSuccess(); // Call onSuccess to refresh the lessons list
+      message.success("Review deleted successfully");
+      onSuccess(); // Refresh the data after deletion
     } catch (error) {
-      message.error("Failed to delete Session");
+      console.error("Failed to delete review:", error); // Debug line
+      message.error("Failed to delete review");
     } finally {
       setLoading(false);
     }

@@ -5,7 +5,7 @@ const ReviewProfilePage = () => {
   return (
     <AdminLayout>
       <section>
-        <h1 className="text-xl font-bold">Instructor Request</h1>
+        <h1 className="mb-6 text-xl font-bold">Instructor Request</h1>
       </section>
       <TableReviewProfile />
     </AdminLayout>

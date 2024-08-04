@@ -35,3 +35,16 @@ export type Payout = {
   instructor_name: string;
   instructor_email: string;
 };
+
+export type PayoutSearchResponse = {
+  success: boolean;
+  data: {
+    pageData: Payout[];
+    pageInfo: {
+      pageNum: number;
+      pageSize: number;
+      totalItems: number;
+      totalPages: number;
+    };
+  };
+};

@@ -26,3 +26,16 @@ export type DataTransfer = {
     pageSize: number;
   };
 };
+
+export type CartSearchResponse = {
+  success: boolean;
+  data: {
+    pageData: CartData[];
+    pageInfo: {
+      pageNum: number;
+      pageSize: number;
+      totalItems: number;
+      totalPages: number;
+    };
+  };
+};

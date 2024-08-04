@@ -1,5 +1,14 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { CheckOutlined, ClockCircleOutlined, DeleteOutlined, FormOutlined, PlayCircleOutlined, SendOutlined, StopOutlined, WarningOutlined } from "@ant-design/icons";
+import {
+  CheckOutlined,
+  ClockCircleOutlined,
+  DeleteOutlined,
+  FormOutlined,
+  PlayCircleOutlined,
+  SendOutlined,
+  StopOutlined,
+  WarningOutlined,
+} from "@ant-design/icons";
 import {
   Table,
   Spin,
@@ -7,10 +16,10 @@ import {
   Input,
   Tag,
   Button,
-  Drawer,
   Space,
   message,
   Descriptions,
+  Pagination,
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Course, DataTransfer } from "../../models/Course";
@@ -19,10 +28,20 @@ import useDeleteCourse from "../../hooks/course/useDeleteCourse";
 import ModalAddCourse from "../Modal/ModalAddCourse";
 import ModalEditCourse from "../Modal/ModalEditCourse";
 import { toggleCourseStatus } from "../../services/coursesService";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../app/redux/store";
+import {
+  setPageNum,
+  setPageSize,
+} from "../../app/redux/pagination/paginationSlice";
 
 const { Search } = Input;
 
 const TableCourses: React.FC = () => {
+  const dispatch = useDispatch();
+  const { pageNum, pageSize } = useSelector(
+    (state: RootState) => state.pagination,
+  );
   const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [openAdd, setOpenAdd] = useState<boolean>(false);
   const [openEdit, setOpenEdit] = useState<boolean>(false);
@@ -30,13 +49,15 @@ const TableCourses: React.FC = () => {
   const [selectedCourseDetail, setSelectedCourseDetail] =
     useState<Course | null>(null);
   const [detailModalVisible, setDetailModalVisible] = useState<boolean>(false);
-  const [comment, setComment] = useState<string>("");
-  const [drawerVisible, setDrawerVisible] = useState<boolean>(false);
-  const [currentCourseId, setCurrentCourseId] = useState<string | null>(null);
 
   const handleSearch = useCallback((value: string) => {
     setSearchKeyword(value);
   }, []);
+
+  const handlePageChange = (page: number, newPageSize: number) => {
+    dispatch(setPageNum(page));
+    dispatch(setPageSize(newPageSize));
+  };
 
   const searchCondition = useMemo(
     () => ({
@@ -50,10 +71,10 @@ const TableCourses: React.FC = () => {
 
   const pageInfo = useMemo(
     () => ({
-      pageNum: 1,
-      pageSize: 100,
+      pageNum,
+      pageSize,
     }),
-    [],
+    [pageNum, pageSize],
   );
 
   const dataTransfer: DataTransfer = useMemo(
@@ -64,7 +85,7 @@ const TableCourses: React.FC = () => {
     [searchCondition, pageInfo],
   );
 
-  const { data, loading, error, refetchData } = useCourseData(dataTransfer);
+  const { data, loading, refetchData } = useCourseData(dataTransfer);
   const { deleteCourse } = useDeleteCourse(refetchData);
 
   const handleSuccess = useCallback(() => {
@@ -99,12 +120,22 @@ const TableCourses: React.FC = () => {
   const handleChangeStatus = useCallback(
     async (courseId: string, currentStatus: string, comment: string = "") => {
       let newStatus = "";
+      let course = data?.find(course => course._id === courseId); // Find the course data
+  
+      if (!course) {
+        message.error("Course not found.");
+        return;
+      }
+  
       if (currentStatus === "new" || currentStatus === "reject") {
+        // Check if session_count and lesson_count are available
+        if (course.session_count === 0 || course.lesson_count === 0) {
+          message.error("This course is not eligible to change status, please add sessions and lessons to the course.");
+          return;
+        }
         newStatus = "waiting_approve";
       } else if (currentStatus === "waiting_approve") {
         newStatus = "approve";
-      } else if (currentStatus === "reject") {
-        newStatus = "waiting_approve";
       } else if (currentStatus === "approve") {
         newStatus = "active";
       } else if (currentStatus === "active") {
@@ -112,12 +143,11 @@ const TableCourses: React.FC = () => {
       } else if (currentStatus === "inactive") {
         newStatus = "active";
       }
-
+  
       if (newStatus) {
         try {
           await toggleCourseStatus(courseId, newStatus, comment);
           refetchData();
-          setDrawerVisible(false);
           message.success(`Course status updated to ${newStatus}`);
         } catch (error) {
           console.error("Error changing status:", error);
@@ -127,94 +157,59 @@ const TableCourses: React.FC = () => {
         console.error("Invalid status change:", currentStatus, "->", newStatus);
       }
     },
-    [refetchData],
+    [data, refetchData],
   );
+  
 
-  const openCommentDrawer = useCallback(
-    (courseId: string, currentStatus: string) => {
-      setCurrentCourseId(courseId);
-      setDrawerVisible(true);
-      setComment(
-        currentStatus === "waiting_approve"
-          ? ""
-          : "",
-      );
-    },
-    [],
-  );
+  const renderActionIcon = (record: Course) => {
+    let icon = null;
+    let onClick = () => {};
 
-  const closeCommentDrawer = useCallback(() => {
-    setDrawerVisible(false);
-    setComment("");
-  }, []);
-
-  if (error) {
-    return <div>{error}</div>;
-  }
-
-  const renderActionButton = (record: Course) => {
-    let buttonClass = "";
- 
-  let buttonIcon = null;
-  let buttonDisabled = false;
-
-  switch (record.status) {
-    case "new":
-    case "reject":
-      buttonClass = "bg-yellow-300 text-gray-500";
-
-      buttonIcon = <SendOutlined />;
-      break;
-    case "waiting_approve":
-      buttonClass = "bg-gray-500";
-
-      buttonIcon = <ClockCircleOutlined />;
-      buttonDisabled = true; // Disable the button when status is "waiting_approve"
-      break;
-    case "approve":
-      buttonClass = "bg-green-500";
-
-      buttonIcon = <CheckOutlined />;
-      break;
-    case "active":
-      buttonClass = "bg-red-500";
-
-      buttonIcon = <StopOutlined />;
-      break;
-    case "inactive":
-      buttonClass = "bg-green-500";
-
-      buttonIcon = <PlayCircleOutlined />;
-      break;
-    default:
-      buttonDisabled = true;
-
-      buttonIcon = <WarningOutlined />;
-      break;
-  }
+    switch (record.status) {
+      case "new":
+      case "reject":
+        icon = <SendOutlined style={{ color: "#F9D71C" }} />;
+        onClick = () => handleChangeStatus(record._id, record.status);
+        break;
+      case "waiting_approve":
+        icon = <ClockCircleOutlined style={{ color: "#A9A9A9" }} />;
+        break;
+      case "approve":
+        icon = <CheckOutlined style={{ color: "#52C41A" }} />;
+        onClick = () => handleChangeStatus(record._id, record.status);
+        break;
+      case "active":
+        icon = <StopOutlined style={{ color: "#F5222D" }} />;
+        onClick = () => handleChangeStatus(record._id, record.status);
+        break;
+      case "inactive":
+        icon = <PlayCircleOutlined style={{ color: "#52C41A" }} />;
+        onClick = () => handleChangeStatus(record._id, record.status);
+        break;
+      default:
+        icon = <WarningOutlined style={{ color: "#D9D9D9" }} />;
+        break;
+    };
 
     return (
-      <Button
-      type="primary"
-      onClick={() => openCommentDrawer(record._id, record.status)}
-      disabled={buttonDisabled}
-      style={{
-         backgroundColor: buttonClass.includes('bg-yellow') ? '#F9D71C' : buttonClass.includes('bg-blue') ? '#1890FF' : buttonClass.includes('bg-green') ? '#52C41A' : buttonClass.includes('bg-red') ? '#F5222D' : '#D9D9D9', 
-         
-        width: 40,
-        height: 40,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-        
-    >
-      {buttonIcon}
-    </Button>
+      <div onClick={onClick} style={{ cursor: icon ? "pointer" : "default" }}>
+        {icon}
+      </div>
     );
   };
 
-  const columns: ColumnsType<Course> = [
+  const dataWithIndex = data?.map((item, index) => ({
+    ...item,
+    index: (pageNum - 1) * pageSize + index + 1,
+  }));
+
+  const columns: ColumnsType<Course & { index: number }> = [
+    {
+      title: "No.",
+      dataIndex: "index",
+      key: "index",
+      width: 50,
+    },
     {
       title: "Course Name",
       dataIndex: "name",
@@ -235,12 +230,11 @@ const TableCourses: React.FC = () => {
       key: "category_name",
       width: 150,
     },
-    
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      width: 80,
+      width: 100,
       render: (status: string) => (
         <Tag
           color={
@@ -285,7 +279,7 @@ const TableCourses: React.FC = () => {
             className="cursor-pointer text-red-500"
             onClick={() => handleDelete(record._id)}
           />
-          {renderActionButton(record)}
+          {renderActionIcon(record)}
         </Space>
       ),
     },
@@ -295,28 +289,40 @@ const TableCourses: React.FC = () => {
     <>
       <div className="my-3 flex flex-wrap items-center justify-between gap-2">
         <Search
+          placeholder="Search course"
           onSearch={handleSearch}
-          placeholder="Search by keyword"
-          allowClear
-          className="w-full md:w-1/3"
+          style={{ width: 254 }}
         />
-        <button
+        <Button
+          type="primary"
+          danger
           onClick={() => setOpenAdd(true)}
-          className="rounded-lg bg-red-500 px-5 py-2 text-sm font-medium text-white hover:bg-red-600"
+          className="px-5 py-2"
         >
           Add Course
-        </button>
+        </Button>
       </div>
-      <Spin spinning={loading}>
-        <div className="overflow-x-auto">
-          <Table
-            columns={columns}
-            dataSource={data}
-            pagination={false}
-            scroll={{ x: "max-content" }}
-          />
-        </div>
-      </Spin>
+      {loading ? (
+        <Spin />
+      ) : (
+        <Table
+          dataSource={dataWithIndex}
+          columns={columns}
+          pagination={false}
+          rowKey="_id"
+          bordered
+        />
+      )}
+      {data && (
+        <Pagination
+          current={pageNum}
+          pageSize={pageSize}
+          total={10}
+          onChange={handlePageChange}
+          showSizeChanger
+          className="mt-4 justify-end"
+        />
+      )}
       <ModalAddCourse
         open={openAdd}
         setOpen={setOpenAdd}
@@ -336,91 +342,51 @@ const TableCourses: React.FC = () => {
         footer={null}
       >
         {selectedCourseDetail && (
-          <Descriptions
-            bordered
-            column={1}
-            labelStyle={{ fontWeight: 'bold' }}
-          >
-            <Descriptions.Item label="Name">{selectedCourseDetail.name}</Descriptions.Item>
-            <Descriptions.Item label="Category">{selectedCourseDetail.category_name}</Descriptions.Item>
-            <Descriptions.Item label="Status">{selectedCourseDetail.status}</Descriptions.Item>
-            <Descriptions.Item label="Created At">{new Date(selectedCourseDetail.created_at).toLocaleString()}</Descriptions.Item>
-            <Descriptions.Item label="Updated At">{new Date(selectedCourseDetail.updated_at).toLocaleString()}</Descriptions.Item>
-            <Descriptions.Item label="Price">{selectedCourseDetail.price}</Descriptions.Item>
-            <Descriptions.Item label="Discount">{selectedCourseDetail.discount}</Descriptions.Item>
+          <Descriptions bordered column={1} labelStyle={{ fontWeight: "bold" }}>
+            <Descriptions.Item label="Name">
+              {selectedCourseDetail.name}
+            </Descriptions.Item>
+            <Descriptions.Item label="Category">
+              {selectedCourseDetail.category_name}
+            </Descriptions.Item>
+            <Descriptions.Item label="Status">
+              {selectedCourseDetail.status}
+            </Descriptions.Item>
+            <Descriptions.Item label="Created At">
+              {new Date(selectedCourseDetail.created_at).toLocaleString()}
+            </Descriptions.Item>
+            <Descriptions.Item label="Updated At">
+              {new Date(selectedCourseDetail.updated_at).toLocaleString()}
+            </Descriptions.Item>
+            <Descriptions.Item label="Price">
+              {selectedCourseDetail.price}
+            </Descriptions.Item>
+            <Descriptions.Item label="Discount">
+              {selectedCourseDetail.discount}
+            </Descriptions.Item>
             {selectedCourseDetail.video_url && (
               <Descriptions.Item label="Video URL">
-                <a href={selectedCourseDetail.video_url} target="_blank" rel="noopener noreferrer">
+                <a
+                  href={selectedCourseDetail.video_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Watch Video
                 </a>
               </Descriptions.Item>
             )}
             {selectedCourseDetail.image_url && (
               <Descriptions.Item label="Image">
-                <img src={selectedCourseDetail.image_url} alt="Course" style={{ maxWidth: '100%' }} />
+                <img
+                  src={selectedCourseDetail.image_url}
+                  alt="Course"
+                  style={{ maxWidth: "100%" }}
+                />
               </Descriptions.Item>
             )}
           </Descriptions>
         )}
       </Modal>
-
-      <Drawer
-        title="Add Comment"
-        placement="right"
-        closable={false}
-        onClose={closeCommentDrawer}
-        open={drawerVisible}
-        width={300}
-      >
-        <Input.TextArea
-          rows={4}
-          placeholder="Comment (optional)"
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-        />
-        <Button
-          type="primary"
-          icon={<SendOutlined />}
-          onClick={() => {
-            if (currentCourseId) {
-              const currentCourse = data.find(
-                (course) => course._id === currentCourseId,
-              );
-              if (currentCourse) {
-                const newStatus = (() => {
-                  switch (currentCourse.status) {
-                    case "new":
-                      return "waiting_approve";
-                    case "approve":
-                      return "active";
-                    case "reject":
-                      return "waiting_approve";
-                    case "active":
-                      return "inactive";
-                    case "inactive":
-                      return "active";
-                    case "reject":
-                      return "waiting_approve";
-                    default:
-                      return null;
-                  }
-                })();
-                if (newStatus) {
-                  handleChangeStatus(
-                    currentCourseId,
-                    currentCourse.status,
-                    comment,
-                  );
-                }
-              }
-            }
-          }}
-          style={{ marginTop: 16 }}
-          block
-        >
-          Confirm
-        </Button>
-      </Drawer>
     </>
   );
 };

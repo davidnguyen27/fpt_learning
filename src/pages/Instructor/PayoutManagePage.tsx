@@ -5,7 +5,7 @@ const PayoutManagePage = () => {
   return (
     <InstructorLayout>
       <section>
-        <h1 className="text-xl font-bold">
+        <h1 className="mb-6 text-xl font-bold">
           <i className="fa-solid fa-wallet"></i> Payout
         </h1>
         <TablePayout />

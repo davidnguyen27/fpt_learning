@@ -1,10 +1,7 @@
-import { Button, message, Space, Spin, Table, Modal, Input } from "antd";
+import { Button, message, Space, Spin, Table, Modal, Input, Tag } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { useEffect, useState } from "react";
-import {
-  getCoursesAPI,
-  toggleCourseStatus,
-} from "../../services/coursesService";
+import { getCoursesAPI, toggleCourseStatus } from "../../services/coursesService";
 
 interface DataType {
   key: string;
@@ -21,13 +18,14 @@ const TableCheck = () => {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
   const [comment, setComment] = useState<string>("");
+  const [searchText, setSearchText] = useState<string>("");
 
   const loadCourses = async () => {
     setLoading(true);
     try {
       const courses = await getCoursesAPI({
         searchCondition: {
-          keyword: "",
+          keyword: searchText,
           category_id: "",
           status: "waiting_approve",
           is_delete: false,
@@ -46,7 +44,7 @@ const TableCheck = () => {
 
   useEffect(() => {
     loadCourses();
-  }, []);
+  }, [searchText]); // Depend on searchText to reload courses on search change
 
   const handleStatusChange = async (
     course_id: string | null,
@@ -57,12 +55,6 @@ const TableCheck = () => {
       message.error("Course ID is undefined.");
       return;
     }
-
-    console.log("handleStatusChange called with:", {
-      course_id,
-      new_status,
-      comment,
-    });
 
     try {
       await toggleCourseStatus(course_id, new_status, comment);
@@ -84,12 +76,10 @@ const TableCheck = () => {
   };
 
   const handleApprove = (_id: string) => {
-    console.log("Approve button clicked for course_id:", _id);
     handleStatusChange(_id, "approve");
   };
 
   const handleReject = (_id: string) => {
-    console.log("Reject button clicked for course_id:", _id);
     setSelectedCourseId(_id);
     setIsModalVisible(true);
   };
@@ -107,6 +97,10 @@ const TableCheck = () => {
     setComment("");
   };
 
+  const handleSearch = (value: string) => {
+    setSearchText(value);
+  };
+
   const columns: ColumnsType<DataType> = [
     {
       title: "Course Name",
@@ -122,6 +116,11 @@ const TableCheck = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      render: (status: string) => (
+        <Tag color={status === "waiting_approve" ? "yellow" : "blue"}>
+          {status}
+        </Tag>
+      ),
     },
     {
       title: "Created At",
@@ -147,6 +146,14 @@ const TableCheck = () => {
 
   return (
     <>
+      <div style={{ marginBottom: 16 }}>
+        <Input.Search
+          placeholder="Search by course name or category"
+          allowClear
+          onSearch={handleSearch}
+          style={{ width: 254 }}
+        />
+      </div>
       <Spin spinning={loading}>
         <Table
           className="my-5 rounded-none"
