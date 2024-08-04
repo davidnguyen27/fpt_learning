@@ -1,44 +1,39 @@
 import { axiosInstance } from "./axiosInstance";
 import { User } from "../models/Types";
 
-export const login = async (email: string, password: string) => {
+// Helper function for handling errors
+const handleAuthError = (error: any) => {
+  if (error.response && error.response.data && error.response.data.message) {
+    return error.response.data.message;
+  }
+  return error.message;
+};
+
+export const login = async (email: string, password: string): Promise<string> => {
   try {
     const response = await axiosInstance.post("/api/auth", { email, password });
-    const token =
-      response.data.token ||
-      response.data.accessToken ||
-      response.data.data?.token;
-
+    const token = response.data.token || response.data.accessToken || response.data.data?.token;
     if (token) {
       sessionStorage.setItem("token", token);
       return token;
     }
-  } catch (error: any) {
-    if (error.response && error.response.data && error.response.data.message) {
-      throw new Error(error.response.data.message);
-    }
-    throw new Error(error.message);
+    throw new Error("Token not found in response!");
+  } catch (error) {
+    throw new Error(handleAuthError(error));
   }
 };
 
-export const loginViaGoogleAPI = async (
-  credential: string,
-): Promise<string> => {
+export const loginViaGoogleAPI = async (credential: string): Promise<string> => {
   try {
-    const res = await axiosInstance.post("/api/auth/google", {
-      google_id: credential,
-    });
-
-    const token =
-      res.data.token || res.data.accessToken || res.data.data?.token;
+    const res = await axiosInstance.post("/api/auth/google", { google_id: credential });
+    const token = res.data.token || res.data.accessToken || res.data.data?.token;
     if (token) {
       sessionStorage.setItem("token", token);
       return token;
-    } else {
-      throw new Error("Invalid Google login response!");
     }
-  } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error("Invalid Google login response!");
+  } catch (error) {
+    throw new Error(handleAuthError(error));
   }
 };
 
@@ -47,7 +42,7 @@ export const registerViaGoogleAPI = async (
   role: string,
   description: string,
   video: string,
-  phone_number: string,
+  phone_number: string
 ) => {
   try {
     const res = await axiosInstance.post("/api/users/google", {
@@ -57,18 +52,14 @@ export const registerViaGoogleAPI = async (
       video,
       phone_number,
     });
-
     const user = res.data;
     if (user) {
       sessionStorage.setItem("user", JSON.stringify(user));
       return user;
-    } else {
-      throw new Error("Invalid Google registration response!");
     }
-  } catch (error: any) {
-    if (error.response && error.response.data && error.response.data.message) {
-      return error.response.data.message;
-    }
+    throw new Error("Invalid Google registration response!");
+  } catch (error) {
+    throw new Error(handleAuthError(error));
   }
 };
 
@@ -79,16 +70,14 @@ export const getCurrentLogin = async (token: string): Promise<User> => {
         Authorization: `Bearer ${token}`,
       },
     });
-
     const user = res.data;
     if (user) {
       sessionStorage.setItem("user", JSON.stringify(user));
       return user;
-    } else {
-      throw new Error("Cannot get user data!");
     }
-  } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error("Cannot get user data!");
+  } catch (error) {
+    throw new Error(handleAuthError(error));
   }
 };
 
@@ -96,8 +85,8 @@ export const verifyEmailAPI = async (token: string): Promise<boolean> => {
   try {
     const res = await axiosInstance.post("/api/auth/verify-token", { token });
     return res.data.success;
-  } catch (error: any) {
-    throw new Error(error.message);
+  } catch (error) {
+    throw new Error(handleAuthError(error));
   }
 };
 
@@ -105,8 +94,8 @@ export const resendEmailAPI = async (email: string): Promise<boolean> => {
   try {
     const res = await axiosInstance.post("/api/auth/resend-token", { email });
     return res.data.success;
-  } catch (error: any) {
-    throw new Error(error.message);
+  } catch (error) {
+    throw new Error(handleAuthError(error));
   }
 };
 
@@ -114,12 +103,12 @@ export const forgotPassAPI = async (email: string): Promise<boolean> => {
   try {
     const res = await axiosInstance.put("/api/auth/forgot-password", { email });
     return res.data.success;
-  } catch (error: any) {
-    throw new Error(error.message);
+  } catch (error) {
+    throw new Error(handleAuthError(error));
   }
 };
 
-export const logout = async () => {
+export const logout = async (): Promise<void> => {
   try {
     const token = sessionStorage.getItem("token");
     if (!token) throw new Error("Token not found!");
@@ -133,7 +122,7 @@ export const logout = async () => {
     sessionStorage.removeItem("user");
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("userRole");
-  } catch (error: any) {
-    throw new Error(error.message);
+  } catch (error) {
+    throw new Error(handleAuthError(error));
   }
 };

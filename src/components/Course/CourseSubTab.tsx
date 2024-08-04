@@ -1,7 +1,7 @@
 import { FC, useState, useEffect } from "react";
-import { Button, Rate, message } from "antd";
+import { Avatar, Button, Rate, message } from "antd";
 import { MenuUnfoldOutlined, PlayCircleOutlined } from "@ant-design/icons";
-import { CourseSubTabProps } from "../../models/Types";
+import { CourseSubTabProps, UserData } from "../../models/Types";
 import {
   getSubscriptionBySubscriberAPI,
   createUpdateSubscriptionAPI,
@@ -14,6 +14,7 @@ import { Review } from "../../models/Review";
 import Loading from "../Loading/loading";
 import { formatTime } from "../../utils/formatTime";
 import { Link } from "react-router-dom";
+import { getUserDetail } from "../../services/usersService";
 
 const CourseSubTab: FC<CourseSubTabProps> = ({
   _id,
@@ -26,12 +27,29 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
   const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<Boolean>(false);
+  const [instructorData, setInstructorData] = useState<UserData | null>(null);
   const { course } = useCourseDetailClient(_id);
   const { createReview } = useAddReview(() => {});
   const { data: reviews, error, refetchData } = useReviewDataClient(_id);
 
   const toggleSession = (sessionId: string) => {
     setOpenSessions((prev) => (prev.includes(sessionId) ? [] : [sessionId]));
+  };
+
+  const fetchInstructorData = async () => {
+    try {
+      if (course?.instructor_id) {
+        const fetchedUserData = await getUserDetail(course.instructor_id);
+        if (fetchedUserData) {
+          setInstructorData(fetchedUserData);
+        } else {
+          setInstructorData(null);
+        }
+      }
+    } catch (error: any) {
+      console.error("Failed to fetch instructor data:", error);
+      setInstructorData(null);
+    }
   };
 
   const fetchSubscription = async () => {
@@ -92,6 +110,12 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
   if (isLoading) {
     return <Loading />;
   }
+
+  useEffect(() => {
+    if (course?.instructor_id) {
+      fetchInstructorData();
+    }
+  }, [course?.instructor_id]);
 
   useEffect(() => {
     const instructor_id = course?.instructor_id;
@@ -216,20 +240,20 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
       <div className="px-4 py-2 pt-8">
         <div className="flex justify-between">
           <div className="ml-1 flex items-center">
-          <Link to={`/user-detail/${course?.instructor_id}`}>
-  <img
-    src="https://i.pinimg.com/564x/03/eb/d6/03ebd625cc0b9d636256ecc44c0ea324.jpg"
-    className="mr-4 size-[70px]"
-    alt="Profile"
-  />
-</Link>
+            <Link to={`/user-detail/${course?.instructor_id}`}>
+              <Avatar
+                src={instructorData?.avatar}
+                className="mr-4 size-[70px]"
+                alt="Profile"
+              ></Avatar>
+            </Link>
             <div className="flex flex-col">
-            <Link
-  to={`/user-detail/${course?.instructor_id}`}
-  className="mb-2 text-[16px] font-medium text-[#333333]"
->
-  {course?.instructor_name || "Instructor Name Not Available"}
-</Link>
+              <Link
+                to={`/user-detail/${course?.instructor_id}`}
+                className="mb-2 text-[16px] font-medium text-[#333333]"
+              >
+                {course?.instructor_name || "Instructor Name Not Available"}
+              </Link>
               <Button
                 onClick={handleSubscribeClick}
                 type="primary"

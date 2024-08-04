@@ -104,7 +104,7 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
           onClick={showModal}
         >
           <img
-            className="w-full h-64 border-4 border-white object-cover"
+            className="h-64 w-full border-4 border-white object-cover"
             src={course?.image_url || "/path/to/default-thumbnail.jpg"}
             alt="Course Thumbnail"
           />
@@ -183,10 +183,10 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
               className="hidden sm:inline-block sm:h-screen sm:align-middle"
               aria-hidden="true"
             ></span>
-            <div className="inline-block transform overflow-hidden rounded-lg bg-white text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
-              <div className="aspect-w-16 aspect-h-9">
+            <div className="inline-block transform overflow-hidden rounded-lg bg-white text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:align-middle">
+              <div className="relative h-[440px] w-[840px]">
                 <iframe
-                  className="w-full"
+                  className="absolute left-0 top-0 h-full w-full"
                   src={`https://www.youtube.com/embed/${extractYoutubeVideoId(course.video_url)}`}
                   title="YouTube video player"
                   frameBorder="0"
