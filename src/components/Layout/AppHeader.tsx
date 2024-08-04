@@ -12,7 +12,6 @@ import {
   UserOutlined,
   CheckSquareOutlined,
   SettingOutlined,
-  PieChartOutlined,
   SignatureOutlined,
   AreaChartOutlined,
 } from "@ant-design/icons";
@@ -20,7 +19,6 @@ import { useAuth } from "../../app/context/AuthContext";
 import "../../styles/header.css";
 import "../../styles/sider.css";
 import AppSider from "./AppSider";
-import useCartData from "../../hooks/cart/useCartData";
 import { DataTransfer } from "../../models/Cart";
 import { getCartsAPI } from "../../services/cartService";
 
