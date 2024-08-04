@@ -26,10 +26,7 @@ const AppHeader = () => {
   const [cartItemCount, setCartItemCount] = useState<number>(0);
 
   const navigate = useNavigate();
-  const { logout } = useAuth();
-
-  const storedUser: any = sessionStorage.getItem("user");
-  const user = JSON.parse(storedUser);
+  const { logout, user } = useAuth(); // Access the user from AuthContext
 
   useEffect(() => {
     const fetchCartItems = async () => {
@@ -52,6 +49,7 @@ const AppHeader = () => {
 
     fetchCartItems();
   }, [user]);
+
   const [searchKeyword, setSearchKeyword] = useState("");
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
@@ -71,8 +69,6 @@ const AppHeader = () => {
   const handleView = () => {
     if (user?.data.role === "admin") {
       navigate("/admin-profile-page");
-    } else if (user?.data.role === "instructor") {
-      navigate("/user-profile-page");
     } else {
       navigate("/user-profile-page");
     }
@@ -108,7 +104,7 @@ const AppHeader = () => {
       label: (
         <a onClick={handleManagement}>
           <AreaChartOutlined />{" "}
-          {user?.data.role === "admin" || "instructor"
+          {user?.data.role === "admin" || user?.data.role === "instructor"
             ? "Dashboard"
             : "My Course"}
         </a>
@@ -258,7 +254,10 @@ const AppHeader = () => {
           </div>
         )}
       </div>
-      <AppSider isVisible={isSidebarVisible} onClose={toggleSidebar} />
+      {/* Conditionally render AppSider based on role */}
+      {user?.data.role !== "admin" &&  (
+        <AppSider isVisible={isSidebarVisible} onClose={toggleSidebar} />
+      )}
     </>
   );
 };

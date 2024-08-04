@@ -163,6 +163,7 @@ const StudentProfileSubTab: React.FC<StudentProfileSubTabProps> = ({
           <span dangerouslySetInnerHTML={{ __html: initialDescription }} />
           <Button
             type="primary"
+            danger
             onClick={() => setEditing(true)}
             className="float-right mt-6"
           >

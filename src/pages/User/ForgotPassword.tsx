@@ -4,10 +4,12 @@ import { MailOutlined } from "@ant-design/icons";
 import "../../styles/PasswordReset.css";
 import forgotPassword from "../../assets/Image/background.png";
 import { forgotPassAPI } from "../../services/authService";
+import { useNavigate } from "react-router-dom";
 
 const { Title, Link } = Typography;
 
 const PasswordReset: React.FC = () => {
+  const navigate = useNavigate();
   const onFinish = async (values: { email: string }) => {
     try {
       const res = await forgotPassAPI(values.email);
@@ -16,6 +18,7 @@ const PasswordReset: React.FC = () => {
           message: "Successful",
           description: "Please check your email",
         });
+        navigate("/sign-in");
       }
     } catch (error) {
       notification.error({

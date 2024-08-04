@@ -41,7 +41,6 @@ section h1 {
 
 section h1::after {
   content: "";
-  position: absolute;
   left: 0;
   bottom: 0;
   width: 70px;

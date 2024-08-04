@@ -9,6 +9,7 @@ const { Search } = Input;
 
 const TableAdminPayout = () => {
   const [searchKeyword, setSearchKeyword] = useState<string>("");
+  const [loadingButtons, setLoadingButtons] = useState<{ [key: string]: boolean }>({});
 
   const dataTransfer = useMemo(
     (): DataTransfer => ({
@@ -36,7 +37,6 @@ const TableAdminPayout = () => {
     isModalVisible,
     comment,
     setComment,
-    loading: statusLoading,
   } = useChangeStatusAdmin(fetchData);
 
   useEffect(() => {
@@ -45,6 +45,28 @@ const TableAdminPayout = () => {
 
   const handleSearch = (value: string) => {
     setSearchKeyword(value);
+  };
+
+  const handleLoading = (id: string, isLoading: boolean) => {
+    setLoadingButtons(prevState => ({ ...prevState, [id]: isLoading }));
+  };
+
+  const handleApproveClick = async (id: string) => {
+    handleLoading(id, true);
+    try {
+      await handleApprove(id);
+    } finally {
+      handleLoading(id, false);
+    }
+  };
+
+  const handleRejectClick = async (id: string) => {
+    handleLoading(id, true);
+    try {
+      await handleReject(id);
+    } finally {
+      handleLoading(id, false);
+    }
   };
 
   const columns: ColumnsType<Payout> = [
@@ -89,16 +111,16 @@ const TableAdminPayout = () => {
         <Space>
           <Button
             type="primary"
-            onClick={() => handleApprove(record._id)}
-            loading={statusLoading}
+            onClick={() => handleApproveClick(record._id)}
+            loading={loadingButtons[record._id] === true}
           >
             Approve
           </Button>
           <Button
             danger
             type="primary"
-            onClick={() => handleReject(record._id)}
-            loading={statusLoading}
+            onClick={() => handleRejectClick(record._id)}
+            loading={loadingButtons[record._id] === true}
           >
             Reject
           </Button>
@@ -124,6 +146,7 @@ const TableAdminPayout = () => {
           dataSource={Array.isArray(data) ? data : []}
           loading={loading}
           rowKey="_id"
+          scroll={{ x: "max-content" }}
         />
       </Spin>
       <Modal
@@ -131,7 +154,7 @@ const TableAdminPayout = () => {
         open={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
-        confirmLoading={statusLoading}
+        confirmLoading={loadingButtons[Object.keys(loadingButtons)[0]] === true}
       >
         <Input.TextArea
           value={comment}

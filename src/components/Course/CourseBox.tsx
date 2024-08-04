@@ -104,11 +104,11 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
           onClick={showModal}
         >
           <img
-            className="w-full border-4 border-white object-cover"
+            className="w-full h-64 border-4 border-white object-cover"
             src={course?.image_url || "/path/to/default-thumbnail.jpg"}
             alt="Course Thumbnail"
           />
-          <div className="absolute bottom-0 left-0 w-full bg-black bg-opacity-50 px-2 py-1 text-center text-white">
+          <div className="absolute left-0 w-full bg-black bg-opacity-50 px-2 py-1 text-center text-white">
             Preview this course
           </div>
         </div>

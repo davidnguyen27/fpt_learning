@@ -15,6 +15,7 @@ import {
   setPageNum,
   setPageSize,
 } from "../../app/redux/pagination/paginationSlice";
+import { formatDate } from "../../utils/formatDate";
 
 const { Search } = Input;
 const { Option } = Select;
@@ -182,14 +183,14 @@ const TableSessions: React.FC = () => {
       dataIndex: "created_at",
       key: "created_at",
       width: 100,
-      render: (date: string) => new Date(date).toLocaleString(),
+      render: (date: string) => formatDate(date),
     },
     {
       title: "Updated At",
       dataIndex: "updated_at",
       key: "updated_at",
       width: 100,
-      render: (date: string) => new Date(date).toLocaleString(),
+      render: (date: string) => formatDate(date),
     },
     {
       title: "Position",
