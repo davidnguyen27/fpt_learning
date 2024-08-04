@@ -45,6 +45,10 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
         throw new Error("Description must be a non-empty string");
       }
 
+      // Set empty string for video_url or image_url if not provided
+      values.video_url = values.video_url || "";
+      values.image_url = values.image_url || "";
+
       await createCourse(values);
       form.resetFields();
       setOpen(false);
@@ -62,10 +66,13 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
     setOpen(false);
   };
 
-  const validateMediaUrl = () => {
-    const videoUrl = form.getFieldValue("video_url");
-    const imageUrl = form.getFieldValue("image_url");
+  const validateMediaUrl = (rule: any, value: string) => {
+    const otherFieldName =
+      rule.field === "video_url" ? "image_url" : "video_url";
+    const otherFieldValue = form.getFieldValue(otherFieldName);
+
     const isValidUrl = (url: string) => {
+      if (!url) return true; // Allow empty string
       try {
         new URL(url);
         return true;
@@ -74,17 +81,18 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
       }
     };
 
-    if (!videoUrl && !imageUrl) {
+    if (!value && !otherFieldValue) {
       return Promise.reject(
-        new Error("Either video URL or image URL is required!"),
+        new Error("Either video URL or image URL is required"),
       );
     }
-    if (
-      (videoUrl && !isValidUrl(videoUrl)) ||
-      (imageUrl && !isValidUrl(imageUrl))
-    ) {
-      return Promise.reject(new Error("Please enter a valid URL!"));
+
+    if (!isValidUrl(value)) {
+      return Promise.reject(
+        new Error("Please enter a valid URL or leave it empty"),
+      );
     }
+
     return Promise.resolve();
   };
 
@@ -104,11 +112,7 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
       confirmLoading={loading}
       width={700}
       footer={[
-        <Button
-          key="cancel"
-          className="mr-3"
-          onClick={handleCancel}
-        >
+        <Button key="cancel" className="mr-3" onClick={handleCancel}>
           Cancel
         </Button>,
         <Button
@@ -127,6 +131,8 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
         form={form}
         labelCol={{ span: 5 }}
         labelAlign="left"
+        validateTrigger={["onBlur", "onChange"]}
+        onFinish={handleSubmit}
       >
         <Form.Item
           label="Name"
@@ -161,16 +167,16 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
         >
           <Input className="text-sm" size="large" placeholder="Description" />
         </Form.Item>
-        <Form.Item
-        label="Content"
-        name="content">
+
+        <Form.Item label="Content" name="content">
           <Tiny
-            value={form.getFieldValue('content') || ''}
+            value={form.getFieldValue("content") || ""}
             onChange={(value: string) => {
               form.setFieldsValue({ content: value });
             }}
           />
-          </Form.Item>
+        </Form.Item>
+
         <Form.Item
           label="Video"
           name="video_url"
@@ -178,7 +184,7 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
         >
           <Input className="text-sm" size="large" placeholder="Video URL" />
         </Form.Item>
-        
+
         <Form.Item
           label="Image"
           name="image_url"
@@ -190,7 +196,10 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
         <Form.Item
           label="Price"
           name="price"
-          rules={[{ required: true, message: "Price is required!" }, { validator: validateNumber }]}
+          rules={[
+            { required: true, message: "Price is required!" },
+            { validator: validateNumber },
+          ]}
         >
           <Input
             type="number"
@@ -203,8 +212,10 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
         <Form.Item
           label="Discount"
           name="discount"
-          rules={[{ required: true, message: "Discount is required!" }, 
-            { validator: validateNumber }]}
+          rules={[
+            { required: true, message: "Discount is required!" },
+            { validator: validateNumber },
+          ]}
         >
           <Input
             type="number"

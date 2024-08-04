@@ -3,10 +3,13 @@ import { Layout, Dropdown, Space, MenuProps, Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../app/context/AuthContext";
 import {
-  AreaChartOutlined,
   ContactsOutlined,
   LogoutOutlined,
+  MailOutlined,
+  PieChartOutlined,
   RetweetOutlined,
+  SettingOutlined,
+  SignatureOutlined,
 } from "@ant-design/icons";
 import "../../styles/appHeader2.css";
 
@@ -54,7 +57,7 @@ const AppHeader2: React.FC = () => {
       key: "1",
       label: (
         <a onClick={handleManagement}>
-          <AreaChartOutlined />{" "}
+          <PieChartOutlined />{" "}
           {user?.data.role === "admin" || "instructor"
             ? "Dashboard"
             : "My Course"}
@@ -63,15 +66,27 @@ const AppHeader2: React.FC = () => {
     },
     {
       key: "2",
-      label: <a href="/paid-membership">Paid Memberships</a>,
+      label: (
+        <a href="/paid-membership">
+          <SignatureOutlined /> Paid Memberships
+        </a>
+      ),
     },
     {
       key: "3",
-      label: <a href="/settings">Setting</a>,
+      label: (
+        <a href="/settings">
+          <SettingOutlined /> Setting
+        </a>
+      ),
     },
     {
       key: "4",
-      label: <a href="/help">Help</a>,
+      label: (
+        <a href="/help">
+          <MailOutlined /> Help
+        </a>
+      ),
     },
     {
       key: "5",

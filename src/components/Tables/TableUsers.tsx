@@ -1,11 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { Table, Modal, Tooltip, Input, Select, Tag, Switch, Spin, Button } from "antd";
+import {
+  Table,
+  Modal,
+  Tooltip,
+  Input,
+  Select,
+  Tag,
+  Switch,
+  Spin,
+  Button,
+  message,
+} from "antd";
 import { UserData, UserSearchRequest } from "../../models/Types";
 import {
   deleteUser,
   getUsers,
   toggleUserStatus,
   updateUser,
+  changeRoleAPI,
 } from "../../services/usersService";
 import {
   DeleteOutlined,
@@ -18,7 +30,12 @@ import ModalCreateAcc from "../../components/Modal/ModalCreateAcc";
 import ModalChangeRole from "../Modal/ModalChangeRole";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../app/redux/store";
-import { setPageNum, setPageSize, setTotalItems, setTotalPages } from "../../app/redux/pagination/paginationSlice";
+import {
+  setPageNum,
+  setPageSize,
+  setTotalItems,
+  setTotalPages,
+} from "../../app/redux/pagination/paginationSlice";
 
 const { Search } = Input;
 const { Option } = Select;
@@ -200,7 +217,17 @@ const TableUsers: React.FC = () => {
     setOpenChange(true);
   };
 
-  const columns =  [
+  const handleRoleChange = async (userId: string, role: string) => {
+    try {
+      await changeRoleAPI(userId, role);
+      fetchUsers(pagination.pageNum, pagination.pageSize);
+      message.success("Role updated successfully");
+    } catch (error: any) {
+      message.error(`Failed to update role: ${error.message}`);
+    }
+  };
+
+  const columns = [
     {
       title: "No",
       key: "no",
@@ -253,23 +280,17 @@ const TableUsers: React.FC = () => {
       title: "Role",
       dataIndex: "role",
       key: "role",
-      render: (role: string) => {
-        let color;
-        switch (role.toLowerCase()) {
-          case "admin":
-            color = "volcano";
-            break;
-          case "instructor":
-            color = "geekblue";
-            break;
-          case "student":
-            color = "green";
-            break;
-          default:
-            color = "geekblue";
-        }
-        return <Tag color={color}>{role.toUpperCase()}</Tag>;
-      },
+      render: (role: string, record: UserData) => (
+        <Select
+          defaultValue={role}
+          style={{ width: 120 }}
+          onChange={(value) => handleRoleChange(record._id, value)}
+        >
+          <Option value="admin">Admin</Option>
+          <Option value="instructor">Instructor</Option>
+          <Option value="student">Student</Option>
+        </Select>
+      ),
     },
     {
       title: "Action",
@@ -356,8 +377,8 @@ const TableUsers: React.FC = () => {
         </div>
         <div>
           <Button
-          type="primary"
-          danger
+            type="primary"
+            danger
             className="px-5 py-2"
             onClick={() => setIsOpen(true)}
           >
@@ -371,22 +392,25 @@ const TableUsers: React.FC = () => {
         </div>
       </div>
       {loading ? (
-        <Spin className="flex justify-center items-center mt-12 mb-12" spinning={loading} />
+        <Spin
+          className="mb-12 mt-12 flex items-center justify-center"
+          spinning={loading}
+        />
       ) : (
-      <Table
-        className="my-5 rounded-none"
-        columns={columns}
-        dataSource={users}
-        rowKey={(record) => record._id}
-        pagination={{
-          current: pagination.pageNum,
-          pageSize: pagination.pageSize,
-          total: pagination.totalItems,
-          showSizeChanger: true,
-
-        }}
-        onChange={handleTableChange}
-      />)}
+        <Table
+          className="my-5 rounded-none"
+          columns={columns}
+          dataSource={users}
+          rowKey={(record) => record._id}
+          pagination={{
+            current: pagination.pageNum,
+            pageSize: pagination.pageSize,
+            total: pagination.totalItems,
+            showSizeChanger: true,
+          }}
+          onChange={handleTableChange}
+        />
+      )}
       <Modal
         title="Confirm Delete"
         visible={isModalVisible}

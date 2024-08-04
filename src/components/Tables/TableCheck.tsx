@@ -1,7 +1,11 @@
 import { Button, message, Space, Spin, Table, Modal, Input, Tag } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { useEffect, useState } from "react";
-import { getCoursesAPI, toggleCourseStatus } from "../../services/coursesService";
+import {
+  getCoursesAPI,
+  toggleCourseStatus,
+} from "../../services/coursesService";
+import { formatDate } from "../../utils/formatDate";
 
 interface DataType {
   key: string;
@@ -126,7 +130,7 @@ const TableCheck = () => {
       title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
-      render: (date: string) => new Date(date).toDateString(),
+      render: (date: string) => formatDate(date),
     },
     {
       title: "Action",

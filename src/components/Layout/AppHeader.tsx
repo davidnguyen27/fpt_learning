@@ -5,24 +5,29 @@ import {
   ShoppingCartOutlined,
   MailOutlined,
   BellOutlined,
-  ContactsOutlined,
-  AreaChartOutlined,
   RetweetOutlined,
   LogoutOutlined,
   MenuOutlined,
   LoginOutlined,
   UserOutlined,
   CheckSquareOutlined,
+  SettingOutlined,
+  PieChartOutlined,
+  SignatureOutlined,
+  AreaChartOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "../../app/context/AuthContext";
 import "../../styles/header.css";
 import "../../styles/sider.css";
 import AppSider from "./AppSider";
-import { getCartsAPI } from "../../services/cartService";
+import useCartData from "../../hooks/cart/useCartData";
 import { DataTransfer } from "../../models/Cart";
+import { getCartsAPI } from "../../services/cartService";
+
 
 const AppHeader = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+  const [searchKeyword, setSearchKeyword] = useState("");
   const [cartItemCount, setCartItemCount] = useState<number>(0);
 
   const navigate = useNavigate();
@@ -49,8 +54,6 @@ const AppHeader = () => {
 
     fetchCartItems();
   }, [user]);
-
-  const [searchKeyword, setSearchKeyword] = useState("");
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -95,7 +98,7 @@ const AppHeader = () => {
       key: "0",
       label: (
         <a onClick={handleView}>
-          <ContactsOutlined /> Profile
+          <UserOutlined /> Profile
         </a>
       ),
     },
@@ -104,23 +107,39 @@ const AppHeader = () => {
       label: (
         <a onClick={handleManagement}>
           <AreaChartOutlined />{" "}
-          {user?.data.role === "admin" || user?.data.role === "instructor"
+          {user?.data.role === "admin" || "instructor"
             ? "Dashboard"
             : "My Course"}
         </a>
       ),
     },
-    {
-      key: "2",
-      label: <a href="/paid-membership">Paid Memberships</a>,
-    },
+    ...(user?.data.role !== "admin"
+      ? [
+          {
+            key: "2",
+            label: (
+              <a href="/paid-membership">
+                <SignatureOutlined /> Paid Memberships
+              </a>
+            ),
+          },
+          {
+            key: "4",
+            label: (
+              <a href="/help-page">
+                <MailOutlined /> Help
+              </a>
+            ),
+          },
+        ]
+      : []),
     {
       key: "3",
-      label: <a href="/settings">Setting</a>,
-    },
-    {
-      key: "4",
-      label: <a href="/help">Help</a>,
+      label: (
+        <a href="/settings-page">
+          <SettingOutlined /> Setting
+        </a>
+      ),
     },
     {
       key: "5",
@@ -188,7 +207,7 @@ const AppHeader = () => {
         {user ? (
           <>
             {user?.data.role === "student" && (
-              <Badge count={cartItemCount}>
+              <Badge count={cartItemCount || 0}>
                 <ShoppingCartOutlined
                   className="cursor-pointer rounded-md bg-slate-200 text-xl transition-transform duration-300 hover:scale-105 hover:bg-slate-300"
                   onClick={handleShoppingCart}
@@ -196,17 +215,17 @@ const AppHeader = () => {
               </Badge>
             )}
             {user?.data.role === "instructor" && (
-              <Badge>
+              <Badge count={cartItemCount || 0}>
                 <ShoppingCartOutlined
                   className="cursor-pointer text-xl transition-colors duration-300 hover:text-blue-500"
                   onClick={handleShoppingCart}
                 />
               </Badge>
             )}
-            <Badge count={1}>
+            <Badge>
               <MailOutlined className="cursor-pointer rounded-md bg-slate-200 text-xl transition-transform duration-300 hover:scale-105 hover:bg-slate-300" />
             </Badge>
-            <Badge count={1}>
+            <Badge>
               <BellOutlined className="cursor-pointer rounded-md bg-slate-200 text-xl transition-transform duration-300 hover:scale-105 hover:bg-slate-300" />
             </Badge>
             <Dropdown menu={{ items }}>

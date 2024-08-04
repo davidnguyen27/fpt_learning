@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Button } from "antd";
 import { CheckOutlined, PlusOutlined, MinusOutlined } from "@ant-design/icons";
+import businessPlan from "../../assets/Image/BusinessPlan2.png";
 
 const features = [
   { title: "Your own shop", content: "Detailed description of Your own shop." },
@@ -54,11 +55,7 @@ const BusinessPlan: React.FC = () => {
           </p>
         </div>
         <div className="ml-0 md:ml-4">
-          <img
-            src="/image/BusinessPlan2.png"
-            alt="Business Plan"
-            className="h-32 w-32"
-          />
+          <img src={businessPlan} alt="Business Plan" className="h-32 w-32" />
         </div>
       </div>
       <div className="mb-4">

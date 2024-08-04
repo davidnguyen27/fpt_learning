@@ -165,19 +165,17 @@ export const createUserAPI = async (userData: Partial<User["data"]>) => {
   }
 };
 
-export const changeRoleAPI = async (
-  userId: string,
-  role: string,
-): Promise<User> => {
+export const changeRoleAPI = async (userId: string, role: string) => {
   try {
     const res = await axiosInstance.put('/api/users/change-role', {
       user_id: userId,
       role: role,
     });
-    console.log(res.data.data);
     return res.data;
   } catch (error: any) {
-    throw new Error(error.message);
+    if (error.response && error.response.data && error.response.data.message) {
+      throw new Error(error.response.data.message);
+    }
   }
 };
 

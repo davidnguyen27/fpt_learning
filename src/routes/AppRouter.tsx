@@ -26,6 +26,9 @@ const RegisterInstructorPage = React.lazy(
 const VerifyPage = React.lazy(() => import("../pages/User/VerifyPage"));
 const ChangePassPage = React.lazy(() => import("../pages/ChangePasswordPage"));
 const LearningPage = React.lazy(() => import("../pages/User/LearningPage"));
+// const LearningContentPage = React.lazy(
+//   () => import("../components/User/LearningComponent"),
+// );
 const BlogPage = React.lazy(() => import("../pages/User/BlogPage"));
 const SearchResultsPage = React.lazy(
   () => import("../pages/User/SearchResultsPage"),
@@ -147,7 +150,7 @@ const AppRouter = () => {
             <Route path="/about" element={<AboutPage />} />
             <Route path="sign-in" element={<SignInPage />} />
             <Route path="sign-up" element={<SignUpPage />} />
-            <Route path="/detail/:_id" element={<DetailCoursePage />} />
+            <Route path="/detail/course/:_id" element={<DetailCoursePage />} />
             <Route path="/report-page" element={<ReportPage />} />
             <Route path="/help-page" element={<HelpPage />} />
             <Route path="/settings-page" element={<SettingsPage />} />
@@ -298,7 +301,7 @@ const AppRouter = () => {
               element={
                 <ProtectedRoute
                   element={<PaidMembershipPage />}
-                  allowedRoles={["student"]}
+                  allowedRoles={["student", "instructor"]}
                 />
               }
             />
@@ -312,7 +315,16 @@ const AppRouter = () => {
               }
             />
             <Route
-              path="/learning/:_id"
+              path="/learning/course/:_id"
+              element={
+                <ProtectedRoute
+                  element={<LearningPage />}
+                  allowedRoles={["student", "instructor"]}
+                />
+              }
+            />
+            <Route
+              path="/learning/course/:_id/lesson/:_id"
               element={
                 <ProtectedRoute
                   element={<LearningPage />}
