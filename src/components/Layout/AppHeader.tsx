@@ -1,29 +1,29 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Badge, Button, Dropdown, MenuProps, Space } from "antd";
 import {
   ShoppingCartOutlined,
   MailOutlined,
   BellOutlined,
-  ContactsOutlined,
-  AreaChartOutlined,
   RetweetOutlined,
   LogoutOutlined,
   MenuOutlined,
   LoginOutlined,
   UserOutlined,
   CheckSquareOutlined,
+  SettingOutlined,
+  PieChartOutlined,
+  SignatureOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "../../app/context/AuthContext";
 import "../../styles/header.css";
 import "../../styles/sider.css";
 import AppSider from "./AppSider";
-import { getCartsAPI } from "../../services/cartService";
-import { DataTransfer } from "../../models/Cart";
+import useCartData from "../../hooks/cart/useCartData";
 
 const AppHeader = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
-  const [cartItemCount, setCartItemCount] = useState<number>(0);
+  const [searchKeyword, setSearchKeyword] = useState("");
 
   const navigate = useNavigate();
   const { logout } = useAuth();
@@ -31,28 +31,7 @@ const AppHeader = () => {
   const storedUser: any = sessionStorage.getItem("user");
   const user = JSON.parse(storedUser);
 
-  useEffect(() => {
-    const fetchCartItems = async () => {
-      if (user) {
-        try {
-          const dataTransfer: DataTransfer = {
-            searchCondition: {
-              status: "",
-              is_deleted: false,
-            },
-            pageInfo: { pageNum: 1, pageSize: 10 },
-          };
-          const carts = await getCartsAPI(dataTransfer);
-          setCartItemCount(carts.length);
-        } catch (error) {
-          console.error("Error fetching cart items:", error);
-        }
-      }
-    };
-
-    fetchCartItems();
-  }, [user]);
-  const [searchKeyword, setSearchKeyword] = useState("");
+  const { cartItemCount } = useCartData(user);
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -99,7 +78,7 @@ const AppHeader = () => {
       key: "0",
       label: (
         <a onClick={handleView}>
-          <ContactsOutlined /> Profile
+          <UserOutlined /> Profile
         </a>
       ),
     },
@@ -107,24 +86,40 @@ const AppHeader = () => {
       key: "1",
       label: (
         <a onClick={handleManagement}>
-          <AreaChartOutlined />{" "}
+          <PieChartOutlined />{" "}
           {user?.data.role === "admin" || "instructor"
             ? "Dashboard"
             : "My Course"}
         </a>
       ),
     },
-    {
-      key: "2",
-      label: <a href="/paid-membership">Paid Memberships</a>,
-    },
+    ...(user?.data.role !== "admin"
+      ? [
+          {
+            key: "2",
+            label: (
+              <a href="/paid-membership">
+                <SignatureOutlined /> Paid Memberships
+              </a>
+            ),
+          },
+          {
+            key: "4",
+            label: (
+              <a href="/help-page">
+                <MailOutlined /> Help
+              </a>
+            ),
+          },
+        ]
+      : []),
     {
       key: "3",
-      label: <a href="/settings">Setting</a>,
-    },
-    {
-      key: "4",
-      label: <a href="/help">Help</a>,
+      label: (
+        <a href="/settings-page">
+          <SettingOutlined /> Setting
+        </a>
+      ),
     },
     {
       key: "5",
@@ -192,7 +187,7 @@ const AppHeader = () => {
         {user ? (
           <>
             {user?.data.role === "student" && (
-              <Badge count={cartItemCount}>
+              <Badge count={cartItemCount || 0}>
                 <ShoppingCartOutlined
                   className="cursor-pointer rounded-md bg-slate-200 text-xl transition-transform duration-300 hover:scale-105 hover:bg-slate-300"
                   onClick={handleShoppingCart}
@@ -200,17 +195,17 @@ const AppHeader = () => {
               </Badge>
             )}
             {user?.data.role === "instructor" && (
-              <Badge>
+              <Badge count={cartItemCount || 0}>
                 <ShoppingCartOutlined
                   className="cursor-pointer text-xl transition-colors duration-300 hover:text-blue-500"
                   onClick={handleShoppingCart}
                 />
               </Badge>
             )}
-            <Badge count={1}>
+            <Badge>
               <MailOutlined className="cursor-pointer rounded-md bg-slate-200 text-xl transition-transform duration-300 hover:scale-105 hover:bg-slate-300" />
             </Badge>
-            <Badge count={1}>
+            <Badge>
               <BellOutlined className="cursor-pointer rounded-md bg-slate-200 text-xl transition-transform duration-300 hover:scale-105 hover:bg-slate-300" />
             </Badge>
             <Dropdown menu={{ items }}>

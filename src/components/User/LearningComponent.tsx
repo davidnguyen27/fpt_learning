@@ -10,7 +10,8 @@ import { Lesson } from "../../models/Lesson";
 import { getDetailClientAPI } from "../../services/coursesService";
 import { formatTime } from "../../utils/formatTime";
 import LessonContent from "./LessonContent";
-import Loading from "../Loading/loading";
+import { Spin } from "antd";
+import { useNavigate, useParams } from "react-router-dom";
 
 interface LearningComponentProps {
   courseId: string;
@@ -22,6 +23,9 @@ const LearningComponent: React.FC<LearningComponentProps> = ({ courseId }) => {
   const [error, setError] = useState<string | null>(null);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
+  const { lessonId } = useParams<{ lessonId: string }>();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCourseDetails = async () => {
@@ -29,6 +33,14 @@ const LearningComponent: React.FC<LearningComponentProps> = ({ courseId }) => {
       try {
         const courseDetail = await getDetailClientAPI(courseId);
         setCourse(courseDetail);
+
+        // Nếu lessonId tồn tại trong URL, tìm và chọn bài học tương ứng
+        if (lessonId) {
+          const selected = courseDetail.session_list
+            .flatMap((session: any) => session.lesson_list)
+            .find((lesson: any) => lesson._id === lessonId);
+          setSelectedLesson(selected || null);
+        }
       } catch (err) {
         setError("Failed to fetch course details.");
       } finally {
@@ -37,7 +49,7 @@ const LearningComponent: React.FC<LearningComponentProps> = ({ courseId }) => {
     };
 
     fetchCourseDetails();
-  }, [courseId]);
+  }, [courseId, lessonId]);
 
   const toggleAccordion = (index: number) => {
     setActiveIndex(index === activeIndex ? null : index);
@@ -45,15 +57,25 @@ const LearningComponent: React.FC<LearningComponentProps> = ({ courseId }) => {
 
   const handleLessonClick = (lesson: Lesson) => {
     setSelectedLesson(lesson);
+    navigate(`/learning/course/${courseId}/lesson/${lesson._id}`);
   };
 
-  if (loading)
+  if (loading) {
     return (
-      <div>
-        <Loading />
+      <div className="container mx-auto flex h-64 items-center justify-center px-4 py-8">
+        <Spin size="large" />
       </div>
     );
-  if (error) return <div>{error}</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="mb-6 text-3xl font-bold text-red-500">Error</h1>
+        <p>{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -89,7 +111,7 @@ const LearningComponent: React.FC<LearningComponentProps> = ({ courseId }) => {
                 </div>
                 {activeIndex === index && (
                   <ul className="mt-2 space-y-2 pl-4">
-                    {session.lesson_list.map((lesson) => (
+                    {session.lesson_list.map((lesson: any) => (
                       <li
                         key={lesson._id}
                         className="my-3 flex items-center justify-between text-[13px]"

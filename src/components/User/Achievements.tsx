@@ -1,6 +1,6 @@
 const Achievements: React.FC = () => {
   return (
-    <section className="my-10">
+    <section className="mx-4 my-20">
       <div className="grid grid-cols-2 gap-x-7 gap-y-7 max-md:grid-cols-1">
         <article className="rounded-md bg-slate-200 p-4 drop-shadow-sm">
           <div className="mb-7 text-center text-2xl">

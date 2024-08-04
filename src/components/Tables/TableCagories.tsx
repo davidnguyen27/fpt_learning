@@ -8,6 +8,7 @@ import ModalAddCategory from "../Modal/ModalAddCategory";
 import useDeleteCategory from "../../hooks/category/useDeleteCategory";
 import ModalEditCategory from "../Modal/ModalEditCategory";
 import Search from "antd/es/input/Search";
+import { formatDate } from "../../utils/formatDate";
 
 interface DataType {
   key: string;
@@ -89,14 +90,14 @@ const TableCategories = () => {
       dataIndex: "created_at",
       key: "created_at",
       width: 250,
-      render: (date: string) => new Date(date).toLocaleString(),
+      render: (date: string) => formatDate(date),
     },
     {
       title: "Updated At",
       dataIndex: "updated_at",
       key: "updated_at",
       width: 250,
-      render: (date: string) => new Date(date).toLocaleString(),
+      render: (date: string) => formatDate(date),
     },
     {
       title: "Action",

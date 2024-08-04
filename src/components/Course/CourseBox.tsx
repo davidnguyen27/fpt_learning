@@ -88,7 +88,7 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
 
   const handleButtonClick = () => {
     if (buttonText === "Learn Now") {
-      navigate(`/learning/${course?._id}`);
+      navigate(`/learning/course/${course?._id}`);
     } else if (buttonText === "Go to cart") {
       navigate("/cart");
     } else if (buttonText === "Add to cart") {

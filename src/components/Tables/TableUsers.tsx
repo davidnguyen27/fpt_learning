@@ -1,11 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { Table, Modal, Tooltip, Input, Select, Tag, Switch } from "antd";
+import {
+  Table,
+  Modal,
+  Tooltip,
+  Input,
+  Select,
+  Tag,
+  Switch,
+  message,
+} from "antd";
 import { UserData, UserSearchRequest } from "../../models/Types";
 import {
   deleteUser,
   getUsers,
   toggleUserStatus,
   updateUser,
+  changeRoleAPI,
 } from "../../services/usersService";
 import {
   DeleteOutlined,
@@ -203,6 +213,16 @@ const TableUsers: React.FC = () => {
     setOpenChange(true);
   };
 
+  const handleRoleChange = async (userId: string, role: string) => {
+    try {
+      await changeRoleAPI(userId, role);
+      fetchUsers(pagination.current, pagination.pageSize);
+      message.success("Role updated successfully");
+    } catch (error: any) {
+      message.error(`Failed to update role: ${error.message}`);
+    }
+  };
+
   const columns = [
     {
       title: "No",
@@ -256,23 +276,17 @@ const TableUsers: React.FC = () => {
       title: "Role",
       dataIndex: "role",
       key: "role",
-      render: (role: string) => {
-        let color;
-        switch (role.toLowerCase()) {
-          case "admin":
-            color = "volcano";
-            break;
-          case "instructor":
-            color = "geekblue";
-            break;
-          case "student":
-            color = "green";
-            break;
-          default:
-            color = "geekblue";
-        }
-        return <Tag color={color}>{role.toUpperCase()}</Tag>;
-      },
+      render: (role: string, record: UserData) => (
+        <Select
+          defaultValue={role}
+          style={{ width: 120 }}
+          onChange={(value) => handleRoleChange(record._id, value)}
+        >
+          <Option value="admin">Admin</Option>
+          <Option value="instructor">Instructor</Option>
+          <Option value="student">Student</Option>
+        </Select>
+      ),
     },
     {
       title: "Action",

@@ -6,7 +6,7 @@ const PurchasePage: React.FC = () => {
   return (
     <InstructorLayout>
       <section>
-        <h1 className="text-xl font-bold">Earning</h1>
+        <h1 className="text-xl font-bold">Purchase Management</h1>
       </section>
       <TablePurchase />
     </InstructorLayout>

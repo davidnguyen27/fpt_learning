@@ -3,7 +3,7 @@ import { User } from "../models/Types";
 
 export const login = async (email: string, password: string) => {
   try {
-    const response = await axiosInstance.post('/api/auth', { email, password });
+    const response = await axiosInstance.post("/api/auth", { email, password });
     const token =
       response.data.token ||
       response.data.accessToken ||
@@ -25,11 +25,12 @@ export const loginViaGoogleAPI = async (
   credential: string,
 ): Promise<string> => {
   try {
-    const res = await axiosInstance.post('/api/auth/google', { google_id: credential });
+    const res = await axiosInstance.post("/api/auth/google", {
+      google_id: credential,
+    });
 
     const token =
       res.data.token || res.data.accessToken || res.data.data?.token;
-    console.log(token);
     if (token) {
       sessionStorage.setItem("token", token);
       return token;
@@ -49,7 +50,7 @@ export const registerViaGoogleAPI = async (
   phone_number: string,
 ) => {
   try {
-    const res = await axiosInstance.post('/api/users/google', {
+    const res = await axiosInstance.post("/api/users/google", {
       google_id: credential,
       role,
       description,
@@ -73,7 +74,7 @@ export const registerViaGoogleAPI = async (
 
 export const getCurrentLogin = async (token: string): Promise<User> => {
   try {
-    const res = await axiosInstance.get('/api/auth', {
+    const res = await axiosInstance.get("/api/auth", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -93,7 +94,7 @@ export const getCurrentLogin = async (token: string): Promise<User> => {
 
 export const verifyEmailAPI = async (token: string): Promise<boolean> => {
   try {
-    const res = await axiosInstance.post('/api/auth/verify-token', { token });
+    const res = await axiosInstance.post("/api/auth/verify-token", { token });
     return res.data.success;
   } catch (error: any) {
     throw new Error(error.message);
@@ -102,7 +103,7 @@ export const verifyEmailAPI = async (token: string): Promise<boolean> => {
 
 export const resendEmailAPI = async (email: string): Promise<boolean> => {
   try {
-    const res = await axiosInstance.post('/api/auth/resend-token', { email });
+    const res = await axiosInstance.post("/api/auth/resend-token", { email });
     return res.data.success;
   } catch (error: any) {
     throw new Error(error.message);
@@ -111,7 +112,7 @@ export const resendEmailAPI = async (email: string): Promise<boolean> => {
 
 export const forgotPassAPI = async (email: string): Promise<boolean> => {
   try {
-    const res = await axiosInstance.put('/api/auth/forgot-password', { email });
+    const res = await axiosInstance.put("/api/auth/forgot-password", { email });
     return res.data.success;
   } catch (error: any) {
     throw new Error(error.message);
@@ -123,7 +124,7 @@ export const logout = async () => {
     const token = sessionStorage.getItem("token");
     if (!token) throw new Error("Token not found!");
 
-    await axiosInstance.get('/api/auth/logout', {
+    await axiosInstance.get("/api/auth/logout", {
       headers: {
         Authorization: `Bearer ${token}`,
       },

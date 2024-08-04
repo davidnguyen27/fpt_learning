@@ -5,6 +5,7 @@ import {
   getCoursesAPI,
   toggleCourseStatus,
 } from "../../services/coursesService";
+import { formatDate } from "../../utils/formatDate";
 
 interface DataType {
   key: string;
@@ -127,7 +128,7 @@ const TableCheck = () => {
       title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
-      render: (date: string) => new Date(date).toDateString(),
+      render: (date: string) => formatDate(date),
     },
     {
       title: "Action",

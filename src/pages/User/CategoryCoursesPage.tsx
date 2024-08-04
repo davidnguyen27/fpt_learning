@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import MainLayout from "../../components/Layout/MainLayout";
 import useCourseDataClient from "../../hooks/course/useCourseDataClient";
 import { CourseClient, DataTransfer } from "../../models/Course";
-import { Spin, Rate, Button } from "antd";
+import { Spin, Rate, Button, Tag } from "antd";
 import "../../styles/courseCard.css";
 
 const CategoryCoursesPage: React.FC = () => {
@@ -70,30 +70,35 @@ const CategoryCoursesPage: React.FC = () => {
     <MainLayout>
       <div className="container mx-auto px-4 py-8">
         <h1 className="mb-6 text-2xl font-bold">
-        Courses in {categoryName} Category:
+          Courses in {categoryName} Category:
         </h1>
         {courses && courses.length > 0 ? (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {courses.map((course: CourseClient) => (
-              <article
-                key={course._id}
-                className="course-card"
-                onClick={() => navigate(`/detail/${course._id}`)}
-              >
+              <article key={course._id} className="course-card">
                 <div className="course-card-content">
                   <img
                     src={course.image_url || "default-image-url"}
                     alt={course.name}
                     className="course-card-image"
+                    onClick={() => navigate(`/detail/${course._id}`)}
                   />
-                  <h3 className="course-card-title">{course.name}</h3>
+                  <h3
+                    className="course-card-title"
+                    onClick={() => navigate(`/detail/${course._id}`)}
+                  >
+                    {course.name}
+                  </h3>
                   <div className="course-card-category">
                     {course.category_name}
                   </div>
                   <div className="course-card-rating">
-                    <Rate disabled value={course.average_rating} />
+                    <Rate disabled allowHalf value={course.average_rating} />
                     <span className="course-card-rating-value">
                       {course.average_rating}
+                    </span>
+                    <span className="ml-2 font-medium">
+                      ({course.review_count} reviews)
                     </span>
                   </div>
                   <div className="course-card-footer">
@@ -108,12 +113,25 @@ const CategoryCoursesPage: React.FC = () => {
                         <Button type="primary" className="course-card-button">
                           Learn Now
                         </Button>
+                      ) : course.price === 0 ? (
+                        <Tag className="course-card-free-tag">Free</Tag>
                       ) : (
                         <>
                           <i className="fa-solid fa-cart-plus course-card-cart-icon"></i>
-                          <span className="course-card-price">
-                            ${course.price}
-                          </span>
+                          {course.discount ? (
+                            <>
+                              <span className="course-card-price-original">
+                                ${course.price}
+                              </span>
+                              <span className="course-card-price-discounted">
+                                ${course.price_paid}
+                              </span>
+                            </>
+                          ) : (
+                            <span className="course-card-price">
+                              ${course.price}
+                            </span>
+                          )}
                         </>
                       )}
                     </div>

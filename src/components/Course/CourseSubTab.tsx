@@ -117,10 +117,17 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
 
   const CourseContentTabContent = () => (
     <div>
+      <div className="flex items-center justify-between">
+        <h1 className="text-xl font-bold">Course Content</h1>
+        <div className="space-x-6">
+          <span className="font-medium">xx lessons</span>
+          <span className="font-medium">{course?.full_time} hours</span>
+        </div>
+      </div>
       {sessions.map((session) => (
         <div
           key={session._id}
-          className="mt-6 rounded-md bg-slate-200 px-3 py-2"
+          className="mt-6 rounded-md bg-zinc-200 px-3 py-2"
         >
           <div
             className="cursor-pointer text-sm font-bold"

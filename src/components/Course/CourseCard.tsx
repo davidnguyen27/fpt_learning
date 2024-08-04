@@ -1,9 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { DataTransfer } from "../../models/Course";
 import useCourseDataClient from "../../hooks/course/useCourseDataClient";
-import { Rate, Button } from "antd";
+import { Rate, Button, Tag } from "antd";
 import "../../styles/courseCard.css";
+import { LoadingOutlined } from "@ant-design/icons";
 
 interface CourseCardProps {
   category_id: string;
@@ -12,7 +13,9 @@ interface CourseCardProps {
 const CourseCard: React.FC<CourseCardProps> = (props) => {
   const { category_id } = props;
   const navigate = useNavigate();
-  const [searchKeyword] = useState<string>("");
+  const searchKeyword = "";
+
+  console.log("CourseCard render");
 
   const searchCondition = useMemo(
     () => ({
@@ -21,7 +24,7 @@ const CourseCard: React.FC<CourseCardProps> = (props) => {
       status: "",
       is_delete: false,
     }),
-    [searchKeyword, category_id],
+    [category_id],
   );
 
   const pageInfo = useMemo(
@@ -51,29 +54,34 @@ const CourseCard: React.FC<CourseCardProps> = (props) => {
     refetchData();
   }, [refetchData]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <LoadingOutlined />;
   if (error) return <div>Error: {error}</div>;
 
   return (
     <>
       {courses.map((item: any) => (
-        <article
-          key={item._id}
-          className="course-card"
-          onClick={() => navigate(`/detail/${item._id}`)}
-        >
+        <article key={item._id} className="course-card">
           <div className="course-card-content">
             <img
               src={item.image_url || "default-image-url"}
               alt={item.name}
               className="course-card-image"
+              onClick={() => navigate(`/detail/course/${item._id}`)}
             />
-            <h3 className="course-card-title">{item.name}</h3>
+            <h3
+              className="course-card-title"
+              onClick={() => navigate(`/detail/course/${item._id}`)}
+            >
+              {item.name}
+            </h3>
             <div className="course-card-category">{item.category_name}</div>
             <div className="course-card-rating">
-              <Rate disabled value={item.average_rating} />
+              <Rate disabled allowHalf value={item.average_rating} />
               <span className="course-card-rating-value">
                 {item.average_rating}
+              </span>
+              <span className="ml-2 font-medium">
+                ({item.review_count} reviews)
               </span>
             </div>
             <div className="course-card-footer">
@@ -88,10 +96,23 @@ const CourseCard: React.FC<CourseCardProps> = (props) => {
                   <Button type="primary" className="course-card-button">
                     Learn Now
                   </Button>
+                ) : item.price === 0 ? (
+                  <Tag className="course-card-free-tag">Free</Tag>
                 ) : (
                   <>
                     <i className="fa-solid fa-cart-plus course-card-cart-icon"></i>
-                    <span className="course-card-price">${item.price}</span>
+                    {item.discount ? (
+                      <>
+                        <span className="course-card-price-original">
+                          ${item.price}
+                        </span>
+                        <span className="course-card-price-discounted">
+                          ${item.price_paid}
+                        </span>
+                      </>
+                    ) : (
+                      <span className="course-card-price">${item.price}</span>
+                    )}
                   </>
                 )}
               </div>
@@ -103,4 +124,4 @@ const CourseCard: React.FC<CourseCardProps> = (props) => {
   );
 };
 
-export default CourseCard;
+export default React.memo(CourseCard);
