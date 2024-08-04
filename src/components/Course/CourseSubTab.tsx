@@ -13,6 +13,7 @@ import ModalAddReview from "../Modal/ModalAddReview";
 import { Review } from "../../models/Review";
 import Loading from "../Loading/loading";
 import { formatTime } from "../../utils/formatTime";
+import { Link } from "react-router-dom";
 
 const CourseSubTab: FC<CourseSubTabProps> = ({
   _id,
@@ -91,6 +92,7 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
   if (isLoading) {
     return <Loading />;
   }
+
   useEffect(() => {
     const instructor_id = course?.instructor_id;
     if (instructor_id) {
@@ -214,20 +216,20 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
       <div className="px-4 py-2 pt-8">
         <div className="flex justify-between">
           <div className="ml-1 flex items-center">
-            <a href="#">
-              <img
-                src="https://i.pinimg.com/564x/03/eb/d6/03ebd625cc0b9d636256ecc44c0ea324.jpg"
-                className="mr-4 size-[70px]"
-                alt="Profile"
-              />
-            </a>
+          <Link to={`/user-detail/${course?.instructor_id}`}>
+  <img
+    src="https://i.pinimg.com/564x/03/eb/d6/03ebd625cc0b9d636256ecc44c0ea324.jpg"
+    className="mr-4 size-[70px]"
+    alt="Profile"
+  />
+</Link>
             <div className="flex flex-col">
-              <a
-                href="#"
-                className="mb-2 text-[16px] font-medium text-[#333333]"
-              >
-                {course?.instructor_name || "Instructor Name Not Available"}
-              </a>
+            <Link
+  to={`/user-detail/${course?.instructor_id}`}
+  className="mb-2 text-[16px] font-medium text-[#333333]"
+>
+  {course?.instructor_name || "Instructor Name Not Available"}
+</Link>
               <Button
                 onClick={handleSubscribeClick}
                 type="primary"

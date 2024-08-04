@@ -168,6 +168,8 @@ const AppRouter = () => {
               path="/instructor-info/:instructor_id"
               element={<InstructorProfilePage />}
             />
+            <Route path="/user-detail/:id" element={<UserDetail />} />
+
             {/*----------------------------ADMIN---------------------------------*/}
             <Route
               path="/admin/dashboard"
@@ -205,7 +207,7 @@ const AppRouter = () => {
                 />
               }
             />
-            <Route
+            {/* <Route
               path="/admin/user-detail/id"
               element={
                 <ProtectedRoute
@@ -213,7 +215,7 @@ const AppRouter = () => {
                   allowedRoles={["admin"]}
                 />
               }
-            />
+            /> */}
             <Route
               path="/admin/payout-management"
               element={

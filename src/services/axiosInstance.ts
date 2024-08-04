@@ -41,9 +41,11 @@ axiosInstance.interceptors.response.use(
   (err) => {
     store.dispatch(stopLoading());
     const { response } = err;
-    if (response && (response.status === 401 || response.status === 403 || response.status === 404)) {
-      sessionStorage.clear();
-      window.location.href = ROUTER_URL.SIGN_IN;
+    if (response && response.status === 401) {
+      setTimeout(() => {
+        sessionStorage.removeItem("token");
+        window.location.href = ROUTER_URL.SIGN_IN;
+      }, 2000);
     }
     return handleErrorByToast(err);
   }

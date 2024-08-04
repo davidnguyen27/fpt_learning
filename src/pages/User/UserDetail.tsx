@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { UserData, UserDetailProp } from "../../models/Types";
+import { UserData } from "../../models/Types";
 import { getUserDetail } from "../../services/usersService";
+import { useParams } from "react-router-dom";
+import Loading from "../../components/Loading/loading";
 
-interface UserDetailProps extends UserDetailProp {
-  token: string;
-}
-
-const UserDetail: React.FC<UserDetailProps> = ({ _id, token }) => {
+const UserDetail: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
   const [userDetail, setUserDetail] = useState<UserData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -14,12 +13,11 @@ const UserDetail: React.FC<UserDetailProps> = ({ _id, token }) => {
   useEffect(() => {
     const fetchUserDetail = async () => {
       try {
-        const userData = await getUserDetail(_id);
-        if (userData) {
+        if (id) {
+          const userData = await getUserDetail(id);
           setUserDetail(userData);
         } else {
-          setUserDetail(null);
-          setError("User not found");
+          setError("Invalid user ID");
         }
       } catch (error) {
         setError("Failed to fetch user detail");
@@ -29,10 +27,10 @@ const UserDetail: React.FC<UserDetailProps> = ({ _id, token }) => {
     };
 
     fetchUserDetail();
-  }, [_id, token]);
+  }, [id]);
 
   if (loading) {
-    return <div>Loading user detail...</div>;
+    return <div><Loading/></div>;
   }
 
   if (error) {
@@ -48,6 +46,7 @@ const UserDetail: React.FC<UserDetailProps> = ({ _id, token }) => {
       <h2>User Detail</h2>
       <p>Name: {userDetail.name}</p>
       <p>Email: {userDetail.email}</p>
+      {/* Add more fields as needed */}
     </div>
   );
 };

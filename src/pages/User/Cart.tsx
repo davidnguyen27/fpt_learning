@@ -30,15 +30,20 @@ const Cart: React.FC = () => {
           searchCondition: { status: "cancel", is_deleted: false },
           pageInfo: { pageNum: 1, pageSize: 10 },
         };
-        
-        // Gọi API cho cả hai trạng thái
-        const [dataNew, dataCancel] = await Promise.all([
+        const dataTransferWaitingPaid: DataTransfer = {
+          searchCondition: { status: "waiting_paid", is_deleted: false },
+          pageInfo: { pageNum: 1, pageSize: 10 },
+        };
+  
+        // Gọi API cho ba trạng thái
+        const [dataNew, dataCancel, dataWaitingPaid] = await Promise.all([
           getCartsAPI(dataTransferNew),
           getCartsAPI(dataTransferCancel),
+          getCartsAPI(dataTransferWaitingPaid),
         ]);
-        
-        // Kết hợp cả hai kết quả lại với nhau
-        setCartItems([...dataNew, ...dataCancel]);
+  
+        // Kết hợp cả ba kết quả lại với nhau
+        setCartItems([...dataNew, ...dataCancel, ...dataWaitingPaid]);
       } catch (error: any) {
         setError(error.message || "An error occurred");
       }
@@ -46,6 +51,7 @@ const Cart: React.FC = () => {
   
     fetchCartItems();
   }, []);
+  
   
 
   const handleRemove = (id: string) => {
@@ -113,28 +119,41 @@ const Cart: React.FC = () => {
     if (selectedItems.size === 0) {
       notification.warning({
         message: "Warning",
-        description: "Please choose Courses that you want to check out",
+        description: "Please choose courses that you want to check out",
       });
       return;
     }
-
+  
     const selectedItemsWithQuantities = cartItems
       .filter((item) => selectedItems.has(item._id))
       .map((item) => ({
         ...item,
         quantity: quantities[item._id] || 1,
       }));
-
-    try {
-      await editStatusCartsAPI("waiting_paid", selectedItemsWithQuantities);
+  
+    const hasWaitingPaidItems = selectedItemsWithQuantities.some(
+      (item) => item.status === "waiting_paid"
+    );
+  
+    if (hasWaitingPaidItems) {
+      // Redirect to confirm checkout if any selected item has status "waiting_paid"
       navigate("/confirm-checkout", { state: { selectedItemsWithQuantities } });
-    } catch (error: any) {
-      notification.error({
-        message: "Error",
-        description: `Failed to check out cart: ${error.message || "An error occurred"}`,
-      });
+    } else {
+      // Proceed with the normal checkout process
+      try {
+        await editStatusCartsAPI("waiting_paid", selectedItemsWithQuantities);
+        navigate("/confirm-checkout", { state: { selectedItemsWithQuantities } });
+      } catch (error: any) {
+        notification.error({
+          message: "Error",
+          description: `Failed to check out cart: ${
+            error.message || "An error occurred"
+          }`,
+        });
+      }
     }
   };
+  
 
   return (
     <Layout>

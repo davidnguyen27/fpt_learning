@@ -35,23 +35,51 @@ const AppHeader = () => {
     const fetchCartItems = async () => {
       if (user) {
         try {
-          const dataTransfer: DataTransfer = {
+          const dataTransferNew: DataTransfer = {
             searchCondition: {
-              status: "",
+              status: "new",
               is_deleted: false,
             },
             pageInfo: { pageNum: 1, pageSize: 10 },
           };
-          const carts = await getCartsAPI(dataTransfer);
-          setCartItemCount(carts.length);
+  
+          const dataTransferCancel: DataTransfer = {
+            searchCondition: {
+              status: "cancel",
+              is_deleted: false,
+            },
+            pageInfo: { pageNum: 1, pageSize: 10 },
+          };
+  
+          const dataTransferWaitingPaid: DataTransfer = {
+            searchCondition: {
+              status: "waiting_paid",
+              is_deleted: false,
+            },
+            pageInfo: { pageNum: 1, pageSize: 10 },
+          };
+  
+          // Fetch "new", "cancel", and "waiting_paid" cart items
+          const [newCarts, cancelCarts, waitingPaidCarts] = await Promise.all([
+            getCartsAPI(dataTransferNew),
+            getCartsAPI(dataTransferCancel),
+            getCartsAPI(dataTransferWaitingPaid),
+          ]);
+  
+          // Combine the results
+          const allCarts = [...newCarts, ...cancelCarts, ...waitingPaidCarts];
+  
+          setCartItemCount(allCarts.length);
         } catch (error) {
           console.error("Error fetching cart items:", error);
         }
       }
     };
-
+  
     fetchCartItems();
   }, [user]);
+  
+  
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

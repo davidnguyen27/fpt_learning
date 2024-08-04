@@ -25,19 +25,22 @@ export const getUsers = async (
 //-----------------------------------------------------------------------------------------------
 
 //------------------------------ Get User Detail ------------------------------------------------
-export const getUserDetail = async (userId: string) => {
+export const getUserDetail = async (userId: string): Promise<UserData> => {
   try {
     const response = await axiosInstance.get(`/api/users/${userId}`);
-
     const userData: UserData = response.data.data;
 
     if (userData) {
       return userData;
+    } else {
+      throw new Error("User data not found");
     }
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    const errorMessage = error.response?.data?.message || "An unknown error occurred";
+    throw new Error(errorMessage);
   }
 };
+
 //-----------------------------------------------------------------------------------------------
 
 //--------------------------------- Delete User (Admin) -----------------------------------------

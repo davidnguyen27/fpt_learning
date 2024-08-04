@@ -6,6 +6,7 @@ import {
   PictureOutlined,
   PlayCircleOutlined,
   UpOutlined,
+  LeftOutlined, // Import the LeftOutlined icon
 } from "@ant-design/icons";
 import { CourseDetail } from "../../models/Course";
 import { Lesson } from "../../models/Lesson";
@@ -75,6 +76,10 @@ const LearningComponent: React.FC<LearningComponentProps> = ({ courseId }) => {
     }
   };
 
+  const handleBackClick = () => {
+    navigate("/"); // Navigate back to the homepage
+  };
+
   if (loading) {
     return (
       <div className="container mx-auto flex h-64 items-center justify-center px-4 py-8">
@@ -95,6 +100,15 @@ const LearningComponent: React.FC<LearningComponentProps> = ({ courseId }) => {
   return (
     <div className="flex min-h-screen bg-gray-100">
       <div className="flex-1 bg-white p-8 shadow-lg">
+        {/* Header */}
+        <header className="flex items-center mb-6">
+          <LeftOutlined 
+            className="text-xl cursor-pointer"
+            onClick={handleBackClick} 
+          />
+          <h1 className="ml-4 text-2xl font-bold">{course?.name}</h1>
+        </header>
+        
         {selectedLesson && <LessonContent lessonId={selectedLesson._id} />}
         <div className="mt-6">
           <h1 className="mb-4 text-3xl font-bold">{course?.name}</h1>
