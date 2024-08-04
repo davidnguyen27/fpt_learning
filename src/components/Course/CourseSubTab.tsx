@@ -12,6 +12,7 @@ import useReviewDataClient from "../../hooks/review/useReviewDataClient";
 import ModalAddReview from "../Modal/ModalAddReview";
 import { Review } from "../../models/Review";
 import Loading from "../Loading/loading";
+import { formatTime } from "../../utils/formatTime";
 
 const CourseSubTab: FC<CourseSubTabProps> = ({
   _id,
@@ -29,11 +30,7 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
   const { data: reviews, error, refetchData } = useReviewDataClient(_id);
 
   const toggleSession = (sessionId: string) => {
-    if (openSessions.includes(sessionId)) {
-      setOpenSessions(openSessions.filter((id) => id !== sessionId));
-    } else {
-      setOpenSessions([...openSessions, sessionId]);
-    }
+    setOpenSessions((prev) => (prev.includes(sessionId) ? [] : [sessionId]));
   };
 
   const fetchSubscription = async () => {
@@ -108,6 +105,11 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
     }
   }, [course]);
 
+  const totalLessons = sessions.reduce(
+    (acc, session) => acc + session.lesson_list.length,
+    0,
+  );
+
   const AboutTabContent = () => (
     <div
       className="mt-6 text-sm"
@@ -120,7 +122,7 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold">Course Content</h1>
         <div className="space-x-6">
-          <span className="font-medium">xx lessons</span>
+          <span className="font-medium">{totalLessons} lessons</span>
           <span className="font-medium">{course?.full_time} hours</span>
         </div>
       </div>
@@ -144,7 +146,7 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
                   </div>
                 ))}
               </div>
-              <div>{session.full_time}</div>
+              <div>{formatTime(session.full_time)}</div>
             </div>
           )}
         </div>
@@ -160,7 +162,11 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
           <span className="ml-2 text-lg text-yellow-500">
             {course?.average_rating}
           </span>
-          <Rate className="mx-4" defaultValue={course?.average_rating} />
+          <Rate
+            className="mx-4"
+            disabled
+            defaultValue={course?.average_rating}
+          />
           <span className="font-medium">Course rating</span>
         </div>
       </div>

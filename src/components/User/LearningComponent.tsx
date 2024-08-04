@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import {
   DownOutlined,
+  FileTextOutlined,
   LockOutlined,
+  PictureOutlined,
   PlayCircleOutlined,
   UpOutlined,
 } from "@ant-design/icons";
@@ -38,7 +40,7 @@ const LearningComponent: React.FC<LearningComponentProps> = ({ courseId }) => {
         if (lessonId) {
           const selected = courseDetail.session_list
             .flatMap((session: any) => session.lesson_list)
-            .find((lesson: any) => lesson._id === lessonId);
+            .find((lesson: Lesson) => lesson._id === lessonId);
           setSelectedLesson(selected || null);
         }
       } catch (err) {
@@ -58,6 +60,19 @@ const LearningComponent: React.FC<LearningComponentProps> = ({ courseId }) => {
   const handleLessonClick = (lesson: Lesson) => {
     setSelectedLesson(lesson);
     navigate(`/learning/course/${courseId}/lesson/${lesson._id}`);
+  };
+
+  const getLessonIcon = (lessonType: string) => {
+    switch (lessonType) {
+      case "video":
+        return <PlayCircleOutlined />;
+      case "text":
+        return <FileTextOutlined />;
+      case "image":
+        return <PictureOutlined />;
+      default:
+        return <FileTextOutlined />;
+    }
   };
 
   if (loading) {
@@ -118,7 +133,7 @@ const LearningComponent: React.FC<LearningComponentProps> = ({ courseId }) => {
                         onClick={() => handleLessonClick(lesson)}
                       >
                         <span>
-                          <PlayCircleOutlined /> {lesson.name}
+                          {getLessonIcon(lesson.lesson_type)} {lesson.name}
                         </span>
                         <div className="flex items-center">
                           <span>{formatTime(lesson.full_time)}</span>

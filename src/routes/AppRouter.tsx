@@ -315,7 +315,7 @@ const AppRouter = () => {
               }
             />
             <Route
-              path="/learning/course/:_id"
+              path="/learning/course/:courseId"
               element={
                 <ProtectedRoute
                   element={<LearningPage />}
@@ -324,7 +324,7 @@ const AppRouter = () => {
               }
             />
             <Route
-              path="/learning/course/:_id/lesson/:_id"
+              path="/learning/course/:courseId/lesson/:lessonId"
               element={
                 <ProtectedRoute
                   element={<LearningPage />}

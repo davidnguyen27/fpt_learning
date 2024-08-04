@@ -15,8 +15,6 @@ const CourseCard: React.FC<CourseCardProps> = (props) => {
   const navigate = useNavigate();
   const searchKeyword = "";
 
-  console.log("CourseCard render");
-
   const searchCondition = useMemo(
     () => ({
       keyword: searchKeyword,

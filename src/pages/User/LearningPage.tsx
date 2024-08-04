@@ -3,15 +3,15 @@ import LearningLayout from "../../components/Layout/LearningLayout";
 import LearningComponent from "../../components/User/LearningComponent";
 
 const LearningPage: React.FC = () => {
-  const { _id } = useParams<{ _id: string }>();
+  const { courseId } = useParams<{ courseId: string }>();
 
-  if (!_id) {
+  if (!courseId) {
     return <div>Error: Course ID not found.</div>;
   }
 
   return (
     <LearningLayout>
-      <LearningComponent courseId={_id} />
+      <LearningComponent courseId={courseId} />
     </LearningLayout>
   );
 };
