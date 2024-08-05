@@ -6,7 +6,7 @@ const HelpSubTab: React.FC<HelpSubTabProps> = ({ activeTab, setActiveTab }) => {
   const InstructorTabContent = () => (
     <div className="p-4">
       <h3 className="font-semibold">Select a topic to search for help</h3>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="flex flex-wrap justify-evenly">
         <HelpCard
           iconClass="fa-sharp fa-solid fa-wallet"
           title="Payment"

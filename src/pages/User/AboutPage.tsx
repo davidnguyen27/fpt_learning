@@ -7,6 +7,7 @@ import {
   TeamOutlined,
 } from "@ant-design/icons";
 import MainLayout from "../../components/Layout/MainLayout";
+import tablet from "../../assets/Image/drawing-tablet.png";
 
 const AboutPage: React.FC = () => {
   return (
@@ -61,29 +62,30 @@ const AboutPage: React.FC = () => {
       <div className="bg-gray-100 py-16">
         <div className="container mx-auto">
           <h2 className="mb-8 text-center text-2xl font-bold">Our Story</h2>
-          <Row gutter={16}>
-            <Col xs={24} md={12} lg={8} className="mb-8">
-              <img
-                src="../../assets/Image/drawing-tablet.png"
-                alt="Our Story"
-                className="w-full"
-              />
-            </Col>
-            <Col xs={24} md={12} lg={16}>
-              <p className="text-lg leading-relaxed">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                consectetur vel dolor id ultrices. Proin a magna at mi pretium
-                pulvinar in eu enim. Nulla vel lacus lectus. Donec at venenatis
-                nisl. Curabitur volutpat tincidunt lorem, ac vulputate metus.
-                Donec eget semper leo, non tincidunt ligula. In hac habitasse
-                platea dictumst. Nullam mollis justo at orci placerat, id
-                vehicula metus gravida. Phasellus non turpis a felis ullamcorper
-                scelerisque. Sed id convallis mi. Curabitur sit amet elit eget
-                diam aliquet malesuada. Pellentesque a erat vitae quam cursus
-                dictum non et quam.
-              </p>
-            </Col>
-          </Row>
+          <Row gutter={16} align="middle">
+  <Col xs={24} md={8} lg={6} className="mb-8">
+    <img
+      src={tablet}
+      alt="Our Story"
+      className="w-full h-64 object-cover"
+    />
+  </Col>
+  <Col xs={24} md={16} lg={18}>
+    <p className="text-lg leading-relaxed">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
+      consectetur vel dolor id ultrices. Proin a magna at mi pretium
+      pulvinar in eu enim. Nulla vel lacus lectus. Donec at venenatis
+      nisl. Curabitur volutpat tincidunt lorem, ac vulputate metus.
+      Donec eget semper leo, non tincidunt ligula. In hac habitasse
+      platea dictumst. Nullam mollis justo at orci placerat, id
+      vehicula metus gravida. Phasellus non turpis a felis ullamcorper
+      scelerisque. Sed id convallis mi. Curabitur sit amet elit eget
+      diam aliquet malesuada. Pellentesque a erat vitae quam cursus
+      dictum non et quam.
+    </p>
+  </Col>
+</Row>
+
         </div>
       </div>
     </MainLayout>

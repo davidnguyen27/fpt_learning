@@ -13,6 +13,7 @@ const useCourseDataClient = (dataTransfer: DataTransfer) => {
       const courses = await getCoursesClientAPI(dataTransfer);
       setData(courses);
       setError(null);
+      setLoading(false);
     } catch (err) {
       setError("Failed to fetch courses.");
     } finally {

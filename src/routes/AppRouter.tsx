@@ -169,7 +169,6 @@ const AppRouter = () => {
               element={<InstructorProfilePage />}
             />
             <Route path="/user-detail/:id" element={<UserDetail />} />
-
             {/*----------------------------ADMIN---------------------------------*/}
             <Route
               path="/admin/dashboard"
