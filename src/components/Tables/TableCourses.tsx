@@ -20,6 +20,7 @@ import {
   message,
   Descriptions,
   Pagination,
+  Tooltip,
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Course, DataTransfer } from "../../models/Course";
@@ -34,6 +35,7 @@ import {
   setPageNum,
   setPageSize,
 } from "../../app/redux/pagination/paginationSlice";
+import useCourseLogs from "../../hooks/courseLogs/useCourseLogs";
 
 const { Search } = Input;
 
@@ -49,6 +51,11 @@ const TableCourses: React.FC = () => {
   const [selectedCourseDetail, setSelectedCourseDetail] =
     useState<Course | null>(null);
   const [detailModalVisible, setDetailModalVisible] = useState<boolean>(false);
+  const {
+    logs,
+    loading: logsLoading,
+    error: logsError,
+  } = useCourseLogs(selectedCourseDetail?._id || "");
 
   const handleSearch = useCallback((value: string) => {
     setSearchKeyword(value);
@@ -165,37 +172,46 @@ const TableCourses: React.FC = () => {
   const renderActionIcon = (record: Course) => {
     let icon = null;
     let onClick = () => {};
+    let tooltipTitle = "";
 
     switch (record.status) {
       case "new":
       case "reject":
         icon = <SendOutlined style={{ color: "#F9D71C" }} />;
         onClick = () => handleChangeStatus(record._id, record.status);
+        tooltipTitle = "Send for approval";
         break;
       case "waiting_approve":
         icon = <ClockCircleOutlined style={{ color: "#A9A9A9" }} />;
+        tooltipTitle = "Waiting for approval";
         break;
       case "approve":
         icon = <CheckOutlined style={{ color: "#52C41A" }} />;
         onClick = () => handleChangeStatus(record._id, record.status);
+        tooltipTitle = "Public Course";
         break;
       case "active":
         icon = <StopOutlined style={{ color: "#F5222D" }} />;
         onClick = () => handleChangeStatus(record._id, record.status);
+        tooltipTitle = "Deactivate";
         break;
       case "inactive":
         icon = <PlayCircleOutlined style={{ color: "#52C41A" }} />;
         onClick = () => handleChangeStatus(record._id, record.status);
+        tooltipTitle = "Activate";
         break;
       default:
         icon = <WarningOutlined style={{ color: "#D9D9D9" }} />;
+        tooltipTitle = "Unknown status";
         break;
     }
 
     return (
-      <div onClick={onClick} style={{ cursor: icon ? "pointer" : "default" }}>
-        {icon}
-      </div>
+      <Tooltip title={tooltipTitle}>
+        <div onClick={onClick} style={{ cursor: icon ? "pointer" : "default" }}>
+          {icon}
+        </div>
+      </Tooltip>
     );
   };
 
@@ -272,14 +288,19 @@ const TableCourses: React.FC = () => {
       width: 100,
       render: (_, record) => (
         <Space>
-          <FormOutlined
-            onClick={() => handleEdit(record._id)}
-            className="cursor-pointer text-blue-500"
-          />
-          <DeleteOutlined
-            className="cursor-pointer text-red-500"
-            onClick={() => handleDelete(record._id)}
-          />
+          <Tooltip title="Edit Course">
+            <FormOutlined
+              onClick={() => handleEdit(record._id)}
+              className="cursor-pointer text-blue-500"
+            />
+          </Tooltip>
+          <Tooltip title="Delete Course">
+            <DeleteOutlined
+              className="cursor-pointer text-red-500"
+              onClick={() => handleDelete(record._id)}
+            />
+          </Tooltip>
+
           {renderActionIcon(record)}
         </Space>
       ),
@@ -339,51 +360,120 @@ const TableCourses: React.FC = () => {
         onOk={handleCloseDetailModal}
         onCancel={handleCloseDetailModal}
         footer={null}
+        style={{ width: "33.33vw" }}
+        bodyStyle={{ maxHeight: "70vh", overflowY: "auto" }} // Điều chỉnh chiều cao nội dung và thêm thanh cuộn nếu cần
       >
         {selectedCourseDetail && (
-          <Descriptions bordered column={1} labelStyle={{ fontWeight: "bold" }}>
-            <Descriptions.Item label="Name">
-              {selectedCourseDetail.name}
-            </Descriptions.Item>
-            <Descriptions.Item label="Category">
-              {selectedCourseDetail.category_name}
-            </Descriptions.Item>
-            <Descriptions.Item label="Status">
-              {selectedCourseDetail.status}
-            </Descriptions.Item>
-            <Descriptions.Item label="Created At">
-              {new Date(selectedCourseDetail.created_at).toLocaleString()}
-            </Descriptions.Item>
-            <Descriptions.Item label="Updated At">
-              {new Date(selectedCourseDetail.updated_at).toLocaleString()}
-            </Descriptions.Item>
-            <Descriptions.Item label="Price">
-              {selectedCourseDetail.price}
-            </Descriptions.Item>
-            <Descriptions.Item label="Discount">
-              {selectedCourseDetail.discount}
-            </Descriptions.Item>
-            {selectedCourseDetail.video_url && (
-              <Descriptions.Item label="Video URL">
-                <a
-                  href={selectedCourseDetail.video_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Watch Video
-                </a>
+          <>
+            <Descriptions
+              bordered
+              column={1}
+              labelStyle={{ fontWeight: "bold" }}
+            >
+              <Descriptions.Item label="Name">
+                {selectedCourseDetail.name}
               </Descriptions.Item>
-            )}
-            {selectedCourseDetail.image_url && (
-              <Descriptions.Item label="Image">
-                <img
-                  src={selectedCourseDetail.image_url}
-                  alt="Course"
-                  style={{ maxWidth: "100%" }}
+              <Descriptions.Item label="Category">
+                {selectedCourseDetail.category_name}
+              </Descriptions.Item>
+              <Descriptions.Item label="Status">
+                {selectedCourseDetail.status} 
+              </Descriptions.Item>
+              <Descriptions.Item label="Created At">
+                {new Date(selectedCourseDetail.created_at).toLocaleString()}
+              </Descriptions.Item>
+              <Descriptions.Item label="Updated At">
+                {new Date(selectedCourseDetail.updated_at).toLocaleString()}
+              </Descriptions.Item>
+              <Descriptions.Item label="Price">
+                {selectedCourseDetail.price}
+              </Descriptions.Item>
+              <Descriptions.Item label="Discount">
+                {selectedCourseDetail.discount}
+              </Descriptions.Item>
+              {selectedCourseDetail.video_url && (
+                <Descriptions.Item label="Video URL">
+                  <a
+                    href={selectedCourseDetail.video_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Watch Video
+                  </a>
+                </Descriptions.Item>
+              )}
+              {selectedCourseDetail.image_url && (
+                <Descriptions.Item label="Image">
+                  <img
+                    src={selectedCourseDetail.image_url}
+                    alt="Course"
+                    style={{ maxWidth: "100%" }}
+                  />
+                </Descriptions.Item>
+              )}
+            </Descriptions>
+            <h3 className="mt-4">Course Status Logs</h3>
+            <Spin spinning={logsLoading}>
+              {logsError ? (
+                <p>{logsError}</p>
+              ) : (
+                <Table
+                  dataSource={logs}
+                  columns={[
+                    {
+                      title: "Old Status",
+                      dataIndex: "old_status",
+                      key: "old_status",
+                      render: (old_status: string) => (
+                        <Tag
+                          color={
+                            old_status === "active"
+                              ? "green"
+                              : old_status === "approve"
+                                ? "blue"
+                                : old_status === "waiting_approve"
+                                  ? "yellow"
+                                  : "red"
+                          }
+                        >
+                          {old_status}
+                        </Tag>
+                      ),
+                    },
+                    {
+                      title: "New Status",
+                      dataIndex: "new_status",
+                      key: "new_status",
+                      render: (new_status: string) => (
+                        <Tag
+                          color={
+                            new_status === "active"
+                              ? "green"
+                              : new_status === "approve"
+                                ? "blue"
+                                : new_status === "waiting_approve"
+                                  ? "yellow"
+                                  : "red"
+                          }
+                        >
+                          {new_status}
+                        </Tag>
+                      ),
+                    },
+                    {
+                      title: "Created At",
+                      dataIndex: "created_at",
+                      key: "created_at",
+                      render: (date: string) => new Date(date).toLocaleString(),
+                    },
+                  ]}
+                  pagination={false}
+                  rowKey="_id"
+                  bordered
                 />
-              </Descriptions.Item>
-            )}
-          </Descriptions>
+              )}
+            </Spin>
+          </>
         )}
       </Modal>
     </>

@@ -3,6 +3,7 @@ import {
   BarChartOutlined,
   DollarOutlined,
   ExceptionOutlined,
+  HistoryOutlined,
   ReadOutlined,
   StarOutlined,
   WalletOutlined,
@@ -57,6 +58,13 @@ const SiderInstructor: React.FC<{ className?: string }> = () => {
       icon: <WalletOutlined />,
       label: "Payout",
       onClick: () => navigate("/instructor/payout"),
+      className: "hover:bg-amber-500 hover:text-white",
+    },
+    {
+      key: "8",
+      icon: <HistoryOutlined />,
+      label: "Course Logs",
+      onClick: () => navigate("/course-logs"),
       className: "hover:bg-amber-500 hover:text-white",
     },
   ];
