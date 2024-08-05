@@ -36,6 +36,7 @@ import {
   setPageSize,
 } from "../../app/redux/pagination/paginationSlice";
 import useCourseLogs from "../../hooks/courseLogs/useCourseLogs";
+import { formatDate } from "../../utils/formatDate";
 
 const { Search } = Input;
 
@@ -272,14 +273,14 @@ const TableCourses: React.FC = () => {
       title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
-      render: (date: string) => new Date(date).toDateString(),
+      render: (date: string) => formatDate(date),
       width: 150,
     },
     {
       title: "Updated At",
       dataIndex: "updated_at",
       key: "updated_at",
-      render: (date: string) => new Date(date).toDateString(),
+      render: (date: string) => formatDate(date),
       width: 150,
     },
     {
