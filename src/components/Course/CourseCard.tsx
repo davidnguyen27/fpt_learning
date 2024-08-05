@@ -74,7 +74,11 @@ const CourseCard: React.FC<CourseCardProps> = (props) => {
             </h3>
             <div className="course-card-category">{item.category_name}</div>
             <div className="course-card-rating">
-              <Rate disabled allowHalf value={Math.round(item.average_rating * 10) / 10} />
+              <Rate
+                disabled
+                allowHalf
+                value={Math.round(item.average_rating * 10) / 10}
+              />
               <span className="course-card-rating-value">
                 {Math.round(item.average_rating * 10) / 10}
               </span>

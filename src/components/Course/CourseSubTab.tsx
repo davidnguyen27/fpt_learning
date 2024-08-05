@@ -49,6 +49,8 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
     } catch (error: any) {
       console.error("Failed to fetch instructor data:", error);
       setInstructorData(null);
+    } finally {
+      setIsLoading(false);
     }
   };
 
