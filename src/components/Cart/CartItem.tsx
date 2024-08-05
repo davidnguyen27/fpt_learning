@@ -101,9 +101,12 @@ const CartItem: React.FC<CartItemProps> = ({
                 </div>
               )}
             </div>
-            <div className="cursor-pointer p-0 text-black">
-              <DeleteOutlined onClick={showDeleteConfirm} />
-            </div>
+            {/* Only show the delete icon if status is not "waiting_paid" */}
+            {item.status !== "waiting_paid" && (
+              <div className="cursor-pointer p-0 text-black">
+                <DeleteOutlined onClick={showDeleteConfirm} />
+              </div>
+            )}
           </div>
         </div>
       </div>
