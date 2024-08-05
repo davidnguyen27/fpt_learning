@@ -2,7 +2,7 @@ import React, { useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { DataTransfer } from "../../models/Course";
 import useCourseDataClient from "../../hooks/course/useCourseDataClient";
-import { Rate, Button, Tag } from "antd";
+import { Rate, Button, Tag, Spin } from "antd";
 import "../../styles/courseCard.css";
 import { LoadingOutlined } from "@ant-design/icons";
 
@@ -52,7 +52,8 @@ const CourseCard: React.FC<CourseCardProps> = (props) => {
     refetchData();
   }, [refetchData]);
 
-  if (loading) return <LoadingOutlined />;
+  if (loading)
+    return <Spin indicator={<LoadingOutlined spin />} size="large" />;
   if (error) return <div>Error: {error}</div>;
 
   return (
@@ -74,7 +75,11 @@ const CourseCard: React.FC<CourseCardProps> = (props) => {
             </h3>
             <div className="course-card-category">{item.category_name}</div>
             <div className="course-card-rating">
-              <Rate disabled allowHalf value={Math.round(item.average_rating * 10) / 10} />
+              <Rate
+                disabled
+                allowHalf
+                value={Math.round(item.average_rating * 10) / 10}
+              />
               <span className="course-card-rating-value">
                 {Math.round(item.average_rating * 10) / 10}
               </span>
