@@ -6,8 +6,20 @@ import { useCreatePayout } from "../../hooks/payout/useCreatePayout";
 import { useCallback, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../app/redux/store";
-import { setPageNum, setPageSize } from "../../app/redux/pagination/paginationSlice";
+import {
+  setPageNum,
+  setPageSize,
+} from "../../app/redux/pagination/paginationSlice";
 import { ColumnsType } from "antd/es/table";
+
+// Utility function to format currency
+const formatCurrency = (value: number) => 
+  value.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 
 const { Search } = Input;
 const { Option } = Select;
@@ -44,7 +56,7 @@ const TablePurchase = () => {
     }),
     [searchKeyword, statusFilter, pageNum, pageSize],
   );
-
+  
   const handlePageChange = (page: number, newPageSize: number) => {
     dispatch(setPageNum(page));
     dispatch(setPageSize(newPageSize));
@@ -79,19 +91,22 @@ const TablePurchase = () => {
       key: "purchase_no",
     },
     {
-      title: "Price Paid ($)",
+      title: "Price Paid",
       dataIndex: "price_paid",
       key: "price_paid",
+      render: (value: number) => formatCurrency(value),
     },
     {
-      title: "Price ($)",
+      title: "Price",
       dataIndex: "price",
       key: "price",
+      render: (value: number) => formatCurrency(value),
     },
     {
-      title: "Discount (%)",
+      title: "Discount",
       dataIndex: "discount",
       key: "discount",
+      render: (value: number) => `${value}%`,
     },
     {
       title: "Course Name",
@@ -129,14 +144,21 @@ const TablePurchase = () => {
     {
       title: "Action",
       key: "action",
-      render: (record: any) => (
-        <Tooltip title="New payout">
-          <PlusSquareOutlined
-            className="cursor-pointer text-red-400"
-            onClick={() => handleCreatePayout(record.instructor_id, record._id)}
-          />
-        </Tooltip>
-      ),
+      render: (record: any) => {
+        if (record.status.toLowerCase() === "completed") {
+          return null; // or return <></>;
+        }
+        return (
+          <Tooltip title="New payout">
+            <PlusSquareOutlined
+              className="cursor-pointer text-red-400"
+              onClick={() =>
+                handleCreatePayout(record.instructor_id, record._id)
+              }
+            />
+          </Tooltip>
+        );
+      },
     },
   ];
 
@@ -170,11 +192,11 @@ const TablePurchase = () => {
           pagination={false}
           rowKey="_id"
           scroll={{ x: "max-content" }}
-          />
+        />
         <Pagination
           current={pageNum}
           pageSize={pageSize}
-          total={10}
+          total={data?.length || 0} // Update this to the actual total items count if available
           onChange={handlePageChange}
           style={{ marginTop: 16, textAlign: "right", justifyContent: "end" }}
           showSizeChanger

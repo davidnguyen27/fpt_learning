@@ -6,6 +6,8 @@ import { useAuth } from "../../app/context/AuthContext";
 import useCourseDetailClient from "../../hooks/course/useCourseDetailClient";
 import Loading from "../Loading/loading";
 import { extractYoutubeVideoId } from "../../utils/extractYoutube";
+import "../../styles/index.css";
+
 
 const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
   const { course, loading, error, setCourse } = useCourseDetailClient(_id);
@@ -31,6 +33,7 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
     }
   }, [course]);
 
+  
   if (loading)
     return (
       <div>
@@ -116,15 +119,15 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
           <h2 className="text-xl font-bold md:text-2xl">{course?.name}</h2>
           <p className="mt-2 text-sm md:text-base">{course?.description}</p>
           <div className="mt-4 flex items-center">
-            <Rate
-              disabled
-              value={course?.average_rating}
-              className="text-sm md:text-base"
-            />
-            <span className="ml-2 text-sm text-gray-300 md:text-base">
-              ({course?.review_count} ratings)
-            </span>
-          </div>
+      <Rate
+        disabled
+        value={course?.average_rating}
+        className={`text-sm md:text-base ${course?.average_rating === 0 ? 'faded-rate' : ''}`}
+      />
+      <span className="ml-2 text-sm text-gray-300 md:text-base">
+        ({course?.review_count} ratings)
+      </span>
+    </div>
           <p className="my-2 text-sm md:my-4 md:text-base">
             By: {course?.instructor_name}
           </p>
@@ -138,7 +141,7 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
               : "N/A"}
           </p>
           <p className="mb-2 text-sm md:mb-4 md:text-base">
-            Duration: {course?.full_time} hours
+            Duration: {course?.full_time}mins
           </p>
           <div className="mb-4">
             <span className="text-sm md:text-base">Price: </span>
@@ -147,10 +150,10 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
                 course?.discount !== 0 ? "line-through" : ""
               } text-sm text-gray-400 md:text-base`}
             >
-              ${course?.price}
+              ${course?.price.toFixed(2)}
             </span>
             <span className="ml-3 text-sm text-red-400 md:text-base">
-              ${course?.price_paid}
+              ${course?.price_paid.toFixed(2)}
             </span>
           </div>
           <div className="mt-4 flex space-x-2">

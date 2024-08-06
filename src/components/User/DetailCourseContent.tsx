@@ -12,7 +12,7 @@ const DetailCourseContent = () => {
 
   if (loading) {
     return (
-      <div className="container mx-auto flex h-64 items-center justify-center px-4 py-8">
+      <div className="container mx-auto flex h-64 items-center justify-center px-4 py-8 bg-opacity-30">
         <Spin size="large" />
       </div>
     );

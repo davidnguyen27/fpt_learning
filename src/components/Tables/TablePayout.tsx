@@ -1,4 +1,4 @@
-import { Button, Pagination, Spin, Table, Tag, Input } from "antd";
+import { Button, Pagination, Spin, Table, Tag, Input, Modal } from "antd";
 import { useMemo, useState, useCallback, useEffect } from "react";
 import { DataTransfer, Payout } from "../../models/Payout";
 import { ColumnsType } from "antd/es/table";
@@ -10,6 +10,16 @@ import {
   setPageNum,
   setPageSize,
 } from "../../app/redux/pagination/paginationSlice";
+import { formatDate } from "../../utils/formatDate";
+
+// Format function for monetary values
+const formatCurrency = (value: number) => 
+  value.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 
 const { Search } = Input;
 
@@ -19,6 +29,8 @@ const TablePayout = () => {
     (state: RootState) => state.pagination,
   );
   const [searchKeyword, setSearchKeyword] = useState<string>("");
+  const [selectedPayout, setSelectedPayout] = useState<Payout | null>(null);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   const dataTransfer = useMemo(
     (): DataTransfer => ({
@@ -53,6 +65,16 @@ const TablePayout = () => {
     dispatch(setPageSize(newPageSize));
   };
 
+  const handlePayoutClick = (record: Payout) => {
+    setSelectedPayout(record);
+    setModalVisible(true);
+  };
+
+  const handleModalClose = () => {
+    setModalVisible(false);
+    setSelectedPayout(null);
+  };
+
   const dataWithIndex = data?.map((item, index) => ({
     ...item,
     index: (pageNum - 1) * pageSize + index + 1,
@@ -69,21 +91,27 @@ const TablePayout = () => {
       title: "Payout No",
       dataIndex: "payout_no",
       key: "payout_no",
+      render: (payout_no: string, record) => (
+        <a onClick={() => handlePayoutClick(record)}>{payout_no}</a>
+      ),
     },
     {
-      title: "Balance Origin ($)",
+      title: "Balance Origin",
       dataIndex: "balance_origin",
       key: "balance_origin",
+      render: (value: number) => formatCurrency(value),
     },
     {
-      title: "Balance Instructor Paid ($)",
+      title: "Balance Instructor Paid",
       dataIndex: "balance_instructor_paid",
       key: "balance_instructor_paid",
+      render: (value: number) => formatCurrency(value),
     },
     {
-      title: "Balance Instructor Received ($)",
+      title: "Balance Instructor Received",
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
+      render: (value: number) => formatCurrency(value),
     },
     {
       title: "Status",
@@ -112,7 +140,7 @@ const TablePayout = () => {
       title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
-      render: (text: string) => new Date(text).toLocaleDateString(),
+      render: (text: string) => formatDate(text),
     },
     {
       title: "Action",
@@ -127,6 +155,33 @@ const TablePayout = () => {
             Request Payout
           </Button>
         ),
+    },
+  ];
+
+  const transactionColumns: ColumnsType<Payout['transactions'][number]> = [
+    {
+      title: "Price",
+      dataIndex: "price",
+      key: "price",
+      render: (value: number) => formatCurrency(value),
+    },
+    {
+      title: "Discount",
+      dataIndex: "discount",
+      key: "discount",
+      render: (value: number) => `${value.toFixed(2)}%`,
+    },
+    {
+      title: "Price Paid",
+      dataIndex: "price_paid",
+      key: "price_paid",
+      render: (value: number) => formatCurrency(value),
+    },
+    {
+      title: "Created At",
+      dataIndex: "created_at",
+      key: "created_at",
+      render: (date: string) => formatDate(date),
     },
   ];
 
@@ -158,6 +213,22 @@ const TablePayout = () => {
         style={{ marginTop: 16, textAlign: "right", justifyContent: "end" }}
         showSizeChanger
       />
+
+      {/* Modal to display transaction details */}
+      <Modal
+        title={`Transactions for Payout No: ${selectedPayout?.payout_no}`}
+        visible={modalVisible}
+        onCancel={handleModalClose}
+        footer={null}
+        width={800}
+      >
+        <Table
+          columns={transactionColumns}
+          dataSource={selectedPayout?.transactions || []}
+          pagination={false}
+          rowKey="_id"
+        />
+      </Modal>
     </>
   );
 };

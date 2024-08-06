@@ -35,11 +35,9 @@ const SearchResultsPage: React.FC = () => {
 
   if (loading) {
     return (
-      <MainLayout>
-        <div className="container mx-auto flex h-64 items-center justify-center px-4 py-8">
-          <Spin size="large" />
-        </div>
-      </MainLayout>
+      <div className="container mx-auto flex h-64 items-center justify-center px-4 py-8">
+        <Spin size="large" />
+      </div>
     );
   }
 
@@ -62,20 +60,19 @@ const SearchResultsPage: React.FC = () => {
         </h1>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {courses.map((course: CourseClient) => (
-            <article key={course._id} className="course-card">
+            <article
+              key={course._id}
+              className="course-card"
+              onClick={() => navigate(`/detail/course/${course._id}`)}
+              style={{ cursor: "pointer" }} // Thêm cursor để biểu thị có thể click
+            >
               <div className="course-card-content">
                 <img
                   src={course.image_url || "default-image-url"}
                   alt={course.name}
                   className="course-card-image"
-                  onClick={() => navigate(`/detail/${course._id}`)}
                 />
-                <h3
-                  className="course-card-title"
-                  onClick={() => navigate(`/detail/${course._id}`)}
-                >
-                  {course.name}
-                </h3>
+                <h3 className="course-card-title">{course.name}</h3>
                 <div className="course-card-category">
                   {course.category_name}
                 </div>

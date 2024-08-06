@@ -22,26 +22,25 @@ const InstructorPie: React.FC = () => {
   ];
 
   const config = {
-    forceFit: true,
-    title: {
-      visible: true,
-      text: 'outer label',
-    },
-    description: {
-      visible: true,
-    },
-    radius: 0.8,
+    appendPadding: 10,
     data,
     angleField: 'value',
     colorField: 'type',
+    radius: 1,
+    innerRadius: 0.6,
     label: {
-      visible: true,
-      type: 'spider',
-      offset: 20,
+      type: 'outer',
+      content: '{name} {percentage}',
     },
+    interactions: [{ type: 'element-active' }],
+    responsive: true,
   };
 
-  return <Pie {...config} />;
+  return (
+    <div className="w-full h-96 md:h-400 lg:h-500">
+      <Pie {...config} />
+    </div>
+  );
 };
 
 export default InstructorPie;

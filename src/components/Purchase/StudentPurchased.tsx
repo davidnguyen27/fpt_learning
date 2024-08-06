@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { getItemsByStudent } from "../../services/purchaseService";
 import { DataTransfer, Purchase } from "../../models/Purchase";
-import { Spin } from "antd"; 
+import { Spin, Button } from "antd"; 
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const StudentPurchased: React.FC = () => {
   const [purchases, setPurchases] = useState<Purchase[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
     const fetchPurchasedItems = async () => {
@@ -46,6 +49,10 @@ const StudentPurchased: React.FC = () => {
   if (error)
     return <div className="text-center text-red-500">Error: {error}</div>;
 
+  const handleLearnNow = (courseId: string) => {
+    navigate(`/learning/course/${courseId}`);
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
@@ -71,6 +78,12 @@ const StudentPurchased: React.FC = () => {
                 <span className="text-lg font-bold text-green-600">
                   ${purchase.price_paid.toFixed(2)}
                 </span>
+                <Button
+                  type="primary"
+                  onClick={() => handleLearnNow(purchase.course_id)} // Navigate to course
+                >
+                  Learn Now
+                </Button>
               </div>
             </div>
           </div>

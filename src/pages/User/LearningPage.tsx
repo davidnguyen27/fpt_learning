@@ -1,5 +1,4 @@
 import { useParams } from "react-router-dom";
-import LearningLayout from "../../components/Layout/LearningLayout";
 import LearningComponent from "../../components/User/LearningComponent";
 
 const LearningPage: React.FC = () => {
@@ -10,9 +9,7 @@ const LearningPage: React.FC = () => {
   }
 
   return (
-    <LearningLayout>
       <LearningComponent courseId={courseId} />
-    </LearningLayout>
   );
 };
 

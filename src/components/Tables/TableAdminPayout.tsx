@@ -5,6 +5,15 @@ import { ColumnsType } from "antd/es/table";
 import usePayoutsData from "../../hooks/payout/usePayoutsData";
 import useChangeStatusAdmin from "../../hooks/payout/useChangeStatusAdmin";
 
+// Utility function to format currency
+const formatCurrency = (value: number) => 
+  value.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
 const { Search } = Input;
 
 const TableAdminPayout = () => {
@@ -81,14 +90,16 @@ const TableAdminPayout = () => {
       key: "instructor_email",
     },
     {
-      title: "Balance Instructor Paid ($)",
+      title: "Balance Instructor Paid",
       dataIndex: "balance_instructor_paid",
       key: "balance_instructor_paid",
+      render: (value: number) => formatCurrency(value),
     },
     {
-      title: "Balance Instructor Received ($)",
+      title: "Balance Instructor Received",
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
+      render: (value: number) => formatCurrency(value),
     },
     {
       title: "Status",

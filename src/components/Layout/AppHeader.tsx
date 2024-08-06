@@ -22,7 +22,6 @@ import AppSider from "./AppSider";
 import { DataTransfer } from "../../models/Cart";
 import { getCartsAPI } from "../../services/cartService";
 
-
 const AppHeader = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -42,7 +41,7 @@ const AppHeader = () => {
             },
             pageInfo: { pageNum: 1, pageSize: 10 },
           };
-  
+
           const dataTransferCancel: DataTransfer = {
             searchCondition: {
               status: "cancel",
@@ -50,7 +49,7 @@ const AppHeader = () => {
             },
             pageInfo: { pageNum: 1, pageSize: 10 },
           };
-  
+
           const dataTransferWaitingPaid: DataTransfer = {
             searchCondition: {
               status: "waiting_paid",
@@ -58,28 +57,26 @@ const AppHeader = () => {
             },
             pageInfo: { pageNum: 1, pageSize: 10 },
           };
-  
+
           // Fetch "new", "cancel", and "waiting_paid" cart items
           const [newCarts, cancelCarts, waitingPaidCarts] = await Promise.all([
             getCartsAPI(dataTransferNew),
             getCartsAPI(dataTransferCancel),
             getCartsAPI(dataTransferWaitingPaid),
           ]);
-  
+
           // Combine the results
           const allCarts = [...newCarts, ...cancelCarts, ...waitingPaidCarts];
-  
+
           setCartItemCount(allCarts.length);
         } catch (error) {
           console.error("Error fetching cart items:", error);
         }
       }
     };
-  
+
     fetchCartItems();
   }, [user]);
-  
-  
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -300,7 +297,7 @@ const AppHeader = () => {
         )}
       </div>
       {/* Conditionally render AppSider based on role */}
-      {user?.data.role !== "admin" &&  (
+      {user?.data.role !== "admin" && (
         <AppSider isVisible={isSidebarVisible} onClose={toggleSidebar} />
       )}
     </>

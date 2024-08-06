@@ -2,10 +2,13 @@ import { Pie } from '@ant-design/plots';
 
 const DonutChart: React.FC = () => {
   const data = [
-    { type: 'Web', value: 257 },
-    { type: 'Python', value: 251 },
-    { type: 'Math', value: 152 },
-    { type: 'Business', value: 232 },
+    { type: 'Web', value: 10 },
+    { type: 'Python', value: 3 },
+    { type: 'Music', value: 3 },
+    { type: 'Business', value: 3 },
+    { type: 'Graphic Design', value: 4 },
+    { type: 'Technology', value: 2 },
+    { type: 'Marketing', value: 3 },
   ];
 
   const config = {

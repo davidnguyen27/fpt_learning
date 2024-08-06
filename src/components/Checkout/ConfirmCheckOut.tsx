@@ -11,20 +11,16 @@ const { Content, Footer } = Layout;
 const ConfirmCheckout: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const selectedItemsWithQuantities = location.state?.selectedItemsWithQuantities as (CartData & { quantity: number })[];
+  const selectedItemsWithQuantities = location.state
+    ?.selectedItemsWithQuantities as CartData[];
 
   if (!selectedItemsWithQuantities) {
     return <div>No items selected.</div>;
   }
 
-  const total = selectedItemsWithQuantities.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  );
-
   const handleProceedToCheckout = async () => {
     try {
-      const cartItems = selectedItemsWithQuantities.map(item => ({
+      const cartItems = selectedItemsWithQuantities.map((item) => ({
         _id: item._id,
         cart_no: item.cart_no,
         is_purchased: true,
@@ -42,7 +38,7 @@ const ConfirmCheckout: React.FC = () => {
 
   const handleCancelCheckout = async () => {
     try {
-      const cartItems = selectedItemsWithQuantities.map(item => ({
+      const cartItems = selectedItemsWithQuantities.map((item) => ({
         _id: item._id,
         cart_no: item.cart_no,
       }));
@@ -52,6 +48,14 @@ const ConfirmCheckout: React.FC = () => {
       console.error("Error canceling checkout:", error);
     }
   };
+
+  const formatCurrency = (value: number) =>
+    value.toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
 
   return (
     <Layout>
@@ -99,25 +103,30 @@ const ConfirmCheckout: React.FC = () => {
                         <div className="relative m-4 flex items-center justify-between p-4">
                           <div className="ml-4 flex flex-grow flex-col">
                             <div>
-                              <span className="text-lg font-bold">{item.course_name}</span>
+                              <span className="text-lg font-bold">
+                                {item.course_name}
+                              </span>
                               <br />
-                              <span className="text-sm text-gray-500">Cart no: {item.cart_no}</span>
+                              <span className="text-sm text-gray-500">
+                                Cart no: {item.cart_no}
+                              </span>
                             </div>
                             <div className="flex items-center text-sm text-gray-500">
                               <span className="mr-1">By</span>
-                              <span className="font-semibold text-[#0ea5e9]">{item.instructor_name}</span>
-                            </div>
-                            <div className="mt-2">
-                              Quantity: {item.quantity}
+                              <span className="font-semibold text-[#0ea5e9]">
+                                {item.instructor_name}
+                              </span>
                             </div>
                           </div>
                           <div className="flex items-end justify-between">
                             <div className="mr-4 flex-col">
-                              <div className="text-sm font-bold text-black">
-                                $ {item.price}
+                              <div className="text-sm font-bold text-red-500">
+                                {formatCurrency(item.price_paid)}
                               </div>
                               {item.discount > 0 && (
-                                <div className="text-sm text-gray-500 line-through">$ {item.price}</div>
+                                <div className="text-sm text-gray-500 line-through">
+                                  {formatCurrency(item.price)}
+                                </div>
                               )}
                             </div>
                           </div>
@@ -126,23 +135,25 @@ const ConfirmCheckout: React.FC = () => {
                     </div>
                   ))}
                 </div>
-                <div className="h-40 rounded-lg bg-white p-4 shadow-md">
-                  <div className="text-xl font-semibold">
-                    Total: $ {total.toLocaleString("US")}
+                {selectedItemsWithQuantities.map((item) => (
+                  <div className="h-40 rounded-lg bg-white p-4 shadow-md">
+                    <div className="text-xl font-semibold">
+                      Total: {formatCurrency(item.price_paid)}
+                    </div>
+                    <Button
+                      className="mt-4 w-full rounded bg-red-500 p-2 text-white"
+                      onClick={handleProceedToCheckout}
+                    >
+                      Proceed to Checkout
+                    </Button>
+                    <Button
+                      className="mt-2 w-full rounded bg-gray-500 p-2 text-white"
+                      onClick={handleCancelCheckout}
+                    >
+                      Cancel
+                    </Button>
                   </div>
-                  <Button
-                    className="mt-4 w-full p-2 bg-red-500 text-white rounded"
-                    onClick={handleProceedToCheckout}
-                  >
-                    Proceed to Checkout
-                  </Button>
-                  <Button
-                    className="mt-2 w-full p-2 bg-gray-500 text-white rounded"
-                    onClick={handleCancelCheckout}
-                  >
-                    Cancel
-                  </Button>
-                </div>
+                ))}
               </div>
             </div>
           </div>

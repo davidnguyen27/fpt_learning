@@ -1,6 +1,11 @@
 import { FC, useState, useEffect } from "react";
 import { Avatar, Button, Rate, message } from "antd";
-import { MenuUnfoldOutlined, PlayCircleOutlined } from "@ant-design/icons";
+import {
+  FileTextOutlined,
+  MenuUnfoldOutlined,
+  PictureOutlined,
+  PlayCircleOutlined,
+} from "@ant-design/icons";
 import { CourseSubTabProps, UserData } from "../../models/Types";
 import {
   getSubscriptionBySubscriberAPI,
@@ -49,6 +54,8 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
     } catch (error: any) {
       console.error("Failed to fetch instructor data:", error);
       setInstructorData(null);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -131,10 +138,18 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
     }
   }, [course]);
 
-  const totalLessons = sessions.reduce(
-    (acc, session) => acc + session.lesson_list.length,
-    0,
-  );
+  const getLessonIcon = (lessonType: string) => {
+    switch (lessonType) {
+      case "video":
+        return <PlayCircleOutlined />;
+      case "text":
+        return <FileTextOutlined />;
+      case "image":
+        return <PictureOutlined />;
+      default:
+        return <FileTextOutlined />;
+    }
+  };
 
   const AboutTabContent = () => (
     <div
@@ -144,36 +159,55 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
   );
 
   const CourseContentTabContent = () => (
-    <div>
-      <div className="flex items-center justify-between">
+    <div className="bg-[#f3f4f6]">
+      <div className="mb-4 flex items-center justify-between">
         <h1 className="text-xl font-bold">Course Content</h1>
-        <div className="space-x-6">
-          <span className="font-medium">{totalLessons} lessons</span>
-          <span className="font-medium">{course?.full_time} hours</span>
+        <div className="text-sm font-medium">
+          {" "}
+          {course?.session_list.length} Sessions
         </div>
       </div>
-      {sessions.map((session) => (
-        <div
-          key={session._id}
-          className="mt-6 rounded-md bg-zinc-200 px-3 py-2"
-        >
+      {sessions.map((session, sessionIndex) => (
+        <div key={session._id} className="mt-2 rounded-md p-1">
           <div
-            className="cursor-pointer text-sm font-bold"
+            className="custom-scrollbar max-h-screen min-h-[44px] cursor-pointer overflow-y-auto rounded-md border border-gray-300 bg-gray-200 p-2 font-semibold"
             onClick={() => toggleSession(session._id)}
           >
-            <MenuUnfoldOutlined /> <span>{session.name}</span>
-          </div>
-          {openSessions.includes(session._id) && (
-            <div className="mt-4 flex items-center justify-between">
-              <div className="px-4 py-2">
-                {session.lesson_list.map((lesson, idx) => (
-                  <div key={idx} className="ml-4 block">
-                    <PlayCircleOutlined /> {lesson.name}
-                  </div>
-                ))}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <MenuUnfoldOutlined className="mr-2" />
+                <span>
+                  {sessionIndex + 1}. {session.name}
+                </span>
               </div>
-              <div>{formatTime(session.full_time)}</div>
+              <div className="text-sm font-medium">
+                {session.lesson_list.length} Lessons •{" "}
+                {formatTime(session.full_time)}
+              </div>
             </div>
+          </div>
+
+          {openSessions.includes(session._id) && (
+            <ul className="mt-2 space-y-2 pl-4">
+              {session.lesson_list.map((lesson: any, lessonIndex) => (
+                <li
+                  key={lesson._id}
+                  className={
+                    "flex cursor-pointer items-center justify-between rounded-md border border-gray-300 p-3 text-sm"
+                  }
+                >
+                  <span className="flex items-center">
+                    {getLessonIcon(lesson.lesson_type)}{" "}
+                    <span className="ml-2">
+                      {lessonIndex + 1}. {lesson.name}
+                    </span>
+                  </span>
+                  <div className="flex items-center">
+                    <span>{formatTime(lesson.full_time)}</span>
+                  </div>
+                </li>
+              ))}
+            </ul>
           )}
         </div>
       ))}

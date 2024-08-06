@@ -41,6 +41,14 @@ const CourseCard: React.FC<CourseCardProps> = (props) => {
     [searchCondition, pageInfo],
   );
 
+  const formatCurrency = (value: number) => 
+    value.toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+
   const {
     data: courses,
     loading,
@@ -107,14 +115,14 @@ const CourseCard: React.FC<CourseCardProps> = (props) => {
                     {item.discount ? (
                       <>
                         <span className="course-card-price-original">
-                          ${item.price}
+                          {formatCurrency(item.price)}
                         </span>
                         <span className="course-card-price-discounted">
-                          ${item.price_paid}
+                          {formatCurrency(item.price_paid)}
                         </span>
                       </>
                     ) : (
-                      <span className="course-card-price">${item.price}</span>
+                      <span className="course-card-price">{formatCurrency(item.price)}</span>
                     )}
                   </>
                 )}

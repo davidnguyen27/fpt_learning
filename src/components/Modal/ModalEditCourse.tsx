@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Form, Input, Modal, Select, message, Spin } from "antd";
+import { Form, Input, Modal, Select, message, Spin, Button } from "antd";
 import useEditCourse from "../../hooks/course/useEditCourse";
 import { getCategoriesAPI, getCourseDetailAPI } from "../../services/coursesService";
 import { Category } from "../../models/Category";
@@ -125,21 +125,21 @@ const ModalEditCourse = (props: ModalEditCourseProps) => {
       confirmLoading={editingLoading}
       width={700}
       footer={[
-        <button
+        <Button
           key="cancel"
-          className="mr-3 rounded-md bg-zinc-300 px-4 py-1"
+          className="mr-3 rounded-md px-4 py-1"
           onClick={() => setOpen(false)}
         >
           Cancel
-        </button>,
-        <button
+        </Button>,
+        <Button
           key="submit"
-          type="submit"
-          className="rounded-md bg-red-500 px-4 py-1"
+          type="primary"
+          className="rounded-md px-4 py-1"
           onClick={handleEdit}
         >
           {editingLoading ? "Updating..." : "Update"}
-        </button>,
+        </Button>,
       ]}
     >
       <Spin spinning={dataLoading || categoriesLoading}>
