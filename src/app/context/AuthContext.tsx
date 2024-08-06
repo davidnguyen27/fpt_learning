@@ -5,6 +5,7 @@ import {
   getCurrentLogin,
   logout as authServiceLogout,
 } from "../../services/authService";
+import { message } from "antd";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -31,6 +32,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   // Log out
   const logout = async () => {
     await authServiceLogout();
+    message.success("You have been logout!");
     setUser(null);
   };
 
