@@ -240,9 +240,12 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
           reviews.map((review) => (
             <div key={review._id} className="mb-8 rounded-lg bg-slate-200 p-4">
               <div className="mb-2 flex items-center">
+              <Link to={`/user-detail/${review.reviewer_id}`}>
+
                 <span className="font-bold text-black">
                   {review.reviewer_name}
                 </span>
+                </Link>
                 <Rate disabled defaultValue={review.rating} className="ml-2" />
               </div>
               <div className="mb-2 text-sm text-gray-500">
