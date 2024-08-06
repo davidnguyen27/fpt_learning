@@ -12,6 +12,15 @@ import {
 } from "../../app/redux/pagination/paginationSlice";
 import { ColumnsType } from "antd/es/table";
 
+// Utility function to format currency
+const formatCurrency = (value: number) => 
+  value.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
 const { Search } = Input;
 const { Option } = Select;
 
@@ -47,7 +56,7 @@ const TablePurchase = () => {
     }),
     [searchKeyword, statusFilter, pageNum, pageSize],
   );
-
+  
   const handlePageChange = (page: number, newPageSize: number) => {
     dispatch(setPageNum(page));
     dispatch(setPageSize(newPageSize));
@@ -82,19 +91,22 @@ const TablePurchase = () => {
       key: "purchase_no",
     },
     {
-      title: "Price Paid ($)",
+      title: "Price Paid",
       dataIndex: "price_paid",
       key: "price_paid",
+      render: (value: number) => formatCurrency(value),
     },
     {
-      title: "Price ($)",
+      title: "Price",
       dataIndex: "price",
       key: "price",
+      render: (value: number) => formatCurrency(value),
     },
     {
-      title: "Discount (%)",
+      title: "Discount",
       dataIndex: "discount",
       key: "discount",
+      render: (value: number) => `${value}%`,
     },
     {
       title: "Course Name",
@@ -184,7 +196,7 @@ const TablePurchase = () => {
         <Pagination
           current={pageNum}
           pageSize={pageSize}
-          total={10}
+          total={data?.length || 0} // Update this to the actual total items count if available
           onChange={handlePageChange}
           style={{ marginTop: 16, textAlign: "right", justifyContent: "end" }}
           showSizeChanger

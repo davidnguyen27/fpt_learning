@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Form, Input, Button, Typography, notification } from "antd";
+import { Button, Typography, notification } from "antd";
 import { MailOutlined } from "@ant-design/icons";
 import "../../styles/PasswordReset.css";
 import forgotPassword from "../../assets/Image/background.png";
@@ -42,23 +42,6 @@ const VerifyPage: React.FC = () => {
     }
   }, [token, navigate]);
 
-  const onFinish = async (values: { token: string }) => {
-    try {
-      const res = await verifyEmailAPI(values.token);
-      if (res) {
-        notification.success({
-          message: "Successful for verify email",
-          description: "You can login the system",
-        });
-        navigate("/sign-in");
-      }
-    } catch (error) {
-      notification.error({
-        message: "Failed!",
-        description: "Your token is expired or wrong!",
-      });
-    }
-  };
 
   const handleResendToken = async () => {
     try {
@@ -106,34 +89,14 @@ const VerifyPage: React.FC = () => {
         <Title level={2} className="password-reset-title">
           Verify Email
         </Title>
-        <Form onFinish={onFinish} layout="vertical">
-          <Form.Item
-            name="token"
-            label="Token"
-            rules={[{ required: true, message: "Required!" }]}
-          >
-            <Input
-              prefix={<MailOutlined />}
-              placeholder="Enter token..."
-              type="text"
-            />
-          </Form.Item>
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              block
-              className="button-reset"
-            >
-              Submit
-            </Button>
-          </Form.Item>
-        </Form>
         <div className="password-reset-link">
           <Button
-            type="link"
+            type="primary"
+            size="large"
             onClick={handleResendToken}
             disabled={isButtonDisabled}
+            icon={<MailOutlined />}
+            style={{ width: "100%" }}
           >
             {isButtonDisabled ? `Resend in ${counter}s` : "Resend"}
           </Button>

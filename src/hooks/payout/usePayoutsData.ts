@@ -23,7 +23,7 @@ const usePayoutsData = (dataTransfer: DataTransfer) => {
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+  }, []);
 
   return { data, loading, fetchData };
 };

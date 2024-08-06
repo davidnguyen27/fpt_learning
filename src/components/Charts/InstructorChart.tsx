@@ -51,7 +51,7 @@ const InstructorChart = () => {
         { "x": "Jul", "y": 272 },
         { "x": "Aug", "y": 86 },
         { "x": "Sep", "y": 127 },
-        { "x": "Oct", "y": 172},
+        { "x": "Oct", "y": 172 },
         { "x": "Nov", "y": 103 },
         { "x": "Dec", "y": 290 }
       ]
@@ -75,54 +75,54 @@ const InstructorChart = () => {
       ]
     },
   ];
-  return (
-    <ResponsiveLine
-            data={data}
-            margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
-            xScale={{ type: 'point' }}
-            yScale={{
-                type: 'linear',
-                min: 0,
-                max: 'auto',
-                stacked: true,
-                reverse: false,
-            }}
-            yFormat=" >-.2f"
-            curve="cardinal"
-            axisTop={null}
-            axisRight={null}
-            // axisBottom={{
-            //     tickSize: 5,
-            //     tickPadding: 5,
-            //     tickRotation: 0,
-            //     legend: 'history transaction',
-            //     legendOffset: 36,
-            //     legendPosition: 'middle',
-            //     truncateTickAt: 0,
-            // }}
-            // axisLeft={{
-            //     tickSize: 5,
-            //     tickPadding: 5,
-            //     tickRotation: 0,
-            //     legend: 'Transaction Amount',
-            //     legendOffset: -40,
-            //     legendPosition: 'middle',
-            //     truncateTickAt: 0,
-            // }}
-            colors={{ scheme: 'dark2' }}
-            pointSize={7}
-            pointColor={{ theme: 'background' }}
-            pointBorderWidth={2}
-            pointBorderColor={{ from: 'serieColor' }}
-            pointLabel="data.yFormatted"
-            pointLabelYOffset={-12}
-            enableArea={true}
-            areaOpacity={0.1}
-            enableTouchCrosshair={true}
-            useMesh={true}
-            legends={[]}
-        />
 
+  return (
+    <div className="w-full h-96 md:h-400 lg:h-500">
+      <ResponsiveLine
+        data={data}
+        margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
+        xScale={{ type: 'point' }}
+        yScale={{
+          type: 'linear',
+          min: 0,
+          max: 'auto',
+          stacked: true,
+          reverse: false,
+        }}
+        yFormat=" >-.2f"
+        curve="cardinal"
+        axisTop={null}
+        axisRight={null}
+        axisBottom={{
+          tickSize: 5,
+          tickPadding: 5,
+          tickRotation: 0,
+          legend: 'Month',
+          legendOffset: 36,
+          legendPosition: 'middle',
+        }}
+        axisLeft={{
+          tickSize: 5,
+          tickPadding: 5,
+          tickRotation: 0,
+          legend: 'Value',
+          legendOffset: -40,
+          legendPosition: 'middle',
+        }}
+        colors={{ scheme: 'dark2' }}
+        pointSize={7}
+        pointColor={{ theme: 'background' }}
+        pointBorderWidth={2}
+        pointBorderColor={{ from: 'serieColor' }}
+        pointLabel="data.yFormatted"
+        pointLabelYOffset={-12}
+        enableArea={true}
+        areaOpacity={0.1}
+        enableTouchCrosshair={true}
+        useMesh={true}
+        legends={[]}
+      />
+    </div>
   );
 };
 

@@ -118,7 +118,7 @@ const ModalAddCourse = (props: ModalAddCourseProps) => {
         <Button
           key="submit"
           type="primary"
-          className="rounded-md bg-red-500 px-4 py-1"
+          className="rounded-md px-4 py-1"
           onClick={handleSubmit}
         >
           Add

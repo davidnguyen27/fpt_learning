@@ -225,3 +225,35 @@ body {
     display: none;
   }
 }
+
+.faded-rate {
+  opacity: 0.5;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px; /* Chiều rộng của thanh cuộn */
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2); /* Màu của thanh cuộn */
+  border-radius: 10px; /* Bo tròn các góc của thanh cuộn */
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1); /* Màu nền của track */
+}
+
+.btn-primary {
+  background-color: #007bff; /* Màu nền của nút */
+  color: white; /* Màu chữ của nút */
+  border: none; /* Không có viền */
+  padding: 12px 24px; /* Padding của nút, có thể điều chỉnh kích thước */
+  border-radius: 24px; /* Góc tròn cho nút */
+  font-size: 16px; /* Kích thước chữ */
+  font-weight: bold; /* Đậm chữ */
+  cursor: pointer; /* Hiển thị con trỏ tay khi di chuột */
+  transition: background-color 0.3s; /* Hiệu ứng chuyển màu nền */
+}
+
+.btn-primary:disabled {
+  background-color: #ccc; /* Màu nền khi nút bị vô hiệu hóa */
+  cursor: not-allowed; /* Con trỏ không cho phép khi nút bị vô hiệu hóa */
+}

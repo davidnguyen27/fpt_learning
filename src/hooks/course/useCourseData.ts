@@ -22,7 +22,7 @@ const useCourseData = (dataTransfer: DataTransfer) => {
 
   useEffect(() => {
     fetchCourses();
-  }, [fetchCourses]);
+  }, []);
 
   return { data, loading, error, refetchData: fetchCourses };
 };

@@ -79,7 +79,7 @@ const ModalAddSession = (props: ModalAddSessionProps) => {
           key="submit"
           type="primary"
           loading={loading}
-          className="rounded-md bg-red-500 px-4 py-1"
+          className="rounded-md px-4 py-1"
           onClick={handleSubmit}
         >
           {loading ? "Adding..." : "Add"}

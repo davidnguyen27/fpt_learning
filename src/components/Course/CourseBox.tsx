@@ -6,6 +6,8 @@ import { useAuth } from "../../app/context/AuthContext";
 import useCourseDetailClient from "../../hooks/course/useCourseDetailClient";
 import Loading from "../Loading/loading";
 import { extractYoutubeVideoId } from "../../utils/extractYoutube";
+import "../../styles/index.css";
+
 
 const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
   const { course, loading, error, setCourse } = useCourseDetailClient(_id);
@@ -116,15 +118,15 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
           <h2 className="text-xl font-bold md:text-2xl">{course?.name}</h2>
           <p className="mt-2 text-sm md:text-base">{course?.description}</p>
           <div className="mt-4 flex items-center">
-            <Rate
-              disabled
-              value={course?.average_rating}
-              className="text-sm md:text-base"
-            />
-            <span className="ml-2 text-sm text-gray-300 md:text-base">
-              ({course?.review_count} ratings)
-            </span>
-          </div>
+      <Rate
+        disabled
+        value={course?.average_rating}
+        className={`text-sm md:text-base ${course?.average_rating === 0 ? 'faded-rate' : ''}`}
+      />
+      <span className="ml-2 text-sm text-gray-300 md:text-base">
+        ({course?.review_count} ratings)
+      </span>
+    </div>
           <p className="my-2 text-sm md:my-4 md:text-base">
             By: {course?.instructor_name}
           </p>

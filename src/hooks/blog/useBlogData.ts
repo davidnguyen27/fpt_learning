@@ -22,7 +22,7 @@ const useBlogsData = (dataTransfer: DataTransfer) => {
 
   useEffect(() => {
     fetchBlogs();
-  }, [dataTransfer]);
+  }, []);
 
   return { data, loading, error, refetchData: fetchBlogs };
 };

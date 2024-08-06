@@ -21,7 +21,7 @@ export const usePurchases = (dataTransfer: DataTransfer) => {
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+  }, []);
 
   return { data, loading, fetchData };
 };
