@@ -41,7 +41,6 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
     setOpenSessions((prev) => (prev.includes(sessionId) ? [] : [sessionId]));
   };
 
-
   const fetchInstructorData = async () => {
     try {
       if (course?.instructor_id) {
@@ -163,7 +162,10 @@ const CourseSubTab: FC<CourseSubTabProps> = ({
     <div className="bg-[#f3f4f6]">
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-xl font-bold">Course Content</h1>
-        <div className="text-sm font-medium"> {course?.session_list.length} Sessions</div>
+        <div className="text-sm font-medium">
+          {" "}
+          {course?.session_list.length} Sessions
+        </div>
       </div>
       {sessions.map((session, sessionIndex) => (
         <div key={session._id} className="mt-2 rounded-md p-1">
