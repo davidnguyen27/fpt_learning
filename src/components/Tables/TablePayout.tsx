@@ -49,7 +49,7 @@ const TablePayout = () => {
     [searchKeyword, pageNum, pageSize],
   );
 
-  const { data, loading, fetchData } = usePayoutsData(dataTransfer);
+  const { data, totalItems, loading, fetchData } = usePayoutsData(dataTransfer);
   const { handleRequestPayout } = useChangeStatusInstructor(fetchData);
 
   useEffect(() => {
@@ -208,7 +208,7 @@ const TablePayout = () => {
       <Pagination
         current={pageNum}
         pageSize={pageSize}
-        total={data?.length || 0} // Update this to the actual total items count if available
+        total={totalItems} // Update this to the actual total items count if available
         onChange={handlePageChange}
         style={{ marginTop: 16, textAlign: "right", justifyContent: "end" }}
         showSizeChanger

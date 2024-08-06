@@ -11,13 +11,11 @@ export const getUsers = async (
   requestData: UserSearchRequest
 ): Promise<UserSearchResponse> => {
   try {
-    const response = await axiosInstance.post(
+    const response = await axiosInstance.post<UserSearchResponse>(
       '/api/users/search',
-      requestData,
+      requestData
     );
-
-    const data: UserSearchResponse = response.data;
-    return data;
+    return response.data;
   } catch (error: any) {
     throw new Error(error.message);
   }

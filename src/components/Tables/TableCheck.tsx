@@ -1,11 +1,10 @@
+import React, { useState, useMemo } from "react";
 import { Button, message, Space, Spin, Table, Modal, Input, Tag } from "antd";
 import { ColumnsType } from "antd/es/table";
-import { useEffect, useState } from "react";
-import {
-  getCoursesAPI,
-  toggleCourseStatus,
-} from "../../services/coursesService";
 import { formatDate } from "../../utils/formatDate";
+import useCourseData from "../../hooks/course/useCourseData";
+import { DataTransfer, Course } from "../../models/Course";
+import { toggleCourseStatus } from "../../services/coursesService";
 
 interface DataType {
   key: string;
@@ -16,39 +15,26 @@ interface DataType {
   created_at: string;
 }
 
-const TableCheck = () => {
-  const [data, setData] = useState<DataType[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+const TableCheck: React.FC = () => {
+  const [searchText, setSearchText] = useState<string>("");
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
   const [comment, setComment] = useState<string>("");
-  const [searchText, setSearchText] = useState<string>("");
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
-  const loadCourses = async () => {
-    setLoading(true);
-    try {
-      const courses = await getCoursesAPI({
-        searchCondition: {
-          keyword: searchText,
-          category_id: "",
-          status: "waiting_approve",
-          is_delete: false,
-        },
-        pageInfo: {
-          pageNum: 1,
-          pageSize: 10,
-        },
-      });
-      setData(courses.map((course: any) => ({ ...course, key: course._id })));
-    } catch (error: any) {
-      message.error(error.message);
-    }
-    setLoading(false);
-  };
+  const dataTransfer: DataTransfer = useMemo(() => ({
+    searchCondition: {
+      keyword: searchText,
+      category_id: "",
+      status: "waiting_approve",
+      is_delete: false,
+    },
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 10,
+    },
+  }), [searchText]);
 
-  useEffect(() => {
-    loadCourses();
-  }, [searchText]); // Depend on searchText to reload courses on search change
+  const { data, loading, refetchData } = useCourseData(dataTransfer);
 
   const handleStatusChange = async (
     course_id: string | null,
@@ -65,13 +51,9 @@ const TableCheck = () => {
       message.success(
         `Course ${new_status === "approve" ? "approved" : "rejected"} successfully`,
       );
-      loadCourses();
+      refetchData();
     } catch (error: any) {
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
+      if (error.response?.data?.message) {
         message.error(error.response.data.message);
       } else {
         message.error("Failed to update course status");
@@ -162,7 +144,10 @@ const TableCheck = () => {
         <Table
           className="my-5 rounded-none"
           columns={columns}
-          dataSource={data}
+          dataSource={data.map((course: Course) => ({
+            ...course,
+            key: course._id,
+          }))}
         />
       </Spin>
       <Modal

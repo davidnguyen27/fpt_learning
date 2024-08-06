@@ -93,7 +93,7 @@ const TableCourses: React.FC = () => {
     [searchCondition, pageInfo],
   );
 
-  const { data, loading, refetchData } = useCourseData(dataTransfer);
+  const { data, totalItems, loading, refetchData } = useCourseData(dataTransfer);
   const { deleteCourse } = useDeleteCourse(refetchData);
 
   const handleSuccess = useCallback(() => {
@@ -338,7 +338,7 @@ const TableCourses: React.FC = () => {
         <Pagination
           current={pageNum}
           pageSize={pageSize}
-          total={10}
+          total={totalItems}
           onChange={handlePageChange}
           showSizeChanger
           className="mt-4 justify-end"

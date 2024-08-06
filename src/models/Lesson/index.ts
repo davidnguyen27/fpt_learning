@@ -34,7 +34,7 @@ export type DataTransfer = {
 };
 
 export type LessonSearchResponse = {
-  success: boolean;
+  // success: boolean;
   data: {
     pageData: Lesson[];
     pageInfo: {

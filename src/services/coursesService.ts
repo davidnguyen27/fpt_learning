@@ -1,15 +1,13 @@
-import { Course, CourseClient, DataTransfer } from "../models/Course";
+import { Course, CourseClient, CourseSearchResponse, DataTransfer } from "../models/Course";
 import { Subscription } from "../models/Subscription";
 import { axiosInstance } from "./axiosInstance"; // Use axiosInstance
 
-export const getCoursesAPI = async (dataTransfer: DataTransfer) => {
+export const getCoursesAPI = async (dataTransfer: DataTransfer): Promise<CourseSearchResponse> => {
   try {
-    const res = await axiosInstance.post("/api/course/search", dataTransfer);
-    return res.data.data.pageData;
+    const res = await axiosInstance.post<CourseSearchResponse>("/api/course/search", dataTransfer);
+    return res.data;
   } catch (error: any) {
-    if (error.response && error.response.data && error.response.data.message) {
-      return error.response.data.message;
-    }
+    throw new Error(error.message);
   }
 };
 

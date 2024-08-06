@@ -1,7 +1,5 @@
 import { DeleteOutlined, FormOutlined } from "@ant-design/icons";
 import { Table, Spin, Modal, Input, Pagination, Tooltip, Button } from "antd";
-import { DataTransfer } from "../../models/Lesson";
-import useLessonsData from "../../hooks/lesson/useLessonData";
 import { useState, useMemo } from "react";
 import ModalAddLesson from "../Modal/ModalAddLesson";
 import useDeleteLesson from "../../hooks/lesson/useDeleteLesson";
@@ -13,6 +11,7 @@ import {
   setPageNum,
   setPageSize,
 } from "../../app/redux/pagination/paginationSlice";
+import useLessonsData from "../../hooks/lesson/useLessonData";
 
 const { Search } = Input;
 
@@ -81,7 +80,7 @@ const TableLessons = () => {
     [pageNum, pageSize],
   );
 
-  const dataTransfer: DataTransfer = useMemo(
+  const dataTransfer = useMemo(
     () => ({
       searchCondition,
       pageInfo,
@@ -89,7 +88,7 @@ const TableLessons = () => {
     [searchCondition, pageInfo],
   );
 
-  const { data, loading, error, refetchData } = useLessonsData(dataTransfer);
+  const { data, totalItems, loading, error, refetchData } = useLessonsData(dataTransfer);
   const { deleteLesson } = useDeleteLesson(refetchData);
 
   if (error) {
@@ -101,6 +100,7 @@ const TableLessons = () => {
     ...item,
     index: (pageNum - 1) * pageSize + index + 1,
   }));
+
   const columns: ColumnsType<DataType & { index: number }> = [
     {
       title: "No.",
@@ -192,7 +192,7 @@ const TableLessons = () => {
         <Pagination
           current={pageNum}
           pageSize={pageSize}
-          total={20}
+          total={totalItems}  // Sử dụng totalItems từ API
           onChange={handlePageChange}
           style={{ marginTop: 16, textAlign: "right", justifyContent: "end" }}
           showSizeChanger

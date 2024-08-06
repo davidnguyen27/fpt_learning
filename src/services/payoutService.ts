@@ -1,4 +1,4 @@
-import { DataTransfer } from "../models/Payout";
+import { DataTransfer, PayoutSearchResponse } from "../models/Payout";
 import { axiosInstance } from "./axiosInstance";
 
 export const createPayoutAPI = async (
@@ -25,10 +25,10 @@ export const createPayoutAPI = async (
   }
 };
 
-export const getPayoutsAPI = async (dataTransfer: DataTransfer) => {
+export const getPayoutsAPI = async (dataTransfer: DataTransfer): Promise<PayoutSearchResponse> => {
   try {
     const token = sessionStorage.getItem("token");
-    const response = await axiosInstance.post(
+    const response = await axiosInstance.post<PayoutSearchResponse>(
       "/api/payout/search",
       dataTransfer,
       {
@@ -39,9 +39,7 @@ export const getPayoutsAPI = async (dataTransfer: DataTransfer) => {
     );
     return response.data;
   } catch (error: any) {
-    if (error.response && error.response.data && error.response.data.message) {
-      throw new Error(error.response.data.message);
-    }
+      throw new Error(error.response?.data?.message || error.message);
   }
 };
 

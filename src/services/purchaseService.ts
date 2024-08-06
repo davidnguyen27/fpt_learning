@@ -19,15 +19,15 @@ export const getItemsAll = async (
 
 export const getItemsByInstructor = async (
   dataTransfer: DataTransfer,
-): Promise<Purchase[]> => {
+): Promise<PurchaseSearchResponse> => {
   try {
-    const res = await axiosInstance.post(
+    const res = await axiosInstance.post<PurchaseSearchResponse>(
       "/api/purchase/search-for-instructor",
       dataTransfer,
     );
-    return res.data.data.pageData;
+    return res.data;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+      throw new Error(error.response?.data?.message || error.message);
   }
 };
 

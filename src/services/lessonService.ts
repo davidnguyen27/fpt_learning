@@ -1,16 +1,16 @@
-import { Lesson, DataTransfer } from "../models/Lesson";
+import { Lesson, DataTransfer, LessonSearchResponse } from "../models/Lesson";
 import { APILink } from "../const/linkAPI";
 import { axiosInstance } from "./axiosInstance";
 
 export const getLessonsAPI = async (
-  dataTransfer: DataTransfer,
-): Promise<Lesson[]> => {
+  dataTransfer: DataTransfer
+): Promise<LessonSearchResponse> => {
   try {
-    const res = await axiosInstance.post(
+    const res = await axiosInstance.post<LessonSearchResponse>(
       `${APILink}/api/lesson/search`,
-      dataTransfer,
+      dataTransfer
     );
-    return res.data.data.pageData;
+    return res.data;  // Trả về toàn bộ phản hồi API
   } catch (error: any) {
     throw new Error(error.message);
   }

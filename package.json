@@ -32,6 +32,7 @@
     "jwt-decode": "^4.0.0",
     "lastest": "github:tinymce/tinymce-vue",
     "lodash.debounce": "^4.0.8",
+    "online-learning-project": "file:",
     "react": "^18.2.0",
     "react-credit-cards-2": "^1.0.2",
     "react-dom": "^18.2.0",

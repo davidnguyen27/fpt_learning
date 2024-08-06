@@ -214,7 +214,7 @@ const TableReviewProfile = () => {
       <Pagination
           current={pageNum}
           pageSize={pageSize}
-          total={10}
+          total={20}
           onChange={handlePageChange}
           style={{ marginTop: 16, textAlign: "right", justifyContent: "end" }}
           showSizeChanger

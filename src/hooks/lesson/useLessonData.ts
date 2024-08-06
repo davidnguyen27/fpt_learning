@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getLessonsAPI } from "../../services/lessonService";
-import { DataTransfer } from "../../models/Lesson";
+import { DataTransfer, Lesson, LessonSearchResponse } from "../../models/Lesson";
 
 interface DataType {
   key: string;
@@ -15,6 +15,7 @@ interface DataType {
 const useLessonsData = (dataTransfer: DataTransfer) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [data, setData] = useState<DataType[]>([]);
+  const [totalItems, setTotalItems] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -24,8 +25,9 @@ const useLessonsData = (dataTransfer: DataTransfer) => {
   const fetchLessons = async () => {
     setLoading(true);
     try {
-      const lessons = await getLessonsAPI(dataTransfer);
-      const groupedData: DataType[] = lessons.map((lesson) => ({
+      const response: LessonSearchResponse = await getLessonsAPI(dataTransfer);
+
+      const lessons = response.data.pageData.map((lesson: Lesson) => ({
         key: lesson._id,
         session_name: lesson.session_name,
         course_name: lesson.course_name,
@@ -34,16 +36,18 @@ const useLessonsData = (dataTransfer: DataTransfer) => {
         name: lesson.name,
         full_time: lesson.full_time,
       }));
-      setData(groupedData);
+
+      setData(lessons);
+      setTotalItems(response.data.pageInfo.totalItems);
       setError(null);
-    } catch (err) {
+    } catch (err: any) {
       setError("Failed to fetch lessons.");
     } finally {
       setLoading(false);
     }
   };
 
-  return { data, loading, error, refetchData: fetchLessons };
+  return { data, totalItems, loading, error, refetchData: fetchLessons };
 };
 
 export default useLessonsData;

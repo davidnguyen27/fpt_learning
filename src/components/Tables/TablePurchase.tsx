@@ -70,7 +70,7 @@ const TablePurchase = () => {
     fetchData();
   };
 
-  const { data, loading, fetchData } = usePurchases(dataTransfer);
+  const { data, totalItems, loading, fetchData } = usePurchases(dataTransfer);
   const { createPayout } = useCreatePayout();
 
   const dataWithIndex = data?.map((item, index) => ({
@@ -196,7 +196,7 @@ const TablePurchase = () => {
         <Pagination
           current={pageNum}
           pageSize={pageSize}
-          total={data?.length || 0} // Update this to the actual total items count if available
+          total={totalItems} // Update this to the actual total items count if available
           onChange={handlePageChange}
           style={{ marginTop: 16, textAlign: "right", justifyContent: "end" }}
           showSizeChanger
