@@ -23,7 +23,6 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const navigate = useNavigate();
 
-
   const handleOk = () => {
     setIsModalVisible(false);
     navigate("/confirm-checkout");
@@ -33,8 +32,17 @@ const CartSummary: React.FC<CartSummaryProps> = ({
     setIsModalVisible(false);
   };
 
-  
-  const selectedCartItems = cartItems.filter(item => selectedItems.has(item._id));
+  const formatCurrency = (value: number) =>
+    value.toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+
+  const selectedCartItems = cartItems.filter((item) =>
+    selectedItems.has(item._id),
+  );
 
   return (
     <div className="p-4">
@@ -52,17 +60,19 @@ const CartSummary: React.FC<CartSummaryProps> = ({
       </div>
       <div className="mt-2 flex justify-between font-semibold">
         <span>Price</span>
-        <span className="text-black">${price}</span>
+        <span className="text-black">{formatCurrency(price)}</span>
       </div>
       <hr className="mt-6" />
       <div className="mt-2 flex justify-between">
         <span>Discount</span>
-        <span className="font-semibold text-gray-500">${discount}</span>
+        <span className="font-semibold text-gray-500">
+          {formatCurrency(discount)}
+        </span>
       </div>
       <hr className="mt-6" />
       <div className="mt-2 flex justify-between font-bold">
         <span>Total</span>
-        <span className="text-black">${price_paid}</span>
+        <span className="text-black">{formatCurrency(price_paid)}</span>
       </div>
       <hr className="mt-6" />
       {/* <Button
@@ -82,7 +92,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
       >
         <p>Are you sure you want to check out now?</p>
         <div>
-          {selectedCartItems.map(item => (
+          {selectedCartItems.map((item) => (
             <div key={item._id} className="mb-2">
               <span>{item.course_name}</span>
               <span className="float-right">${item.price}</span>

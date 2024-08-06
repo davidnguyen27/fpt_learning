@@ -33,6 +33,7 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
     }
   }, [course]);
 
+  
   if (loading)
     return (
       <div>
@@ -140,7 +141,7 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
               : "N/A"}
           </p>
           <p className="mb-2 text-sm md:mb-4 md:text-base">
-            Duration: {course?.full_time} hours
+            Duration: {course?.full_time}mins
           </p>
           <div className="mb-4">
             <span className="text-sm md:text-base">Price: </span>
@@ -149,10 +150,10 @@ const CourseBox: React.FC<{ _id: string }> = ({ _id }) => {
                 course?.discount !== 0 ? "line-through" : ""
               } text-sm text-gray-400 md:text-base`}
             >
-              ${course?.price}
+              ${course?.price.toFixed(2)}
             </span>
             <span className="ml-3 text-sm text-red-400 md:text-base">
-              ${course?.price_paid}
+              ${course?.price_paid.toFixed(2)}
             </span>
           </div>
           <div className="mt-4 flex space-x-2">

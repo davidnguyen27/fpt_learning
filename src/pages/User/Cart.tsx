@@ -34,25 +34,23 @@ const Cart: React.FC = () => {
           searchCondition: { status: "waiting_paid", is_deleted: false },
           pageInfo: { pageNum: 1, pageSize: 10 },
         };
-  
+
         // Gọi API cho ba trạng thái
         const [dataNew, dataCancel, dataWaitingPaid] = await Promise.all([
           getCartsAPI(dataTransferNew),
           getCartsAPI(dataTransferCancel),
           getCartsAPI(dataTransferWaitingPaid),
         ]);
-  
+
         // Kết hợp cả ba kết quả lại với nhau
         setCartItems([...dataNew, ...dataCancel, ...dataWaitingPaid]);
       } catch (error: any) {
         setError(error.message || "An error occurred");
       }
     };
-  
+
     fetchCartItems();
   }, []);
-  
-  
 
   const handleRemove = (id: string) => {
     setCartItems((prevItems) => prevItems.filter((item) => item._id !== id));
@@ -123,18 +121,18 @@ const Cart: React.FC = () => {
       });
       return;
     }
-  
+
     const selectedItemsWithQuantities = cartItems
       .filter((item) => selectedItems.has(item._id))
       .map((item) => ({
         ...item,
         quantity: quantities[item._id] || 1,
       }));
-  
+
     const hasWaitingPaidItems = selectedItemsWithQuantities.some(
-      (item) => item.status === "waiting_paid"
+      (item) => item.status === "waiting_paid",
     );
-  
+
     if (hasWaitingPaidItems) {
       // Redirect to confirm checkout if any selected item has status "waiting_paid"
       navigate("/confirm-checkout", { state: { selectedItemsWithQuantities } });
@@ -142,7 +140,9 @@ const Cart: React.FC = () => {
       // Proceed with the normal checkout process
       try {
         await editStatusCartsAPI("waiting_paid", selectedItemsWithQuantities);
-        navigate("/confirm-checkout", { state: { selectedItemsWithQuantities } });
+        navigate("/confirm-checkout", {
+          state: { selectedItemsWithQuantities },
+        });
       } catch (error: any) {
         notification.error({
           message: "Error",
@@ -153,7 +153,6 @@ const Cart: React.FC = () => {
       }
     }
   };
-  
 
   return (
     <Layout>

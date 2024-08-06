@@ -25,6 +25,14 @@ const CartItem: React.FC<CartItemProps> = ({
     setIsModalVisible(true);
   };
 
+  const formatCurrency = (value: number) =>
+    value.toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+
   const handleOk = async () => {
     setLoading(true);
     try {
@@ -76,10 +84,12 @@ const CartItem: React.FC<CartItemProps> = ({
             <div>
               <span className="text-lg font-bold">{item.course_name}</span>
               <br />
-              <span className="text-sm text-gray-500 mr-5">
+              <span className="mr-5 text-sm text-gray-500">
                 Cart no: {item.cart_no}
               </span>
-              <Tag color={item.status === "new" ? "green" : "volcano"}>{item.status}</Tag>
+              <Tag color={item.status === "new" ? "green" : "volcano"}>
+                {item.status}
+              </Tag>
             </div>
             <div className="flex items-center text-sm text-gray-500">
               <span className="mr-1">By</span>
@@ -92,12 +102,12 @@ const CartItem: React.FC<CartItemProps> = ({
             <div className="mr-4 flex-col">
               <div className="text-sm font-bold text-black">
                 <span style={{ color: priceColor }}>
-                  $ {price_paid.toLocaleString("US")}
+                  {formatCurrency(price_paid)}
                 </span>
               </div>
               {discount > 0 && (
                 <div className="text-sm text-gray-500 line-through">
-                  $ {price.toLocaleString("US")}
+                  {formatCurrency(price)}
                 </div>
               )}
             </div>
