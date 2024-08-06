@@ -14,9 +14,10 @@ import { Lesson } from "../../models/Lesson";
 import { getDetailClientAPI } from "../../services/coursesService";
 import { formatTime } from "../../utils/formatTime";
 import LessonContent from "./LessonContent";
-import { Spin, Button } from "antd";
+import { Button } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import "../../styles/index.css";
+import Loading from "../Loading/loading";
 
 interface LearningComponentProps {
   courseId: string;
@@ -110,13 +111,12 @@ const LearningComponent: React.FC<LearningComponentProps> = ({ courseId }) => {
     }
   };
 
-  if (loading) {
+  if (loading)
     return (
-      <div className="container mx-auto flex h-64 items-center justify-center px-4 py-8">
-        <Spin size="large" />
+      <div>
+        <Loading />
       </div>
     );
-  }
 
   if (error) {
     return (
