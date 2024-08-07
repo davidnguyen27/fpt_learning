@@ -1,9 +1,8 @@
-import { configureStore} from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "./user/userSlice";
-import paginationReducer from './pagination/paginationSlice';
-import subscriptionReducer from '../redux/subscribe/subscriptionSlice';
+import paginationReducer from "./pagination/paginationSlice";
+import subscriptionReducer from "../redux/subscribe/subscriptionSlice";
 import loadingReducer from "./loading/loadingSlice";
-
 
 export const store = configureStore({
   reducer: {
@@ -11,7 +10,6 @@ export const store = configureStore({
     loading: loadingReducer,
     pagination: paginationReducer,
     subscription: subscriptionReducer,
-
   },
 });
 

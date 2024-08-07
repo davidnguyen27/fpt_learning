@@ -1,9 +1,8 @@
 import React from "react";
-import Overview from "../../components/Admin/Overview";
 import AdminLayout from "../../components/Layout/AdminLayout";
 import DonutChart from "../../components/Charts/DonutChart";
 import InstructorChart from "../../components/Charts/InstructorChart";
-
+import Overview from "../../components/Admin/Overview";
 
 const AdminPage: React.FC = () => {
   return (
@@ -13,11 +12,11 @@ const AdminPage: React.FC = () => {
           Admin Dashboard
         </h1>
         <Overview />
-        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="text-center w-full h-96 md:h-400 lg:h-500">
+        <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="md:h-400 lg:h-500 h-96 w-full text-center">
             <InstructorChart />
           </div>
-          <div className="text-center w-full h-96 md:h-400 lg:h-500">
+          <div className="md:h-400 lg:h-500 h-96 w-full text-center">
             <DonutChart />
           </div>
         </div>
